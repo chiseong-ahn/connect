@@ -1,0 +1,83 @@
+server:
+  port: 80
+  servlet:
+    context-path: '/'
+    session:
+      timeout: 600
+      cookie:
+        domain: .scglab.com
+        path: '/'
+    
+spring:
+  banner:
+    charset: UTF-8
+    location: 'classpath:banner.txt'
+  profiles:
+    active: local
+
+logging:
+    level:
+        root: info
+        org:
+            springframework:
+                core: error
+                beans: error
+                context: error
+                web: error
+        jdbc:
+            sqlonly: info
+            audit: info
+            resultset: info
+            resultsettable: info
+            connection: info
+            sqltiming: info
+        com:
+            scglab: debug
+        
+---
+# 로컬환경 
+spring:
+  profiles: local
+  datasource:
+    hikari:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:testdb;MODE=mysql;
+      username: sa
+      password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+server:
+  port: 9091
+  
+logging:
+  level:
+    root: info
+
+---
+# 개발환경 
+spring:
+  profiles: dev
+  datasource:
+    hikari:
+      driver-class-name: 'com.mysql.cj.jdbc.Driver'
+      jdbc-url: 'jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'  
+      username: sa
+      password: cstalk12#$
+    tomcat:
+        max-active: 1
+        max-idle: 1
+        min-idle: 1
+        max-wait: 1
+        initial-size: 1
+        test-on-borrow: true
+        test-while-idle: true
+        validation-query: select 1
+        time-between-eviction-runs-millis: 3000
+---
+# 운영환경 
+spring:
+  profiles: live
+  

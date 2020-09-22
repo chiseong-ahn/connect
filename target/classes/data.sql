@@ -1,0 +1,10 @@
+INSERT INTO sample (`name`) VALUES ('안치성1');
+INSERT INTO sample (`name`) VALUES ('안치성2');
+INSERT INTO sample (`name`) VALUES ('안치성3');
+INSERT INTO sample (`name`) VALUES ('안치성4');
+INSERT INTO sample (`name`) VALUES ('안치성5');
+INSERT INTO sample (`name`) VALUES ('안치성6');
+INSERT INTO sample (`name`) VALUES ('안치성7');
+INSERT INTO sample (`name`) VALUES ('안치성8');
+INSERT INTO sample (`name`) VALUES ('안치성9');
+INSERT INTO sample (`name`) VALUES ('안치성10');
