@@ -89,3 +89,6 @@
 [2020-09-22 15:27:25:403][restartedMain] INFO  c.scglab.connect.ConnectApplication - The following profiles are active: local
 [2020-09-22 15:27:26:1646][restartedMain] INFO  c.s.c.base.database.DatabaseConfig - datasource : HikariDataSource (HikariPool-1)
 [2020-09-22 15:27:27:2617][restartedMain] INFO  c.scglab.connect.ConnectApplication - Started ConnectApplication in 2.482 seconds (JVM running for 2.876)
+[2020-09-22 15:41:27:842740][restartedMain] INFO  c.scglab.connect.ConnectApplication - Starting ConnectApplication on anchiseong-ui-MacBookPro.local with PID 2235 (/Volumes/Data/_git/connect/target/classes started by anchiseong in /Volumes/Data/_git/connect)
+[2020-09-22 15:41:27:842740][restartedMain] INFO  c.scglab.connect.ConnectApplication - The following profiles are active: local
+[2020-09-22 15:41:27:843192][restartedMain] INFO  c.scglab.connect.ConnectApplication - Started ConnectApplication in 0.706 seconds (JVM running for 843.535)
