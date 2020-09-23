@@ -14,10 +14,13 @@ spring:
     location: 'classpath:banner.txt'
   profiles:
     active: local
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
 
 logging:
     level:
-        root: info
+        root: debug
         org:
             springframework:
                 core: error
@@ -28,11 +31,12 @@ logging:
             sqlonly: info
             audit: info
             resultset: info
-            resultsettable: info
+            resultsettable: debug
             connection: info
             sqltiming: info
         com:
-            scglab: debug
+            scglab:
+                connect: debug
         
 ---
 # 로컬환경 
@@ -55,6 +59,8 @@ server:
 logging:
   level:
     root: info
+    com:
+        scglab: debug
 
 ---
 # 개발환경 
