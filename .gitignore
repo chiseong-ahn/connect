@@ -1,4 +1,4 @@
-# Created by https://www.gitignore.io/api/git,java,maven,windows,eclipse
+# Crgated by https://www.gitignore.io/api/git,java,maven,windows,eclipse
 # Edit at https://www.gitignore.io/?templates=git,java,maven,windows,eclipse
 
 ### Eclipse ###
@@ -95,6 +95,7 @@ config.properties
 
 # Log file
 *.log
+logs/
 
 # BlueJ files
 *.ctxt
