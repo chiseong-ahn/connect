@@ -11,41 +11,29 @@ server:
 spring:
   banner:
     charset: UTF-8
-    location: 'classpath:banner.txt'
+    location: 'classpath:config/banner.txt'
   profiles:
     active: local
   jackson:
     serialization:
       INDENT_OUTPUT: true
+  messages:
+    basename: messages/message
+    encoding: UTF-8
+
 
 logging:
-    level:
-        root: debug
-        org:
-            springframework:
-                core: error
-                beans: error
-                context: error
-                web: error
-        jdbc:
-            sqlonly: info
-            audit: info
-            resultset: info
-            resultsettable: debug
-            connection: info
-            sqltiming: info
-        com:
-            scglab:
-                connect: debug
-        
+  config: 'classpath:config/logback-dev.xml'
+
 ---
 # 로컬환경 
 spring:
   profiles: local
   datasource:
     hikari:
-      driver-class-name: org.h2.Driver
-      jdbc-url: jdbc:h2:mem:testdb;MODE=mysql;
+      #driver-class-name: org.h2.Driver
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: jdbc:log4jdbc:h2:mem:testdb;MODE=mysql;
       username: sa
       password:
   h2:
@@ -56,34 +44,18 @@ spring:
 server:
   port: 9091
   
-logging:
-  level:
-    root: info
-    com:
-        scglab: debug
 
 ---
 # 개발환경 
 spring:
   profiles: dev
-  datasource:
-    hikari:
-      driver-class-name: 'com.mysql.cj.jdbc.Driver'
-      jdbc-url: 'jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'  
-      username: sa
-      password: cstalk12#$
-    tomcat:
-        max-active: 1
-        max-idle: 1
-        min-idle: 1
-        max-wait: 1
-        initial-size: 1
-        test-on-borrow: true
-        test-while-idle: true
-        validation-query: select 1
-        time-between-eviction-runs-millis: 3000
+
 ---
 # 운영환경 
 spring:
   profiles: live
+  
+logging:
+  config: 'classpath:config/logback-live.xml'
+  
   

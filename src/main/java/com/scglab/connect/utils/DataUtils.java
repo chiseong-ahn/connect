@@ -1,0 +1,40 @@
+package com.scglab.connect.utils;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
+public class DataUtils {
+	
+	public static String getParameter(HttpServletRequest request, String name, String defaultValue) {
+		
+		if(request != null) {
+			return StringUtils.defaultString(request.getParameter(name), defaultValue);
+		}
+		return defaultValue;
+	}
+	
+	public static String getAttribute(HttpServletRequest request, String name, String defaultValue) {
+		
+		if(request != null) {
+			return StringUtils.defaultString((String)request.getAttribute(name), defaultValue);
+		}
+		return defaultValue;
+	}
+	
+	public static String getObjectValue(Map<String, Object> object, String name, String defaultValue) {
+		
+		if(object != null) {
+			if(object.containsKey(name)) {
+				return StringUtils.defaultString((String)object.get(name), defaultValue);
+			}
+		}
+		return defaultValue;
+	}
+	
+	
+	
+	
+}

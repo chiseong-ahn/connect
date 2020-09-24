@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.scglab.connect.services.common.dao.CommonDao;
 
 @Repository
-public class sampleDao extends CommonDao {
+public class SampleDao extends CommonDao {
 	
-	Logger logger = LoggerFactory.getLogger(sampleDao.class);
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * XML의 매핑되는 prefix namespace
@@ -26,6 +26,6 @@ public class sampleDao extends CommonDao {
 	
 	public Map<String, Object> custom(Map<String, Object> params){
 		String mapperId = getNamespace() + "selectOne";
-		return sqlSession.selectOne(mapperId, params);
+		return this.sqlSession.selectOne(mapperId, params);
 	}
 }

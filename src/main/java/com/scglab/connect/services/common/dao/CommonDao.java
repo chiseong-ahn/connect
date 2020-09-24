@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Date : 2020. 9. 23. 
  * @작성자 : anchiseong
  * @변경이력 :
- * @프로그램 설명 : 공통 DAO 클래스 (기본 CRUD 기능 제공 - 메소드명과 xml의 id와 자동매핑)
+ * @프로그램 설명 : 공통 DAO 추상 클래스 (기본 CRUD 기능 제공 - 메소드명과 xml의 id와 자동매핑)
  */
-public class CommonDao {
+public abstract class CommonDao {
 	
 	@Autowired
 	protected SqlSession sqlSession;
@@ -25,32 +25,30 @@ public class CommonDao {
 		return c.getEnclosingMethod().getName();
 	}
 	
-	protected String getNamespace() {
-		return namespace;
-	}
+	protected abstract String getNamespace();
 	
 	public int selectCount(Map<String, Object> params){		
-		return (int)sqlSession.selectOne(getNamespace() + getMethodName(new Object() {}.getClass()), params);
+		return (int)this.sqlSession.selectOne(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
 	public <E> List<E> selectAll(Map<String, Object> params) {
-		return sqlSession.selectList(getNamespace() + getMethodName(new Object() {}.getClass()), params);
+		return this.sqlSession.selectList(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
 	public <T> T selectOne(Map<String, Object> params){		
-		return sqlSession.selectOne(getNamespace() + getMethodName(new Object() {}.getClass()), params);
+		return this.sqlSession.selectOne(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
 	public int insert(Map<String, Object> params) {
-		return this.sqlSession.insert(getNamespace() + getMethodName(new Object() {}.getClass()), params);
+		return this.sqlSession.insert(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
 	public int update(Map<String, Object> params) {
-		return (int)this.sqlSession.update(getNamespace() + getMethodName(new Object() {}.getClass()), params);
+		return (int)this.sqlSession.update(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
 	public int delete(Map<String, Object> params) {
-		return (int)this.sqlSession.delete(getNamespace() + getMethodName(new Object() {}.getClass()), params);
+		return (int)this.sqlSession.delete(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
 	

@@ -7,8 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.scglab.connect.base.annotatios.Auth;
 
 @Configuration
 public class CommonInterceptor extends HandlerInterceptorAdapter {
@@ -17,14 +20,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-		int cid = 0;
-		int appid = 0; // 요청서비스 구분(1-app, 2-admn)
-		
-		//Authorization: 8737577cab7eb664d5924f15792d5a91f568d5beb9a7f0e5589b003062ba35d653b0d0961ecbfa80c6b605270e45f07ccb77d26a94615afd32c9cf5d33346949058d53396c13b9fdc3777f3f244aa2
-		String authorization = request.getHeader("Authorization");
-		
-		
+		isAccess(request, handler);
 		return true;
 	}
 
@@ -38,7 +34,31 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
 	}
 	
-	 
+	private boolean isAccess(HttpServletRequest request, Object handler) {
+		boolean result = false;
+		
+		Auth auth = ((HandlerMethod)handler).getMethodAnnotation(Auth.class);
+		this.logger.info("auth : " + auth);
+		if(auth != null) {
+			// 로그인이 되어야 있어야 진행되는 라우팅.
+			
+		}else {
+			// 로그인과 무관하게 진행되는 라우팅.
+			
+		}
+		 
+		return result;
+	}
+	
+	private String getHeaderToken(HttpServletRequest request) {
+		
+		String tokenString = request.getHeader("Authorization");
+		if(tokenString != null) {
+			
+		}
+		
+		return "";
+	}
 }
 
 
