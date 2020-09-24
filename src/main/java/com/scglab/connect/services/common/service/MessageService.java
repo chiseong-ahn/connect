@@ -1,5 +1,7 @@
 package com.scglab.connect.services.common.service;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +20,27 @@ public class MessageService {
 	@Autowired
 	private LocaleResolver localResolver;
 	
-	public String getMessage(String code, Object[] parameter) {
-		
+	public String getMessage(String code) {
+		return getMessage(code, null);
+	}
+	
+	public String getMessage(String code, Object[] parameters) {
+		return getMessage(code, parameters, null);
+	}
+	
+	public String getMessage(String code, Object[] parameters, Locale locale) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder .getRequestAttributes()).getRequest();
 		
-		if(parameter != null) {
-			if(parameter.length > 0) {
-				return this.messageSource.getMessage("main.greeting", parameter, this.localResolver.resolveLocale(request));
+		if(locale == null) {
+			locale = this.localResolver.resolveLocale(request);
+		}
+		
+		if(parameters != null) {
+			if(parameters.length > 0) {
+				return this.messageSource.getMessage(code, parameters, locale);
 			}
 		}
-		return this.messageSource.getMessage("main.greeting", null, this.localResolver.resolveLocale(request));
+		
+		return this.messageSource.getMessage(code, null, locale);
 	}
 }

@@ -23,7 +23,7 @@ parameters[0] = "안치성";
 this.messageService.getMessage("main.greeting", parameters);
 
 // 메세지 파라미터가 없을 경우
-this.messageService.getMessage("main.greeting", null);
+this.messageService.getMessage("main.greeting");
 ```
 
 ### Swagger

@@ -48,5 +48,4 @@ class TokenServiceTest {
 		String value2 = (String)tokenService.getBody(tokenString).get(claimKey);
 		assertEquals(value2, claimVal);
 	}
-
 }
