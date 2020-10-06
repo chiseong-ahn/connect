@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sdtalk.talk">
+	
+	<!-- 진행중인 상담 조회 -->
+	<select id="spaces" parameterType="map" resultType="map">
+		<![CDATA[
+			select (select createdate from Speak where id=sub.startid) as startdate, sub.*, spk.createdate as maxdt, spk.id as lastspeak, spk.msg as lastmsg from (
+		        select s.*, (select max(id) from Speak where space=s.id) as maxid,
+		                    (select count(id) from Speak 
+		                       where space=s.id
+		                           and id > ifnull((select min(lastid) from SpaceSpeaker where space=s.id and spacename is null),0)
+		                           and id > (select max(id) from Speak where space=s.id and (isemp=1 or onlyadm=1))
+		                           and sysmsg = 0 and onlyadm = 0 and isemp=0) as notreadcnt,
+		                    (select max(createdate) from Speak 
+		                       where space=s.id
+		                           and id >= ifnull((select min(lastid) from SpaceSpeaker where space=s.id and spacename is null),0)
+		                           and id > (select max(id) from Speak where space=s.id and (isemp=1 or onlyadm=1))
+		                           and onlyadm = 0 and isemp=0) as oldcustdt,
+		                    (select id from Customer where speaker = s.speaker) as cust
+		           from v_space s
+		          where s.cid=#{cid} and s.state < 2 and s.iscustomer=1
+		              and (case when ifnull('-1',-1) < 0 then emp > 0 else emp = '-1' end)
+			) sub inner join Speak spk on sub.maxid = spk.id
+			  order by sub.state, spk.createdate desc
+			  
+			  
+		]]>
+	</select>
+	
+	<!-- 종료된 상담 조 -->
+	<select id="spaces-end" parameterType="map" resultType="map">
+		<![CDATA[
+			select (select createdate from Speak where id=sub.startid) as startdate, sub.*, spk.createdate as maxdt, spk.id as lastspeak, spk.msg as lastmsg from (
+		        select s.*, (select max(id) from Speak where space=s.id) as maxid,
+		                    (select count(id) from Speak 
+		                       where space=s.id
+		                           and id > ifnull((select min(lastid) from SpaceSpeaker where space=s.id and spacename is null),0)
+		                           and id > (select max(id) from Speak where space=s.id and (isemp=1 or onlyadm=1))
+		                           and sysmsg = 0 and onlyadm = 0 and isemp=0) as notreadcnt,
+		                    (select max(createdate) from Speak 
+		                       where space=s.id
+		                           and id >= ifnull((select min(lastid) from SpaceSpeaker where space=s.id and spacename is null),0)
+		                           and id > (select max(id) from Speak where space=s.id and (isemp=1 or onlyadm=1))
+		                           and onlyadm = 0 and isemp=0) as oldcustdt,
+		                    (select id from Customer where speaker = s.speaker) as cust
+		           from v_space s
+		          where s.cid=#{cid} and s.state < 2 and s.iscustomer=1
+		              and (case when ifnull('-1',-1) < 0 then emp > 0 else emp = '-1' end)
+			) sub inner join Speak spk on sub.maxid = spk.id
+			  order by sub.state, spk.createdate desc
+			  
+			  
+		]]>
+	</select>
+	
+	
+	
+	<select id="speaker" parameterType="map" resultType="map">
+		select * 
+		from Customer 
+		where speaker = #{speaker}
+	</select>
+	
+	<select id="speaks" parameterType="map" resultType="map">
+		<![CDATA[
+			select *
+			      , (
+			          select 1 
+			          from Customer 
+			          where speaker = s.speaker
+			      ) iscustomer 
+			from (
+			   select spc.startid, spk.*
+			   from Space spc 
+			        inner join Speak spk on spc.id = spk.space  
+			        and (spk.createdate > date_sub(now(), interval 7 day) or spk.id > (select lastid from SpaceSpeaker where space=spc.id and spacename is not null))
+			   where spc.id = #{spaceId}
+			   and (case when ifnull(#{fromId},-1) <= 0 then spk.id > 0 else spk.id < ifnull(#{fromId}, 0) end)
+			   and spk.onlyadm <= ifnull(#{onlyadm}, 0)
+			   order by spk.id desc limit 20
+			) s
+			order by s.id
+		]]>
+	</select>
+	
+	<!-- // 이전 상담목록 조회 -->
+	<select id="history" parameterType="map" resultType="map">
+		<![CDATA[
+			select sh.createdate as startdate, timestampdiff(MINUTE, sh.createdate, sh.enddt) diffmin, sh.*, sp.name as empName,
+			       (case when ifnull(#{str}, '') <> '' then
+			          (select group_concat(id) from Speak
+				        where space=sh.space and id between sh.startid and sh.endid and sysmsg=0 and onlyadm=0 and msg like concat('%', #{str}, '%'))
+				 end) as spks
+			 from SpaceHist sh inner join Speak s on sh.startid = s.id left join Emp em on em.id = sh.emp left join Speaker sp on em.speaker = sp.id
+			 where sh.space=ifnull(#{spaceId}, 0) and sh.enddt is not null order by sh.id desc
+		]]>
+	</select>
+	
+	
+</mapper>

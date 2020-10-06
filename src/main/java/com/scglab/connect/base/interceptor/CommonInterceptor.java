@@ -20,7 +20,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		isAccess(request, handler);
+		//isAccess(request, handler);
 		return true;
 	}
 

@@ -12,7 +12,7 @@
   <logger name="jdbc.resultset" level="OFF"/>
   <logger name="jdbc.resultsettable" level="DEBUG"/>
   <logger name="jdbc.connection" level="OFF"/>
-  
+  <logger name="com.scglab.connect" level="DEBUG" />
   <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>

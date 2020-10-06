@@ -59,9 +59,9 @@ protected final Logger logger = (Logger) LoggerFactory.getLogger(getClass());
 				
 				int k = 1;
 				for(Object arg : args){
-					logMessage = "Argument[" + k + "] : " + arg.toString();
+					//logMessage = "Argument[" + k + "] : " + arg.toString();
 					k++;
-					this.logger.debug(logMessage);
+					//this.logger.debug(logMessage);
 				}
 			}
 		}		
