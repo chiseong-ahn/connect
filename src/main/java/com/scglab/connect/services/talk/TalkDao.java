@@ -45,5 +45,10 @@ public class TalkDao extends CommonDao {
 		return this.sqlSession.selectList(mapperId, params);
 	}
 	
+	public List<Map<String, Object>> historySpeaks(Map<String, Object> params){
+		String mapperId = getNamespace() + "historySpeaks";
+		return this.sqlSession.selectList(mapperId, params);
+	}
+	
 	
 }

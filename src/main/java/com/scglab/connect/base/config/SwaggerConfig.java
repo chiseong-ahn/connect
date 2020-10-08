@@ -45,7 +45,7 @@ public class SwaggerConfig {
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
                 .title("API")
-                .description("[SCGLab] API")
+                .description("[SCGLab] 상담톡 API")
                 .contact(new Contact("Swagger", "https://scglab.com", "customer@scglab.com"))
                 .version("1.0")
                 .build();

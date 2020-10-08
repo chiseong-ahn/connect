@@ -27,6 +27,30 @@ public abstract class CommonDao {
 	
 	protected abstract String getNamespace();
 	
+	public int selectCount(Object params){		
+		return (int)this.sqlSession.selectOne(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
+	}
+	
+	public <E> List<E> selectAll(Object params) {
+		return this.sqlSession.selectList(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
+	}
+	
+	public <T> T selectOne(Object params){		
+		return this.sqlSession.selectOne(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
+	}
+	
+	public int insert(Object params) {
+		return this.sqlSession.insert(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
+	}
+	
+	public int update(Object params) {
+		return (int)this.sqlSession.update(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
+	}
+	
+	public int delete(Object params) {
+		return (int)this.sqlSession.delete(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
+	}
+	
 	public int selectCount(Map<String, Object> params){		
 		return (int)this.sqlSession.selectOne(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}

@@ -64,6 +64,15 @@ public class TalkService {
 		return data;
 	}
 	
+	public Map<String, Object> historySpeaks(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		List<Map<String, Object>> list = this.talkDao.historySpeaks(params);
+		data.put("total", 100);
+		data.put("list", list);
+		
+		return data;
+	}
+	
 	/**
      * 채팅방에 메시지 발송
      */

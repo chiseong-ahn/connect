@@ -1,5 +1,8 @@
 package com.scglab.connect.services.main;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.scglab.connect.services.common.service.MessageService;
 
+import io.swagger.annotations.Api;
+
 @Controller
+@Api(tags = "2. 메인 API")
 public class MainController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -25,20 +31,11 @@ public class MainController {
 	public String main(HttpServletRequest request, HttpServletResponse response) {
 		return "redirect:/page/main";
 	}
-
-		/*
-	@RequestMapping(method = RequestMethod.GET, name = "greeting", value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> greeting(HttpServletRequest request, HttpServletResponse response) {
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("greeting", this.messageService.getMessage("main.greeting", null));
-		return map;
+	
+	@RequestMapping(method = RequestMethod.GET, name = "관리자메뉴 > 계정관리", value = "/admin/emp", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String emp(HttpServletRequest request, HttpServletResponse response) {
+		return "admin/emp";
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, name = "Health check", value = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
-	public void health(HttpServletRequest request, HttpServletResponse response) {
-	}
-	*/
 	
 }

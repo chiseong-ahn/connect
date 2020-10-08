@@ -15,10 +15,11 @@
 	</select>
 	
 	<select id="selectOne" parameterType="map" resultType="map">
-		select top 1 a.*
+		select a.*
 		from Sample as a
 		where 1=1
 		and a.id = #{id}
+		limit 1
 	</select>
 	
 	<insert id="insert" parameterType="map">

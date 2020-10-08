@@ -29,8 +29,24 @@ this.messageService.getMessage("main.greeting");
 ### Swagger
 - [HOST]:[PORT]/swagger-ui.html
 
-### Example (CRUD)
+#### Class 설정
+```
+@Api(tags = "클래스 이름")
+public class SampleController {
+}
+```
 
+#### Method 설정
+```
+@RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+@ApiOperation(value = "샘플 상세 조회", notes = "게시물의 상세내용을 조회한다.")
+public Map<String, Object> object(@ApiParam(hidden=true) @RequestParam Map<String, Object> params, @ApiParam(value="식별번호 아이디", required=true) @PathVariable String id) throws Exception {
+	return this.sampleService.object(params, id);
+}
+```
+
+### Example (CRUD)
+- com/scglab/connect/services/sample 디렉토리 참고.
 
 
 ### Logger
@@ -53,6 +69,8 @@ this.logger.error("Print error log");
 - 양방향 암호화 (AES256)
 
 - 단방향 암호화 (SHA256)
+
+### Exception 
 
 
 

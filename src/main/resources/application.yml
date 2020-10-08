@@ -7,6 +7,12 @@ server:
       cookie:
         domain: localhost
         path: '/'
+  error:
+    include-exception: true
+    include-stacktrace: never
+    path: /error/error
+    whitelabel:
+      enabled: false
     
 spring:
   banner:
@@ -27,6 +33,7 @@ spring:
 
 logging:
   config: 'classpath:config/logback-dev.xml'
+  
 
 ---
 # 로컬환경 

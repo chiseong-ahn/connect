@@ -98,5 +98,13 @@
 		]]>
 	</select>
 	
+	<!-- // 이전 상담 상세조회 -->
+	<select id="historySpeaks" parameterType="map" resultType="map">
+		<![CDATA[
+			select * from Speak
+			where space=#{spaceId} and id between #{startId} and #{endId}
+		]]>
+	</select>
+	
 	
 </mapper>

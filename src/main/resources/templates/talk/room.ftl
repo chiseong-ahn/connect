@@ -30,27 +30,33 @@
         <div class="row">
         	<div class="col-md-2">
         		<ul>
-        			<li><button class="btn btn-default" type="button">상담채팅</button></li>
-        			<li><button class="btn btn-default" type="button">답변템플릿</button></li>
-        			<li><button class="btn btn-default" type="button">답변도우미</button></li>
-        			<li><button class="btn btn-default" type="button">관리자메뉴</button></li>
+        			<li><a href="/page/main" class="btn btn-default" type="button">상담채팅</a></li>
+        			<li><a href="/page/template" class="btn btn-default" type="button">답변템플릿</a></li>
+        			<li><a href="/page/helper" class="btn btn-default" type="button">답변도우미</a></li>
+        			<li><a href="/page/admin" class="btn btn-default" type="button">관리자메뉴</a></li>
         		</ul>
         	</div>
         	<div class="col-md-3">
 		        <h4>상담대기</h4>
 		        <span><button type="button" class="btn btn-primary">대기상담 가져오기 ({{readyCount}}건)</button></span>
 		        <ul class="list-group">
-		            <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.id, item.customer)">
-		                <dt>[{{item.id}}] {{item.customer}} <span class="badge badge-info badge-pill">0</span></dt>
-		                <dd>{{item.prehistory}}</dd>
+		            <li class="list-group-item list-group-item-action" v-for="obj in chatrooms" v-bind:key="obj.id" v-on:click="enterRoom(obj.id)">
+		            	<dt>[{{obj.id}}] 
+		            		<span v-if="obj.empname == null" style="color:red">{{obj.customer}}</span>
+		            		<span v-else>{{obj.customer}}</span>
+		            		<span class="badge badge-info badge-pill">{{obj.empname}}</span>
+		            		<span v-if="obj.isonline == true" class="badge badge-primary badge-pill">Online</span>
+		            	</dt>
+		                <dd>{{obj.msg}}</dd>
 		            </li>
 		        </ul>
 		    </div>
 		    <div class="col-md-3">
-		    	<h4>상담채팅 </h4>
+		    	<h4>상담채팅 - {{selectedRoom.customer}}</h4>
 		    	<ul class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
-		                {{obj.speaker}} - {{obj.msg}}</a>
+		                <strong>[시스템:{{obj.sysmsg}}, 상담사:{{obj.isemp}}, 작성자:{{obj.speaker}}]</strong>
+		                <br />>> {{obj.msg}}</a>
 		            </li>
 		       	</ul>
 		       	<div v-if="roomId != ''">
@@ -72,8 +78,14 @@
 		       	</ul>
 		    	<h4>이전 상담목록</h4>
 		    	<ul class="list-group">
-		            <li class="list-group-item" v-for="obj in histories">
-		                {{obj.createdate}} - {{obj.workdate}}</a>
+		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="getHistorySpeaks(obj.space, obj.startid, obj.endid)">
+		                {{obj.createdate}} - {{obj.workdate}}
+		                <ul v-if="obj.showSpeaks == true">
+		            		<li v-for="(speak, idx) in obj.speaks">
+		            			<strong>[시스템:{{speak.sysmsg}}, 상담사:{{speak.isemp}},작성자:{{speak.speaker}}]</strong>
+		            			<br>>> {{speak.msg}}
+		            		</li>
+		            	</ul>
 		            </li>
 		       	</ul>
 		    </div>
@@ -103,7 +115,8 @@
                 histories: [],
                 roomId: '',
                 roomName: '',
-                message: ''
+                message: '',
+                selectedRoom: {}
             },
             created() {
             	this.cid = 1; 
@@ -130,7 +143,7 @@
                 },
                
 				// 스페이스 입장(선택)
-                enterRoom: function(roomId, roomName) {
+                enterRoom: function(roomId) {
                 	console.log(this.ws);
                 	if(this.ws != undefined){
                 		if(this.ws.connected){
@@ -138,7 +151,12 @@
 	                		this.ws.disconnect();
 	                	}
                 	}
-                	                	
+                	
+                	rooms = this.chatrooms.filter(room => room.id == roomId);
+                	if(rooms.length == 1){
+                		this.selectedRoom = rooms[0];
+                	}                	
+                    
                     this.roomId = roomId;	// 스페이스 설정.
                     this.connect();			// 스페이스 소켓 연결 및 구독.
                     this.getMessages();		// 이전 채팅메세지 조회.
@@ -222,11 +240,56 @@
             			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
             				console.log('getHistory list >> ');
             				console.log(response.data.list);
-            				_this.histories = response.data.list; 
+            				
+            				var list = response.data.list;
+            				
+            				// 필수 기본값 설정.
+            				for(var i=0; i<list.length; i++){
+            					list[i].speaks = [];
+            					list[i].showSpeaks = false;
+            				}
+            				
+            				_this.histories = list; 
             			}
             		}, function(err){
             			console.log(err);
             		});
+               	},
+               	
+               	// 이전 상담 상세내용 조회 
+               	getHistorySpeaks: function(roomId, startId, endId){
+               		console.log('check');
+               		var _this = this;
+            		var uri = '/talk/' + this.cid + '/spaces/' + roomId + '/history/speaks';
+            		var data = {
+            			params: {
+            				'startId': startId, 
+            				'endId': endId
+            			}
+            		}
+            		
+            		var history = _this.histories.filter(history => history.startid == startId && history.endid == endId)[0]
+            		if(history.showSpeaks == true){
+            			history.speaks = [];
+            			history.showSpeaks = false;
+            		}else{
+	            		// 필수 기본값 설정.
+	    				for(var i=0; i<_this.histories.length; i++){
+	    					_this.histories[i].speaks = [];
+	    					_this.histories[i].showSpeaks = false;
+	    				}
+    				
+            			axios.get(uri, data).then(response => {
+	            			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
+	            				history.speaks = response.data.list;
+	            				history.showSpeaks = true;
+	            			}
+	            		}, function(err){
+	            			console.log(err);
+	            		});
+            		}
+            		
+            		
                	}
                 
             }
