@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +21,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -50,21 +48,21 @@ public class EmpController {
 		return this.empService.object(params, id);
 	}
 	
-//	@Auth
-//	@RequestMapping(method = RequestMethod.POST, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
-//	@Operation(summary="계정 생성(등록)", description = "계정을 등록(생성)합니다.")
-//	@Parameters({
-//		@Parameter(name = "auth", description = "시스템을 사용할 수 있는 권한 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
-//		@Parameter(name = "speaker", description = "상담자 고유번호", required = true, in = ParameterIn.QUERY, example = "66"),
-//		@Parameter(name = "profileimg", description = "프로필 이미지 업로드 번호", required = false, in = ParameterIn.QUERY),
-//		@Parameter(name = "state", description = "상담상태 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
-//		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn")
-//	})
-//	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
-//	public Map<String, Object> save(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable int cid) throws Exception {
-//		params.put("cid", cid);
-//		return this.empService.save(params);
-//	}
+	@Auth
+	@RequestMapping(method = RequestMethod.POST, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="계정 생성(등록)", description = "계정을 등록(생성)합니다.")
+	@Parameters({
+		@Parameter(name = "auth", description = "시스템을 사용할 수 있는 권한 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
+		@Parameter(name = "speaker", description = "상담자 고유번호", required = true, in = ParameterIn.QUERY, example = "66"),
+		@Parameter(name = "profileimg", description = "프로필 이미지 업로드 번호", required = false, in = ParameterIn.QUERY),
+		@Parameter(name = "state", description = "상담상태 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
+		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn")
+	})
+	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	public Map<String, Object> save(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable int cid) throws Exception {
+		params.put("cid", cid);
+		return this.empService.save(params);
+	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)

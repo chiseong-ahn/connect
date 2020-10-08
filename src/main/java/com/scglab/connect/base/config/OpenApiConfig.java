@@ -5,22 +5,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
 		info = @Info(
 				title = "상담톡 API Document", 
-				description = "API Document", 
-				version = "v1", 
-				contact = @Contact(
-						name = "csahn", 
-						email = "csahn@scglab.com"
-				)
+				version = "v1"
 		)
 )
 @Configuration
 public class OpenApiConfig {
+	
+	@Bean
+	public GroupedOpenApi sample() {
+		String[] paths = { "/samples/**" };
+		return GroupedOpenApi.builder().setGroup("샘플 API").pathsToMatch(paths).build();
+	}
+	
 	@Bean
 	public GroupedOpenApi adminMenu() {
 		String[] paths = { "/admin/**" };

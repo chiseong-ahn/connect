@@ -20,11 +20,14 @@ import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.chat.ChatService;
 import com.scglab.connect.services.chat.JwtTokenProvider;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/talk")
+@Tag(name = "상담 채팅", description = "상담 채팅 API")
 public class TalkController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -34,6 +37,7 @@ public class TalkController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "{cid}/spaces", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="스페이스(상담) 목록 조회", description = "스페이스(상담) 목록을 조회합니다.")
 	public Map<String, Object> spaces(@RequestParam Map<String, Object> params, @PathVariable String cid) throws Exception {
 		params.put("cid", cid);
 		return this.talkService.spaces(params);
@@ -41,6 +45,7 @@ public class TalkController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "{cid}/spaces/{spaceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="스페이스(상담) 정보 조회", description = "")
 	public Map<String, Object> space(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String spaceId) throws Exception {
 		this.logger.debug("spaceId : " + spaceId);
 		params.put("cid", cid);
@@ -49,6 +54,7 @@ public class TalkController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "{cid}/spaces/{spaceId}/speaks", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="스페이스(상담)의 대화내용 목록 조회", description = "")
 	public Map<String, Object> speaks(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String spaceId) throws Exception {
 		this.logger.debug("spaceId : " + spaceId);
 		params.put("cid", cid);
@@ -58,6 +64,7 @@ public class TalkController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "{cid}/speakers/{speaker}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="스페이스(상담)의 채팅자 조회", description = "")
 	public Map<String, Object> speaker(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String speaker) throws Exception {
 		this.logger.debug("speaker : " + speaker);
 		params.put("cid", cid);
@@ -67,6 +74,7 @@ public class TalkController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "{cid}/spaces/{spaceId}/history", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="이전 스페이스(상담) 목록 조회", description = "")
 	public Map<String, Object> history(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String spaceId) throws Exception {
 		params.put("cid", cid);
 		params.put("spaceId", spaceId);
@@ -75,6 +83,7 @@ public class TalkController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "{cid}/spaces/{spaceId}/history/speaks", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="이전 스페이스(상담)의 대화내용 조회", description = "")
 	public Map<String, Object> historySpeaks(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String spaceId) throws Exception {
 		params.put("cid", cid);
 		params.put("spaceId", spaceId);
