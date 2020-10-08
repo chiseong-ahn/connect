@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,15 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotatios.Auth;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/admin/emp")
-@Api(tags = "관리자메뉴 > 계정관리 API")
+@Tag(name = "계정관리", description = "관리자메뉴 > 계정관리")
 public class EmpController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -34,60 +37,58 @@ public class EmpController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "계정 목록 조회", notes = "모든 계정을 조회한다.")
-	public Map<String, Object> list(@ApiParam(hidden=true) @RequestParam Map<String, Object> params, @ApiParam(value="기관코드", required=true, defaultValue = "1") @PathVariable String cid) throws Exception {
+	@Operation(summary="계정 조회(목록)", description = "조건에 맞는 계정 목록을 조회합니다.")
+	public Map<String, Object> list(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable String cid) throws Exception {
 		params.put("cid", cid);
 		return this.empService.list(params);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/{cid}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "계정 상세 조회", notes = "계정의 상세내용을 조회한다.")
-	public Map<String, Object> object(@ApiParam(hidden=true) @RequestParam Map<String, Object> params, @ApiParam(value="기관코드", required=true, defaultValue = "1") @PathVariable String cid, @ApiParam(value="계정번호", required=true) @PathVariable String id) throws Exception {
+	@Operation(summary="계정 조회(상세)", description = "조건에 맞는 계정 상세정보를 조회합니다.")
+	public Map<String, Object> object(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable String cid, @Parameter(name = "계정번호", description = "상담톡시스템에 등록된 계정 관리번호", required = true, example = "67") @PathVariable String id) throws Exception {
 		return this.empService.object(params, id);
 	}
 	
-	@Auth
-	@RequestMapping(method = RequestMethod.POST, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "계정 등록", notes = "계정을 등록한다.")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "speaker", value = "상담사번호", required = true, dataType = "int"),
-		@ApiImplicitParam(name = "auth", value = "권한", required = true, dataType = "int"),
-		@ApiImplicitParam(name = "profileimg", value = "프로필 이미지 업로드 번호", required = true, dataType = "int"),
-		@ApiImplicitParam(name = "empno", value = "아이디", required = true, dataType = "string"),
-		@ApiImplicitParam(name = "state", value = "상담상태", required = true, dataType = "int"),
-	})
-	public Map<String, Object> save(@ApiParam(hidden = true) @RequestParam Map<String, Object> params, @ApiParam(value="기관코드", required=true, defaultValue = "1") @PathVariable int cid) throws Exception {
-//		this.logger.debug("emp : " + emp.toString());
-//		return this.empService.save(emp);
-		
-		return null;
-	}
+//	@Auth
+//	@RequestMapping(method = RequestMethod.POST, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
+//	@Operation(summary="계정 생성(등록)", description = "계정을 등록(생성)합니다.")
+//	@Parameters({
+//		@Parameter(name = "auth", description = "시스템을 사용할 수 있는 권한 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
+//		@Parameter(name = "speaker", description = "상담자 고유번호", required = true, in = ParameterIn.QUERY, example = "66"),
+//		@Parameter(name = "profileimg", description = "프로필 이미지 업로드 번호", required = false, in = ParameterIn.QUERY),
+//		@Parameter(name = "state", description = "상담상태 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
+//		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn")
+//	})
+//	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+//	public Map<String, Object> save(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable int cid) throws Exception {
+//		params.put("cid", cid);
+//		return this.empService.save(params);
+//	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "speaker", value = "상담사번호", required = true, dataType = "int", defaultValue = "66", paramType = "json"),
-		@ApiImplicitParam(name = "auth", value = "권한", required = true, dataType = "int", defaultValue = "9", paramType = "json"),
-		@ApiImplicitParam(name = "profileimg", value = "프로필 이미지 업로드 번호", required = false, dataType = "int", paramType = "json"),
-		@ApiImplicitParam(name = "empno", value = "아이디", required = true, dataType = "string", defaultValue = "csahn", paramType = "json"),
-		@ApiImplicitParam(name = "state", value = "상담상태", required = true, dataType = "int", defaultValue = "9", paramType = "json"),
-		@ApiImplicitParam(name = "id", value = "계정번호", required = true, dataType = "int", defaultValue = "67", paramType = "json")
+	@Operation(summary="계정 정보 변경(수정)", description = "계정 정보를 변경(수정)합니다.")
+	@Parameters({
+		@Parameter(name = "auth", description = "시스템을 사용할 수 있는 권한 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
+		@Parameter(name = "speaker", description = "상담자 고유번호", required = true, in = ParameterIn.QUERY, example = "66"),
+		@Parameter(name = "profileimg", description = "프로필 이미지 업로드 번호", required = false, in = ParameterIn.QUERY),
+		@Parameter(name = "state", description = "상담상태 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
+		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn"),
+		@Parameter(name = "id", description = "계정관리번호", required = true, in = ParameterIn.QUERY, example = "67")
 	})
-	public  Map<String, Object> update(@ApiParam(hidden = true) @RequestParam Map<String, Object> params, @ApiParam(value="기관코드", required=true, defaultValue = "1") @PathVariable int cid, HttpServletRequest request) throws Exception {
-		//String auth = DataUtils.getObjectValue(params, "auth", "");
-		
-//		this.logger.debug("auth : " + auth);
-		//this.logger.debug("emp : " + emp.toString());
-		//return this.empService.update(emp);
-		return null;
+	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	public  Map<String, Object> update(@RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable int cid, HttpServletRequest request) throws Exception {
+		params.put("cid", cid);
+		return this.empService.update(params);
 	}
+	
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "계정 삭제", notes = "계정을 삭제한다.")
-	@ApiImplicitParam(value="계정번호", defaultValue = "67", dataType = "int", paramType = "form")
-	public Map<String, Object> delete(@ApiParam(hidden=true) @RequestParam Map<String, Object> params, @ApiParam(value="기관코드", required=true, defaultValue = "1") @PathVariable String cid) throws Exception {
+	@Operation(summary="계정 삭제", description = "계정을 삭제합니다.")
+	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	public Map<String, Object> delete(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable String cid) throws Exception {
 		return this.empService.delete(params);
 	}
 }

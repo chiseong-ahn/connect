@@ -40,16 +40,16 @@ public class EmpService {
 		return object;
 	}
 	
-	public Map<String, Object> save(Emp emp) throws Exception {
+	public Map<String, Object> save(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.empDao.insert(emp);
+		int result = this.empDao.insert(params);
 		data.put("RESULT", result > 0 ? true : false);
 		return data;
 	}
 	
-	public Map<String, Object> update(Emp emp) throws Exception {
+	public Map<String, Object> update(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.empDao.update(emp);
+		int result = this.empDao.update(params);
 		data.put("RESULT", result > 0 ? true : false);
 		return data;
 	}

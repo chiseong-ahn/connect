@@ -154,10 +154,18 @@
             	// 수정정보 저장.
             	save: function(id){
             		emp = this.emps.filter(emp => emp.id = id)[0];
-            		var uri = '/admin/emp/' + this.cid + '?test=111';
+            		var uri = '/admin/emp/' + this.cid;
             		
-            		axios.put(uri, JSON.stringify(emp)).then(response => {
-            			if(response.data.result == true){
+            		// convert json to form data           		
+            		var formData = new FormData();
+            		for(var key in emp){
+            			formData.append(key, emp[key]);
+            		}
+            						
+            		var header = {'Content-Type': 'multipart/form-data'};
+            		
+            		axios.put(uri, formData, header).then(response => {
+            			if(response.data.RESULT == true){
             				alert('저장되었습니다.');
             				this.getEmps();
             			}else{

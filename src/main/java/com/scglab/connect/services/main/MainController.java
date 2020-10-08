@@ -1,8 +1,5 @@
 package com.scglab.connect.services.main;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,10 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.scglab.connect.services.common.service.MessageService;
 
-import io.swagger.annotations.Api;
-
 @Controller
-@Api(tags = "2. 메인 API")
 public class MainController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -26,7 +26,7 @@
 	</select>
 	
 	<!-- 계정정보 등록 -->
-	<insert id="insert" parameterType="com.scglab.connect.services.admin.emp.Emp">
+	<insert id="insert" parameterType="map">
 		INSERT INTO Emp(createdate, workdate, cid, speaker, auth, profileimg, empno, state)
 		VALUES(CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{cid}, #{speaker}, #{auth}, #{profileimg}, #{empno}, #{state});
 	</insert>

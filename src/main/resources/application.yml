@@ -35,6 +35,15 @@ logging:
   config: 'classpath:config/logback-dev.xml'
   
 
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    displayRequestDuration: true
+    groups-order: DESC
+
 ---
 # 로컬환경 
 spring:
