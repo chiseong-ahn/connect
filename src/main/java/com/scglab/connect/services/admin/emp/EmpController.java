@@ -76,7 +76,7 @@ public class EmpController {
 		@Parameter(name = "id", description = "계정관리번호", required = true, in = ParameterIn.QUERY, example = "67")
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
-	public  Map<String, Object> update(@RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable int cid, HttpServletRequest request) throws Exception {
+	public  Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, example = "1") @PathVariable int cid, HttpServletRequest request) throws Exception {
 		params.put("cid", cid);
 		return this.empService.update(params);
 	}

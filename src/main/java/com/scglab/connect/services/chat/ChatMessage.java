@@ -29,7 +29,7 @@ public class ChatMessage {
 
     // 메시지 타입 : 입장, 퇴장, 채팅
     public enum MessageType {
-        ENTER, QUIT, TALK
+        NOTICE, ENTER, QUIT, TALK
     }
 
     private MessageType type; // 메시지 타입

@@ -79,10 +79,18 @@ public class TalkService {
     public void sendChatMessage(ChatMessage chatMessage) {
     	
         chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
-        if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
-            chatMessage.setSender("[알림]");
+        if (ChatMessage.MessageType.NOTICE.equals(chatMessage.getType())) {
+        	// 기본 스페이스(대기) 입장.
+            chatMessage.setMessage(chatMessage.getMessage());
+            chatMessage.setSender("[공지]");
+            
+        }else if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
+        	// 고객 상담채팅방 입장.
+        	chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
+        	chatMessage.setSender("[알림]");
+            
         } else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
+        	// 채팅방 나가기
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
         }
@@ -90,6 +98,7 @@ public class TalkService {
         this.logger.debug("topic : " + this.channelTopic.getTopic());
         this.logger.debug("Message type : " + chatMessage.getType());
         this.logger.debug("Message : " + chatMessage.getMessage());
+        this.logger.debug("chatMessage : " + chatMessage.toString());
         
         this.redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
         

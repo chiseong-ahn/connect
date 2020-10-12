@@ -19,9 +19,8 @@
     <div class="container" id="app" v-cloak>
         <div class="row">
             <div class="col-md-6">
-            	<span>선택된 스페이스 : {{roomId}}</span><br />
-            	<span>Token : {{token}}</span><br />
-            	<span>Socket : </span><Br />
+            	<span>로그인 : {{id}}</span><br />
+            	<span>선택된 스페이스 : {{roomId}}</span>
             </div>
             <div class="col-md-6 text-right">
                 <a class="btn btn-primary btn-sm" href="/logout">로그아웃</a>
@@ -53,13 +52,14 @@
 		    </div>
 		    <div class="col-md-3">
 		    	<h4>상담채팅 - {{selectedRoom.customer}}</h4>
-		    	<ul class="list-group">
+		    	<span v-if="roomId != baseroom"><button type="button" @click="outRoom()">채팅나가기</button></span>
+		    	<ul  v-if="roomId != baseroom" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
 		                <strong>[시스템:{{obj.sysmsg}}, 상담사:{{obj.isemp}}, 작성자:{{obj.speaker}}]</strong>
 		                <br />>> {{obj.msg}}</a>
 		            </li>
 		       	</ul>
-		       	<div v-if="roomId != ''">
+		       	<div v-if="roomId != baseroom">
 		       		<div class="input-group-prepend">
 		                <label class="input-group-text">내용</label>
 		            </div>
@@ -105,8 +105,10 @@
             el: '#app',
             data: {
             	ws: undefined,	//  웹소켓 객
+            	id: '',
             	token: '',
             	cid: 0,
+            	baseroom: 'base',
             	readyCount: 0,
                 room_name : '',
                 chatrooms: [],
@@ -119,17 +121,24 @@
                 selectedRoom: {}
             },
             created() {
-            	this.cid = 1; 
+            	this.cid = 1;
+            	
+            	this.getUserInfo(); 
                 this.findAllRoom();
                 
-                var _this = this;
-                axios.get('/chat/user').then(response => {
-	                _this.token = response.data.token;
-	            });
-	            
-	            //console.log('ws - 1 : ' + JSON.stringify(ws));
+                // 기본 스페이스 입장
+	            this.roomId = this.baseroom;
+	            this.connect();
             },
             methods: {
+            
+            	// 사용자 정보 조회.
+            	getUserInfo: function() {
+            		axios.get('/auth/user').then(response => {
+	                	this.id = response.data.name;
+		                this.token = response.data.token;
+		            });
+            	},
             
             	// 스페이스 목록 조회.
                 findAllRoom: function() {
@@ -145,12 +154,8 @@
 				// 스페이스 입장(선택)
                 enterRoom: function(roomId) {
                 	console.log(this.ws);
-                	if(this.ws != undefined){
-                		if(this.ws.connected){
-                			console.log('disconnect success!');
-	                		this.ws.disconnect();
-	                	}
-                	}
+                	
+                	this.disconnect();
                 	
                 	rooms = this.chatrooms.filter(room => room.id == roomId);
                 	if(rooms.length == 1){
@@ -161,6 +166,22 @@
                     this.connect();			// 스페이스 소켓 연결 및 구독.
                     this.getMessages();		// 이전 채팅메세지 조회.
                     this.getHistory();		// 이전 상담목록 조회.
+                },
+                
+                // 스페이스 나가기
+                outRoom: function(){
+                	this.disconnect();
+                	this.room_name = '';
+	                this.messages = [];
+	                this.contracts = [];
+	                this.histories = [];
+	                this.roomName = '';
+	                this.message = '';
+	                this.selectedRoom = {};
+	                
+	                // 기본 스페이스 입장
+		            this.roomId = this.baseroom;
+		            this.connect();
                 },
                 
                 // 웹소켓 연결 및 스페이스 구독 설정.
@@ -177,19 +198,41 @@
                 	this.ws.connect({"token": _this.token}, function(frame) {
 	                	console.log('socket connected!');
 	                	
-	                	// 스페이스(room) 구독.
-	                	_this.ws.subscribe("/sub/chat/room/"+ _this.roomId, function(message) {
-	                		console.log('message : >> ');
-	                		console.log(message);
+	                	
+	                	
+	                	if(_this.roomId != ''){
+	                		_this.sendMessage('ENTER');
 	                		
-	                        var recv = JSON.parse(message.body);
-	                        _this.recvMessage(recv);
-	                    });
+	                		// 스페이스(room) 구독.
+		                	_this.ws.subscribe("/sub/chat/room/"+ _this.roomId, function(message) {
+		                		console.log('message : >> ');
+		                		console.log(message);
+		                		
+		                        var recv = JSON.parse(message.body);
+		                        _this.recvMessage(recv);
+		                    });
+	                	}
+	                    
+	                    // 기본 스페이스에 있는 모든사람에게 메세지 전달.
+	                    _this.sendNotice('please refresh!');
+	                    
 	                    
 	                }, function(error) {
 	                    alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
 	                    location.href="/";
 	                });
+	                
+	                
+                },
+                
+                // 웹소켓 연결해제
+                disconnect: function(){
+                	if(this.ws != undefined){
+                		if(this.ws.connected){
+                			console.log('disconnect success!');
+	                		this.ws.disconnect();
+	                	}
+                	}
                 },
                 
                 // 대화 메세지 조회 
@@ -207,7 +250,22 @@
             		});
             	},
             	
-            	// 대화 메세지 전송
+            	sendNotice: function(message) {
+                	var uri = '/pub/talk/message';
+                	
+                	var data = {
+                		cid: this.cid,
+                		type:'NOTICE', 
+                		roomId: this.baseroom, 
+                		message: message, 
+                		msg: message
+                	}
+                	
+                    this.ws.send(uri, {"token":this.token}, JSON.stringify(data));
+                    console.log('send notice success!');
+                },
+            	
+            	// TYPE : ENTER, QUIT, TALK
                 sendMessage: function(type) {
                 	var uri = '/pub/talk/message';
                 	
