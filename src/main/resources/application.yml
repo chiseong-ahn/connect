@@ -59,22 +59,7 @@ spring:
       jdbc-url: 'jdbc:log4jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
       username: cstalk
       password: cstalk12#$
-    tomcat:
-        max-active: 1
-        max-idle: 1
-        min-idle: 1
-        max-wait: 1
-        initial-size: 1
-        test-on-borrow: true
-        test-while-idle: true
-        validation-query: select 1
-        time-between-eviction-runs-millis: 3000 
-  #datasource:
-  #  hikari:
-  #    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-  #    jdbc-url: jdbc:log4jdbc:h2:mem:testdb;MODE=mysql;
-  #    username: sa
-  #    password:
+      idle-timeout: 10000
   h2:
     console:
       enabled: true
@@ -92,6 +77,9 @@ server:
 domain:
   sdtalk: localhost.gasapp.co.kr
   relay: relay-scg.gasapp.co.kr
+  
+path:
+  upload: /Volumes/Data/_upload
   
 ---
 # 개발환경 
