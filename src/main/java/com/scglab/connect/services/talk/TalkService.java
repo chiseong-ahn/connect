@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.chat.ChatMessage;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -73,6 +72,18 @@ public class TalkService {
 		return data;
 	}
 	
+	public Map<String, Object> updateManager(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		this.logger.debug("상담사 변경처리");
+		// 상담사 변경처리.
+		// CALL update_space(11, ifnull('9', null), '41', '정해관')
+		
+		data.put("RESULT", true);
+
+		return data;
+	}
+	
 	/**
      * 채팅방에 메시지 발송
      */
@@ -102,7 +113,50 @@ public class TalkService {
         
         this.redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
         
-        this.logger.debug("메세지 publish complete!");
-        
     }
+    
+    // 관리자 - 공지내용 처리.
+    private void noticeForAdmin(ChatMessage chatMessage) {
+    	this.logger.debug("[Socket] 1. 공지메세지 발송.");
+    }
+    
+    // 관리자 - 스페이스 입장처리.
+    private void entrySpaceForAdmin(ChatMessage chatMessage) { 	
+    	this.logger.debug("1. [DB] Customer, Speaker, Space 변경.");
+    	//  - CALL reg_customer(:cid, :userno, :name, :telno)
+    	
+    	this.logger.debug("2. [DB] SpaceSpeaker 테이블에 상담사 등록.");
+    	
+    	this.logger.debug("3. [Socket] 다른 상담원들에게 스페이스 목록 갱신요청.");
+    	
+    	this.logger.debug("4. [DB] 이전 대화내용 조회");
+    	
+    }
+    
+    // 관리자 - 스페이스 채팅메세지 전달.
+    private void receiveMessageForAdmin(ChatMessage chatMessage) {
+    	this.logger.debug("1. [DB] 채팅 메세지(speak) 데이터 생성.");
+    	//	- main speak.speak-making 
+    	
+    	this.logger.debug("2. [DB] 채팅의 마지막 메세지 번호(SpaceSpeak.lastid) 갱신.");
+    	
+    	this.logger.debug("3. [DB] 스페이스가 [종료] 또는 [종료대기] 상태일 경우 [진행중]으로 변경(Space.state = 0).");
+    	
+    	this.logger.debug("4. [Socket] 생성한 채팅 메세지 발송.");
+    			
+    	this.logger.debug("5. [Server] 채팅 회원이 온라인상태가 아닐경우 Push 발송(Push API 호출).");
+    }
+    
+    // 관리자 - 스페이스 퇴장처리.
+    private void quitSpaceForAdmin(ChatMessage message) {
+    	this.logger.debug("1. [DB] 스페이스 상태 변경.");
+    	//	- CALL update_space(1, ifnull('9', null), '1', '서울도시가스')
+    	
+    	this.logger.debug("2. [DB] 변경된 스페이스 조회.");
+    	
+    	this.logger.debug("3. [Socket] 상담사에 의한 스페이스 변경메세지 전달.");
+    }
+    
+    
 }
+

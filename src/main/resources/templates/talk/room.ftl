@@ -104,10 +104,10 @@
         var vm = new Vue({
             el: '#app',
             data: {
-            	ws: undefined,	//  웹소켓 객
+            	ws: undefined,	//  웹소켓 객체.
             	id: '',
-            	token: '',
             	cid: 0,
+            	appid: 0,
             	baseroom: 'base',
             	readyCount: 0,
                 room_name : '',
@@ -146,21 +146,22 @@
                 	var uri = '/talk/' + this.cid + '/spaces';
                     axios.get(uri).then(response => {
                         // prevent html, allow json array
-                        if(Object.prototype.toString.call(response.data.list) === "[object Array]")
-                            this.chatrooms = response.data.list;
+						if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
+							this.chatrooms = response.data.list;
+						}
                     });
                 },
                
 				// 스페이스 입장(선택)
                 enterRoom: function(roomId) {
-                	console.log(this.ws);
-                	
+                
+                	// 기존 연결된 소켓이 있다면 해제처
                 	this.disconnect();
                 	
                 	rooms = this.chatrooms.filter(room => room.id == roomId);
                 	if(rooms.length == 1){
                 		this.selectedRoom = rooms[0];
-                	}                	
+                	}
                     
                     this.roomId = roomId;	// 스페이스 설정.
                     this.connect();			// 스페이스 소켓 연결 및 구독.
@@ -198,8 +199,6 @@
                 	this.ws.connect({"token": _this.token}, function(frame) {
 	                	console.log('socket connected!');
 	                	
-	                	
-	                	
 	                	if(_this.roomId != ''){
 	                		_this.sendMessage('ENTER');
 	                		
@@ -221,8 +220,6 @@
 	                    alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
 	                    location.href="/";
 	                });
-	                
-	                
                 },
                 
                 // 웹소켓 연결해제
@@ -250,6 +247,7 @@
             		});
             	},
             	
+            	// 공지메세지 발송.
             	sendNotice: function(message) {
                 	var uri = '/pub/talk/message';
                 	
@@ -262,23 +260,22 @@
                 	}
                 	
                     this.ws.send(uri, {"token":this.token}, JSON.stringify(data));
-                    console.log('send notice success!');
                 },
             	
-            	// TYPE : ENTER, QUIT, TALK
+            	// 메세지 발송(TYPE : ENTER-입장, QUIT-나가기, TALK-메세지)
                 sendMessage: function(type) {
                 	var uri = '/pub/talk/message';
                 	
                 	var data = {
-                		cid: this.cid,
                 		type:type, 
+                		cid: this.cid,
+                		appid: this.appid,
                 		roomId:this.roomId, 
                 		message:this.message, 
-                		msg:this.message
+                		msg:this.message,
                 	}
                 	
                     this.ws.send(uri, {"token":this.token}, JSON.stringify(data));
-                    console.log('send message success!');
                     this.message = '';
                 },
                 
@@ -289,7 +286,7 @@
                     this.userCount = recv.userCount;
                     this.messages.push({"type":recv.type,"sender":recv.sender,"msg":recv.msg, "message":recv.message})
                 },
-                
+
                 // 이전 상담목록 조회 
                	getHistory: function(){
                		var _this = this;
@@ -316,7 +313,6 @@
                	
                	// 이전 상담 상세내용 조회 
                	getHistorySpeaks: function(roomId, startId, endId){
-               		console.log('check');
                		var _this = this;
             		var uri = '/talk/' + this.cid + '/spaces/' + roomId + '/history/speaks';
             		var data = {
@@ -345,11 +341,8 @@
 	            		}, function(err){
 	            			console.log(err);
 	            		});
-            		}
-            		
-            		
+            		}            		
                	}
-                
             }
         });
     </script>

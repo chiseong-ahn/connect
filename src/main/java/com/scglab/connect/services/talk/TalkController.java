@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotatios.Auth;
-import com.scglab.connect.services.chat.ChatMessage;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.chat.ChatService;
 import com.scglab.connect.services.chat.JwtTokenProvider;
@@ -89,6 +88,22 @@ public class TalkController {
 		params.put("spaceId", spaceId);
 		return this.talkService.historySpeaks(params);
 	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.PUT, value = "{cid}/spaces/{spaceId}/manager", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="스페이스(상담) 상담사 변경(이관)", description = "")
+	public Map<String, Object> updateManager(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String spaceId) throws Exception {
+		params.put("cid", cid);
+		params.put("spaceId", spaceId);
+		return this.talkService.updateManager(params);
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	private final JwtTokenProvider jwtTokenProvider;
     private final ChatRoomRepository chatRoomRepository;

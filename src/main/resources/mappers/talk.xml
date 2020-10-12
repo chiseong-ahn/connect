@@ -24,6 +24,7 @@
 		              and (case when ifnull('-1',-1) < 0 then emp > 0 else emp = '-1' end)
 			) sub inner join Speak spk on sub.maxid = spk.id
 			  order by sub.state, spk.createdate desc
+			  limit 15
 			  
 			  
 		]]>
@@ -50,6 +51,7 @@
 		              and (case when ifnull('-1',-1) < 0 then emp > 0 else emp = '-1' end)
 			) sub inner join Speak spk on sub.maxid = spk.id
 			  order by sub.state, spk.createdate desc
+			  limit 15
 			  
 			  
 		]]>
