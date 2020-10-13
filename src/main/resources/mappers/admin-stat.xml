@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sdtalk.admin.stat">
+	
+	<!-- 현재 진행 상황 -->
+	<select id="selectStat1" parameterType="map" resultType="map">
+		<![CDATA[
+			select
+				(100000 + sub.emp) as id,
+				sub.emp,
+				sub.empno,
+				sub.empstate,
+				count(*) as ingcnt,
+				sum(case when diff > 10 then 1 else 0 end) as warningcnt,
+				sum(case when diff between 5 and 10 then 1 else 0 end) as cautioncnt,
+				(
+				select
+					count(distinct space)
+				from
+					SpaceHist
+				where
+					cid = #{cid}
+					and emp = sub.emp
+					and ymd(createdate) = ymd(now()) ) as endcnt
+			from
+				(
+				select
+					s.*, e.state as empstate, e.empno, ifnull((
+					select
+						TIMESTAMPDIFF(MINUTE, min(createdate), now())
+					from
+						Speak
+					where
+						space = s.id
+						and id >= ifnull((
+						select
+							min(lastid)
+						from
+							SpaceSpeaker
+						where
+							space = s.id
+							and spacename is null), 0)
+						and onlyadm = 0
+						and isemp = 0), 0) as diff
+				from
+					Space s
+				inner join Emp e on
+					s.emp = e.id
+				where
+					s.cid = #{cid}
+					and s.state < 2
+					and s.stype = 0) sub
+			group by
+				sub.emp
+		]]>
+	</select>
+	
+	<!-- 기간 별 통계 -->
+	<select id="selectStat2" parameterType="map" resultType="map">
+		<![CDATA[
+		select
+			(1000000 + emp) as id,
+			emp,
+			count(*) endcnt,
+			(
+			select
+				empno
+			from
+				Emp
+			where
+				id = sh.emp) as empno,
+			(
+			select
+				state
+			from
+				Emp
+			where
+				id = sh.emp) as empstate
+		from
+			SpaceHist sh
+		where
+			cid = #{cid}
+			and createdate between #{startDatetime} and #{endDatetime}
+			and emp is not null
+		group by emp 
+		]]>
+	</select>
+</mapper>
