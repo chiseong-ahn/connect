@@ -28,7 +28,7 @@ public class MainController {
 	
 	@RequestMapping(method = RequestMethod.GET, name = "관리자메뉴 > 계정관리", value = "/admin/emp", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String emp(HttpServletRequest request, HttpServletResponse response) {
-		return "admin/emp";
+		return "page/admin/emp";
 	}
 	
 	

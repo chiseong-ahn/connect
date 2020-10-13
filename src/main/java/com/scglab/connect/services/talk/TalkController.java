@@ -107,7 +107,7 @@ public class TalkController {
 	
 	private final JwtTokenProvider jwtTokenProvider;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatService chatService;
+    //private final ChatService chatService;
 	
     
     @MessageMapping("/talk/message")		// /pub/chat/message로 전송된 메세지를 받으

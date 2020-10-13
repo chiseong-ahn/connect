@@ -32,7 +32,7 @@
         			<li><a href="/page/main" class="btn btn-default" type="button">상담채팅</a></li>
         			<li><a href="/page/template" class="btn btn-default" type="button">답변템플릿</a></li>
         			<li><a href="/page/helper" class="btn btn-default" type="button">답변도우미</a></li>
-        			<li><a href="/page/admin" class="btn btn-default" type="button">관리자메뉴</a></li>
+        			<li><a href="/admin/emp" class="btn btn-default" type="button">관리자메뉴</a></li>
         		</ul>
         	</div>
         	<div class="col-md-3">

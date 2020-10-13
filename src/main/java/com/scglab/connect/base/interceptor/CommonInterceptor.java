@@ -20,12 +20,8 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	
 	Logger logger = LoggerFactory.getLogger(CommonInterceptor.class);
 	
-	@Autowired
-	private PathProperties pathProperty;
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		this.logger.debug("Path perperties : " + this.pathProperty.toString());
 		return isAccess(request, handler);
 	}
 
@@ -41,18 +37,17 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	
 	private boolean isAccess(HttpServletRequest request, Object handler) {
 		boolean result = true;
-		
-		Auth auth = ((HandlerMethod)handler).getMethodAnnotation(Auth.class);
-		this.logger.info("auth : " + auth);
-		if(auth != null) {
+		//Auth auth = ((HandlerMethod)handler).getMethodAnnotation(Auth.class);
+		//this.logger.info("auth : " + auth);
+		//if(auth != null) {
 			// 로그인이 되어야 있어야 진행되는 라우팅.
 			
 			
 
 			
-		}else {
+		//}else {
 			// 로그인과 무관하게 진행되는 라우팅.
-		}
+		//}
 		 
 		return result;
 	}

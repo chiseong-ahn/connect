@@ -3,10 +3,12 @@ package com.scglab.connect.base.config;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 
+@Profile({"local", "dev"})
 @OpenAPIDefinition(
 		info = @Info(
 				title = "상담톡 API Document", 
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 )
 @Configuration
 public class OpenApiConfig {
+	
 	
 	@Bean
 	public GroupedOpenApi sample() {

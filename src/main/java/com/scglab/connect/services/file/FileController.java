@@ -31,9 +31,6 @@ public class FileController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private PathProperties pathProperties;
-
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "파일 등록처리", description = "파일을 등록하고 등록정보를 리턴합니다.")
@@ -50,7 +47,7 @@ public class FileController {
 			String saveFileName = md5Generator(originFileName).toString();
 			
 			// 실제 저장할 파일경로.
-			String savePath = this.pathProperties.getUpload();
+			String savePath = "";
 			
 			// 저장할 디렉토리가 존재하지 않으면 생성.
 			if (!new File(savePath).exists()) {

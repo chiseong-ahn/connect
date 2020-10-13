@@ -95,15 +95,21 @@ public class TalkService {
             chatMessage.setMessage(chatMessage.getMessage());
             chatMessage.setSender("[공지]");
             
+            this.chatRoomRepository.plusUserCount(chatMessage.getRoomId());
+            
         }else if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
-        	// 고객 상담채팅방 입장.
+        	// 상담채팅방 입장.
         	chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
         	chatMessage.setSender("[알림]");
+        	
+        	this.chatRoomRepository.plusUserCount(chatMessage.getRoomId());
             
         } else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
         	// 채팅방 나가기
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
+            
+            this.chatRoomRepository.minusUserCount(chatMessage.getRoomId());
         }
         
         this.logger.debug("topic : " + this.channelTopic.getTopic());
