@@ -1,4 +1,4 @@
-package com.scglab.connect.services.admin.emp;
+package com.scglab.connect.services.adminMenu.emp;
 
 import java.util.Map;
 

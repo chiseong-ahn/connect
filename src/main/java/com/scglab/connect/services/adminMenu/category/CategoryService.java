@@ -1,4 +1,4 @@
-package com.scglab.connect.services.admin.category;
+package com.scglab.connect.services.adminMenu.category;
 
 import java.util.HashMap;
 import java.util.List;

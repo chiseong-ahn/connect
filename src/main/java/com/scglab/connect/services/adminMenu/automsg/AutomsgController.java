@@ -1,4 +1,4 @@
-	package com.scglab.connect.services.admin.automsg;
+package com.scglab.connect.services.adminMenu.automsg;
 
 import java.util.Map;
 
