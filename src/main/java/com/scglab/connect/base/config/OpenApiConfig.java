@@ -26,6 +26,12 @@ public class OpenApiConfig {
 	}
 	
 	@Bean
+	public GroupedOpenApi auth() {
+		String[] paths = { "/auth/**" };
+		return GroupedOpenApi.builder().setGroup("인증 API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
 	public GroupedOpenApi adminMenu() {
 		String[] paths = { "/admin/**" };
 		return GroupedOpenApi.builder().setGroup("관리자 메뉴 API").pathsToMatch(paths).build();

@@ -32,21 +32,21 @@ public class CategoryService {
 	public Map<String, Object> save(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.categoryDao.insert(params);
-		data.put("RESULT", result > 0 ? true : false);
+		data.put("result", result > 0 ? true : false);
 		return data;
 	}
 	
 	public Map<String, Object> update(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.categoryDao.update(params);
-		data.put("RESULT", result > 0 ? true : false);
+		data.put("result", result > 0 ? true : false);
 		return data;
 	}
 	
 	public Map<String, Object> delete(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.categoryDao.delete(params);
-		data.put("RESULT", result > 0 ? true : false);
+		data.put("result", result > 0 ? true : false);
 		return data;
 	}
 }

@@ -1,18 +1,18 @@
 package com.scglab.connect.services.auth;
 
-import lombok.Builder;
+
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @ToString
 @Getter
-public class LoginInfo {
-    private String name;
+@Setter
+public class User {
+	private String emp;
+	private String cid;
+	private String speaker;
+	private String auth;
+    private String empno;
     private String token;
-
-    @Builder
-    public LoginInfo(String name, String token) {
-        this.name = name;
-        this.token = token;
-    }
 }

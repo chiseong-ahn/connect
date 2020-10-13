@@ -61,7 +61,7 @@ public class EmpController {
 		@Parameter(name = "state", description = "상담상태 (0~9)", required = true, in = ParameterIn.QUERY, example = "9"),
 		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> save(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader int cid) throws Exception {
 		params.put("cid", cid);
 		return this.empService.save(params);
@@ -79,7 +79,7 @@ public class EmpController {
 		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn"),
 		@Parameter(name = "id", description = "계정관리번호", required = true, in = ParameterIn.QUERY, example = "67")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader int cid, HttpServletRequest request) throws Exception {
 		params.put("cid", cid);
 		return this.empService.update(params);
@@ -89,7 +89,7 @@ public class EmpController {
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="계정 삭제", description = "계정을 삭제합니다.")
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> delete(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		return this.empService.delete(params);

@@ -65,7 +65,7 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> saveLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "lg");
@@ -80,7 +80,7 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> saveMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "md");
@@ -95,7 +95,7 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> saveSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "sm");
@@ -110,7 +110,7 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> updateLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "lg");
@@ -125,7 +125,7 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> updateMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "md");
@@ -141,7 +141,7 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> updateSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "sm");

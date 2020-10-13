@@ -29,7 +29,7 @@ spring:
   freemarker:
     cache: false
   jwt:
-    secret: govlepel@$&
+    secret: #@SCGLAB_SDTALK__$$
 
 logging:
   config: 'classpath:config/logback-dev.xml'

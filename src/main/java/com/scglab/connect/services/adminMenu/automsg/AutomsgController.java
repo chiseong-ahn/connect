@@ -49,7 +49,7 @@ public class AutomsgController {
 		@Parameter(name = "msg", description = "메세지 내용", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "1")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> save(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader int cid) throws Exception {
 		params.put("cid", cid);
 		return this.automsgService.save(params);
@@ -65,7 +65,7 @@ public class AutomsgController {
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "1"),
 		@Parameter(name = "id", description = "메세지번호", required = true, in = ParameterIn.QUERY, example = "67")
 	})
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader int cid, HttpServletRequest request) throws Exception {
 		params.put("cid", cid);
 		return this.automsgService.update(params);
@@ -75,7 +75,7 @@ public class AutomsgController {
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="자동메세지 삭제", description = "자동메세지를 삭제합니다.")
-	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
+	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	@Parameters({
 		@Parameter(name = "id", description = "메세지번호", required = true, in = ParameterIn.QUERY, example = "67")
 	})

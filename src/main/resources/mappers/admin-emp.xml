@@ -25,6 +25,26 @@
 		]]>
 	</select>
 	
+	<!-- 계정정보 조회 -->
+	<select id="selectOne" parameterType="map" resultType="map">
+		<![CDATA[
+			select e.id, e.cid, e.speaker, e.auth, e.empno as empno, e.createdate, e.workdate, e.profileimg, e.state
+			from Emp e
+			where e.id = #{id} 
+			limit 1
+		]]>
+	</select>
+	
+	<!-- 아이디를 통한 계정정보 조회 -->
+	<select id="selectOneForEmpno" parameterType="map" resultType="map">
+		<![CDATA[
+			select e.id, e.cid, e.speaker, e.auth, e.empno as empno, e.createdate, e.workdate, e.profileimg, e.state
+			from Emp e
+			where e.empno = #{empno} 
+			limit 1
+		]]>
+	</select>
+	
 	<!-- 계정정보 등록 -->
 	<insert id="insert" parameterType="map">
 		INSERT INTO Emp(createdate, workdate, cid, speaker, auth, profileimg, empno, state)

@@ -1,5 +1,7 @@
 package com.scglab.connect.services.adminMenu.emp;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -20,5 +22,9 @@ public class EmpDao extends CommonDao {
 	@Override
 	protected String getNamespace() {
 		return namespace;
+	}
+	
+	public Map<String, Object> selectOneForEmpno(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.getNamespace() + "selectOneForEmpno", params);
 	}
 }
