@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @ControllerAdvice
 @RestController
@@ -47,9 +48,17 @@ public class GlobalExceptionHandler {
 		}
 		*/
 		
-		ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), e.getMessage(), code, e.getStackTrace()[0]);
+		if(e instanceof com.scglab.connect.base.exception.UnauthorizedException) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+		} else if(e instanceof io.jsonwebtoken.SignatureException) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+		} else {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		
+		ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), e.getMessage(), e.getStackTrace()[0]);
 		this.logger.error(res.toString());
-		e.printStackTrace();
+		//e.printStackTrace();
 		// 에러메일 발송 또는 Slack을 연동.
 		
 		return new ResponseEntity<>(res, httpStatus);
@@ -58,20 +67,15 @@ public class GlobalExceptionHandler {
 	@Getter
 	@Setter
 	@AllArgsConstructor
+	@ToString
 	private class ErrorResponse implements Serializable{
 		private static final long serialVersionUID = 1L;
 		
 		private int status;
 		private String name;
 		private String message;
-		private String code;
 		private StackTraceElement trace;
-		
-		@Override
-		public String toString() {
-			return "ErrorResponse [status=" + status + ", message=" + message + ", code=" + code + ", trace=" + trace
-					+ "]";
-		}	
+			
 	}
 }
 
