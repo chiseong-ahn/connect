@@ -15,13 +15,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
-public class JwtTokenUtils {
+public class JwtUtils {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private String secretKey = "#@SCGLAB_SDTALK__$$";
 
-    private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
+    private long tokenValidMilisecond = 1000L * 60 * 60 * 24; // 1시간만 토큰 유효
 
     /**
      * 이름으로 Jwt Token을 생성한다.
@@ -40,8 +40,9 @@ public class JwtTokenUtils {
     /**
      * Jwt Token을 복호화 하여 식별자를 얻는다.
      */
-    public String getUserNameFromJwt(String jwt) {
-        return getClaims(jwt).getBody().getId();
+    public Claims getJwtData(String jwt) {
+    	jwt = jwt.replaceAll("Bearer", "").trim();
+        return getClaims(jwt).getBody();
     }
 
     /**

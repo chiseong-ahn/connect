@@ -20,10 +20,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .headers()
                 .frameOptions().sameOrigin() // SockJS는 기본적으로 HTML iframe 요소를 통한 전송을 허용하지 않도록 설정되는데 해당 내용을 해제한다.
             .and()
-                .formLogin() // 권한없이 페이지 접근하면 로그인 페이지로 이동한다.
+            	.formLogin() // 권한없이 페이지 접근하면 로그인 페이지로 이동한다.
             .and()
                 .authorizeRequests()
-                    .antMatchers("/page/**").hasRole("USER") // chat으로 시작하는 리소스에 대한 접근 권한 설정
+                    .antMatchers("/test/**").hasRole("USER") // chat으로 시작하는 리소스에 대한 접근 권한 설정
                     .anyRequest().permitAll(); // 나머지 리소스에 대한 접근 설정
     }
 

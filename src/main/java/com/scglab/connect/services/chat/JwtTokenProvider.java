@@ -11,8 +11,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${spring.jwt.secret}")
-    private String secretKey;
+    //@Value("${spring.jwt.secret}")
+    private String secretKey = "#@SCGLAB_SDTALK__$$";
 
     private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
 
@@ -44,6 +44,8 @@ public class JwtTokenProvider {
     }
 
     private Jws<Claims> getClaims(String jwt) {
+    	
+    	System.out.println("secretKey : " + this.secretKey);
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
         } catch (SignatureException ex) {
