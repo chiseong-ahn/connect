@@ -34,6 +34,22 @@ public class DataUtils {
 		return defaultValue;
 	}
 	
+	public static String getSafeValue(String value) {
+		return getSafeValue(value, "");
+	}
+	
+	public static String getSafeValue(String value, String defaultValue) {
+		if(value == null) {
+			return defaultValue;
+		}
+		
+		if(value.equals("")) {
+			return defaultValue;
+		}
+		
+		return value.trim();
+	}
+	
 	
 	
 	

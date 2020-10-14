@@ -36,13 +36,17 @@ logging:
   
 
 springdoc:
+  cache:
+    disabled: true
+  version: 0.1
   api-docs:
     groups:
       enabled: true
   swagger-ui:
     path: /swagger-ui.html
     displayRequestDuration: true
-    groups-order: DESC
+    groups-order: ASC
+
 
 ---
 # 로컬환경 

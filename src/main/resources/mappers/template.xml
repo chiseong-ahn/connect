@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sdtalk.template">
+
+	<select id="selectCount" parameterType="map" resultType="int">
+		select count(*) as cnt
+		from Template t
+			inner join v_cate c on t.catesm = c.id 
+			left outer join TemplateFavorite f on t.id = f.template
+		where t.cid = #{cid}
+		
+		<if test='type=="my"'>
+		 	and t.emp = #{emp}
+		</if>
+		
+		<if test='type=="favorite"'>
+			and f.emp = #{emp}
+		</if>
+		
+		<if test='catemd == "" and catelg != ""'>
+			and c.catelg = #{catelg}
+		</if>
+		
+		<if test='catesm == "" and catemd != ""'>
+			and c.catemd = #{catemd}
+		</if>
+		
+		<if test='catesm != ""'>
+			and c.id = #{catesm}
+		</if>
+		
+		<if test='keyword != "" and keyfield != ""'>
+			<choose>
+				<when test='keyfield == "ask"'>
+					and t.ask like concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "reply"'>
+					and t.reply like concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "keyword"'>
+					and t.id in (
+						select template
+						from TemplateKeyword
+						where keyword in (
+							select id
+							from Keyword
+							where name = #{keyword}
+						)
+					)
+				</when>
+				<when test='keyfield == "empname"'>
+					and t.emp in (
+						select id
+						from Emp
+						where speaker in (
+							select id
+							from Speaker
+							where cid = t.cid
+							and name like concat('%', #{keyword}, '%') 
+						)
+					)
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+	<!-- 템플릿 목록 조회 -->
+	<select id="selectAll" parameterType="map" resultType="map">
+		
+		select  c.name as sname,
+				c.catelg,
+				c.lname,
+				c.catemd,
+				c.mname,
+				(
+					select group_concat(k.id)
+					from TemplateKeyword tk
+						inner join Keyword k on tk.keyword = k.id
+					where tk.template = t.id
+				) as arr_keywords,
+				t.*,
+				(
+					case
+						when f.emp = #{emp} then 1
+						else 0
+					end
+				) as isfav
+		from Template t
+			inner join v_cate c on t.catesm = c.id 
+			left outer join TemplateFavorite f on t.id = f.template
+		where t.cid = #{cid}
+		
+		<if test='type=="my"'>
+		 	and t.emp = #{emp}		-- 나의 답변템플릿 조건.
+		</if>
+		
+		<if test='type=="favorite"'>
+			and f.emp = #{emp}		-- 즐겨찾기 답변템플릿 조건.
+		</if>
+		
+		<if test='catemd == "" and catelg != ""'>
+			and c.catelg = #{catelg}
+		</if>
+		
+		<if test='catesm == "" and catemd != ""'>
+			and c.catemd = #{catemd}
+		</if>
+		
+		<if test='catesm != ""'>
+			and c.id = #{catesm}
+		</if>
+		
+		<if test='keyword != "" and keyfield != ""'>
+			<choose>
+				<when test='keyfield == "ask"'>
+					and t.ask like concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "reply"'>
+					and t.reply like concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "keyword"'>
+					and t.id in (
+						select template
+						from TemplateKeyword
+						where keyword in (
+							select id
+							from Keyword
+							where name = #{keyword}
+						)
+					)
+				</when>
+				<when test='keyfield == "empname"'>
+					and t.emp in (
+						select id
+						from Emp
+						where speaker in (
+							select id
+							from Speaker
+							where cid = t.cid
+							and name like concat('%', #{keyword}, '%') 
+						)
+					)
+				</when>
+			</choose>
+		</if>
+		order by t.id desc
+		limit #{startNum}, #{endNum}
+		
+	</select>
+	
+	<!-- 템플릿 정보 등록 -->
+	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into Template (cid, catesm, emp, ask, askmorp, reply, link, img)
+ 		values(#{cid}, #{catesm}, #{emp}, #{ask}, null, #{reply}, #{link}, #{img})
+	</insert>
+	
+	<!-- 템플릿 키워드 등록 -->
+	<insert id="insertTemplateKeyword" parameterType="map">
+		insert into TemplateKeyword(template, keyword)
+		values(#{id}, #{keyword})
+	</insert>
+	
+	<!-- 템플릿 삭제 -->
+	<delete id="deleteTemplateKeywords" parameterType="map">
+		delete 
+		from TemplateKeyword
+		where template = #{id}
+	</delete>
+	
+	<!-- 템플릿 정보 수정 -->
+	<update id="update" parameterType="map">
+		update Template
+		set cid = #{cid},
+			catesm = #{catesm},
+			emp = #{emp},
+			ask = #{ask},
+			reply = #{reply},
+			link = #{link},
+			img = #{img}
+		where 1=1
+		and id = #{id}
+	</update>
+	
+	<!-- 템플릿 정보 삭제 -->
+	<delete id="delete" parameterType="map">
+		delete 
+		from Template where id = #{id}
+	</delete>
+	
+	<!-- 즐겨찾기 등록 -->
+	<insert id="saveFavorite" parameterType="map">
+		insert into TemplateFavorite(emp, template) 
+		values(#{emp}, #{template})
+	</insert>
+	
+	<!-- 즐겨찾기 삭제 -->
+	<delete id="deleteFavorite" parameterType="map">
+		delete 
+		from TemplateFavorite where emp = #{emp} and template = #{template}
+	</delete>
+	
+	<!-- 키워드 카운트 조회 -->
+	<select id="selectCountKeyword" parameterType="map" resultType="int">
+		select count(*) as cnt
+		from Keyword k
+		where 1=1
+		and k.cid = #{cid}
+		and k.name = #{name}
+	</select>
+	
+	<!-- 키워드 조회 -->
+	<select id="selectKeyword" parameterType="map" resultType="map">
+		select k.id, k.createdate, k.workdate, k.name, k.cid
+		from Keyword k
+		where 1=1
+		and k.cid = #{cid}
+		and k.name = #{name}
+		limit 1
+	</select>
+	
+	<!-- 키워드 등록 -->
+	<insert id="insertKeyword" parameterType="map">
+		 insert into Keyword(cid, name)
+		 values(#{cid}, #{name})
+	</insert>
+</mapper>

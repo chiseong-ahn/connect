@@ -25,8 +25,12 @@
 			) sub inner join Speak spk on sub.maxid = spk.id
 			  order by sub.state, spk.createdate desc
 			  limit 15
-			  
-			  
+		]]>
+	</select>
+	
+	<select id="space" parameterType="map" resultType="map">
+		<![CDATA[
+			
 		]]>
 	</select>
 	
@@ -51,13 +55,9 @@
 		              and (case when ifnull('-1',-1) < 0 then emp > 0 else emp = '-1' end)
 			) sub inner join Speak spk on sub.maxid = spk.id
 			  order by sub.state, spk.createdate desc
-			  limit 15
-			  
-			  
+			  limit 15  
 		]]>
 	</select>
-	
-	
 	
 	<select id="speaker" parameterType="map" resultType="map">
 		select * 

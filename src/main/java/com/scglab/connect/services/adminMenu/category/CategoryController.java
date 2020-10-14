@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -33,7 +34,7 @@ public class CategoryController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/lg", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 대분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 대분류 카테고리 목록을 조회합니다.")
+	@Operation(summary="답변템플릿 대분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 대분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	public Map<String, Object> listLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
 		params.put("cid", cid);
 		params.put("type", "lg");

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotatios.Auth;
 import com.scglab.connect.services.chat.ChatRoomRepository;
-import com.scglab.connect.services.chat.ChatService;
 import com.scglab.connect.services.chat.JwtTokenProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +47,7 @@ public class TalkController {
 	public Map<String, Object> space(@RequestParam Map<String, Object> params, @PathVariable String cid, @PathVariable String spaceId) throws Exception {
 		this.logger.debug("spaceId : " + spaceId);
 		params.put("cid", cid);
-		return null;
+		return this.talkService.space(params);
 	}
 	
 	@Auth

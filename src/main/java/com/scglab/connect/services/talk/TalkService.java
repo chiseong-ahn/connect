@@ -37,6 +37,14 @@ public class TalkService {
 		return data;
 	}
 	
+	public Map<String, Object> space(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> space = this.talkDao.speaker(params);
+		data.put("space", space);
+		
+		return data;
+	}
+	
 	public Map<String, Object> speaker(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		Map<String, Object> speaker = this.talkDao.speaker(params);
