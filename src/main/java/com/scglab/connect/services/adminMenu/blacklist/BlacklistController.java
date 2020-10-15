@@ -47,7 +47,6 @@ public class BlacklistController {
 	@Parameters({
 		@Parameter(name = "type", description = "지정사유(0-해제, 1,2,3...-지정항목)", required = true, in = ParameterIn.QUERY, example = "0"),
 		@Parameter(name = "msg", description = "추가메모", required = false, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "1"),
 		@Parameter(name = "id", description = "고객번호", required = true, in = ParameterIn.QUERY, example = "148")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")

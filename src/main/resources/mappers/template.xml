@@ -3,6 +3,7 @@
 
 <mapper namespace="sdtalk.template">
 
+	<!-- 답변템플릿 카운트 조회 -->
 	<select id="selectCount" parameterType="map" resultType="int">
 		select count(*) as cnt
 		from Template t

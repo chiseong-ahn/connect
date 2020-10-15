@@ -46,7 +46,6 @@ public class AutomsgController {
 	@Parameters({
 		@Parameter(name = "type", description = "메세지 유형(0-신규 대화 시작시 인사메세지, 1-상담사 배송지연 안내메세지, 2-답변지연 안내메세지", required = true, in = ParameterIn.QUERY, example = "0"),
 		@Parameter(name = "msg", description = "메세지 내용", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "1")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> save(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -60,7 +59,6 @@ public class AutomsgController {
 	@Parameters({
 		@Parameter(name = "type", description = "메세지 유형(0-신규 대화 시작시 인사메세지, 1-상담사 배송지연 안내메세지, 2-답변지연 안내메세지", required = true, in = ParameterIn.QUERY, example = "0"),
 		@Parameter(name = "msg", description = "메세지 내용", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "1"),
 		@Parameter(name = "id", description = "메세지번호", required = true, in = ParameterIn.QUERY, example = "67")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")

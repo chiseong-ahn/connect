@@ -62,7 +62,6 @@ public class CategoryController {
 	@Operation(summary="답변템플릿 대분류 카테고리 생성(등록)", description = "답변템플릿 대분류 카테고리를 등록(생성)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> saveLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -76,7 +75,6 @@ public class CategoryController {
 	@Parameters({
 		@Parameter(name = "catelg", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> saveMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -90,7 +88,6 @@ public class CategoryController {
 	@Parameters({
 		@Parameter(name = "catemd", description = "중분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public Map<String, Object> saveSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -104,7 +101,6 @@ public class CategoryController {
 	@Parameters({
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> updateLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -118,7 +114,6 @@ public class CategoryController {
 	@Parameters({
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> updateMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -130,10 +125,8 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/sm", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 소분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
-		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
-		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  Map<String, Object> updateSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -145,7 +138,6 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/lg", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 대분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
-		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
@@ -158,7 +150,6 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/md", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 중분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
-		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
@@ -171,7 +162,6 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/sm", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 소분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
-		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")

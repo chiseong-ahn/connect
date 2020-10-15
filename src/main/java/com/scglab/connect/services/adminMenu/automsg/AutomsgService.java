@@ -40,17 +40,10 @@ public class AutomsgService {
 		return data;
 	}
 	
-	public Map<String, Object> object(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		
-		Map<String, Object> object = this.empDao.selectOne(params);
-		return object;
-	}
-	
 	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.empDao.insert(params);
@@ -61,6 +54,7 @@ public class AutomsgService {
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.empDao.update(params);

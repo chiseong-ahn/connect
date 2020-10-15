@@ -29,6 +29,7 @@ public class TemplateService {
 	public Map<String, Object> list(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -87,6 +88,7 @@ public class TemplateService {
 	public Map<String, Object> object(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> object = this.templateDao.selectOne(params);
 		return object;
@@ -112,6 +114,7 @@ public class TemplateService {
 	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = 0;
@@ -145,6 +148,7 @@ public class TemplateService {
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = 0;
@@ -177,6 +181,7 @@ public class TemplateService {
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.templateDao.delete(params);
@@ -187,6 +192,7 @@ public class TemplateService {
 	public Map<String, Object> favorite(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		boolean isFavorite = (boolean)params.get("isFavorite");

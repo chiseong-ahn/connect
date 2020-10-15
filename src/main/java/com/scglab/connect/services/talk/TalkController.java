@@ -44,6 +44,9 @@ public class TalkController {
 	@Autowired
 	AuthService authService;
 	
+	private final JwtTokenProvider jwtTokenProvider;
+    private final ChatRoomRepository chatRoomRepository;
+	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/spaces", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="스페이스(상담) 목록 조회", description = "스페이스(상담) 목록을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
@@ -100,12 +103,6 @@ public class TalkController {
 		params.put("spaceId", spaceId);
 		return this.talkService.updateManager(params, request);
 	}
-	
-	
-	private final JwtTokenProvider jwtTokenProvider;
-    private final ChatRoomRepository chatRoomRepository;
-    //private final ChatService chatService;
-	
     
     @MessageMapping("/talk/message")		// /pub/chat/message로 전송된 메세지를 받으
     public void message(ChatMessage message, @Header("token") String token) {

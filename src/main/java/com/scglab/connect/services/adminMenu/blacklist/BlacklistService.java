@@ -40,40 +40,13 @@ public class BlacklistService {
 		return data;
 	}
 	
-	public Map<String, Object> object(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		
-		Map<String, Object> object = this.blacklistDao.selectOne(params);
-		return object;
-	}
-	
-	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		
-		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.blacklistDao.insert(params);
-		data.put("result", result > 0 ? true : false);
-		return data;
-	}
-	
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.blacklistDao.update(params);
-		data.put("result", result > 0 ? true : false);
-		return data;
-	}
-	
-	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		
-		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.blacklistDao.delete(params);
 		data.put("result", result > 0 ? true : false);
 		return data;
 	}
