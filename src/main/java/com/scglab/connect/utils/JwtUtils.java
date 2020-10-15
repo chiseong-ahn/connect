@@ -1,4 +1,4 @@
-package com.scglab.connect.utils;
+	package com.scglab.connect.utils;
 
 import java.util.Date;
 import java.util.Map;
@@ -49,7 +49,13 @@ public class JwtUtils {
      * Jwt Token의 유효성을 체크한다.
      */
     public boolean validateToken(String jwt) {
-        return this.getClaims(jwt) != null;
+    	boolean isValid = false;
+    	try {
+    		Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
+    		isValid = true;
+    	}catch(Exception e) {
+    	}
+        return isValid;
     }
 
     private Jws<Claims> getClaims(String jwt) {

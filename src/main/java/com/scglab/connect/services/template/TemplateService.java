@@ -4,11 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.auth.AuthService;
+import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -19,7 +23,13 @@ public class TemplateService {
 	@Autowired
 	private TemplateDao templateDao;
 	
-	public Map<String, Object> list(Map<String, Object> params) throws Exception {
+	@Autowired
+	private AuthService authService;
+	
+	public Map<String, Object> list(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		// 페이지 번호.
@@ -58,7 +68,7 @@ public class TemplateService {
 		params.put("keyword", keyword);
 		params.put("startNum", startNum);
 		params.put("endNum", endNum);
-		params.put("emp", "1");
+		params.put("emp", user.getEmp());
 		
 		List<Map<String, Object>> list = null;
 		int count = this.templateDao.selectCount(params);
@@ -74,12 +84,18 @@ public class TemplateService {
 		return data;
 	}
 	
-	public Map<String, Object> object(Map<String, Object> params, String id) throws Exception {
+	public Map<String, Object> object(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> object = this.templateDao.selectOne(params);
 		return object;
 	}
 	
-	public Map<String, Object> saveKeyword(Map<String, Object> params) throws Exception {
+	public Map<String, Object> saveKeyword(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		int count = this.templateDao.selectCountKeyword(params);
@@ -93,7 +109,10 @@ public class TemplateService {
 		return data;
 	}
 	
-	public Map<String, Object> save(Map<String, Object> params) throws Exception {
+	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = 0;
 		
@@ -123,7 +142,10 @@ public class TemplateService {
 		return data;
 	}
 	
-	public Map<String, Object> update(Map<String, Object> params) throws Exception {
+	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = 0;
 		
@@ -152,14 +174,20 @@ public class TemplateService {
 		return data;
 	}
 	
-	public Map<String, Object> delete(Map<String, Object> params) throws Exception {
+	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.templateDao.delete(params);
 		data.put("result", result > 0 ? true : false);
 		return data;
 	}
 	
-	public Map<String, Object> favorite(Map<String, Object> params) throws Exception {
+	public Map<String, Object> favorite(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		boolean isFavorite = (boolean)params.get("isFavorite");
 		int result = 0;

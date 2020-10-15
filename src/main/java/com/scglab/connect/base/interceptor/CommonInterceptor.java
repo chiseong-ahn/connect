@@ -7,14 +7,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.scglab.connect.base.annotatios.Auth;
 import com.scglab.connect.base.exception.UnauthorizedException;
+import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.JwtUtils;
 
@@ -23,19 +23,12 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	
 	Logger logger = LoggerFactory.getLogger(CommonInterceptor.class);
 	
+	@Autowired
+	private AuthService authService;
+	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		return isAccess(request, handler);
-	}
-
-	
-	
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-	}
-
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
 	}
 	
 	private boolean isAccess(HttpServletRequest request, Object handler) {
@@ -55,16 +48,17 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			}
 			
 			JwtUtils jwtUtils = new JwtUtils();
-			Map<String, Object> claims = jwtUtils.getJwtData(accessToken);
 			
-			if(claims == null) {
+			
+			if(!jwtUtils.validateToken(accessToken)) {
 				// 토큰이 유효하지 않거나 만료된 경우.
 				throw new UnauthorizedException("Invalid credentials");
 			}
 			
-			request.setAttribute("users", claims);
-			this.logger.debug("claims : " + claims.toString());
-						
+			Map<String, Object> claims = jwtUtils.getJwtData(accessToken);
+			
+			// Request객체에 로그인 정보 저장.
+			this.authService.setUserInfo(claims, request);
 		}
 		
 		// 로그인과 무관하게 진행되는 라우팅일 경우 바이패스.
@@ -72,6 +66,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 		
 	}
 	
+	// Header에서 인증토큰 추출.
 	private String getAccessToken(HttpServletRequest request) {
 		String accessToken = DataUtils.getSafeValue(request.getHeader("Authorization")).replaceAll("Bearer ", "");
 		this.logger.debug("accessToken : " + accessToken);

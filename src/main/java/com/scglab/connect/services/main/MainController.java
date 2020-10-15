@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.message.MessageService;
 
 @Controller
 public class MainController {
@@ -23,13 +23,17 @@ public class MainController {
 	
 	@RequestMapping(method = RequestMethod.GET, name = "main", value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String main(HttpServletRequest request, HttpServletResponse response) {
-		return "redirect:/page/main";
+		return "auth/login";
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/talk", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String talk(HttpServletRequest request, HttpServletResponse response) {
+		return "talk/room";
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, name = "관리자메뉴 > 계정관리", value = "/admin/emp", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String emp(HttpServletRequest request, HttpServletResponse response) {
-		return "page/admin/emp";
+	public String adminEmp(HttpServletRequest request, HttpServletResponse response) {
+		return "admin/emp";
 	}
-	
 	
 }

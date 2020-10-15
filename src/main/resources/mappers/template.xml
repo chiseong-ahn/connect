@@ -10,11 +10,11 @@
 			left outer join TemplateFavorite f on t.id = f.template
 		where t.cid = #{cid}
 		
-		<if test='type=="my"'>
+		<if test='type=="1"'>
 		 	and t.emp = #{emp}
 		</if>
 		
-		<if test='type=="favorite"'>
+		<if test='type=="2"'>
 			and f.emp = #{emp}
 		</if>
 		

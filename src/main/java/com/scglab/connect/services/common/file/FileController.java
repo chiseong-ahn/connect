@@ -1,4 +1,4 @@
-package com.scglab.connect.services.file;
+package com.scglab.connect.services.common.file;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

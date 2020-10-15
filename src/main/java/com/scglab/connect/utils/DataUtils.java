@@ -34,6 +34,30 @@ public class DataUtils {
 		return defaultValue;
 	}
 	
+	public static int getInt(Map<String, Object> object, String key, int defaultValue) {
+		if(object == null) {
+			return defaultValue;
+		}
+		
+		if(!object.containsKey(key)) {
+			return defaultValue;
+		}
+		
+		return (int)object.get(key);
+	}
+	
+	public static String getString(Map<String, Object> object, String name, String defaultValue) {
+		
+		if(object != null) {
+			if(object.containsKey(name)) {
+				return StringUtils.defaultString((String)object.get(name), defaultValue);
+			}
+		}
+		return defaultValue.trim();
+	}
+	
+	
+	
 	public static String getSafeValue(String value) {
 		return getSafeValue(value, "");
 	}

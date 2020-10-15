@@ -22,10 +22,10 @@
         <div class="row">
         	<div class="col-md-1">
         		<ul>
-        			<li><a href="/page/main" class="btn btn-default" type="button">상담채팅</a></li>
-        			<li><a href="/page/template" class="btn btn-default" type="button">답변템플릿</a></li>
-        			<li><a href="/page/helper" class="btn btn-default" type="button">답변도우미</a></li>
-        			<li><a href="/page/admin" class="btn btn-default" type="button">관리자메뉴</a></li>
+        			<li><a href="/talk" class="btn btn-default" type="button">상담채팅</a></li>
+        			<li><a href="/templates" class="btn btn-default" type="button">답변템플릿</a></li>
+        			<li><a href="/helper" class="btn btn-default" type="button">답변도우미</a></li>
+        			<li><a href="/admin/emps" class="btn btn-default" type="button">관리자메뉴</a></li>
         		</ul>
         	</div>
         	<div class="col-md-3">
@@ -113,19 +113,56 @@
             data: {
             	cid: 1,
             	count: 0,
-        		emps: []
+        		emps: [],
+        		header: {},
+                token: ''
             },
             created() {
-            	this.getEmps();
+            	
+            	this.getUserInfo();
+            	 
+            	
             },
             methods: {
+            
+            	// 로그아웃.
+            	logout: function(){
+            		localStorage.removeItem("accessToken");
+            		document.location.href = "/";
+            	},
+    
+            	// 사용자 정보 조회.
+            	getUserInfo: function() {
+            		this.token = localStorage.accessToken;
+            		
+            		this.header = {
+            			headers: {'Authorization' : 'Bearer ' + this.token}
+            		}
+            		            		
+            		axios.get('/auth/user', this.header).then(response => {
+            			if(response.data){
+            				this.user = response.data;
+            				console.log(JSON.stringify(this.user));
+            				
+            				this.getEmps();
+            				
+            			}else{
+            			
+            				// 인증정보가 존재하지 않을 경우.
+            				document.location.href = '/';
+            			}
+	                	
+		            }, function(e){
+		            	document.location.href = '/';
+		            });
+            	},
             
             	// 계정목록 조회.
                 getEmps: function(){
             		var _this = this;
             		
-            		var uri = '/admin/emp/' + this.cid;
-            		axios.get(uri).then(response => {
+            		var uri = '/admin/emps';
+            		axios.get(uri, this.header).then(response => {
             			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
             				console.log(response.data.list);
             				this.count = response.data.total;
@@ -154,18 +191,23 @@
             	// 수정정보 저장.
             	save: function(id){
             		emp = this.emps.filter(emp => emp.id = id)[0];
-            		var uri = '/admin/emp/' + this.cid;
+            		var uri = '/admin/emps';
             		
             		// convert json to form data           		
             		var formData = new FormData();
             		for(var key in emp){
             			formData.append(key, emp[key]);
             		}
-            						
-            		var header = {'Content-Type': 'multipart/form-data'};
+            		
+            		var header = {
+            			headers: {
+	            			'Content-Type': 'multipart/form-data',
+	            			'Authorization' : 'Bearer ' + this.token
+	            		}
+            		};
             		
             		axios.put(uri, formData, header).then(response => {
-            			if(response.data.RESULT == true){
+            			if(response.data.result == true){
             				alert('저장되었습니다.');
             				this.getEmps();
             			}else{

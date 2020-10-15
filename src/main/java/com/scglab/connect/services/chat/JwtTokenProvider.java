@@ -12,9 +12,9 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     //@Value("${spring.jwt.secret}")
-    private String secretKey = "#@SCGLAB_SDTALK__$$";
+	private String secretKey = "#@SCGLAB_SDTALK__$$";
 
-    private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
+    private long tokenValidMilisecond = 1000L * 60 * 60 * 24; // 1시간만 토큰 유효
 
     /**
      * 이름으로 Jwt Token을 생성한다.
@@ -46,6 +46,8 @@ public class JwtTokenProvider {
     private Jws<Claims> getClaims(String jwt) {
     	
     	System.out.println("secretKey : " + this.secretKey);
+    	System.out.println("jwt : " + jwt);
+    	
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
         } catch (SignatureException ex) {

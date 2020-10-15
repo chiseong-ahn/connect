@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.chat.ChatRoomRepository;
+import com.scglab.connect.services.common.auth.AuthService;
+import com.scglab.connect.services.common.auth.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,19 +29,31 @@ public class TalkService {
     private final RedisTemplate redisTemplate;
     private final ChatRoomRepository chatRoomRepository;
 	
+    @Autowired
+    private AuthService authServier;
+    
 	@Autowired
 	private TalkDao talkDao;
 	
-	public Map<String, Object> spaces(Map<String, Object> params) throws Exception {
+	public Map<String, Object> spaces(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.spaces(params);
+		
 		data.put("total", 100);
 		data.put("list", list);
 		
 		return data;
 	}
 	
-	public Map<String, Object> space(Map<String, Object> params) throws Exception {
+	public Map<String, Object> space(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		Map<String, Object> space = this.talkDao.speaker(params);
 		data.put("space", space);
@@ -45,7 +61,11 @@ public class TalkService {
 		return data;
 	}
 	
-	public Map<String, Object> speaker(Map<String, Object> params) throws Exception {
+	public Map<String, Object> speaker(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		Map<String, Object> speaker = this.talkDao.speaker(params);
 		data.put("speaker", speaker);
@@ -53,7 +73,11 @@ public class TalkService {
 		return data;
 	}
 	
-	public Map<String, Object> speaks(Map<String, Object> params) throws Exception {
+	public Map<String, Object> speaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+				
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.speaks(params);
 		data.put("total", 100);
@@ -62,7 +86,10 @@ public class TalkService {
 		return data;
 	}
 	
-	public Map<String, Object> history(Map<String, Object> params) throws Exception {
+	public Map<String, Object> history(Map<String, Object> params, HttpServletRequest request) throws Exception {// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.history(params);
 		data.put("total", 100);
@@ -71,7 +98,11 @@ public class TalkService {
 		return data;
 	}
 	
-	public Map<String, Object> historySpeaks(Map<String, Object> params) throws Exception {
+	public Map<String, Object> historySpeaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+				
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.historySpeaks(params);
 		data.put("total", 100);
@@ -80,7 +111,11 @@ public class TalkService {
 		return data;
 	}
 	
-	public Map<String, Object> updateManager(Map<String, Object> params) throws Exception {
+	public Map<String, Object> updateManager(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+				User user = this.authServier.getUserInfo(request);
+				params.put("cid", user.getCid());
+				
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		this.logger.debug("상담사 변경처리");
@@ -112,7 +147,7 @@ public class TalkService {
         	
         	this.chatRoomRepository.plusUserCount(chatMessage.getRoomId());
             
-        } else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
+        } else if (ChatMessage.MessageType.LEAVE.equals(chatMessage.getType())) {
         	// 채팅방 나가기
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");

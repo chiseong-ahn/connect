@@ -54,11 +54,12 @@ public class GlobalExceptionHandler {
 			httpStatus = HttpStatus.UNAUTHORIZED;
 		} else {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			e.printStackTrace();
 		}
 		
 		ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), e.getMessage(), e.getStackTrace()[0]);
-		this.logger.error(res.toString());
-		//e.printStackTrace();
+		//this.logger.error(res.toString());
+		
 		// 에러메일 발송 또는 Slack을 연동.
 		
 		return new ResponseEntity<>(res, httpStatus);

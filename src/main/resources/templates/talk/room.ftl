@@ -19,11 +19,11 @@
     <div class="container" id="app" v-cloak>
         <div class="row">
             <div class="col-md-6">
-            	<span>로그인 : {{id}}</span><br />
+            	<span>로그인 : {{user.empno}}</span><br />
             	<span>선택된 스페이스 : {{roomId}}</span>
             </div>
             <div class="col-md-6 text-right">
-                <a class="btn btn-primary btn-sm" href="/logout">로그아웃</a>
+                <a class="btn btn-primary btn-sm" @click="logout">로그아웃</a>
             </div>
         </div>
         <div class="row">
@@ -105,8 +105,14 @@
             el: '#app',
             data: {
             	ws: undefined,	//  웹소켓 객체.
-            	id: '',
-            	cid: 0,
+            	user: {
+            		empno: '',
+            		emp: '',
+            		speaker: '',
+            		name: '',
+            		cid: 0,
+            		auth: ''
+            	},		// 사용자 정보.
             	appid: 0,
             	baseroom: 'base',
             	readyCount: 0,
@@ -118,13 +124,14 @@
                 roomId: '',
                 roomName: '',
                 message: '',
-                selectedRoom: {}
+                selectedRoom: {},
+                header: {},
+                token: ''
             },
             created() {
-            	this.cid = 1;
             	
             	this.getUserInfo(); 
-                this.findAllRoom();
+                
                 
                 // 기본 스페이스 입장
 	            this.roomId = this.baseroom;
@@ -132,23 +139,48 @@
             },
             methods: {
             
+            	// 로그아웃.
+            	logout: function(){
+            		localStorage.removeItem("accessToken");
+            		document.location.href = "/";
+            	},
+    
             	// 사용자 정보 조회.
             	getUserInfo: function() {
-            		axios.get('/auth/user').then(response => {
-	                	this.id = response.data.name;
-		                this.token = response.data.token;
+            		this.token = localStorage.accessToken;
+            		
+            		this.header = {
+            			headers: {'Authorization' : 'Bearer ' + this.token}
+            		}
+            		            		
+            		axios.get('/auth/user', this.header).then(response => {
+            			if(response.data){
+            				this.user = response.data;
+            				console.log(JSON.stringify(this.user));
+            				
+            				this.findAllRoom();
+            			}else{
+            			
+            				// 인증정보가 존재하지 않을 경우.
+            				document.location.href = '/';
+            			}
+	                	
+		            }, function(e){
+		            	document.location.href = '/';
 		            });
             	},
             
             	// 스페이스 목록 조회.
                 findAllRoom: function() {
                 	//var uri = '/chat/rooms';
-                	var uri = '/talk/' + this.cid + '/spaces';
-                    axios.get(uri).then(response => {
+                	var uri = '/talk/spaces';
+                    axios.get(uri, this.header).then(response => {
                         // prevent html, allow json array
 						if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
 							this.chatrooms = response.data.list;
 						}
+                    }, function(e){
+                    	
                     });
                 },
                
@@ -236,8 +268,8 @@
                 getMessages: function(){
             		var _this = this;
             		
-            		var uri = '/talk/' + this.cid + '/spaces/' + this.roomId + '/speaks';
-            		axios.get(uri).then(response => {
+            		var uri = '/talk/spaces/' + this.roomId + '/speaks';
+            		axios.get(uri, _this.header).then(response => {
             			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
             				console.log(response.data.list);
             				_this.messages = response.data.list; 
@@ -252,7 +284,7 @@
                 	var uri = '/pub/talk/message';
                 	
                 	var data = {
-                		cid: this.cid,
+                		cid: this.user.cid,
                 		type:'NOTICE', 
                 		roomId: this.baseroom, 
                 		message: message, 
@@ -268,7 +300,7 @@
                 	
                 	var data = {
                 		type:type, 
-                		cid: this.cid,
+                		cid: this.user.cid,
                 		appid: this.appid,
                 		roomId:this.roomId, 
                 		message:this.message, 
@@ -290,8 +322,8 @@
                 // 이전 상담목록 조회 
                	getHistory: function(){
                		var _this = this;
-            		var uri = '/talk/' + this.cid + '/spaces/' + this.roomId + '/history';
-            		axios.get(uri).then(response => {
+            		var uri = '/talk/spaces/' + this.roomId + '/history';
+            		axios.get(uri, this.header).then(response => {
             			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
             				console.log('getHistory list >> ');
             				console.log(response.data.list);
@@ -314,7 +346,7 @@
                	// 이전 상담 상세내용 조회 
                	getHistorySpeaks: function(roomId, startId, endId){
                		var _this = this;
-            		var uri = '/talk/' + this.cid + '/spaces/' + roomId + '/history/speaks';
+            		var uri = '/talk/spaces/' + roomId + '/history/speaks';
             		var data = {
             			params: {
             				'startId': startId, 
@@ -333,7 +365,7 @@
 	    					_this.histories[i].showSpeaks = false;
 	    				}
     				
-            			axios.get(uri, data).then(response => {
+            			axios.get(uri, data, this.header).then(response => {
 	            			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
 	            				history.speaks = response.data.list;
 	            				history.showSpeaks = true;

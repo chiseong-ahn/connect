@@ -2,11 +2,12 @@ package com.scglab.connect.services.adminMenu.category;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,107 +36,99 @@ public class CategoryController {
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/lg", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 대분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 대분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
-	public Map<String, Object> listLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public Map<String, Object> listLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "lg");
-		return this.categoryService.list(params);
+		return this.categoryService.list(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/md", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 중분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 중분류 카테고리 목록을 조회합니다.")
-	public Map<String, Object> listMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	@Operation(summary="답변템플릿 중분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 중분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	public Map<String, Object> listMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "md");
-		return this.categoryService.list(params);
+		return this.categoryService.list(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/sm", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 소분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 소분류 카테고리 목록을 조회합니다.")
-	public Map<String, Object> listSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	@Operation(summary="답변템플릿 소분류 카테고리 조회(목록)", description = "조건에 맞는 답변템플릿 소분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	public Map<String, Object> listSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "sm");
-		return this.categoryService.list(params);
+		return this.categoryService.list(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "lg", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 대분류 카테고리 생성(등록)", description = "답변템플릿 대분류 카테고리를 등록(생성)합니다.")
+	@Operation(summary="답변템플릿 대분류 카테고리 생성(등록)", description = "답변템플릿 대분류 카테고리를 등록(생성)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Map<String, Object> saveLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public Map<String, Object> saveLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "lg");
-		return this.categoryService.save(params);
+		return this.categoryService.save(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/md", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 중분류 카테고리 생성(등록)", description = "답변템플릿 중분류 카테고리를 등록(생성)합니다.")
+	@Operation(summary="답변템플릿 중분류 카테고리 생성(등록)", description = "답변템플릿 중분류 카테고리를 등록(생성)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "catelg", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Map<String, Object> saveMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public Map<String, Object> saveMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "md");
-		return this.categoryService.save(params);
+		return this.categoryService.save(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/sm", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 소분류 카테고리 생성(등록)", description = "답변템플릿 소분류 카테고리를 등록(생성)합니다.")
+	@Operation(summary="답변템플릿 소분류 카테고리 생성(등록)", description = "답변템플릿 소분류 카테고리를 등록(생성)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "catemd", description = "중분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Map<String, Object> saveSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public Map<String, Object> saveSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "sm");
-		return this.categoryService.save(params);
+		return this.categoryService.save(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/lg", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 대분류 카테고리 정보 변경(수정)", description = "답변템플릿 대분류 카테고리 정보를 변경(수정)합니다.")
+	@Operation(summary="답변템플릿 대분류 카테고리 정보 변경(수정)", description = "답변템플릿 대분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public  Map<String, Object> updateLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public  Map<String, Object> updateLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "lg");
-		return this.categoryService.update(params);
+		return this.categoryService.update(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/md", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 중분류 카테고리 정보 변경(수정)", description = "답변템플릿 중분류 카테고리 정보를 변경(수정)합니다.")
+	@Operation(summary="답변템플릿 중분류 카테고리 정보 변경(수정)", description = "답변템플릿 중분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public  Map<String, Object> updateMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public  Map<String, Object> updateMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "md");
-		return this.categoryService.update(params);
+		return this.categoryService.update(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/sm", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 소분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.")
+	@Operation(summary="답변템플릿 소분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
@@ -143,52 +136,48 @@ public class CategoryController {
 		@Parameter(name = "emp", description = "관리자번호", required = true, in = ParameterIn.QUERY, example = "")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public  Map<String, Object> updateSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public  Map<String, Object> updateSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "sm");
-		return this.categoryService.update(params);
+		return this.categoryService.update(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "/lg", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 대분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.")
+	@Operation(summary="답변템플릿 대분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
-	public  Map<String, Object> deleteLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public  Map<String, Object> deleteLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "lg");
-		return this.categoryService.delete(params);
+		return this.categoryService.delete(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "/md", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 중분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.")
+	@Operation(summary="답변템플릿 중분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
-	public  Map<String, Object> deleteMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public  Map<String, Object> deleteMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "md");
-		return this.categoryService.delete(params);
+		return this.categoryService.delete(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "/sm", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 소분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.")
+	@Operation(summary="답변템플릿 소분류 카테고리 정보 변경(수정)", description = "답변템플릿 소분류 카테고리 정보를 변경(수정)합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "cid", description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1"),
 		@Parameter(name = "id", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
-	public  Map<String, Object> deleteSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(description = "도시가스를 구분하는 기관코드(서울도시가스-1, 인천도시가스-2 ...)", required = true, in = ParameterIn.HEADER, example = "1") @RequestHeader String cid) throws Exception {
-		params.put("cid", cid);
+	public  Map<String, Object> deleteSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "sm");
-		return this.categoryService.delete(params);
+		return this.categoryService.delete(params, request);
 	}
 }
 

@@ -1,4 +1,4 @@
-package com.scglab.connect.services.sample;
+package com.scglab.connect.services.common.sample;
 
 import java.util.HashMap;
 import java.util.List;

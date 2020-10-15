@@ -1,4 +1,4 @@
-package com.scglab.connect.services.auth;
+package com.scglab.connect.services.common.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
