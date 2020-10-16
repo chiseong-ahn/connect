@@ -53,15 +53,21 @@
 	
 	<!-- 계정정보 수정 -->
 	<update id="update" parameterType="map">
-		<![CDATA[
-			update Emp 
-			set cid = #{cid}, 
-				empno = #{empno},
-				auth = #{auth},
-                state = #{state},
-                profileimg = #{profileimg}
-  			where id = #{id}
-		]]>
+		update Emp 
+		set cid = #{cid}
+			<if test='empno != "" and empno != null'>
+				,empno = #{empno},=
+			</if>
+			<if test='auth != "" and auth != null'>
+				,auth = #{auth}
+			</if>
+			<if test='state != "" and state != null'>
+               	,state = #{state}
+               </if>
+               <if test='profileimg != "" and profileimg != null'>
+               	,profileimg = #{profileimg}
+               </if>
+ 			where id = #{id}
 	</update>
 	
 	<!-- 계정정보 삭제 -->

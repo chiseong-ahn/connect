@@ -13,9 +13,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.adminMenu.emp.EmpDao;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.utils.DataUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,10 +37,54 @@ public class TalkService {
 	@Autowired
 	private TalkDao talkDao;
 	
+	@Autowired
+	private EmpDao empDao;
+	
+	public Map<String, Object> today(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> today = this.talkDao.today(params);
+		data.put("today", today);
+		
+		return data;
+	}
+	
+	public Map<String, Object> state(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		// 사용자정보 추출.
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		params.put("id", user.getEmp());
+				
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		this.logger.debug("상담상태 변경.");
+		int result = this.empDao.update(params);
+		
+		data.put("result", result > 0 ? true : false);
+
+		return data;
+	}
+	
 	public Map<String, Object> spaces(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		// 사용자정보 추출.
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
+		
+		String keyfield = DataUtils.getObjectValue(params, "keyfield", "");
+		String keyword = DataUtils.getObjectValue(params, "keyword", "");
+		String startDate = DataUtils.getObjectValue(params, "startDate", "");
+		String endDate = DataUtils.getObjectValue(params, "endDate", "");
+		String state = DataUtils.getObjectValue(params, "state", "");
+		
+		params.put("keyfield", keyfield);
+		params.put("keyword", keyword);
+		params.put("startDate", startDate);
+		params.put("endDate", endDate);
+		params.put("state", state);
+		
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.spaces(params);
@@ -122,7 +168,7 @@ public class TalkService {
 		// 상담사 변경처리.
 		// CALL update_space(11, ifnull('9', null), '41', '정해관')
 		
-		data.put("RESULT", true);
+		data.put("result", true);
 
 		return data;
 	}

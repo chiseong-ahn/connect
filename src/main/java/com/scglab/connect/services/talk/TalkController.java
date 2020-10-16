@@ -25,6 +25,7 @@ import com.scglab.connect.utils.JwtUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,9 +48,33 @@ public class TalkController {
 	private final JwtTokenProvider jwtTokenProvider;
     private final ChatRoomRepository chatRoomRepository;
 	
-	@Auth
+    @Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/today", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="오늘의 상담 현황", description = "오늘 상담 현황(신규, 진행, 종료)을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	public Map<String, Object> today(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.talkService.today(params, request);
+	}
+    
+    @Auth
+	@RequestMapping(method = RequestMethod.PUT, value = "/state", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="상담 상태변경", description = "상담 상태를 변경한다.", security = {@SecurityRequirement(name = "bearer-key")})
+    @Parameters({
+		@Parameter(name = "state", description = "상다마 상태코드(0-상담중, 1-휴식중, 2-회의중, 3-콜집중, 5-퇴근, 6-점심, 9-기타)", required = true, in = ParameterIn.QUERY, example = "0"),
+    })
+	public Map<String, Object> state(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.talkService.state(params, request);
+	}
+    
+    @Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/spaces", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="스페이스(상담) 목록 조회", description = "스페이스(상담) 목록을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+    @Parameters({
+		@Parameter(name = "state", description = "상담 상태(2-종료)", required = false, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "keyfield", description = "검색항목(customer-고객명, msg-대화내용, emp-상담사)", required = false, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "keyword", description = "검색어", required = false, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "startDate", description = "검색시작일(YYYY-MM-DD)", required = false, in = ParameterIn.QUERY, example = "2020-01-01"),
+		@Parameter(name = "endDate", description = "검색종료일(YYYY-MM-DD)", required = false, in = ParameterIn.QUERY, example = "2020-10-16")
+    })
 	public Map<String, Object> spaces(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.talkService.spaces(params, request);
 	}

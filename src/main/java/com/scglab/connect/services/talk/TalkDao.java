@@ -25,6 +25,16 @@ public class TalkDao extends CommonDao {
 		return namespace;
 	}
 	
+	public Map<String, Object> today(Map<String, Object> params){
+		String mapperId = getNamespace() + "today";
+		return this.sqlSession.selectOne(mapperId, params);
+	}
+	
+	public int state(Map<String, Object> params){
+		String mapperId = getNamespace() + "state";
+		return this.sqlSession.selectOne(mapperId, params);
+	}
+	
 	public List<Map<String, Object>> spaces(Map<String, Object> params){
 		String mapperId = getNamespace() + "spaces";
 		return this.sqlSession.selectList(mapperId, params);
