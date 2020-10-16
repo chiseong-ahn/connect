@@ -1,4 +1,4 @@
-package com.scglab.connect.services.common.message;
+package com.scglab.connect.base.config;
 
 import java.util.Locale;
 

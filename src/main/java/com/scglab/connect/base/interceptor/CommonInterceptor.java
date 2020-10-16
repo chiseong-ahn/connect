@@ -56,7 +56,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			}
 			
 			Map<String, Object> claims = jwtUtils.getJwtData(accessToken);
-			
+			request.setAttribute("accessToken", accessToken);
 			// Request객체에 로그인 정보 저장.
 			this.authService.setUserInfo(claims, request);
 		}

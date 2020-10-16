@@ -3,6 +3,7 @@ package com.scglab.connect.services.common.auth;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.scglab.connect.Constant;
 import com.scglab.connect.base.annotatios.Auth;
 import com.scglab.connect.services.chat.JwtTokenProvider;
 
@@ -46,8 +46,17 @@ public class AuthController {
 		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csmaster1"),
 		@Parameter(name = "passwd", description = "비밀번호", required = true, in = ParameterIn.QUERY, example = "1212")
 	})
-	public Map<String, Object> login(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.authService.login(params, request);
+	public Map<String, Object> login(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.authService.login(params, request, response);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="토큰갱신", description = "refresh 토큰으로 access 토큰을 갱신한다.")
+	@Parameters({
+		@Parameter(name = "refreshToken", description = "", required = true, in = ParameterIn.QUERY, example = "")
+	})
+	public Map<String, Object> refreshToken(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+ 		return this.authService.refreshToken(params, request, response);
 	}
 	
 	@SuppressWarnings("unchecked")

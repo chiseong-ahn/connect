@@ -31,7 +31,7 @@ public class OpenApiConfig {
 	   return new OpenAPI()
 	          .components(new Components()
 	          .addSecuritySchemes("bearer-key", 
-	          new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").description("로그인을 통해 발급된 인증토큰을 삽입한다.<br>eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoyLCJzcGVha2VyIjoxNzcsImVtcCI6MSwiZW1wbm8iOiJjc21hc3RlcjEiLCJleHAiOjE2MDI3NDQ5NjUsImlhdCI6MTYwMjY1ODU2NSwiY2lkIjoxfQ.8kHgvvraggpsyue6S9gogZvZ6jDlZTDzIyqVuWA-MLQ")));
+	          new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").description("로그인을 통해 발급된 인증토큰을 삽입한다.<br>eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoyLCJzcGVha2VyIjoxNzcsImVtcCI6MSwiZW1wbm8iOiJjc21hc3RlcjEiLCJleHAiOjE2MDI4OTI1MzAsImlhdCI6MTYwMjgwNjEzMCwiY2lkIjoxfQ.yI4Hkr3ZFGngCzQNTCJhws-8-ftWYtNn_3X1GCqwFog")));
 	}
 	
 	@Bean

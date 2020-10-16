@@ -56,7 +56,9 @@
             	pwd: '1212',
             	appid: 2,
             	header: {},
-            	isShow: false
+            	isShow: false,
+            	accessToken: '',
+            	refreshToken: ''
             },
             created() {
             	this.init();
@@ -65,22 +67,52 @@
             
             	// 인증여부 확인
             	init: function(){
-            		var accessToken = localStorage.accessToken;
-            		console.log('accessToken : ' + typeof accessToken);
+            		this.accessToken = localStorage.accessToken;
+            		//this.refreshToken = localStorage.refreshToken;
             		
-            		if(typeof accessToken != "undefined" && accessToken != "undefined" && accessToken != null && accessToken != ""){
+            		_this = this;
+            		if(typeof this.accessToken != "undefined" && this.accessToken != "undefined" && this.accessToken != null && this.accessToken != ""){
             			this.header = {
-	            			headers: {'Authorization' : 'Bearer ' + accessToken}
+	            			headers: {'Authorization' : 'Bearer ' + this.accessToken}
 	            		}
 	            		
 	            		axios.get('/auth/user', this.header).then(response => {
-		                	if(response.data){
+	            			
+	            			if(response.data){
 		                		this.moveTalk();
 		                	}
+			            },function(e){
+			            	if(e.response.status == 401){
+			            		
+			            	}
 			            });
             		}
             		this.isShow = true;
             		
+            	},
+            	
+            	// 토큰만료에 따른 토큰 갱신요청
+            	refreshToken: function(){
+            		var header = {
+            			headers: {
+            				'Content-Type': 'multipart/form-data',
+            				'Authorization' : 'Bearer ' + this.accessToken
+            			}
+            		};
+            		var data = new FormData();
+            			data.append("refreshToken", this.refreshToken);
+            			
+            		axios.post('/auth/refresh', data, header).then(response => {
+	                	console.log(response.data);
+	                	if(response.data.result == true){
+	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.
+	                		localStorage.accessToken = response.data.accessToken;
+	                		//localStorage.refreshToken = response.data.refreshToken;
+	                		//this.moveTalk();
+	                		
+	                		console.log("refresh token success!");
+	                	}
+		            });
             	},
             
             	// 로그인
@@ -96,8 +128,8 @@
 	                	console.log(response.data);
 	                	if(response.data.login == true){
 	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.
-	                		localStorage.accessToken = response.data.token;
-	                		
+	                		localStorage.accessToken = response.data.accessToken;
+	                		//localStorage.refreshToken = response.data.refreshToken;
 	                		this.moveTalk();
 	                	}
 		            });

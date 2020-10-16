@@ -1,4 +1,4 @@
-package com.scglab.connect.services.common.properties;
+package com.scglab.connect.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
