@@ -5,9 +5,11 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ChatRoom implements Serializable {
 
     private static final long serialVersionUID = 6494678977089006639L;
@@ -20,7 +22,8 @@ public class ChatRoom implements Serializable {
 
     public static ChatRoom create(String name) {
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
+        //chatRoom.roomId = UUID.randomUUID().toString();
+        chatRoom.roomId = name;
         chatRoom.name = name;
         return chatRoom;
     }

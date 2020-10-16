@@ -3,33 +3,19 @@ package com.scglab.connect.services.talk;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
+
 public class ChatMessage {
-
-    @Override
-	public String toString() {
-		return "ChatMessage [type=" + type + ", roomId=" + roomId + ", sender=" + sender + ", message=" + message
-				+ ", userCount=" + userCount + ", cid=" + cid + ", space=" + space + ", speaker=" + speaker + ", mtype="
-				+ mtype + ", notread=" + notread + ", msg=" + msg + "]";
-	}
-
-	public ChatMessage() {
-    }
-
-    @Builder
-    public ChatMessage(MessageType type, String roomId, String sender, String message, long userCount) {
-        this.type = type;
-        this.roomId = roomId;
-        this.sender = sender;
-        this.message = message;
-        this.userCount = userCount;
-    }
-
-    // 메시지 타입 : 입장, 퇴장, 채팅
+	
+	// 메시지 타입 : 입장, 퇴장, 채팅
     public enum MessageType {
-        NOTICE, ENTER, TALK, LEAVE
+       JOIN, SPACEINFO, END, LEAVE, LOGIN, LOGOUT, 
+       PREHISTORY, MESSAGE, SPEAKS, READS, READSEMP, 
+       PAYLOAD, MEBMER_INFO, TOKEN, DISCONNECT, WELCOME
     }
 
     private MessageType type; // 메시지 타입
@@ -44,4 +30,27 @@ public class ChatMessage {
     private int mtype;
     private int notread;
     private String msg;
+
+    public ChatMessage() {
+		super();
+	}
+    
+    public ChatMessage(int cid, String roomId, MessageType type) {
+		super();
+		this.cid = cid;
+		this.roomId = roomId;
+		this.type = type;
+		
+	}
+
+	@Builder
+    public ChatMessage(MessageType type, String roomId, String sender, String message, long userCount) {
+        this.type = type;
+        this.roomId = roomId;
+        this.sender = sender;
+        this.message = message;
+        this.userCount = userCount;
+    }
+
+    
 }

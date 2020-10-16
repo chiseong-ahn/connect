@@ -232,12 +232,12 @@
 	                	console.log('socket connected!');
 	                	
 	                	if(_this.roomId != ''){
-	                		_this.sendMessage('ENTER');
+	                		//_this.sendMessage('ENTER');
 	                		
 	                		// 스페이스(room) 구독.
 		                	_this.ws.subscribe("/sub/chat/room/"+ _this.roomId, function(message) {
-		                		console.log('message : >> ');
-		                		console.log(message);
+		                		//console.log('message : >> ');
+		                		//console.log(message);
 		                		
 		                        var recv = JSON.parse(message.body);
 		                        _this.recvMessage(recv);
@@ -245,7 +245,7 @@
 	                	}
 	                    
 	                    // 기본 스페이스에 있는 모든사람에게 메세지 전달.
-	                    _this.sendNotice('please refresh!');
+	                    //_this.sendNotice('please refresh!');
 	                    
 	                    
 	                }, function(error) {
@@ -271,7 +271,7 @@
             		var uri = '/talk/spaces/' + this.roomId + '/speaks';
             		axios.get(uri, _this.header).then(response => {
             			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
-            				console.log(response.data.list);
+            				//console.log(response.data.list);
             				_this.messages = response.data.list; 
             			}
             		}, function(err){
@@ -325,8 +325,8 @@
             		var uri = '/talk/spaces/' + this.roomId + '/history';
             		axios.get(uri, this.header).then(response => {
             			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
-            				console.log('getHistory list >> ');
-            				console.log(response.data.list);
+            				//console.log('getHistory list >> ');
+            				//console.log(response.data.list);
             				
             				var list = response.data.list;
             				

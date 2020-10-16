@@ -80,6 +80,7 @@ server:
   
 domain:
   sdtalk: localhost.gasapp.co.kr
+  api: msc-dev.seoulgas.co.kr
   relay: relay-scg.gasapp.co.kr
   
 path:

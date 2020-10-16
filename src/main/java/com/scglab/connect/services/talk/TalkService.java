@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.adminMenu.emp.EmpDao;
@@ -18,6 +20,7 @@ import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.utils.HttpUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,8 +43,58 @@ public class TalkService {
 	@Autowired
 	private EmpDao empDao;
 	
+	public Map<String, Object> minwons(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		HttpUtils httpUtils = new HttpUtils();
+		/*
+		 * prj: 'sdtalk',
+		  appid: 'sdtadm',
+		  cid: '1',
+		  schemas: 'minwons',
+		  schema: 'minwon',
+		  loginUser: { id: 1, name: '서울도시가스', auth: 2, state: 0, ts: 4958, speaker: 177 },
+		  customerMobileId: '3769',
+		  useContractNum: '6004138300',
+		  reqName: '황승연',
+		  classCode: '68',
+		  transfer: false,
+		  'cellPhone.num1': '010',
+		  'cellPhone.num2': '2706',
+		  'cellPhone.num3': '2529',
+		  memo: 'test',
+		  employeeId: 'csmaster1',
+		  chatId: '143'
+		 */
+		String url = "https://msc-dev.seoulgas.co.kr/proxy/relay/api/chattalk/minwons";
+		StringBuffer sb = new StringBuffer();
+		sb	.append("reqName=")
+			.append("&useContractNum=")
+			.append("&classCode=");
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        
+        this.logger.debug("url : " + url);
+        this.logger.debug("params : " + sb.toString());
+        this.logger.debug("headers : " + httpHeaders.toString());
+        
+		Map<String, Object> result = httpUtils.postApi(url, sb, httpHeaders);
+		this.logger.debug(result.toString());
+		
+		//POST 
+		
+		
+		return data;
+	}
+	
+	
 	public Map<String, Object> today(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
@@ -53,7 +106,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> state(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		params.put("id", user.getEmp());
@@ -69,7 +122,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> spaces(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
@@ -96,7 +149,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> space(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
@@ -108,7 +161,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> speaker(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
@@ -120,7 +173,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> speaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 				
@@ -132,7 +185,7 @@ public class TalkService {
 		return data;
 	}
 	
-	public Map<String, Object> history(Map<String, Object> params, HttpServletRequest request) throws Exception {// 사용자정보 추출.
+	public Map<String, Object> history(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
@@ -145,7 +198,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> historySpeaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
+		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 				
@@ -158,9 +211,9 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> updateManager(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		// 사용자정보 추출.
-				User user = this.authServier.getUserInfo(request);
-				params.put("cid", user.getCid());
+
+		User user = this.authServier.getUserInfo(request);
+		params.put("cid", user.getCid());
 				
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -178,46 +231,45 @@ public class TalkService {
      */
     public void sendChatMessage(ChatMessage chatMessage) {
     	
-        chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
-        if (ChatMessage.MessageType.NOTICE.equals(chatMessage.getType())) {
-        	// 기본 스페이스(대기) 입장.
-            chatMessage.setMessage(chatMessage.getMessage());
-            chatMessage.setSender("[공지]");
-            
-            this.chatRoomRepository.plusUserCount(chatMessage.getRoomId());
-            
-        }else if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
+    	
+    	if (ChatMessage.MessageType.JOIN.equals(chatMessage.getType())) {
         	// 상담채팅방 입장.
         	chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
-        	chatMessage.setSender("[알림]");
+        	chatMessage.setSender("[JOIN]");
         	
-        	this.chatRoomRepository.plusUserCount(chatMessage.getRoomId());
-            
+        	
         } else if (ChatMessage.MessageType.LEAVE.equals(chatMessage.getType())) {
         	// 채팅방 나가기
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
-            chatMessage.setSender("[알림]");
+            chatMessage.setSender("[LEAVE]");
             
-            this.chatRoomRepository.minusUserCount(chatMessage.getRoomId());
-        }
+            
+        } else if (ChatMessage.MessageType.PAYLOAD.equals(chatMessage.getType())) {
+        	// 채팅방 나가기
+            chatMessage.setMessage("상담목록을 새로고침하여 주십시오.");
+            chatMessage.setSender("SYSTEM");
+            
+            
+        } else if (ChatMessage.MessageType.WELCOME.equals(chatMessage.getType())) {
+        	// 채팅방 나가기
+            chatMessage.setMessage("환영합니다.");
+            chatMessage.setSender("SYSTEM");
+            
+            
+        } 
         
-        this.logger.debug("topic : " + this.channelTopic.getTopic());
-        this.logger.debug("Message type : " + chatMessage.getType());
-        this.logger.debug("Message : " + chatMessage.getMessage());
-        this.logger.debug("chatMessage : " + chatMessage.toString());
+//        this.logger.debug("topic : " + this.channelTopic.getTopic());
+//        this.logger.debug("Message type : " + chatMessage.getType());
+//        this.logger.debug("Message : " + chatMessage.getMessage());
+//        this.logger.debug("chatMessage : " + chatMessage.toString());
         
         this.redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
         
     }
     
-    // 관리자 - 공지내용 처리.
-    private void noticeForAdmin(ChatMessage chatMessage) {
-    	this.logger.debug("[Socket] 1. 공지메세지 발송.");
-    }
-    
     // 관리자 - 스페이스 입장처리.
-    private void entrySpaceForAdmin(ChatMessage chatMessage) { 	
-    	this.logger.debug("1. [DB] Customer, Speaker, Space 변경.");
+    private void joinForAdmin(ChatMessage chatMessage) { 	
+    	this.logger.debug("1. [DB]  Customer, Speaker, Space 변경.");
     	//  - CALL reg_customer(:cid, :userno, :name, :telno)
     	
     	this.logger.debug("2. [DB] SpaceSpeaker 테이블에 상담사 등록.");
@@ -229,7 +281,7 @@ public class TalkService {
     }
     
     // 관리자 - 스페이스 채팅메세지 전달.
-    private void receiveMessageForAdmin(ChatMessage chatMessage) {
+    private void sendMessageForAdmin(ChatMessage chatMessage) {
     	this.logger.debug("1. [DB] 채팅 메세지(speak) 데이터 생성.");
     	//	- main speak.speak-making 
     	
@@ -243,7 +295,7 @@ public class TalkService {
     }
     
     // 관리자 - 스페이스 퇴장처리.
-    private void quitSpaceForAdmin(ChatMessage message) {
+    private void leaveSpaceForAdmin(ChatMessage message) {
     	this.logger.debug("1. [DB] 스페이스 상태 변경.");
     	//	- CALL update_space(1, ifnull('9', null), '1', '서울도시가스')
     	

@@ -7,12 +7,12 @@
   
   <logger name="jdbc" level="OFF"/>
   <logger name="jdbc.sqlonly" level="OFF"/>
-  <logger name="jdbc.sqltiming" level="DEBUG"/>
+  <logger name="jdbc.sqltiming" level="WARN"/>
   <logger name="jdbc.audit" level="OFF"/>
   <logger name="jdbc.resultset" level="OFF"/>
-  <logger name="jdbc.resultsettable" level="DEBUG"/>
+  <logger name="jdbc.resultsettable" level="WARN"/>
   <logger name="jdbc.connection" level="OFF"/>
-  <logger name="com.scglab.connect" level="DEBUG" />
+  <logger name="com.scglab.connect" level="INFO" />
   <logger name="io.swagger.models.parameters.AbstractSerializableParameter" level="ERROR" />
   
   <root level="INFO">

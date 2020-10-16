@@ -47,6 +47,19 @@ public class TalkController {
 	
 	private final JwtTokenProvider jwtTokenProvider;
     private final ChatRoomRepository chatRoomRepository;
+    
+    @Auth
+	@RequestMapping(method = RequestMethod.POST, value = "/minwons", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="민원등록", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+    @Parameters({
+    	@Parameter(name = "customer", description = "고객 회원번호(가스앱)", required = true, in = ParameterIn.QUERY, example = "3769"),
+    	@Parameter(name = "classCode", description = "민원분류코드", required = true, in = ParameterIn.QUERY, example = "68"),
+    	@Parameter(name = "memo", description = "민원 내용", required = true, in = ParameterIn.QUERY, example = "민원등록 테스트"),
+    	@Parameter(name = "chatId", description = "ChatID", required = true, in = ParameterIn.QUERY, example = "143"),
+    })
+	public Map<String, Object> minwon(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.talkService.minwons(params, request);
+	}
 	
     @Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/today", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,24 +142,20 @@ public class TalkController {
 		return this.talkService.updateManager(params, request);
 	}
     
-    @MessageMapping("/talk/message")		// /pub/chat/message로 전송된 메세지를 받으
+    @MessageMapping("/talk/message")		// /pub/chat/message로 수신된 메세지 처리.
     public void message(ChatMessage message, @Header("token") String token) {
-    	
-    	this.logger.debug("token : " + token);
     	
     	JwtUtils jwtUtils = new JwtUtils();
     	Map<String, Object> claims = jwtUtils.getJwtData(token);
     	User user = this.authService.getUserInfo(claims);
     	
-//        String nickname = jwtTokenProvider.getUserNameFromJwt(token);
         // 로그인 회원 정보로 대화명 설정
         message.setSender(user.getEmpno());
-        // 채팅방 인원수 세팅
-        message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));
+        
         // Websocket에 발행된 메시지를 redis로 발행(publish)
-        this.logger.debug("sendChatMessage : " + message);
-        //chatService.sendChatMessage(message);
+        this.logger.info("sendChatMessage : " + message);
         talkService.sendChatMessage(message);
+        
     }
 }
 

@@ -36,7 +36,7 @@ public class TemplateController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="전체 답변템플릿 조회", description = "전체 답변템플릿을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	@Operation(summary="답변템플릿 조회", description = "답변템플릿을 조회합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
 		@Parameter(name = "type", description = "답변템플릿 유형(0-전체 답변템플릿, 1-나의 답변템플릿, 2-즐겨찾기 답변템플릿)", required = true, in = ParameterIn.QUERY, example = "0"),
 		@Parameter(name = "catelg", description = "대분류 코드", required = false, in = ParameterIn.QUERY, example = "13"),

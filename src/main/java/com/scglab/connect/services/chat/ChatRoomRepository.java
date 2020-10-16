@@ -43,6 +43,7 @@ public class ChatRoomRepository {
 
     // 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
     public ChatRoom createChatRoom(String name) {
+    	this.logger.info("Create chat room - " + name);
         ChatRoom chatRoom = ChatRoom.create(name);
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         return chatRoom;
@@ -50,12 +51,18 @@ public class ChatRoomRepository {
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
     public void setUserEnterInfo(String sessionId, String roomId) {
+    	this.logger.info("mapping session - roomId : " + sessionId + " - " + roomId);
+    	
         hashOpsEnterInfo.put(ENTER_INFO, sessionId, roomId);
     }
 
     // 유저 세션으로 입장해 있는 채팅방 ID 조회
     public String getUserEnterRoomId(String sessionId) {
-        return hashOpsEnterInfo.get(ENTER_INFO, sessionId);
+    	
+    	
+    	String roomId = hashOpsEnterInfo.get(ENTER_INFO, sessionId);
+    	this.logger.info("Search chat room[" + sessionId + "] - " + roomId);
+        return roomId;
     }
 
     // 유저 세션정보와 맵핑된 채팅방ID 삭제
@@ -65,13 +72,13 @@ public class ChatRoomRepository {
 
     // 채팅방 유저수 조회
     public long getUserCount(String roomId) {
-    	this.logger.debug("UserCount : " + Long.valueOf(Optional.ofNullable(valueOps.get(USER_COUNT + "_" + roomId)).orElse("0")));
+    	this.logger.debug("UserCount[" + roomId + "] : " + Long.valueOf(Optional.ofNullable(valueOps.get(USER_COUNT + "_" + roomId)).orElse("0")));
         return Long.valueOf(Optional.ofNullable(valueOps.get(USER_COUNT + "_" + roomId)).orElse("0"));
     }
 
     // 채팅방에 입장한 유저수 +1
     public long plusUserCount(String roomId) {
-        return Optional.ofNullable(valueOps.increment(USER_COUNT + "_" + roomId)).orElse(0L);
+    	return Optional.ofNullable(valueOps.increment(USER_COUNT + "_" + roomId)).orElse(0L);
     }
 
     // 채팅방에 입장한 유저수 -1
