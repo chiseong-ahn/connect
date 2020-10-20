@@ -1,5 +1,8 @@
 package com.scglab.connect.base.config;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +16,16 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import com.scglab.connect.base.interceptor.CommonInterceptor;
-import com.scglab.connect.services.chat.ChatRoom;
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.chat.ChatRoomRepository;
+import com.scglab.connect.services.common.auth.AuthService;
+import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.talk.ChatMessage;
 import com.scglab.connect.services.talk.ChatMessage.MessageType;
+import com.scglab.connect.services.talk.TalkHandler;
 import com.scglab.connect.services.talk.TalkService;
+import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.utils.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +41,12 @@ public class WebSocketEventListener {
     
     @Autowired
     private TalkService talkService;
+    
+    @Autowired
+    private TalkHandler talkHandler;
+    
+    @Autowired
+    private AuthService authService;
 
     /**
      * 
@@ -45,13 +59,45 @@ public class WebSocketEventListener {
      */
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-        logger.info("Received a new web socket connection");
-//        this.logger.info("Connected : " + event.toString());
-        
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        
+    	StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        //String token = headerAccessor.getFirstNativeHeader("token");
+        //this.logger.info("CONNECTED {} " + token);
     }
 
+   
+    
+    @EventListener
+    public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
+    	this.logger.info("Socket subscribe!!");
+    	
+    	StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+    	this.logger.info("headerAccessor : " + headerAccessor.toString());
+    	
+    	String roomId = getRoomId(getSocketPath(headerAccessor));
+    	String sessionId = getSessionId(headerAccessor);
+    	
+    	this.logger.info("roomId : " + roomId);
+    	this.logger.info("sessionId : " + sessionId);
+    	
+    	// 채팅방에 들어온 클라이언트 sessionId를 roomId와 매핑.
+    	this.chatRoomRepository.setUserEnterInfo(sessionId, roomId);
+    	
+    	// 채팅방의 인원수 +1
+    	this.chatRoomRepository.plusUserCount(roomId);
+    	this.logger.debug("user count : " + this.chatRoomRepository.getUserCount(roomId));
+    	
+    	String token = getToken(headerAccessor);
+    	this.logger.info("token : " + token);
+    	
+    	JwtUtils jwtUtils = new JwtUtils();
+    	User user = this.authService.getUserInfo(jwtUtils.getJwtData(token));
+    	this.logger.info("user : " + user);
+    	 
+    	if(!roomId.equals(Constant.SPACE_LOBBY)) {
+    		this.talkHandler.join(user, roomId);
+    	}
+    }
+    
     /**
      * 
      * @Method Name : handleWebSocketDisconnectListener
@@ -67,41 +113,16 @@ public class WebSocketEventListener {
     	
     	StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     	String sessionId = getSessionId(headerAccessor);
-    	String roomId = getRoomId(this.chatRoomRepository.getUserEnterRoomId(sessionId));
+    	this.logger.info("sessionId : " + sessionId);
     	
-//    	this.logger.info("sessionId : " + sessionId);
-//    	this.logger.info("roomId : " + roomId);
-    	
-    	this.chatRoomRepository.minusUserCount(roomId);
-    	
-    }
-    
-    @EventListener
-    public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
-    	this.logger.info("Socket subscribe!!");
-    	
-    	StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-    	String roomId = getRoomId(getSocketPath(headerAccessor));
-    	String sessionId = getSessionId(headerAccessor);
-    	
-    	if(this.chatRoomRepository.findRoomById(roomId) == null) {
-    		this.chatRoomRepository.createChatRoom(roomId);
-    	}
-    	this.chatRoomRepository.removeUserEnterInfo(sessionId);
-    	this.chatRoomRepository.setUserEnterInfo(sessionId, roomId);
-    	
-    	this.chatRoomRepository.plusUserCount(roomId);
-    	
-    	ChatRoom room = this.chatRoomRepository.findRoomById(roomId);
-    	
-    	int cid = 1;
-    	
-    	if(!roomId.equals("base")) {
-    		ChatMessage welcomeMessage = new ChatMessage(cid, roomId, MessageType.WELCOME);
-    		this.talkService.sendChatMessage(welcomeMessage);
+    	if(this.chatRoomRepository.getUserEnterRoomId(sessionId) != null) {
+    		String roomId = getRoomId(this.chatRoomRepository.getUserEnterRoomId(sessionId));
     		
-    		ChatMessage payloadMessage = new ChatMessage(cid, "base", MessageType.PAYLOAD);
-        	this.talkService.sendChatMessage(payloadMessage);
+    		// 채팅방의 인원수 -1.
+        	this.chatRoomRepository.minusUserCount(roomId);
+    		
+        	// 퇴장한 클라이언트의 roomId 매핑정보 삭제.
+        	this.chatRoomRepository.removeUserEnterInfo(sessionId);
     	}
     }
     
@@ -121,5 +142,12 @@ public class WebSocketEventListener {
     private String getRoomId(String socketPath) {
     	String roomId = socketPath.replaceAll("/sub/chat/room/", "");
     	return roomId;
+    }
+    
+    private String getToken(StompHeaderAccessor headerAccessor) {
+    	MessageHeaders headers = headerAccessor.getMessageHeaders();
+    	Map<String, Object> nativeHeaders = (Map<String, Object>)headers.get("nativeHeaders");
+    	String token = ((List<String>)nativeHeaders.get("token")).get(0);
+    	return token;
     }
 }

@@ -51,6 +51,12 @@ public class AuthService {
 		request.setAttribute(Constant.AUTH_USER, user);
 	}
 	
+	public User getUserInfo(String token) {
+		JwtUtils jwtUtils = new JwtUtils();
+    	Map<String, Object> claims = jwtUtils.getJwtData(token);
+    	return getUserInfo(claims);
+	}
+	
 	public User getUserInfo(Map<String, Object> userInfo) {
 		User user = new User();
 		user.setCid(DataUtils.getInt(userInfo, "cid", 1));
@@ -62,6 +68,7 @@ public class AuthService {
 		
 		return user;
 	}
+	
 	
 	/**
 	 * 
@@ -79,48 +86,6 @@ public class AuthService {
 		}
 		User user = (User)request.getAttribute(Constant.AUTH_USER);
 		return user;
-	}
-	
-	public Map<String, Object> login(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
-		
-		// 회원정보 조회
-		Map<String, Object> object = this.authDao.selectOne(params);
-		
-		// 회원정보가 존재하지 않을 경우
-		if(object == null) {
-			data.put("login", false);
-			
-		}else {
-			
-			Date now = new Date();
-			
-			// 인증토큰(JWT) 생성.
-			JwtUtils jwtUtil = new JwtUtils();
-			String accessToken = jwtUtil.generateToken(object, new Date(now.getTime() + this.accessTokenValidMilisecond));
-			
-			Map<String, Object> refreshData = new HashMap<String, Object>();
-			refreshData.put("empno", DataUtils.getString(object, "empno", ""));
-			refreshData.put("cid", DataUtils.getInt(object, "cid", 0));
-			refreshData.put("accessToken", accessToken);
-			
-			
-			String refreshToken = jwtUtil.generateToken(refreshData, new Date(now.getTime() + this.refreshTokenValidMilisecond));
-//			Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-//			refreshCookie.setSecure(true);
-//			
-//			response.addCookie(refreshCookie);
-			
-			
-			
-			this.logger.debug("accessToken : " + accessToken);
-			this.logger.debug("refreshToken : " + refreshToken);
-			
-			data.put("login", true);
-			data.put("accessToken", accessToken);
-			data.put("refreshToken", refreshToken);
-		}
-		return data;
 	}
 	
 	public Map<String, Object> refreshToken(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -167,6 +132,4 @@ public class AuthService {
 		data.put("result", result);
 		return data;
 	}
-	
-	
 }

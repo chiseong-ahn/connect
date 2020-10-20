@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.scglab.connect.base.config.MessageService;
+import com.scglab.connect.services.common.service.MessageService;
 
 @Controller
 public class MainController {

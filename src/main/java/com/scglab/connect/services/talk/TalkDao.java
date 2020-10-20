@@ -55,6 +55,11 @@ public class TalkDao extends CommonDao {
 		return this.sqlSession.selectList(mapperId, params);
 	}
 	
+	public Map<String, Object> makeMessage(Map<String, Object> params){
+		String mapperId = getNamespace() + "makeMessage";
+		return this.sqlSession.selectOne(mapperId, params);
+	}
+	
 	public List<Map<String, Object>> history(Map<String, Object> params){
 		String mapperId = getNamespace() + "history";
 		return this.sqlSession.selectList(mapperId, params);
@@ -65,5 +70,29 @@ public class TalkDao extends CommonDao {
 		return this.sqlSession.selectList(mapperId, params);
 	}
 	
+	public void join(Map<String, Object> params){
+		String mapperId = getNamespace() + "join";
+		this.sqlSession.update(mapperId, params);
+	}
+	
+	public void updateOnline(Map<String, Object> params){
+		String mapperId = getNamespace() + "updateOnline";
+		this.sqlSession.update(mapperId, params);
+	}
+	
+	public void minusNotread(Map<String, Object> params){
+		String mapperId = getNamespace() + "minus-notread";
+		this.sqlSession.update(mapperId, params);
+	}
+	
+	public void updateSpace(Map<String, Object> params) {
+		String mapperId = getNamespace() + "updateSpace";
+		this.sqlSession.update(mapperId, params);
+	}
+	
+	public void updateSpaceSpeaker(Map<String, Object> params) {
+		String mapperId = getNamespace() + "updateSpaceSpeaker";
+		this.sqlSession.update(mapperId, params);
+	}
 	
 }

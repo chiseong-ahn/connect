@@ -15,10 +15,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.adminMenu.emp.EmpDao;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.talk.ChatMessage.MessageType;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.HttpUtils;
 
@@ -221,6 +223,12 @@ public class TalkService {
 		// 상담사 변경처리.
 		// CALL update_space(11, ifnull('9', null), '41', '정해관')
 		
+		params.put("acting", "11");
+		params.put("space", DataUtils.getString(params, "space", ""));
+		params.put("emp", user.getEmp());
+		params.put("empname", user.getName());
+		this.talkDao.updateSpace(params);
+		
 		data.put("result", true);
 
 		return data;
@@ -269,14 +277,54 @@ public class TalkService {
     
     // 관리자 - 스페이스 입장처리.
     private void joinForAdmin(ChatMessage chatMessage) { 	
-    	this.logger.debug("1. [DB]  Customer, Speaker, Space 변경.");
-    	//  - CALL reg_customer(:cid, :userno, :name, :telno)
     	
-    	this.logger.debug("2. [DB] SpaceSpeaker 테이블에 상담사 등록.");
+    	int cid = 1;
+    	int speaker = chatMessage.getSpeaker();	// (상담사 speaker)
+    	int space = chatMessage.getSpace();		// 스페이스 번호
+    	int onlyadmin = 9; //	(상담사 - 9, 사용자 - 0)
+    	int emp = 1;
     	
-    	this.logger.debug("3. [Socket] 다른 상담원들에게 스페이스 목록 갱신요청.");
+    	Map<String, Object> params = new HashMap<String, Object>();
     	
-    	this.logger.debug("4. [DB] 이전 대화내용 조회");
+    	params.put("emp", emp);
+    	params.put("speaker", speaker);
+    	params.put("space", space);
+    	params.put("onlyadm", onlyadmin);
+    	params.put("fromId", "0");
+
+    	this.logger.debug("---------------------------------------------------------------------");
+    	this.logger.debug("[DB] 스페이스 조인처리.");
+    	this.talkDao.join(params);
+    	
+    	this.logger.debug("---------------------------------------------------------------------");
+    	this.logger.debug("[DB] 스페이스 정보 조회");
+    	Map<String, Object> spaceInfo = this.talkDao.space(params);
+    	String startid = DataUtils.getString(spaceInfo, "oldid", "");
+    	String lastid = DataUtils.getString(spaceInfo, "lastid", "");
+    	String state = DataUtils.getString(spaceInfo, "state", "");
+    	
+    	this.logger.debug("---------------------------------------------------------------------");
+    	this.logger.debug("[Socket] 다른 상담원들에게 스페이스 목록 갱신요청.");
+    	//this.redisTemplate.convertAndSend(channelTopic.getTopic(), new ChatMessage(cid, Constant.SPACE_BASE, MessageType.PAYLOAD));
+    	
+    	this.logger.debug("---------------------------------------------------------------------");
+    	this.logger.debug("[DB] 이전 메세지 읽음 처리.");
+    	params.put("startid", startid);
+    	params.put("lastid", lastid);
+    	this.talkDao.minusNotread(params);
+    	
+    	this.logger.debug("---------------------------------------------------------------------");
+    	this.logger.debug("[Socket] 이전 메세지 읽음 알림.");
+    	//this.redisTemplate.convertAndSend(channelTopic.getTopic(), new ChatMessage(cid, Integer.toString(space), MessageType.PAYLOAD));
+//    	고객일 경우 
+//    	this.logger.debug("[DB] 대화창 온라인 처리");
+//    	params.put("isonline", 1);
+//    	this.talkDao.updateOnline(params);
+    	
+    	
+    	//this.logger.debug("[DB] 이전 상담 조회");   	
+    	//List<Map<String, Object>> historySpeaks = this.talkDao.historySpeaks(params);
+    	
     	
     }
     

@@ -46,6 +46,18 @@ public class DataUtils {
 		return (int)object.get(key);
 	}
 	
+	public static long getLong(Map<String, Object> object, String key, long defaultValue) {
+		if(object == null) {
+			return defaultValue;
+		}
+		
+		if(!object.containsKey(key)) {
+			return defaultValue;
+		}
+		
+		return (long)object.get(key);
+	}
+	
 	public static String getString(Map<String, Object> object, String name, String defaultValue) {
 		
 		if(object != null) {

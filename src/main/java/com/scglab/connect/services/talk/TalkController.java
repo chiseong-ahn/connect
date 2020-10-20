@@ -40,10 +40,13 @@ public class TalkController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	TalkService talkService;
+	private TalkService talkService;
 	
 	@Autowired
-	AuthService authService;
+	private AuthService authService;
+	
+	@Autowired
+	private TalkHandler talkHandler;
 	
 	private final JwtTokenProvider jwtTokenProvider;
     private final ChatRoomRepository chatRoomRepository;
@@ -141,21 +144,96 @@ public class TalkController {
 		params.put("spaceId", spaceId);
 		return this.talkService.updateManager(params, request);
 	}
-    
-    @MessageMapping("/talk/message")		// /pub/chat/message로 수신된 메세지 처리.
-    public void message(ChatMessage message, @Header("token") String token) {
-    	
-    	JwtUtils jwtUtils = new JwtUtils();
-    	Map<String, Object> claims = jwtUtils.getJwtData(token);
-    	User user = this.authService.getUserInfo(claims);
+	
+	/**
+	 * 
+	 * @Method Name : talkMessage
+	 * @작성일 : 2020. 10. 20.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 :
+	 * @param message
+	 * @param token
+	 */
+	@MessageMapping("/talk/message")
+    public void talkMessage(ChatMessage message, @Header("token") String token) {
+		User user = this.authService.getUserInfo(token);
     	
         // 로그인 회원 정보로 대화명 설정
         message.setSender(user.getEmpno());
         
         // Websocket에 발행된 메시지를 redis로 발행(publish)
-        this.logger.info("sendChatMessage : " + message);
-        talkService.sendChatMessage(message);
+        this.logger.info("대화 메세지 : " + message);
+        //talkService.sendChatMessage(message);
+        this.talkHandler.message(user, message);
         
+    }
+    
+	/**
+	 * 
+	 * @Method Name : talkLeave
+	 * @작성일 : 2020. 10. 20.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 대화방 나가기.
+	 * @param message
+	 * @param token
+	 */
+	@MessageMapping("/talk/leave")
+    public void talkLeave(ChatMessage message, @Header("token") String token) {
+		User user = this.authService.getUserInfo(token);
+    	
+        this.talkHandler.leave(user, message);
+    }
+	
+	/**
+	 * 
+	 * @Method Name : talkEnd
+	 * @작성일 : 2020. 10. 20.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 상담 종료
+	 * @param message
+	 * @param token
+	 */
+	@MessageMapping("/talk/end")
+    public void talkEnd(ChatMessage message, @Header("token") String token) {
+    	User user = this.authService.getUserInfo(token);
+    	
+        this.logger.info("상담종료 처리 : " + message);
+        this.talkHandler.end(user, message);
+    }
+	
+	/**
+	 * 
+	 * @Method Name : talkPrehistory
+	 * @작성일 : 2020. 10. 20.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 이전상담 내역 조회.
+	 * @param message
+	 * @param token
+	 */
+	@MessageMapping("/talk/prehistory")
+    public void talkPrehistory(ChatMessage message, @Header("token") String token) {
+		User user = this.authService.getUserInfo(token);
+    	this.talkHandler.prehistory(user, message.getRoomId());
+    }
+	
+	/**
+	 * 
+	 * @Method Name : talkSpeaks
+	 * @작성일 : 2020. 10. 20.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 상담 대화내역 조회.
+	 * @param message
+	 * @param token
+	 */
+	@MessageMapping("/talk/speaks")
+    public void talkSpeaks(ChatMessage message, @Header("token") String token) {
+		User user = this.authService.getUserInfo(token);
+    	this.talkHandler.speaks(user, message.getRoomId());
     }
 }
 

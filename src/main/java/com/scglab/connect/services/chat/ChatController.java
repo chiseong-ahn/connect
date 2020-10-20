@@ -6,6 +6,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
+import com.scglab.connect.services.talk.ChatMessage;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

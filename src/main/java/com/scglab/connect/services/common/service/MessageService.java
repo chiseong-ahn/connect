@@ -1,9 +1,11 @@
-package com.scglab.connect.base.config;
+package com.scglab.connect.services.common.service;
 
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ import org.springframework.web.servlet.LocaleResolver;
 @Service
 public class MessageService {
 	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private MessageSource messageSource;
 	
@@ -31,18 +35,37 @@ public class MessageService {
 	private LocaleResolver localResolver;
 	
 	public String getMessage(String code) {
-		return getMessage(code, null);
+		Locale locale;
+		try {
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder .getRequestAttributes()).getRequest();
+			locale = this.localResolver.resolveLocale(request);
+		}catch(Exception e) {
+			locale = Locale.getDefault();
+		}
+		
+		Object[] parameters = null;
+				
+		return getMessage(code, parameters, locale);
+	}
+	
+	public String getMessage(String code, Locale locale) {
+		return getMessage(code, null, locale);
 	}
 	
 	public String getMessage(String code, Object[] parameters) {
-		return getMessage(code, parameters, null);
+		Locale locale;
+		try {
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder .getRequestAttributes()).getRequest();
+			locale = this.localResolver.resolveLocale(request);
+		}catch(Exception e) {
+			locale = Locale.getDefault();
+		}
+		
+		// 메세지 반환.
+		return getMessage(code, parameters, locale);
 	}
 	
 	public String getMessage(String code, Object[] parameters, Locale locale) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder .getRequestAttributes()).getRequest();
-		
-		// 언어 정의.
-		locale = locale == null ? this.localResolver.resolveLocale(request) : locale;
 		
 		// 파라미터 확인.
 		if(parameters != null) {

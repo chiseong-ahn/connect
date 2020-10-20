@@ -6,6 +6,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.talk.ChatMessage;
+
 //import com.websocket.chat.model.ChatMessage;
 //import com.websocket.chat.repo.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +39,10 @@ public class ChatService {
 	public void sendChatMessage(ChatMessage chatMessage) {
 
 		chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
-		if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
+		if (ChatMessage.MessageType.JOIN.equals(chatMessage.getType())) {
 			chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
 			chatMessage.setSender("[알림]");
-		} else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
+		} else if (ChatMessage.MessageType.LEAVE.equals(chatMessage.getType())) {
 			chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
 			chatMessage.setSender("[알림]");
 		}

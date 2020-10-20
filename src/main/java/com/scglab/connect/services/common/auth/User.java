@@ -19,4 +19,5 @@ public class User implements Serializable {
 	private String name;
 	private int auth;
     private String empno;
+    private int userno;
 }
