@@ -50,7 +50,7 @@ public class HttpUtils {
 
 	}
 	
-	public Map<String, Object> postApi(String url, StringBuffer params, HttpHeaders headers) throws JsonProcessingException {
+	public Map<String, Object> postApi(String url, Map<String, Object> params, HttpHeaders headers) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -61,7 +61,7 @@ public class HttpUtils {
 			factory.setReadTimeout(5000);// 타임아웃 설정 5초
 			RestTemplate restTemplate = new RestTemplate(factory);
 
-			HttpEntity<StringBuffer> request = new HttpEntity<>(params, headers);
+			HttpEntity<Map<String, Object> > request = new HttpEntity<>(params, headers);
 
 			// 이 한줄의 코드로 API를 호출해 MAP타입으로 전달 받는다.
 			ResponseEntity<Map> resultMap = restTemplate.postForEntity(url, request, Map.class);

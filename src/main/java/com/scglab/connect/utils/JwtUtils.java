@@ -21,8 +21,8 @@ public class JwtUtils {
 	
 	private String secretKey = "#@SCGLAB_SDTALK__$$";
 
-    //private long tokenValidMilisecond = 1000L * 60 * 60 * 24; // 토큰 유효시간 - 1시간 
-	private long tokenValidMilisecond = 1000L * 30; // 토큰 유효시간 - 30초. 
+    private long tokenValidMilisecond = 1000L * 60 * 60 * 24; // 토큰 유효시간 - 1일. 
+	//private long tokenValidMilisecond = 1000L * 30; // 토큰 유효시간 - 30초. 
 
     /**
      * 이름으로 Jwt Token을 생성한다.
@@ -67,7 +67,7 @@ public class JwtUtils {
 
     private Jws<Claims> getClaims(String jwt) {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
+        	return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
         } catch (SignatureException ex) {
             this.logger.error("Invalid JWT signature");
             throw ex;
@@ -83,6 +83,8 @@ public class JwtUtils {
         } catch (IllegalArgumentException ex) {
         	this.logger.error("JWT claims string is empty.");
             throw ex;
+        } catch (Exception ex) {
+        	throw ex;
         }
     }
 }

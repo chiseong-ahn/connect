@@ -70,29 +70,41 @@ public class TalkDao extends CommonDao {
 		return this.sqlSession.selectList(mapperId, params);
 	}
 	
-	public void join(Map<String, Object> params){
+	public int join(Map<String, Object> params){
 		String mapperId = getNamespace() + "join";
-		this.sqlSession.update(mapperId, params);
+		return this.sqlSession.update(mapperId, params);
 	}
 	
-	public void updateOnline(Map<String, Object> params){
+	public int updateOnline(Map<String, Object> params){
 		String mapperId = getNamespace() + "updateOnline";
-		this.sqlSession.update(mapperId, params);
+		return this.sqlSession.update(mapperId, params);
 	}
 	
-	public void minusNotread(Map<String, Object> params){
+	public int minusNotread(Map<String, Object> params){
 		String mapperId = getNamespace() + "minus-notread";
-		this.sqlSession.update(mapperId, params);
+		return this.sqlSession.update(mapperId, params);
 	}
 	
-	public void updateSpace(Map<String, Object> params) {
+	public int updateSpace(Map<String, Object> params) {
 		String mapperId = getNamespace() + "updateSpace";
-		this.sqlSession.update(mapperId, params);
+		return this.sqlSession.update(mapperId, params);
 	}
 	
-	public void updateSpaceSpeaker(Map<String, Object> params) {
+	public int updateSpaceSpeaker(Map<String, Object> params) {
 		String mapperId = getNamespace() + "updateSpaceSpeaker";
-		this.sqlSession.update(mapperId, params);
+		return this.sqlSession.update(mapperId, params);
 	}
+	
+	public int selectReadySpaceCount(Map<String, Object> params){
+		String mapperId = getNamespace() + "selectReadySpaceCount";
+		return this.sqlSession.selectOne(mapperId, params);
+	}
+	
+	public Map<String, Object> selectReadySpace(Map<String, Object> params){
+		String mapperId = getNamespace() + "selectReadySpace";
+		return this.sqlSession.selectOne(mapperId, params);
+	}
+	
+	
 	
 }

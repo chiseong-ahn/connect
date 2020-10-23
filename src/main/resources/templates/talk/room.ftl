@@ -37,7 +37,7 @@
         	</div>
         	<div class="col-md-3">
 		        <h4>상담대기</h4>
-		        <span><button type="button" class="btn btn-primary">대기상담 가져오기 ({{readyCount}}건)</button></span>
+		        <span><button type="button" class="btn btn-primary" @click="assign()">대기상담 가져오기 ({{readyRoomCount}}건)</button></span>
 		        <ul class="list-group">
 		            <li class="list-group-item list-group-item-action" v-for="obj in chatrooms" v-bind:key="obj.id" v-on:click="join(obj.id)">
 		            	<dt>[{{obj.id}}] 
@@ -45,8 +45,9 @@
 		            		<span v-else>{{obj.customer}}</span>
 		            		<span class="badge badge-info badge-pill">{{obj.empname}}</span>
 		            		<span v-if="obj.isonline == true" class="badge badge-primary badge-pill">Online</span>
+							<span v-if="obj.notreadcnt > 0 " class="badge badge-info badge-pill">{{obj.notreadcnt}}</span>
 		            	</dt>
-		                <dd>{{obj.msg}}</dd>
+		                <dd>{{obj.lastmsg}}</dd>
 		            </li>
 		        </ul>
 		    </div>
@@ -84,7 +85,7 @@
 		                <ul v-if="obj.showSpeaks == true">
 		            		<li v-for="(speak, idx) in obj.speaks">
 		            			<strong>[시스템:{{speak.sysmsg}}, 상담사:{{speak.isemp}},작성자:{{speak.speaker}}]</strong>
-		            			<br>>> {{speak.message}}
+		            			<br>>> {{speak.msg}}
 		            		</li>
 		            	</ul>
 		            </li>
@@ -115,8 +116,9 @@
             	},		// 사용자 정보.
             	appid: 0,
             	baseroom: 'LOBBY',
-            	readyCount: 0,
+            	readyRoomCount: 0,
                 chatrooms: [],
+				message: '',
                 messages: [],
                 contracts: [],
                 histories: [],
@@ -128,9 +130,7 @@
             created() {
 				// 인증정보 조회.
             	this.getUserInfo(); 
-                
-                // 초기화
-				this.init();
+                //setInterval(this.findReadyRoom, 1000)
             },
             methods: {
 
@@ -147,15 +147,17 @@
 	                this.roomName = '';
 	                this.message = '';
 	                this.selectedRoom = {};
-
+	                
 					// 기본 스페이스(로비) 입장.
 	            	this.baseJoin();
+					
 				},
 
 				// 기본 스페이스 연결
 				baseJoin: function(){
-					this.roomId = this.baseroom;
-	            	this.connect();
+					//this.roomId = this.baseroom;
+	            	//this.connect();
+	            	this.join(this.baseroom);
 				},
 
 				// 웹소켓 연결 및 스페이스 구독 설정.
@@ -180,7 +182,7 @@
 									function(message) {
 										// 수신메세지 처리.
 										var recv = JSON.parse(message.body);
-										_this.recvMessage(recv);		
+										_this.recvMessage(recv);
 									}, 
 									headers = {'token': _this.token}
 								);
@@ -201,10 +203,9 @@
 	                	}
                 	}
                 },
-            
+				
             	// 스페이스 목록 조회.
                 findAllRoom: function() {
-                	//var uri = '/chat/rooms';
                 	var uri = '/talk/spaces';
                     axios.get(uri, this.header).then(response => {
                         // prevent html, allow json array
@@ -212,15 +213,30 @@
 							this.chatrooms = response.data.list;
 						}
                     }, function(e){
-                    	
+                    	console.log("error : " + e.message);
                     });
                 },
+
+				// 대기상담 조회.
+                readyCount: function(){
+					// 상담메세지 전송.
+                	this.sendMessage("READYCOUNT")
+
+					// 초기화
+                    this.init();
+                },
+
+				// 상담 가져오기
+				assign: function(){
+					// 상담 할당요청 전송.
+					this.sendMessage("ASSIGN");
+				},
                
 				// 스페이스 입장(선택)
                 join: function(roomId) {
                 
                 	rooms = this.chatrooms.filter(room => room.id == roomId);
-                	if(rooms.length == 1){
+                	if(rooms.length >= 1){
                 		this.selectedRoom = rooms[0];
                 	}
                     
@@ -230,14 +246,8 @@
                 
                 // 스페이스 나가기
                 leave: function(){
-                	var data = { 
-						cid : this.user.cid,
-						appid : this.appid,
-						roomId : this.roomId, 
-						message : ''
-					}
-					// 상담종료 메세지 전송.
-					this.ws.send('/pub/talk/leave', {"token":this.token}, JSON.stringify(data));
+                	// 상담메세지 전송.
+                	this.sendMessage("LEAVE")
 
 					// 초기화
 					this.init();
@@ -245,46 +255,26 @@
                 
                 // 상담종료.
                 end: function(){
-                	var data = {
-                		cid : this.user.cid,
-                		appid : this.appid,
-                		roomId : this.roomId, 
-                		message : ''
-                	}
-					// 상담종료 메세지 전송.
-                    this.ws.send('/pub/talk/end', {"token":this.token}, JSON.stringify(data));
+					// 상담메세지 전송.
+                	this.sendMessage("END")
 
 					// 초기화
                     this.init();
                 },
-                
-                // 대화 메세지 조회 
-				/*
-                getMessages: function(){
-            		var _this = this;
-            		
-            		var uri = '/talk/spaces/' + this.roomId + '/speaks';
-            		axios.get(uri, _this.header).then(response => {
-            			if(Object.prototype.toString.call(response.data.list) === "[object Array]"){
-            				//console.log(response.data.list);
-            				_this.messages = response.data.list; 
-            			}
-            		}, function(err){
-            			console.log(err);
-            		});
-            	},
-				*/
-            	            	
+
             	// 메세지 발송
-                sendMessage: function() {               	
+                sendMessage: function(messageType) {
                 	var data = {
+						type: messageType,
                 		cid: this.user.cid,
                 		appid: this.appid,
                 		roomId:this.roomId, 
-                		message: this.message
+                		message: this.message,
+                		token: this.token
                 	}
                 	
-                    this.ws.send('/pub/talk/message', {"token":this.token}, JSON.stringify(data));
+                    //this.ws.send('/pub/talk/message', {"token":this.token}, JSON.stringify(data));
+					this.ws.send('/pub/talk/message', {}, JSON.stringify(data));
 					this.message = ''
                 },
                 
@@ -297,6 +287,19 @@
                     	case "JOIN" :		// 상담에 조인됨.
                     		break;
                     		
+                    	case "READYCOUNT" :	// 대기상담.
+							console.log("READYCOUNT : " + recvData.data.count)
+                    		this.readyRoomCount = recvData.data.count;
+							break;
+                    		
+						case "ASSIGNED" :
+							console.log("recv-sender : " + recvData.sender);
+							console.log("user-emp : " + this.user.empno);
+							if(recvData.sender == this.user.empno){
+								this.join(recvData.data.roomId);
+							}
+							break;
+
                     	case "SPEAKS" :		// 해당 상담의 대화내용 수신.
 							if(recvData.data){
 								this.messages = recvData.data.speaks; 
@@ -320,10 +323,13 @@
 									list[i].speaks = [];
 									list[i].showSpeaks = false;
 								}
-								this.histories = list;							}
+								this.histories = list;							
+							}
                     		break;
 							
 						case "RELOAD" :		// 상담목록 갱신 요청.
+							console.log("시스템요청에 의한 상담목록 갱신")
+							this.findAllRoom();
 							break;
 							
 						case "END" : 		// 상담 종료.
@@ -395,8 +401,12 @@
             			if(response.data){
             				this.user = response.data;
             				console.log(JSON.stringify(this.user));
-            				
-            				this.findAllRoom();
+            				this.baseroom = this.baseroom + "_" + this.user.cid;
+							console.log("baseroom : " + this.baseroom)
+							//this.findAllRoom();
+
+							// 초기화
+							this.init();
             			}else{
             			
             				// 인증정보가 존재하지 않을 경우.

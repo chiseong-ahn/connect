@@ -1,5 +1,6 @@
 package com.scglab.connect.utils;
 
+import java.math.BigInteger;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +57,18 @@ public class DataUtils {
 		}
 		
 		return (long)object.get(key);
+	}
+	
+	public static BigInteger getBigInteger(Map<String, Object> object, String key, BigInteger defaultValue) {
+		if(object == null) {
+			return defaultValue;
+		}
+		
+		if(!object.containsKey(key)) {
+			return defaultValue;
+		}
+		
+		return (BigInteger)object.get(key);
 	}
 	
 	public static String getString(Map<String, Object> object, String name, String defaultValue) {

@@ -15,14 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.adminMenu.emp.EmpDao;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.talk.ChatMessage.MessageType;
+import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.HttpUtils;
+import com.scglab.connect.utils.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,14 +43,29 @@ public class TalkService {
 	private TalkDao talkDao;
 	
 	@Autowired
+	private TalkHandler talkHandler;
+	
+	@Autowired
 	private EmpDao empDao;
+	
+	@Autowired
+    private MessageService messageService;
+	
+	public Map<String, Object> token(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		JwtUtils jwtUtils = new JwtUtils();
+		String token = jwtUtils.generateToken(params);
+		data.put("token", token);
+		return data;
+	}
 	
 	public Map<String, Object> minwons(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
 		User user = this.authServier.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
+		//Map<String, Object> data = new HashMap<String, Object>();
 		HttpUtils httpUtils = new HttpUtils();
 		/*
 		 * prj: 'sdtalk',
@@ -72,20 +87,21 @@ public class TalkService {
 		  chatId: '143'
 		 */
 		String url = "https://msc-dev.seoulgas.co.kr/proxy/relay/api/chattalk/minwons";
-		StringBuffer sb = new StringBuffer();
-		sb	.append("reqName=")
-			.append("&useContractNum=")
-			.append("&classCode=");
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		params.put("reqName", "");
+		params.put("useContractNum", "");
+		params.put("classCode", "");
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         
         this.logger.debug("url : " + url);
-        this.logger.debug("params : " + sb.toString());
+        this.logger.debug("data : " + data.toString());
         this.logger.debug("headers : " + httpHeaders.toString());
         
-		Map<String, Object> result = httpUtils.postApi(url, sb, httpHeaders);
+		Map<String, Object> result = httpUtils.postApi(url, data, httpHeaders);
 		this.logger.debug(result.toString());
 		
 		//POST 
@@ -199,6 +215,25 @@ public class TalkService {
 		return data;
 	}
 	
+	public Map<String, Object> readyRoomCount(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		
+		int count = 0;
+		Map<String, Object> readySpace = null;
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		count = this.talkDao.selectReadySpaceCount(params);
+		
+		if(count > 0) {
+			this.logger.debug("Step. [DB] 대기상담 정보 조회");
+			readySpace = this.talkDao.selectReadySpace(params);
+		}
+		
+		data.put("count", count);
+		data.put("readySpace", readySpace);
+		
+		return data;
+	}
+	
 	public Map<String, Object> historySpeaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
 		User user = this.authServier.getUserInfo(request);
@@ -262,8 +297,7 @@ public class TalkService {
         	// 채팅방 나가기
             chatMessage.setMessage("환영합니다.");
             chatMessage.setSender("SYSTEM");
-            
-            
+
         } 
         
 //        this.logger.debug("topic : " + this.channelTopic.getTopic());
@@ -351,7 +385,4 @@ public class TalkService {
     	
     	this.logger.debug("3. [Socket] 상담사에 의한 스페이스 변경메세지 전달.");
     }
-    
-    
 }
-

@@ -10,6 +10,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -20,11 +21,8 @@ import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.talk.ChatMessage;
-import com.scglab.connect.services.talk.ChatMessage.MessageType;
 import com.scglab.connect.services.talk.TalkHandler;
 import com.scglab.connect.services.talk.TalkService;
-import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -62,6 +60,16 @@ public class WebSocketEventListener {
     	StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         //String token = headerAccessor.getFirstNativeHeader("token");
         //this.logger.info("CONNECTED {} " + token);
+    	this.logger.info("[Connection] headerAccessor : " + headerAccessor.toString());
+    	
+    	String sessionId = getSessionId(headerAccessor);
+    	String token = getToken(sessionId, headerAccessor);
+    	
+    	this.logger.info("sessionId : " + sessionId);
+    	this.logger.info("token : " + token);
+    	
+    	this.chatRoomRepository.setUserToken(sessionId, token);
+    	
     }
 
    
@@ -70,8 +78,10 @@ public class WebSocketEventListener {
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
     	this.logger.info("Socket subscribe!!");
     	
+    	this.logger.debug("event : " + event.toString());
+    	
     	StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-    	this.logger.info("headerAccessor : " + headerAccessor.toString());
+    	this.logger.info("[Subscribe] headerAccessor : " + headerAccessor.toString());
     	
     	String roomId = getRoomId(getSocketPath(headerAccessor));
     	String sessionId = getSessionId(headerAccessor);
@@ -86,16 +96,16 @@ public class WebSocketEventListener {
     	this.chatRoomRepository.plusUserCount(roomId);
     	this.logger.debug("user count : " + this.chatRoomRepository.getUserCount(roomId));
     	
-    	String token = getToken(headerAccessor);
+    	String token = getToken(sessionId, headerAccessor);
     	this.logger.info("token : " + token);
     	
     	JwtUtils jwtUtils = new JwtUtils();
     	User user = this.authService.getUserInfo(jwtUtils.getJwtData(token));
     	this.logger.info("user : " + user);
     	 
-    	if(!roomId.equals(Constant.SPACE_LOBBY)) {
-    		this.talkHandler.join(user, roomId);
-    	}
+    	//if(!roomId.equals(this.talkHandler.getLobbySpace(user.getCid()))) {
+    	this.talkHandler.join(user, roomId);
+    	//}
     }
     
     /**
@@ -117,6 +127,14 @@ public class WebSocketEventListener {
     	
     	if(this.chatRoomRepository.getUserEnterRoomId(sessionId) != null) {
     		String roomId = getRoomId(this.chatRoomRepository.getUserEnterRoomId(sessionId));
+    		
+    		String token = this.chatRoomRepository.getUserToken(sessionId);
+        	User user = this.authService.getUserInfo(token);
+        	this.logger.debug("user : " + user.toString());
+        	
+        	if(user.getUserno() > 0) {
+        		this.talkHandler.disconnected(user, roomId);
+        	}
     		
     		// 채팅방의 인원수 -1.
         	this.chatRoomRepository.minusUserCount(roomId);
@@ -144,10 +162,33 @@ public class WebSocketEventListener {
     	return roomId;
     }
     
-    private String getToken(StompHeaderAccessor headerAccessor) {
+    private String getToken(String sessionId, StompHeaderAccessor headerAccessor) {
     	MessageHeaders headers = headerAccessor.getMessageHeaders();
-    	Map<String, Object> nativeHeaders = (Map<String, Object>)headers.get("nativeHeaders");
-    	String token = ((List<String>)nativeHeaders.get("token")).get(0);
+    	
+    	Map<String, Object> nativeHeaders = null;
+    	if(headers.containsKey("simpConnectMessage")) {
+    		GenericMessage simpConnectMessage = (GenericMessage) headers.get("simpConnectMessage");
+    		Map<String, Object> subHeaders = simpConnectMessage.getHeaders();
+    		//this.logger.debug("simpConnectMessage : " + simpConnectMessage);
+    		nativeHeaders = (Map<String, Object>)subHeaders.get("nativeHeaders");
+    	}else {
+    		nativeHeaders = (Map<String, Object>)headers.get("nativeHeaders");
+    	}
+    	 
+    	String token = "";
+//    	if(nativeHeaders.containsKey("token")) {
+//    		token = ((List<String>)nativeHeaders.get("token")).get(0);
+//    	}
+//    	
+    	
+    	try {
+    		
+    		token = ((List<String>)nativeHeaders.get("token")).get(0);
+    		this.logger.debug("Headers에서 Token 조회");
+    	}catch(Exception e) {
+    		token = this.chatRoomRepository.getUserToken(sessionId);
+    		this.logger.debug("Redis에서 Token 조회");
+    	}
     	return token;
     }
 }

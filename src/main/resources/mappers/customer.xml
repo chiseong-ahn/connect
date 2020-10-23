@@ -9,6 +9,28 @@
 		where speaker = #{speaker}
 	</select>
 	
+	<insert id="insert" parameterType="map">
+		CALL reg_customer(#{cid}, #{userno}, #{name}, #{telno})
+	</insert>
 	
+	<select id="selectOne" parameterType="map" resultType="map">
+		select *
+		from Customer a
+		where 1=1
+		and a.userno  = #{userno}
+		limit 1
+	</select>
+	
+	<!-- 채팅방의 고객 조회 -->
+	<select id="selectCustomerInSpace" parameterType="map" resultType="map">
+		select c.userno, b.name, a.speaker, b.iscustomer 
+		from SpaceSpeaker as a
+		 	 inner join Speaker as b on a.speaker = b.id
+		 	 inner join Customer as c on c.speaker = b.id 
+		where 1=1
+		and a.space = #{space}
+		and b.iscustomer = 1
+		limit 1
+	</select>
 	
 </mapper>

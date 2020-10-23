@@ -16,7 +16,7 @@ public class ChatMessage {
     public enum MessageType {
        JOIN, SPACEINFO, END, LEAVE, LOGIN, LOGOUT, RELOAD,
        PREHISTORY, MESSAGE, SPEAKS, READS, READSEMP, 
-       PAYLOAD, MEBMER_INFO, TOKEN, DISCONNECT, WELCOME
+       PAYLOAD, MEBMER_INFO, TOKEN, DISCONNECT, READYCOUNT, ASSIGN, ASSIGNED, WELCOME
     }
 
     private MessageType type; // 메시지 타입
@@ -33,6 +33,7 @@ public class ChatMessage {
     private int mtype;
     private int notread;
     private String msg;
+    private String token;
     private Map<String, Object> data;
     
     

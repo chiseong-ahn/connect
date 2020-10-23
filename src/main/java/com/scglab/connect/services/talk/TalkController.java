@@ -21,6 +21,7 @@ import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.chat.JwtTokenProvider;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.talk.ChatMessage.MessageType;
 import com.scglab.connect.utils.JwtUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -137,6 +138,15 @@ public class TalkController {
 		return this.talkService.historySpeaks(params, request);
 	}
 	
+	
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/spaces/readyroom", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="대기상담 조회", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+	public Map<String, Object> readyRoomCount(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.talkService.readyRoomCount(params, request);
+	}
+	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/spaces/{spaceId}/manager", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="스페이스(상담) 상담사 변경(이관)", description = "", security = {@SecurityRequirement(name = "bearer-key")})
@@ -145,95 +155,32 @@ public class TalkController {
 		return this.talkService.updateManager(params, request);
 	}
 	
-	/**
-	 * 
-	 * @Method Name : talkMessage
-	 * @작성일 : 2020. 10. 20.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 :
-	 * @param message
-	 * @param token
-	 */
+	
+	
 	@MessageMapping("/talk/message")
-    public void talkMessage(ChatMessage message, @Header("token") String token) {
-		User user = this.authService.getUserInfo(token);
-    	
-        // 로그인 회원 정보로 대화명 설정
-        message.setSender(user.getEmpno());
-        
-        // Websocket에 발행된 메시지를 redis로 발행(publish)
-        this.logger.info("대화 메세지 : " + message);
-        //talkService.sendChatMessage(message);
-        this.talkHandler.message(user, message);
-        
-    }
-    
-	/**
-	 * 
-	 * @Method Name : talkLeave
-	 * @작성일 : 2020. 10. 20.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 대화방 나가기.
-	 * @param message
-	 * @param token
-	 */
-	@MessageMapping("/talk/leave")
-    public void talkLeave(ChatMessage message, @Header("token") String token) {
-		User user = this.authService.getUserInfo(token);
-    	
-        this.talkHandler.leave(user, message);
-    }
-	
-	/**
-	 * 
-	 * @Method Name : talkEnd
-	 * @작성일 : 2020. 10. 20.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 상담 종료
-	 * @param message
-	 * @param token
-	 */
-	@MessageMapping("/talk/end")
-    public void talkEnd(ChatMessage message, @Header("token") String token) {
-    	User user = this.authService.getUserInfo(token);
-    	
-        this.logger.info("상담종료 처리 : " + message);
-        this.talkHandler.end(user, message);
-    }
-	
-	/**
-	 * 
-	 * @Method Name : talkPrehistory
-	 * @작성일 : 2020. 10. 20.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 이전상담 내역 조회.
-	 * @param message
-	 * @param token
-	 */
-	@MessageMapping("/talk/prehistory")
-    public void talkPrehistory(ChatMessage message, @Header("token") String token) {
-		User user = this.authService.getUserInfo(token);
-    	this.talkHandler.prehistory(user, message.getRoomId());
-    }
-	
-	/**
-	 * 
-	 * @Method Name : talkSpeaks
-	 * @작성일 : 2020. 10. 20.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 상담 대화내역 조회.
-	 * @param message
-	 * @param token
-	 */
-	@MessageMapping("/talk/speaks")
-    public void talkSpeaks(ChatMessage message, @Header("token") String token) {
-		User user = this.authService.getUserInfo(token);
-    	this.talkHandler.speaks(user, message.getRoomId());
+    public void talkMessage(ChatMessage message) {
+		
+		User user = this.authService.getUserInfo(message.getToken());
+		
+		if(message.getType().equals(MessageType.ASSIGN)) {
+			this.talkHandler.assign(user, message);
+			
+		}else if(message.getType().equals(MessageType.MESSAGE)) {
+        	this.talkHandler.message(user, message);
+        	
+        }else if(message.getType().equals(MessageType.LEAVE)) {
+        	this.talkHandler.leave(user, message);
+        	
+		}else if(message.getType().equals(MessageType.END)) {
+			this.talkHandler.end(user, message);
+			
+		}else if(message.getType().equals(MessageType.PREHISTORY)) {
+			this.talkHandler.prehistory(user, message.getRoomId());
+			
+		}else if(message.getType().equals(MessageType.SPEAKS)) {
+			this.talkHandler.speaks(user, message.getRoomId());
+			
+		}
     }
 }
 

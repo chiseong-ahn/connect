@@ -33,7 +33,7 @@
 							<input type="text" v-model="empno" />
 			            </li>
 			            <li class="list-group-item">
-							<input type="text" v-model="pwd" />
+							<input type="text" v-model="passwd" />
 			            </li>
 			            <li class="list-group-item">
 			            	<button type="submit">로그인</button>
@@ -53,7 +53,7 @@
             data: {
             	cid: 1,
             	empno: 'csmaster1',
-            	pwd: '1212',
+            	passwd: '1212',
             	appid: 2,
             	header: {},
             	isShow: false,
@@ -121,7 +121,7 @@
             		var data = new FormData();
             			data.append("cid", this.cid);
             			data.append("empno", this.empno);
-            			data.append("pwd", this.pwd);
+            			data.append("passwd", this.passwd);
             		
             		localStorage.removeItem("accessToken");
             		axios.post('/auth/login', data, header).then(response => {

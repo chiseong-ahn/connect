@@ -65,6 +65,7 @@ public class AuthService {
 		user.setEmpno(DataUtils.getObjectValue(userInfo, "empno", ""));
 		user.setName(DataUtils.getObjectValue(userInfo, "name", ""));
 		user.setSpeaker(DataUtils.getInt(userInfo, "speaker", 0));
+		user.setUserno(Integer.parseInt(DataUtils.getString(userInfo, "userno", "0")));
 		
 		return user;
 	}

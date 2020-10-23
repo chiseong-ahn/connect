@@ -23,6 +23,7 @@ public class ChatRoomRepository {
     private static final String CHAT_ROOMS = "CHAT_ROOM"; // 채팅룸 저장
     public static final String USER_COUNT = "USER_COUNT"; // 채팅룸에 입장한 클라이언트수 저장
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
+    public static final String SESSION_TOKEN = "SESSION_TOKEN"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
@@ -47,6 +48,18 @@ public class ChatRoomRepository {
         ChatRoom chatRoom = ChatRoom.create(name);
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         return chatRoom;
+    }
+    
+    // 커넥션한 유저의 토큰 저장.
+    public void setUserToken(String sessionId, String token) {
+    	this.logger.info("mapping session - token : " + sessionId + " - " + token);
+    	
+        hashOpsEnterInfo.put(SESSION_TOKEN, sessionId, token);
+    }
+    
+    // 커넥션한 유저의 토큰 조회.
+    public String getUserToken(String sessionId) {
+    	return hashOpsEnterInfo.get(SESSION_TOKEN, sessionId);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

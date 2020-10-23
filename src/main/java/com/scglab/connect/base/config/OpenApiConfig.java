@@ -47,6 +47,12 @@ public class OpenApiConfig {
 	}
 	
 	@Bean
+	public GroupedOpenApi customer() {
+		String[] paths = { "/customer/**" };
+		return GroupedOpenApi.builder().setGroup("고객(회원) API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
 	public GroupedOpenApi template() {
 		String[] paths = { "/templates/**" };
 		return GroupedOpenApi.builder().setGroup("답변템플릿 API").pathsToMatch(paths).build();
