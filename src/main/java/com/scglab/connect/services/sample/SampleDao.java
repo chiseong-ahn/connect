@@ -17,7 +17,7 @@ public class SampleDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "sdtalk.sample.";
+	public String namespace = "samples.";
 	
 	@Override
 	protected String getNamespace() {

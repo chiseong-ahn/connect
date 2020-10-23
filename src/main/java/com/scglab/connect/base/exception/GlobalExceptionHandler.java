@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<?> handleBaseException(Exception e) {
 		
-		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		HttpStatus httpStatus = null;
 		String code = "";
 		
 		/*
@@ -47,14 +47,22 @@ public class GlobalExceptionHandler {
 			code = EXCEPTION_CODE_UNKNOWN;		
 		}
 		*/
-		
-		if(e instanceof com.scglab.connect.base.exception.UnauthorizedException) {
+		if(e instanceof RuntimeException) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+			
+		}else if(e instanceof com.scglab.connect.base.exception.UnauthorizedException) {
 			httpStatus = HttpStatus.UNAUTHORIZED;
+			
 		} else if(e instanceof io.jsonwebtoken.SignatureException) {
 			httpStatus = HttpStatus.UNAUTHORIZED;
+			
+		} else if(e instanceof io.jsonwebtoken.ExpiredJwtException) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			
 		} else {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			e.printStackTrace();
+			
 		}
 		
 		ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), e.getMessage(), e.getStackTrace()[0]);
