@@ -52,7 +52,7 @@ public class SampleService {
 			errorParams[0] = "name";		// 오류를 유발한 파라미터 명.
 			
 			// 오류 사유
-			String reason = messageService.getMessage("samples.error.parameter1", errorParams);
+			String reason = messageService.getMessage("error.parameter1", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -64,7 +64,7 @@ public class SampleService {
 			errorParams[1] = "2~4자";
 			
 			// 오류 사유.
-			String reason = messageService.getMessage("samples.error.parameter2", errorParams);
+			String reason = messageService.getMessage("error.parameter2", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -102,7 +102,7 @@ public class SampleService {
 			errorParams[0] = id.equals("") ? "id" : "name";		// 오류를 유발한 파라미터 명.
 			
 			// 오류 사유
-			String reason = messageService.getMessage("samples.error.parameter1", errorParams);
+			String reason = messageService.getMessage("error.parameter1", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -114,7 +114,7 @@ public class SampleService {
 			errorParams[1] = "2~4자";
 			
 			// 오류 사유.
-			String reason = messageService.getMessage("samples.error.parameter2", errorParams);
+			String reason = messageService.getMessage("error.parameter2", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -128,7 +128,7 @@ public class SampleService {
 			errorParams[0] = id;
 			
 			// 오류 사유.
-			String reason = messageService.getMessage("samples.error.update1");
+			String reason = messageService.getMessage("error.update1");
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -154,7 +154,7 @@ public class SampleService {
 			errorParams[0] = "id";		// 오류를 유발한 파라미터 명.
 			
 			// 오류 사유
-			String reason = messageService.getMessage("samples.error.parameter1", errorParams);
+			String reason = messageService.getMessage("error.parameter1", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -168,7 +168,7 @@ public class SampleService {
 			errorParams[0] = id;
 			
 			// 오류 사유.
-			String reason = messageService.getMessage("samples.error.update1");
+			String reason = messageService.getMessage("error.update1");
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);

@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sdtalk.talk">
+	<resultMap type="com.scglab.connect.services.talk.Speak" id="speak"></resultMap>
 
 	<!-- 오늘의 상담현황 조회 -->
 	<select id="today" parameterType="map" resultType="map">
@@ -172,7 +173,7 @@
 	</select>
 	
 	<!-- 채팅방 대화내용 조회. -->
-	<select id="speaks" parameterType="map" resultType="map">
+	<select id="speaks" parameterType="map" resultMap="speak">
 		<![CDATA[
 			select *
 				  ,s.msg message
@@ -196,7 +197,7 @@
 	</select>
 	
 	<!-- 채팅메세지 생성 -->
-	<select id="makeMessage" parameterType="map" resultType="map">
+	<select id="makeMessage" parameterType="map" resultMap="speak">
 		CALL make_speak(#{cid}, #{spaceId}, #{speaker}, #{mtype}, #{sysmsg}, #{message}, #{morp}, #{onlyadm}, #{isemp}, #{msgname})
 	</select>
 	

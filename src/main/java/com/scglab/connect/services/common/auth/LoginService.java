@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.external.External;
-import com.scglab.connect.services.external.ExternalInchongas;
-import com.scglab.connect.services.external.ExternalSeoulgas;
+import com.scglab.connect.services.external.ExternalInc;
+import com.scglab.connect.services.external.ExternalScg;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.JwtUtils;
 
@@ -52,10 +52,10 @@ public class LoginService {
 		// 외부 연동클래스.
 		External external = null;
 		if(cid == 1) {		// 서울도시가스일 경우.
-			external = new ExternalSeoulgas();
+			external = new ExternalScg();
 		
 		}else if(cid == 2) {	// 인천도시가스일 경우.
-			external = new ExternalInchongas();
+			external = new ExternalInc();
 		}
 		User user = external.login(empno, passwd);		// 기간계 로그인.
 		

@@ -40,16 +40,16 @@ public class ChatService {
 
 		chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
 		if (ChatMessage.MessageType.JOIN.equals(chatMessage.getType())) {
-			chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
+			chatMessage.setMsg(chatMessage.getSender() + "님이 방에 입장했습니다.");
 			chatMessage.setSender("[알림]");
 		} else if (ChatMessage.MessageType.LEAVE.equals(chatMessage.getType())) {
-			chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
+			chatMessage.setMsg(chatMessage.getSender() + "님이 방에서 나갔습니다.");
 			chatMessage.setSender("[알림]");
 		}
 
 		this.logger.debug("topic : " + this.channelTopic.getTopic());
 		this.logger.debug("Message type : " + chatMessage.getType());
-		this.logger.debug("Message : " + chatMessage.getMessage());
+		this.logger.debug("Message : " + chatMessage.getMsg());
 
 		this.redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
 	}

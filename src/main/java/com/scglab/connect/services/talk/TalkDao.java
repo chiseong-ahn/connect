@@ -50,12 +50,12 @@ public class TalkDao extends CommonDao {
 		return this.sqlSession.selectOne(mapperId, params);
 	}
 	
-	public List<Map<String, Object>> speaks(Map<String, Object> params){
+	public List<Speak> speaks(Map<String, Object> params){
 		String mapperId = getNamespace() + "speaks";
 		return this.sqlSession.selectList(mapperId, params);
 	}
 	
-	public Map<String, Object> makeMessage(Map<String, Object> params){
+	public Speak makeMessage(Map<String, Object> params){
 		String mapperId = getNamespace() + "makeMessage";
 		return this.sqlSession.selectOne(mapperId, params);
 	}

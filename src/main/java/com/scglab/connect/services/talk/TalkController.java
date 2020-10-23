@@ -76,7 +76,7 @@ public class TalkController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/state", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="상담 상태변경", description = "상담 상태를 변경한다.", security = {@SecurityRequirement(name = "bearer-key")})
     @Parameters({
-		@Parameter(name = "state", description = "상다마 상태코드(0-상담중, 1-휴식중, 2-회의중, 3-콜집중, 5-퇴근, 6-점심, 9-기타)", required = true, in = ParameterIn.QUERY, example = "0"),
+		@Parameter(name = "state", description = "상담 상태코드(0-상담중, 1-휴식중, 2-회의중, 3-콜집중, 5-퇴근, 6-점심, 9-기타)", required = true, in = ParameterIn.QUERY, example = "0"),
     })
 	public Map<String, Object> state(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.talkService.state(params, request);
@@ -155,6 +155,14 @@ public class TalkController {
 		return this.talkService.updateManager(params, request);
 	}
 	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/chatbot", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="챗봇대화 조회", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+	public Map<String, Object> chatbot(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		//return this.talkService.chatbot(params, request);
+		return null;
+	}
+	
 	
 	
 	@MessageMapping("/talk/message")
@@ -168,7 +176,7 @@ public class TalkController {
 		}else if(message.getType().equals(MessageType.MESSAGE)) {
         	this.talkHandler.message(user, message);
         	
-        }else if(message.getType().equals(MessageType.LEAVE)) {
+		}else if(message.getType().equals(MessageType.LEAVE)) {
         	this.talkHandler.leave(user, message);
         	
 		}else if(message.getType().equals(MessageType.END)) {

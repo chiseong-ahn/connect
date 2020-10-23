@@ -18,10 +18,11 @@ import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.common.service.PushService;
+import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
 import com.scglab.connect.services.external.External;
-import com.scglab.connect.services.external.ExternalInchongas;
-import com.scglab.connect.services.external.ExternalSeoulgas;
+import com.scglab.connect.services.external.ExternalInc;
+import com.scglab.connect.services.external.ExternalScg;
 import com.scglab.connect.services.talk.ChatMessage.MessageType;
 import com.scglab.connect.utils.DataUtils;
 
@@ -110,7 +111,7 @@ public class TalkHandler {
 			chatMessage = new ChatMessage();
 			chatMessage.setType(MessageType.JOIN);
 			chatMessage.setRoomId(roomId);
-			chatMessage.setMessage(user.getSpeaker() + "님이 연결되었습니다.");
+			chatMessage.setMsg(user.getSpeaker() + "님이 연결되었습니다.");
 			chatMessage.setUserCount(this.chatRoomRepository.getUserCount(roomId));
 			sendPayload(chatMessage);
 			
@@ -122,6 +123,9 @@ public class TalkHandler {
 				// 상담사가 자기상담에 Join하였다면 다른 상담원들에게 상담목록을 갱신하도록 요청메세지 전송.
 				this.logger.debug("Step. [Socket] 다른 상담원들에게 스페이스 목록 갱신요청.");
 				sendReloadMessage(user);
+				
+				// 고객 기본정보 전달.
+				customer(user, roomId);
 				
 				// 상담대화내용 전달.
 				speaks(user, roomId);
@@ -144,7 +148,7 @@ public class TalkHandler {
 				chatMessage.setType(MessageType.READSEMP);
 				chatMessage.setSender("SYSTEM");
 				chatMessage.setRoomId(roomId);
-				chatMessage.setMessage(this.messageService.getMessage("talk.message.reads"));
+				chatMessage.setMsg(this.messageService.getMessage("talk.message.reads"));
 				sendPayload(chatMessage);
 				
 			}else {	// 회원일 경우.
@@ -162,10 +166,10 @@ public class TalkHandler {
 					// 외부 연동클래스.
 					External external = null;
 					if(user.getCid() == 1) {		// 서울도시가스일 경우.
-						external = new ExternalSeoulgas();
+						external = new ExternalScg();
 					
 					}else if(user.getCid() == 2) {	// 인천도시가스일 경우.
-						external = new ExternalInchongas();
+						external = new ExternalInc();
 					}
 					int isWorkType = external.isWorking();
 					
@@ -181,7 +185,7 @@ public class TalkHandler {
 					chatMessage.setType(MessageType.READS);
 					chatMessage.setSender("SYSTEM");
 					chatMessage.setRoomId(roomId);
-					chatMessage.setMessage(startMessage);
+					chatMessage.setMsg(startMessage);
 					sendPayload(chatMessage);
 				}
 				
@@ -238,14 +242,14 @@ public class TalkHandler {
 				this.logger.debug("Step. [DB] 웰컴 메세지 생성.");
 				String startMessage = this.messageService.getMessage("talk.message.welcome");
 				
-		    	Map<String, Object> speak = makeSpeak(user.getCid(), (int)roomId, user.getSpeaker(), 0, 0, startMessage, null, 0, (user.getEmp() > 0 ? 1 : 0), null);
+		    	Speak speak = makeSpeak(user.getCid(), (int)roomId, user.getSpeaker(), 0, 0, startMessage, null, 0, (user.getEmp() > 0 ? 1 : 0), null);
 		    	this.logger.debug("Speak : " + speak.toString());
 				
 				ChatMessage chatMessage = new ChatMessage();
 				chatMessage.setType(MessageType.MESSAGE);
 				chatMessage.setSender(user.getEmpno());
 				chatMessage.setRoomId(Long.toString(roomId));
-				chatMessage.setMessage(startMessage);
+				chatMessage.setMsg(startMessage);
 				
 				this.logger.debug("Step. [Socket] 고객에게 웰컴 메세지 전송.");
 				sendPayload(chatMessage);
@@ -261,7 +265,7 @@ public class TalkHandler {
 				chatMessage.setType(MessageType.ASSIGNED);
 				chatMessage.setSender(user.getEmpno());
 				chatMessage.setRoomId(getLobbySpace(user.getCid()));
-				chatMessage.setMessage(this.messageService.getMessage("assigned"));
+				chatMessage.setMsg(this.messageService.getMessage("assigned"));
 				chatMessage.setData(data2);
 				sendPayload(chatMessage);
 			}
@@ -283,34 +287,22 @@ public class TalkHandler {
     	this.logger.debug("---------------------------------------------------------------------");
 
     	this.logger.debug("Step. [DB] 메세지 생성.");
-    	Map<String, Object> speak = makeSpeak(user.getCid(), Integer.parseInt(data.getRoomId()), user.getSpeaker(), 0, 0, data.getMessage(), null, 0, (user.getEmp() > 0 ? 1 : 0), null);
+    	Speak speak = makeSpeak(user.getCid(), Integer.parseInt(data.getRoomId()), user.getSpeaker(), data.getMtype(), data.getSysmsg(), data.getMsg(), null, 0, (user.getEmp() > 0 ? 1 : 0), null);
     	this.logger.debug("Speak : " + speak.toString());
-    	
-    	ChatMessage chatMessage = new ChatMessage();
-    	chatMessage.setType(MessageType.MESSAGE);
-    	chatMessage.setCid(user.getCid());
-    	chatMessage.setAppid("sdtadm");
-    	chatMessage.setSender(user.getEmpno());
-    	chatMessage.setRoomId(data.getRoomId());
-    	chatMessage.setSpeaker(user.getSpeaker());
-    	chatMessage.setMessage("");
-    	chatMessage.setData(speak);
+
+    	data.setSpeaker(user.getSpeaker());
     	
     	this.logger.debug("Step. [Socket] 메세지 전달.");
-    	sendPayload(chatMessage);
+    	sendPayload(data);
     	
-		boolean isonline = speak.containsKey("isonline") ? (boolean) speak.get("isonline") : false;	// 온라인 여부.
-    	boolean isemp = speak.containsKey("isemp") ? (boolean) speak.get("isemp") : false;	// 관리자 여부.
-    	int onlyadm = speak.containsKey("onlyadm") ? (int) speak.get("onlyadm") : 0;
-    	
-    	// 고객이 오프라인 and 상담원의 메세지일 경우. 
-    	if(isonline == false && isemp == true && onlyadm == 0) {
+    	// 고객이 오프라인 and 상담원의 메세지일 경우.
+    	if(speak.isIsonline() == false && speak.isIsemp() == true && speak.getOnlyadm() == 0) {
     		// 푸시발송.
     		this.logger.debug("Step. [PUSH] 상담원이 메세지를 보냈을때에 회원이 오프라인이라면 PUSH 메세지를 발송한다.");
     		try {
     			Map<String, Object> params = new HashMap<String, Object>();
     			params.put("space", data.getRoomId());
-    			Map<String, Object> customer = this.customerDao.selectCustomerInSpace(params);
+    			Customer customer = this.customerDao.selectCustomerInSpace(params);
     			
     			this.logger.debug("Step. [PUSH] 고객이 온라인상태가 아닐경우 푸시메세지 발송");
     			//this.pushService.sendPush(Integer.parseInt(DataUtils.getString(customer, "userno", "0")), this.messageService.getMessage("talk.message.push"));
@@ -346,7 +338,7 @@ public class TalkHandler {
      * @param msgname
      * @return
      */
-    public Map<String, Object> makeSpeak(int cid, int space, int speaker, int mtype, int sysmsg, String message, String morp, int onlyadm, int isemp, String msgname){
+    public Speak makeSpeak(int cid, int space, int speaker, int mtype, int sysmsg, String message, String morp, int onlyadm, int isemp, String msgname){
     	this.logger.debug("Step. [DB] 메세지 생성.");
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("cid", cid);
@@ -360,7 +352,7 @@ public class TalkHandler {
     	params.put("isemp", isemp);		// 직원 작성여부.
     	params.put("msgname", msgname);	// 첨부파일/링크이름.
     	//CALL make_speak(#{cid}, #{spaceId}, #{speaker}, #{mtype}, #{sysmsg}, #{message}, #{morp}, #{onlyadm}, #{isemp}, #{msgname})
-    	Map<String, Object> speak = this.talkDao.makeMessage(params);
+    	Speak speak = this.talkDao.makeMessage(params);
     	
     	return speak;
     }
@@ -441,6 +433,22 @@ public class TalkHandler {
 		sendPayload(MessageType.PREHISTORY, roomId, user.getEmpno(), "", data);
 	}
 	
+	public void customer(User user, String roomId) {
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("space", roomId);
+		
+		this.logger.debug("Step. [DB] 스페이스에서 참여되어있는 고객정보 조회.");
+		Customer customer = this.customerDao.selectCustomerInSpace(params);
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("customer", customer);
+		
+		this.logger.debug("Step. [Socket] 고객정보 전달.");
+		sendPayload(MessageType.CUSTOMER_INFO, roomId, user.getEmpno(), "", data);
+	}
+	
+	
 	/**
 	 * 
 	 * @Method Name : speaks
@@ -458,9 +466,10 @@ public class TalkHandler {
 		this.logger.debug("Step. [DB] 상담 대화내용 조회");
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("spaceId", roomId);
-		List<Map<String, Object>> speaks = this.talkDao.speaks(params);
+		//List<Map<String, Object>> speaks = this.talkDao.speaks(params);
+		List<Speak> speaks = this.talkDao.speaks(params);
 		
-		this.logger.debug("Step. [DB] 상담 대화내용 데이터 전달.");
+		this.logger.debug("Step. [Socket] 상담 대화내용 데이터 전달.");
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("speaks", speaks);
 		sendPayload(MessageType.SPEAKS, roomId, user.getEmpno(), "", data);
@@ -527,7 +536,7 @@ public class TalkHandler {
 	    	chatMessage.setCid(user.getCid());
 	    	chatMessage.setRoomId(getLobbySpace(user.getCid()));
 	    	chatMessage.setAppid("sdtadm");
-	    	chatMessage.setMessage("");
+	    	chatMessage.setMsg("");
 	    	chatMessage.setData(result);
 	    	
 	    	this.logger.debug("Step. [Socket] 상담원들에게 대기상담 알림.");

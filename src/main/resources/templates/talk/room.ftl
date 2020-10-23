@@ -19,7 +19,7 @@
     <div class="container" id="app" v-cloak>
         <div class="row">
             <div class="col-md-6">
-            	<span>로그인 : {{user.empno}}</span><br />
+            	<span>로그인 : {{emp.empno}}</span><br />
             	<span>선택된 스페이스 : {{roomId}}</span>
             </div>
             <div class="col-md-6 text-right">
@@ -58,7 +58,7 @@
 		    	<ul  v-if="roomId != baseroom" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
 		                <strong>[시스템:{{obj.sysmsg}}, 상담사:{{obj.isemp}}, 작성자:{{obj.speaker}}]</strong>
-		                <br />&gt;&gt; {{obj.msg}}</a>
+		                <br />&gt;&gt; {{obj.msg}} {{obj.createdate}}</a>
 		            </li>
 		       	</ul>
 		       	<div v-if="roomId != baseroom">
@@ -70,6 +70,10 @@
 		                <button class="btn btn-primary" type="button" @click="sendMessage('MESSAGE')">보내기</button>
 		            </div>
 		       	</div>
+				<div v-if="roomId != baseroom">
+					<button type="button" class="btn btn-default" @click="warnSwear">욕설/비속어 경고메세지</button>
+					<button type="button" class="btn btn-default" @click="warnInsult">부적절한 대화 경고메세지</button>
+				</div>
 		    </div>
 		    <div class="col-md-3">
 		    	<h4>계약정보 </h4>
@@ -105,15 +109,31 @@
             data: {
             	wsUri: "/ws-stomp",
             	ws: undefined,	//  웹소켓 객체.
-            	user: {
+            	emp: {
             		emp: 0,
 					cid: 0,
 					speaker: 0,
 					name: '',
 					auth: 0,
 					empno: '',
-            		userno: 0
+            		userno: 0,
+					swear: 0,		// 욕설 및 비속어 경고횟수.
+					insult: 0		// 부적절한 대화시도 경고횟수.
             	},		// 사용자 정보.
+				customer: {
+					id: 0,
+					userno: '',
+					speaker: 0,
+					state: 0,
+					blocktype: 0,
+					blockemp:0,
+					remark: '',
+					space: 0,
+					cid: 0,
+					name: '',
+					swear: 0,
+					insult: 0,
+				},
             	appid: 0,
             	baseroom: 'LOBBY',
             	readyRoomCount: 0,
@@ -125,11 +145,12 @@
                 roomId: '',
                 selectedRoom: {},
                 header: {},
-                token: ''
+                token: '',
+				
             },
             created() {
 				// 인증정보 조회.
-            	this.getUserInfo(); 
+            	this.getEmpInfo(); 
                 //setInterval(this.findReadyRoom, 1000)
             },
             methods: {
@@ -262,16 +283,67 @@
                     this.init();
                 },
 
+				// 욕설/비속어 경고 메세지 발송.
+				warnSwear: function(){
+					var _this = this;
+					var uri = '/customers/' + this.customer.id + '/swear';
+					var data = {}
+					axios.put(uri, data, this.header).then(response => {
+						// prevent html, allow json array
+						if(response.data.isSuccess == true){
+							this.customer.swear++;
+							console.log('swear : ' + this.customer.swear);
+							if(this.customer.swear >= 3){
+								this.message = '욕설 및 비속어를 3회이상 사용하여 상담채팅이 종료됩니다.';
+								this.end();
+							}else{
+								this.message = '욕설 및 비속어를 ' + this.customer.swear + '회 사용하셨습니다.\n3회 사용 시 상담채팅이 자동으로 종료됩니다.';
+							}
+							this.sendMessage('MESSAGE', 1)
+						}
+					}, function(e){
+						console.log("error : " + e.message);
+					});
+				},
+
+				// 부적절한 대화 경고 메세지 발송.
+				warnInsult: function(){
+					var _this = this;
+					var uri = '/customers/' + this.customer.id + '/insult';
+					var data = {}
+					axios.put(uri, data, this.header).then(response => {
+						// prevent html, allow json array
+						if(response.data.isSuccess == true){
+							this.customer.insult++;
+							console.log('insult : ' + this.customer.insult);
+							if(this.customer.insult >= 3){
+								this.message = '가스업무와 관련 없는 부적절한 대화를 3회이상 시도하여 상담채팅이 종료됩니다.';
+								this.end();
+							}else{
+								this.message = '가스업무와 관련 없는 부적절한 대화를 ' + this.customer.insult + '회 시도하셨습니다.\n이와 같은 대화를 3회 시도 시에는 상담채팅이 자동으로 종료됩니다.';
+							}
+							this.sendMessage('MESSAGE', 1, {'customer': this.customer.id, 'insult': true})
+						}
+					}, function(e){
+						console.log("error : " + e.message);
+					});
+				},
+
             	// 메세지 발송
-                sendMessage: function(messageType) {
+                sendMessage: function(messageType, sysmsg, option) {
+					var sysmsg = sysmsg == undefined ? 0 : sysmsg;
+					var option = option == undefined ? {} : option;
                 	var data = {
 						type: messageType,
-                		cid: this.user.cid,
+                		cid: this.emp.cid,
                 		appid: this.appid,
-                		roomId:this.roomId, 
-                		message: this.message,
-                		token: this.token
+                		roomId: this.roomId, 
+						sysmsg: sysmsg,
+                		msg: this.message,
+                		token: this.token,
+						data: option
                 	}
+					console.log('send data : ' + JSON.stringify(data))
                 	
                     //this.ws.send('/pub/talk/message', {"token":this.token}, JSON.stringify(data));
 					this.ws.send('/pub/talk/message', {}, JSON.stringify(data));
@@ -284,19 +356,26 @@
                     
 
                     switch(type){
-                    	case "JOIN" :		// 상담에 조인됨.
+                    	case "JOINED" :		// 상담에 조인됨.
+                    		console.log("Join됨");
                     		break;
                     		
                     	case "READYCOUNT" :	// 대기상담.
 							console.log("READYCOUNT : " + recvData.data.count)
-                    		this.readyRoomCount = recvData.data.count;
+                    		this.readyRoosmCount = recvData.data.count;
 							break;
                     		
-						case "ASSIGNED" :
+						case "ASSIGNED" :	// 대기상담 받아오기(할당)
 							console.log("recv-sender : " + recvData.sender);
-							console.log("user-emp : " + this.user.empno);
-							if(recvData.sender == this.user.empno){
+							console.log("user-emp : " + this.emp.empno);
+							if(recvData.sender == this.emp.empno){
 								this.join(recvData.data.roomId);
+							}
+							break;
+
+						case "CUSTOMER_INFO" :		// 고객 기본정보
+							if(recvData.data.customer){
+								this.customer = recvData.data.customer;
 							}
 							break;
 
@@ -310,9 +389,8 @@
                     		break;
                     		 
                     	case "MESSAGE" :	// 대화 메세지 수신.
-							if(recvData.data){
-								this.messages.push(recvData.data);
-							}
+							console.log('recvData - ' + JSON.stringify(recvData))
+							this.messages.push(recvData);
                     		break;
                     		
                     	case "PREHISTORY" : // 이전 대화내용 수신.
@@ -389,8 +467,8 @@
             		}            		
                	},
 
-				// 사용자 정보 조회.
-            	getUserInfo: function() {
+				// 상담사 정보 조회.
+            	getEmpInfo: function() {
             		this.token = localStorage.accessToken;
             		
             		this.header = {
@@ -399,9 +477,9 @@
             		            		
             		axios.get('/auth/user', this.header).then(response => {
             			if(response.data){
-            				this.user = response.data;
-            				console.log(JSON.stringify(this.user));
-            				this.baseroom = this.baseroom + "_" + this.user.cid;
+            				this.emp = response.data;
+            				console.log(JSON.stringify(this.emp));
+            				this.baseroom = this.baseroom + "_" + this.emp.cid;
 							console.log("baseroom : " + this.baseroom)
 							//this.findAllRoom();
 
