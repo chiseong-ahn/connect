@@ -53,5 +53,16 @@ public interface External {
 	 */
 	public Contract getMemberContractDetail(int contractNo);
 	
+	/**
+	 * 
+	 * @Method Name : sendMinwon
+	 * @작성일 : 2020. 10. 23.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 민원 등록(전송)
+	 * @return
+	 */
+	public int sendMinwon();
+	
 	
 }

@@ -3,7 +3,7 @@ package com.scglab.connect.services.external;
 import com.scglab.connect.services.common.auth.Contract;
 import com.scglab.connect.services.common.auth.User;
 
-public class ExternalInchongas implements External {
+public class ExternalInc implements External {
 
 	@Override
 	public int isWorking() {
@@ -27,6 +27,12 @@ public class ExternalInchongas implements External {
 	public Contract getMemberContractDetail(int contractNo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int sendMinwon() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

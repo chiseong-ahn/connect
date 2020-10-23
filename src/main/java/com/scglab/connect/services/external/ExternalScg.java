@@ -9,7 +9,7 @@ import com.scglab.connect.services.common.auth.User;
 
 import lombok.RequiredArgsConstructor;
 
-public class ExternalSeoulgas implements External {
+public class ExternalScg implements External {
 	
 	@Override
 	public int isWorking() {
@@ -66,6 +66,12 @@ public class ExternalSeoulgas implements External {
 	public Contract getMemberContractDetail(int contractNo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int sendMinwon() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	
