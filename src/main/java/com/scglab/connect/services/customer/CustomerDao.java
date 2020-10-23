@@ -24,6 +24,11 @@ public class CustomerDao extends CommonDao {
 		return namespace;
 	}
 	
+	public Customer findCustomer(Map<String, Object> params){
+		String mapperId = getNamespace() + "findCustomer";
+		return this.sqlSession.selectOne(mapperId, params);
+	}
+	
 	/**
 	 * 
 	 * @Method Name : selectCustomerInSpace
@@ -34,7 +39,7 @@ public class CustomerDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> selectCustomerInSpace(Map<String, Object> params){
+	public Customer selectCustomerInSpace(Map<String, Object> params){
 		String mapperId = getNamespace() + "selectCustomerInSpace";
 		return this.sqlSession.selectOne(mapperId, params);
 	}

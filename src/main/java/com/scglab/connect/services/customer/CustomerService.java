@@ -25,7 +25,7 @@ public class CustomerService {
 	@Autowired
 	private CustomerDao customerDao;
 	
-	public Map<String, Object> token(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public Map<String, Object> token(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		this.customerDao.insert(params);
@@ -44,6 +44,21 @@ public class CustomerService {
 		this.logger.debug("accessToken : " + accessToken);
 		
 		data.put("accessToken", accessToken);
+		
+		return data;
+	}
+	
+	public Map<String, Object> update(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		int id = DataUtils.getInt(params, "id", 0);
+		if(id == 0) {
+			Object[] args = new String[1];
+			args[0] = "id";
+			throw new RuntimeException(this.messageService.getMessage("error.parameter1", args));
+		}
+		int count = this.customerDao.update(params);
+		data.put("isSuccess", count > 0 ? true : false);
 		
 		return data;
 	}

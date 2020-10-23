@@ -2,18 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sdtalk.customer">
+
+	<resultMap type="com.scglab.connect.services.customer.Customer" id="customer"></resultMap>
 	
-	<select id="info" parameterType="map" resultType="map">
+	<select id="info" parameterType="map" resultMap="customer">
 		select * 
-		from Customer 
-		where speaker = #{speaker}
+		from Customer a
+		where a.speaker = #{speaker}
 	</select>
 	
 	<insert id="insert" parameterType="map">
 		CALL reg_customer(#{cid}, #{userno}, #{name}, #{telno})
 	</insert>
 	
-	<select id="selectOne" parameterType="map" resultType="map">
+	<select id="findCustomer" parameterType="map" resultMap="customer">
 		select *
 		from Customer a
 		where 1=1
@@ -22,8 +24,8 @@
 	</select>
 	
 	<!-- 채팅방의 고객 조회 -->
-	<select id="selectCustomerInSpace" parameterType="map" resultType="map">
-		select c.userno, b.name, a.speaker, b.iscustomer 
+	<select id="selectCustomerInSpace" parameterType="map" resultMap="customer">
+		select c.* 
 		from SpaceSpeaker as a
 		 	 inner join Speaker as b on a.speaker = b.id
 		 	 inner join Customer as c on c.speaker = b.id 
@@ -32,5 +34,19 @@
 		and b.iscustomer = 1
 		limit 1
 	</select>
+	
+	<!-- 고객 정보 변경. -->
+	<update id="update">		
+		update Customer 
+		set  name = name
+		<if test='swear == "Y"'>
+			,swear = swear + 1
+		</if>
+		<if test='insult == "Y"'>
+			,insult = insult + 1
+		</if>	
+		where 1=1
+		and id = #{id}
+	</update>
 	
 </mapper>
