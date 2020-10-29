@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.category;
+package com.scglab.connect.services.adminmenu.category;
 
 import java.util.Map;
 

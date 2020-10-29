@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +22,13 @@ import com.scglab.connect.services.chat.JwtTokenProvider;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.talk.ChatMessage.MessageType;
-import com.scglab.connect.utils.JwtUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -101,6 +102,7 @@ public class TalkController {
 	@Operation(summary="스페이스(상담) 정보 조회", description = "", security = {@SecurityRequirement(name = "bearer-key")})
 	public Map<String, Object> space(@RequestParam Map<String, Object> params, HttpServletRequest request, @Parameter(description = "스페이스 번호", required = true, in = ParameterIn.PATH, example = "112") @PathVariable String spaceId) throws Exception {
 		this.logger.debug("spaceId : " + spaceId);
+		params.put("spaceId", spaceId);
 		return this.talkService.space(params, request);
 	}
 	
@@ -148,10 +150,15 @@ public class TalkController {
 	}
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.PUT, value = "/spaces/{spaceId}/manager", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.PUT, value = "/spaces/{space}/manager", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="스페이스(상담) 상담사 변경(이관)", description = "", security = {@SecurityRequirement(name = "bearer-key")})
-	public Map<String, Object> updateManager(@RequestParam Map<String, Object> params, HttpServletRequest request, @Parameter(description = "스페이스 번호", required = true, in = ParameterIn.PATH, example = "112") @PathVariable String spaceId) throws Exception {
-		params.put("spaceId", spaceId);
+	@Parameters({
+		@Parameter(schema = @Schema(name="emp", description = "관리자 관리번호", type="int", allowableValues = {"1", "2"})),
+		@Parameter(schema = @Schema(name="empname", description = "상담자 명", type="string", allowableValues = {"서울도시가스", "홍길동"})),
+		@Parameter(schema = @Schema(name="acting", description = "변경유형(0-당겨오기, 1-준비상태로 변경, 2-종료상태 변경, 11-상담이관)", type="int", allowableValues = {"0", "1", "2", "11"}))
+	})
+	public Map<String, Object> updateManager(@RequestBody Map<String, Object> params, HttpServletRequest request, @Parameter(description = "스페이스 번호", required = true, in = ParameterIn.PATH, example = "112") @PathVariable int space) throws Exception {
+		params.put("space", space);
 		return this.talkService.updateManager(params, request);
 	}
 	

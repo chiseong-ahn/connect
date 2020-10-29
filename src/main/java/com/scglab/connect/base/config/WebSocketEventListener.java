@@ -62,8 +62,22 @@ public class WebSocketEventListener {
         //this.logger.info("CONNECTED {} " + token);
     	this.logger.info("[Connection] headerAccessor : " + headerAccessor.toString());
     	
+    	String token = "";
     	String sessionId = getSessionId(headerAccessor);
-    	String token = getToken(sessionId, headerAccessor);
+    	
+    	MessageHeaders headers = headerAccessor.getMessageHeaders();
+    	
+    	Map<String, Object> nativeHeaders = null;
+    	if(headers.containsKey("simpConnectMessage")) {
+    		GenericMessage simpConnectMessage = (GenericMessage) headers.get("simpConnectMessage");
+    		Map<String, Object> subHeaders = simpConnectMessage.getHeaders();
+    		//this.logger.debug("simpConnectMessage : " + simpConnectMessage);
+    		nativeHeaders = (Map<String, Object>)subHeaders.get("nativeHeaders");
+    	
+    		if(nativeHeaders.containsKey("Authorization")) {
+    			token = ((List<String>)nativeHeaders.get("Authorization")).get(0);
+    		}
+    	}
     	
     	this.logger.info("sessionId : " + sessionId);
     	this.logger.info("token : " + token);

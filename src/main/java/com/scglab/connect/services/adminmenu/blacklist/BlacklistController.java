@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.blacklist;
+package com.scglab.connect.services.adminmenu.blacklist;
 
 import java.util.Map;
 

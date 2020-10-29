@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.adminMenu.emp.EmpDao;
+import com.scglab.connect.services.adminmenu.emp.EmpDao;
 import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
@@ -160,7 +160,7 @@ public class TalkService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.spaces(params);
 		
-		data.put("total", 100);
+		data.put("total", list == null ? 0 : list.size());
 		data.put("list", list);
 		
 		return data;
@@ -172,7 +172,7 @@ public class TalkService {
 		params.put("cid", user.getCid());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		Map<String, Object> space = this.talkDao.speaker(params);
+		Map<String, Object> space = this.talkDao.space(params);
 		data.put("space", space);
 		
 		return data;
@@ -249,22 +249,33 @@ public class TalkService {
 	
 	public Map<String, Object> updateManager(Map<String, Object> params, HttpServletRequest request) throws Exception {
 
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
-				
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		this.logger.debug("상담사 변경처리");
-		// 상담사 변경처리.
-		// CALL update_space(11, ifnull('9', null), '41', '정해관')
+		int emp = DataUtils.getInt(params, "emp", 0);
+		int acting = DataUtils.getInt(params, "acting", 0);
+		int space = DataUtils.getInt(params, "space", 0);
+		String empname = DataUtils.getString(params, "empname", "");
 		
-		params.put("acting", "11");
-		params.put("space", DataUtils.getString(params, "space", ""));
-		params.put("emp", user.getEmp());
-		params.put("empname", user.getName());
+		if(emp == 0) {
+			// 본인 상담으로 가져오기.
+			User user = this.authServier.getUserInfo(request);
+			emp = user.getEmp();
+			empname = user.getName();
+		}
+		
+		this.logger.debug("acting : " + acting);
+		this.logger.debug("space : " + space);
+		this.logger.debug("emp : " + emp);
+		this.logger.debug("empname : " + empname);
+		this.logger.debug("상담사 변경처리");
+		
+		params.put("acting", acting);
+		params.put("space", space);
+		params.put("emp", emp);
+		params.put("empname", empname);
 		this.talkDao.updateSpace(params);
 		
-		data.put("result", true);
+		data.put("isSuccess", true);
 
 		return data;
 	}

@@ -207,7 +207,7 @@
             		};
             		
             		axios.put(uri, formData, header).then(response => {
-            			if(response.data.result == true){
+            			if(response.data.isSuccess == true){
             				alert('저장되었습니다.');
             				this.getEmps();
             			}else{

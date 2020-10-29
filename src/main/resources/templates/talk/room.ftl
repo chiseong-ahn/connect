@@ -41,7 +41,7 @@
 		        <ul class="list-group">
 		            <li class="list-group-item list-group-item-action" v-for="obj in chatrooms" v-bind:key="obj.id" v-on:click="join(obj.id)">
 		            	<dt>[{{obj.id}}] 
-		            		<span v-if="obj.empname == null" style="color:red">{{obj.customer}}</span>
+		            		<span v-if="obj.blocktype > 0" style="color:red">{{obj.customer}}</span>
 		            		<span v-else>{{obj.customer}}</span>
 		            		<span class="badge badge-info badge-pill">{{obj.empname}}</span>
 		            		<span v-if="obj.isonline == true" class="badge badge-primary badge-pill">Online</span>
@@ -62,17 +62,23 @@
 		            </li>
 		       	</ul>
 		       	<div v-if="roomId != baseroom">
-		       		<div class="input-group-prepend">
-		                <label class="input-group-text">내용</label>
-		            </div>
-		            <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('MESSAGE')">
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" type="button" @click="sendMessage('MESSAGE')">보내기</button>
-		            </div>
-		       	</div>
-				<div v-if="roomId != baseroom">
-					<button type="button" class="btn btn-default" @click="warnSwear">욕설/비속어 경고메세지</button>
-					<button type="button" class="btn btn-default" @click="warnInsult">부적절한 대화 경고메세지</button>
+			       	<div v-if="selectedRoom.emp == emp.emp">
+				       	<div>
+				            <textarea class="form-control" v-model="message" placeholder="내용을 입력하세요."></textarea> 
+				            <div class="input-group-append">
+				                <button class="btn btn-primary" type="button" @click="sendMessage('MESSAGE')">보내기</button>
+				            </div>
+				       	</div>
+						<div v-if="roomId != baseroom">
+							<button type="button" class="btn btn-info" @click="warnSwear">욕설/비속어 경고메세지</button>
+							<button type="button" class="btn btn-info" @click="warnInsult">부적절한 대화 경고메세지</button>
+						</div>
+					</div>
+					<div v-else>
+				       	<div>
+							<button type="button" class="btn btn-info" @click="assignToMe()">내 상담으로 가져오기</button>
+						</div>
+					</div>
 				</div>
 		    </div>
 		    <div class="col-md-3">
@@ -193,7 +199,7 @@
                 	
                 	// 웹소켓 연결.
                 	this.ws.connect(
-						{"token": _this.token}, 
+						{"Authorization": "Bearer " + _this.token}, 
 						function(frame) {
 							if(_this.roomId != ''){
 
@@ -259,6 +265,9 @@
                 	rooms = this.chatrooms.filter(room => room.id == roomId);
                 	if(rooms.length >= 1){
                 		this.selectedRoom = rooms[0];
+                		console.log('room info : ' + JSON.stringify(this.selectedRoom));
+                		console.log('emp : ' + this.selectedRoom.emp);
+                		console.log('me : ' + this.emp.emp);
                 	}
                     
                     this.roomId = roomId;	// 스페이스 설정.
@@ -362,7 +371,7 @@
                     		
                     	case "READYCOUNT" :	// 대기상담.
 							console.log("READYCOUNT : " + recvData.data.count)
-                    		this.readyRoosmCount = recvData.data.count;
+                    		this.readyRoomCount = recvData.data.count;
 							break;
                     		
 						case "ASSIGNED" :	// 대기상담 받아오기(할당)
@@ -494,6 +503,29 @@
 		            }, function(e){
 		            	document.location.href = '/';
 		            });
+            	},
+            	
+            	// 내 상담으로 가져오기
+            	assignToMe(){
+            		var _this = this;
+					var uri = '/talk/spaces/' + this.roomId + '/manager';
+					var data = {
+						'acting': 11
+					}
+					
+					var header = {
+            			headers: {'Authorization' : 'Bearer ' + this.token, withCredentials: true}
+            		}
+					
+					axios.put(uri, data, this.header).then(response => {
+						// prevent html, allow json array
+						if(response.data.isSuccess == true){
+							alert("내 상담으로 전환되었습니다.");
+							this.findAllRoom();
+						}
+					}, function(e){
+						console.log("error : " + e.message);
+					});
             	},
 
 				// 로그아웃.

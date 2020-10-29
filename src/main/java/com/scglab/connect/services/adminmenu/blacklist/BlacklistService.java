@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.automsg;
+package com.scglab.connect.services.adminmenu.blacklist;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,14 +13,19 @@ import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.customer.Customer;
+import com.scglab.connect.services.customer.CustomerDao;
 
 @Service
-public class AutomsgService {
+public class BlacklistService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private AutomsgDao empDao;
+	private BlacklistDao blacklistDao;
+	
+	@Autowired
+	private CustomerDao customerDao;
 	
 	@Autowired
 	private AuthService authService;
@@ -31,7 +36,7 @@ public class AutomsgService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		List<Map<String, Object>> list = this.empDao.selectAll(params);
+		List<Map<String, Object>> list = this.blacklistDao.selectAll(params);
 		int count = list == null ? 0 : list.size();
 		
 		data.put("total", count);
@@ -40,16 +45,6 @@ public class AutomsgService {
 		return data;
 	}
 	
-	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
-		
-		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.empDao.insert(params);
-		data.put("result", result > 0 ? true : false);
-		return data;
-	}
 	
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
@@ -57,18 +52,13 @@ public class AutomsgService {
 		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.empDao.update(params);
-		data.put("result", result > 0 ? true : false);
-		return data;
-	}
-	
-	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		int result = this.blacklistDao.update(params);
+		if(result > 0) {
+			Customer customer = this.customerDao.findCustomer(params);
+			data.put("customer", customer);
+		}
 		
-		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.empDao.delete(params);
-		data.put("result", result > 0 ? true : false);
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 }

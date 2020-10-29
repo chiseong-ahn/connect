@@ -8,10 +8,19 @@
 		select * 
 		from TemplateAuto 
 		where cid = #{cid}
+		and type = #{type}
+	</select>
+	
+	<!-- 자동메세지 목록 조회 -->
+	<select id="selectOne" parameterType="map" resultType="map">
+		select *
+		from TemplateAuto 
+		where cid = #{cid}
+		and id = #{id}
 	</select>
 	
 	<!-- 자동메세지 정보 등록 -->
-	<insert id="insert" parameterType="map">
+	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		insert into TemplateAuto (cid, type, msg, emp)
 		values (#{cid}, #{type}, #{msg}, #{emp})
 	</insert>
@@ -19,10 +28,7 @@
 	<!-- 자동메세지 정보 수정 -->
 	<update id="update" parameterType="map">
 		update TemplateAuto 
-		set cid = #{cid}, 
-			type = #{type}, 
-			msg = #{msg}, 
-			emp = #{emp} 
+		set msg = #{msg}
 		where id = #{id}
 	</update>
 	

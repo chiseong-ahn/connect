@@ -62,7 +62,6 @@ public class GlobalExceptionHandler {
 		} else {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			e.printStackTrace();
-			
 		}
 		
 		ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), e.getMessage(), e.getStackTrace()[0]);

@@ -150,6 +150,14 @@
 		
 	</select>
 	
+	<!-- 템플릿 조회 -->
+	<select id="selectOne" parameterType="map" resultType="map">
+		select  t.*
+		from Template t
+		where 1=1
+		and id = #{id}
+	</select>
+	
 	<!-- 템플릿 정보 등록 -->
 	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		insert into Template (cid, catesm, emp, ask, askmorp, reply, link, img)

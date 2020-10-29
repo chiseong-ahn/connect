@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.adminmenu.emp.EmpDao;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.external.External;
 import com.scglab.connect.services.external.ExternalInc;
@@ -28,6 +29,9 @@ public class LoginService {
 	
 	@Autowired
 	private AuthDao authDao;
+	
+	@Autowired
+	private EmpDao empDao;
 	
 	private long refreshTokenValidMilisecond = 1000L * 60 * 60 * 24 * 30; // 토큰 유효시간 - 1달. 
 	private long accessTokenValidMilisecond = 1000L * 60 * 60 * 24; // 토큰 유효시간 - 1일. 

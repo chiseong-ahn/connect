@@ -101,12 +101,10 @@
 							and onlyadm = 0
 							and isemp = 0
 						) as oldcustdt, 
-						(
-							select id
-							from Customer
-							where speaker = s.speaker
-						) as cust
+						cu.id as cust,
+						cu.blocktype
 				from v_space s
+					 left outer join Customer cu on (cu.speaker  = s.speaker )
 				where s.cid = #{cid}
 				<choose>
 					<when test='state == "2"'>
@@ -190,7 +188,10 @@
 			   where spc.id = #{spaceId}
 			   and (case when ifnull(#{fromId},-1) <= 0 then spk.id > 0 else spk.id < ifnull(#{fromId}, 0) end)
 			   and spk.onlyadm <= ifnull(#{onlyadm}, 0)
-			   order by spk.id desc limit 20
+			   and spc.cid = #{cid}
+			   and spk.cid = #{cid}
+			   and spk.id >= spc.startid
+			   order by spk.id desc
 			) s
 			order by s.id
 		]]>
@@ -223,7 +224,9 @@
 				 		end
 				 	) as spks
 			 from SpaceHist sh inner join Speak s on sh.startid = s.id left join Emp em on em.id = sh.emp left join Speaker sp on em.speaker = sp.id
-			 where sh.space=ifnull(#{spaceId}, 0) and sh.enddt is not null order by sh.id desc
+			 where sh.space=ifnull(#{spaceId}, 0) and sh.enddt is not null 
+			 and sh.cid = #{cid}
+			 order by sh.id desc
 		]]>
 	</select>
 	
@@ -314,7 +317,7 @@
 					where speaker = s.speaker
 				) as cust
 			from v_space s
-			where id = ifnull(#{emp}, '1')
+			where id = ifnull(#{spaceId}, '1')
 			and (
 				case
 					when ifnull(#{speaker}, '') = '' then iscustomer = 1
@@ -376,7 +379,6 @@
 		and a.state = 0
 		and a.emp is null
 		order by workdate asc
-		limit 1
 	</select>
 	
 	<!-- 스페이스 상태변경.(acting 1-상담진행중 , 2-상담종료, 11-대기 또는 이관, 기타-당겨오기 -->

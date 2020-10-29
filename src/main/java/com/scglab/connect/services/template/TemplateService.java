@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -22,6 +23,9 @@ public class TemplateService {
 	
 	@Autowired
 	private TemplateDao templateDao;
+	
+	@Autowired
+	private MessageService messageService;
 	
 	@Autowired
 	private AuthService authService;
@@ -127,21 +131,27 @@ public class TemplateService {
 				if(params.containsKey("keywords")) {
 					String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
 					this.logger.debug("keywords : " + keywords.toString());
-				
-					for(String keyword : keywords) {
-						params.put("keyword", keyword.trim());
-						this.templateDao.insertTemplateKeyword(params);
+					if(keywords.length > 0) {
+						for(String keyword : keywords) {
+							if(!DataUtils.getSafeValue(keyword).equals("")) {
+								params.put("keyword", keyword.trim());
+								this.templateDao.insertTemplateKeyword(params);
+							}
+						}
 					}
 					
 				}else{
 					this.logger.debug("keywords is nothing!");
 				}
+			Map<String, Object> template = this.templateDao.selectOne(params);
+			data.put("template", template);
+				
 			}else {
 				this.logger.debug("generated key is nothing!");
 			}
 		}
 		
-		data.put("result", result > 0 ? true : false);
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
@@ -161,20 +171,27 @@ public class TemplateService {
 					String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
 					this.logger.debug("keywords : " + keywords.toString());
 				
-					for(String keyword : keywords) {
-						params.put("keyword", keyword.trim());
-						this.templateDao.insertTemplateKeyword(params);
+					if(keywords.length > 0) {
+						for(String keyword : keywords) {
+							if(!DataUtils.getSafeValue(keyword).equals("")) {
+								params.put("keyword", keyword.trim());
+								this.templateDao.insertTemplateKeyword(params);
+							}
+						}
 					}
 					
 				}else{
 					this.logger.debug("keywords is nothing!");
 				}
+				
+				Map<String, Object> template = this.templateDao.selectOne(params);
+				data.put("template", template);
 			}else {
 				this.logger.debug("generated key is nothing!");
 			}
 		}
 		
-		data.put("result", result > 0 ? true : false);
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
@@ -184,8 +201,18 @@ public class TemplateService {
 		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.templateDao.delete(params);
-		data.put("result", result > 0 ? true : false);
+		int result = 0;
+		
+		Map<String, Object> template = this.templateDao.selectOne(params);
+		if(template == null) {
+			Object[] messageParams = new String[1];
+			messageParams[0] = "id = " + DataUtils.getString(params, "id", "");
+			data.put("reason", this.messageService.getMessage("error.update1", messageParams));
+		}else {
+			result = this.templateDao.delete(params);
+		}
+		
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
@@ -203,7 +230,7 @@ public class TemplateService {
 			result = this.templateDao.deleteFavorite(params);
 		}
 		
-		data.put("result", result > 0 ? true : false);
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 }

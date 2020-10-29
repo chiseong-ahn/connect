@@ -16,19 +16,45 @@
 				select * 
 				from CateMd 
 				where cid = #{cid} 
+				<if test='catelg != null and catelg != ""'>
+					and catelg = #{catelg}
+				</if>
 				order by id desc
 			</when>
 			<when test='type == "sm"'>
 				select * 
 				from CateSm 
-				where cid = #{cid} 
+				where cid = #{cid}
+				<if test='catemd != null and catemd != ""'>
+					and catemd = #{catemd}
+				</if> 
 				order by id desc
 			</when>
 		</choose>
 	</select>
 	
+	<select id="selectOne" parameterType="map" resultType="map">
+		<choose>
+			<when test='type == "lg"'>
+				select * 
+				from CateLg 
+				where id= #{id}
+			</when>
+			<when test='type == "md"'>
+				select * 
+				from CateMd 
+				where id= #{id}
+			</when>
+			<when test='type == "sm"'>
+				select * 
+				from CateSm 
+				where id= #{id}
+			</when>
+		</choose>
+	</select>
+	
 	<!-- 답변템플릿 카테고리정보 등록 -->
-	<insert id="insert-lg" parameterType="map">
+	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		<choose>
 			<when test='type == "lg"'>
 				insert into CateLg (name, emp, cid) 
@@ -56,15 +82,13 @@
 			</when>
 			<when test='type == "md"'>
 				update CateMd 
-				set catelg = #{catelg}, 
-					name = #{name}, 
+				set name = #{name}, 
 					emp = #{emp} 
 				where id = #{id}
 			</when>
 			<when test='type == "sm"'>
 				update CateSm 
 				set name = #{name}, 
-					catemd = #{catemd}, 
 					emp = #{emp}
 				where id = #{id}
 			</when>

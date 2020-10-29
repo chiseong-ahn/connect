@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @프로그램 설명 : 공통 DAO 추상 클래스 (기본 CRUD 기능 제공 - 메소드명과 xml의 id와 자동매핑)
  */
 public abstract class CommonDao {
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	protected SqlSession sqlSession;
@@ -35,7 +39,8 @@ public abstract class CommonDao {
 		return this.sqlSession.selectList(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	
-	public <T> T selectOne(Object params){		
+	public <T> T selectOne(Object params){
+		this.logger.debug("selectOne : " + this.getNamespace() + this.getMethodName(new Object() {}.getClass()));
 		return this.sqlSession.selectOne(this.getNamespace() + this.getMethodName(new Object() {}.getClass()), params);
 	}
 	

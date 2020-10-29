@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.stat;
+package com.scglab.connect.services.adminmenu.stat;
 
 import java.util.Map;
 

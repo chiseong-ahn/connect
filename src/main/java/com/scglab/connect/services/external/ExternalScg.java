@@ -51,8 +51,6 @@ public class ExternalScg implements External {
 		User user = new User();
 		user.setCid(1);
 		user.setEmpno(id);
-		
-		
 		return user;
 	}
 
@@ -70,6 +68,12 @@ public class ExternalScg implements External {
 
 	@Override
 	public int sendMinwon() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getHoliday() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -20,6 +20,7 @@ public class ChatMessage {
 	}
 
 	private MessageType type;			// 메시지 타입
+	private long id;
 	private String roomId;				// 방번호
 	private String sender;				// 메시지 보낸사람
 	private long userCount;				// 채팅방 인원수, 채팅방 내에서 메시지가 전달될때 인원수 갱신시 사용
@@ -27,14 +28,19 @@ public class ChatMessage {
 	private String appid;				// 어플리케이션 구분(sdtapp-app, sdtadmin-admin)
 	private int cid;					// 기관구분(1-SCG, 2-INC)
 	private int isemp;					// 상담사여부 (1-상담사)
-	private int speaker;				// 채팅참여자 관리번호.
+	private int isonline;
+	private int startid;
+	private long speaker;				// 채팅참여자 관리번호.
 	private int mtype;					// 미디어타입(1-일반텍스트)
 	private int sysmsg;					// 1-시스템메세지, 2-일반메세지
-	private int notread;				// 메세지 읽지않은 카운트 
+	private int notread;				// 메세지 읽지않은 카운트
+	private int onlyadm;
 	private String msg;					// 메세지 내용.
+	private long userno;
 	private String token;				// 인증 토큰.
+	//private LocalDateTime createdate;
+	//private LocalDateTime workdadate;
 	private Map<String, Object> data;	// 기타 데이터.
-	private LocalDateTime regDt;
 
 	public ChatMessage() {
 		super();

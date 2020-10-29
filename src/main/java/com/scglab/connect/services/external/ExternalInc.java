@@ -13,8 +13,10 @@ public class ExternalInc implements External {
 
 	@Override
 	public User login(String id, String passwd) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = new User();
+		user.setCid(2);
+		user.setEmpno(id);
+		return user;
 	}
 
 	@Override
@@ -31,6 +33,12 @@ public class ExternalInc implements External {
 
 	@Override
 	public int sendMinwon() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getHoliday() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

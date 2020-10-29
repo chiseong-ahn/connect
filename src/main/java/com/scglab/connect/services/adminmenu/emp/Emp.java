@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.emp;
+package com.scglab.connect.services.adminmenu.emp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,20 +15,13 @@ public class Emp implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
-	
 	private int cid;
-	
 	private int speaker;
-	
 	private int auth;
-	
 	private int profileimg;
-	
 	private String empno;
-	
 	private int state;
-	
 	private LocalDateTime createDate;
-	
 	private LocalDateTime workDate;
+	private String name;
 }

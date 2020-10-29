@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.category;
+package com.scglab.connect.services.adminmenu.emp;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +15,12 @@ import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 
 @Service
-public class CategoryService {
+public class EmpService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private CategoryDao categoryDao;
+	private EmpDao empDao;
 	
 	@Autowired
 	private AuthService authService;
@@ -31,8 +31,12 @@ public class CategoryService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		List<Map<String, Object>> list = this.categoryDao.selectAll(params);
-		int count = list == null ? 0 : list.size();
+		List<Emp> list = null;
+	 	int count = this.empDao.selectCount(params);
+	 	
+		if(count > 0) {
+ 			list = this.empDao.selectAll(params);
+		}
 		
 		data.put("total", count);
 		data.put("list", list);
@@ -40,25 +44,60 @@ public class CategoryService {
 		return data;
 	}
 	
-	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Emp object(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+		
+		Emp emp = this.empDao.selectOne(params);
+		
+		return emp;
+	}
+	
+	public Emp selectEmp(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		params.put("cid", user.getCid());
+		
+		Emp emp = this.empDao.selectOneForEmpno(params);
+		
+		return emp;
+	}
+	
+//	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
+//		User user = this.authService.getUserInfo(request);
+//		params.put("cid", user.getCid());
+//		
+//		Map<String, Object> data = new HashMap<String, Object>();
+//		int result = this.empDao.insert(params);
+//		data.put("result", result > 0 ? true : false);
+//		return data;
+//	}
+	
+	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		User user = this.authService.getUserInfo(request);
+		//param.put.setCid(user.getCid());
+		params.put("cid", user.getCid());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.categoryDao.insert(params);
-		data.put("result", result > 0 ? true : false);
+		int result = this.empDao.insert(params);
+		if(result > 0) {
+			Emp emp = this.empDao.selectOneForEmpno(params);
+			data.put("emp", emp);
+		}
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.categoryDao.update(params);
-		data.put("result", result > 0 ? true : false);
+		int result = this.empDao.update(params);
+		if(result > 0) {
+			Emp emp = this.empDao.selectOneForEmpno(params);
+			data.put("emp", emp);
+		}
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
@@ -67,8 +106,8 @@ public class CategoryService {
 		params.put("cid", user.getCid());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.categoryDao.delete(params);
-		data.put("result", result > 0 ? true : false);
+		int result = this.empDao.delete(params);
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 }

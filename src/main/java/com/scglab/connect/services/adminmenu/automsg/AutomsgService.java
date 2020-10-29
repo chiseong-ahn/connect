@@ -1,4 +1,4 @@
-package com.scglab.connect.services.adminMenu.emp;
+package com.scglab.connect.services.adminmenu.automsg;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +15,12 @@ import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 
 @Service
-public class EmpService {
+public class AutomsgService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private EmpDao empDao;
+	private AutomsgDao empDao;
 	
 	@Autowired
 	private AuthService authService;
@@ -31,12 +31,8 @@ public class EmpService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		List<Map<String, Object>> list = null;
-	 	int count = this.empDao.selectCount(params);
-	 	
-		if(count > 0) {
- 			list = this.empDao.selectAll(params);
-		}
+		List<Map<String, Object>> list = this.empDao.selectAll(params);
+		int count = list == null ? 0 : list.size();
 		
 		data.put("total", count);
 		data.put("list", list);
@@ -44,41 +40,46 @@ public class EmpService {
 		return data;
 	}
 	
-	public Map<String, Object> object(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> findOne(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
 		
-		Map<String, Object> object = this.empDao.selectOne(params);
+		Map<String, Object> data = new HashMap<String, Object>();
 		
-		return object;
-	}
-	
-	public Map<String, Object> selectEmp(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Map<String, Object> msg = this.empDao.selectOne(params);
+		data.put("msg", msg);
 		
-		Map<String, Object> object = this.empDao.selectOneForEmpno(params);
-		
-		return object;
+		return data;
 	}
 	
 	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.empDao.insert(params);
-		data.put("result", result > 0 ? true : false);
+		if(result > 0) {
+			Map<String, Object> msg = this.empDao.selectOne(params);
+			data.put("msg", msg);
+		}
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		User user = this.authService.getUserInfo(request);
 		params.put("cid", user.getCid());
+		params.put("emp", user.getEmp());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.empDao.update(params);
-		data.put("result", result > 0 ? true : false);
+		if(result > 0) {
+			Map<String, Object> msg = this.empDao.selectOne(params);
+			data.put("msg", msg);
+		}
+		
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 	
@@ -88,7 +89,7 @@ public class EmpService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.empDao.delete(params);
-		data.put("result", result > 0 ? true : false);
+		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}
 }

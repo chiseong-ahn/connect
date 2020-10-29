@@ -64,5 +64,14 @@ public interface External {
 	 */
 	public int sendMinwon();
 	
-	
+	/**
+	 * 
+	 * @Method Name : getHoliday
+	 * @작성일 : 2020. 10. 26.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 기관 휴일여부 확인.
+	 * @return
+	 */
+	public int getHoliday();
 }

@@ -1,6 +1,4 @@
-package com.scglab.connect.services.adminMenu.emp;
-
-import java.util.Map;
+package com.scglab.connect.services.adminmenu.category;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.scglab.connect.services.common.dao.CommonDao;
 
 @Repository
-public class EmpDao extends CommonDao {
+public class CategoryDao extends CommonDao {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -17,14 +15,11 @@ public class EmpDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "sdtalk.admin.emp.";
+	public String namespace = "sdtalk.admin.category.";
 	
 	@Override
 	protected String getNamespace() {
 		return namespace;
 	}
 	
-	public Map<String, Object> selectOneForEmpno(Map<String, Object> params){
-		return this.sqlSession.selectOne(this.getNamespace() + "selectOneForEmpno", params);
-	}
 }

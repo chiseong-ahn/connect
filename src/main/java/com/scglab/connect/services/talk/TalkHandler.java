@@ -138,17 +138,17 @@ public class TalkHandler {
 		    	params.put("lastid", DataUtils.getLong(space, "lastid", 0));
 		    	params.put("space", roomId);
 		    	params.put("speaker", user.getSpeaker());
-		    	this.talkDao.minusNotread(params);
+		    	//this.talkDao.minusNotread(params);
 		    	
 		    	this.logger.debug("Step. [DB] 스페이스에 상담사 추가.");
-		    	this.talkDao.updateSpaceSpeaker(params);
+		    	//this.talkDao.updateSpaceSpeaker(params);
 		    	
 		    	this.logger.debug("Step. [Socket] 이전 메세지 읽음 알림.");
 		    	chatMessage = new ChatMessage();
 				chatMessage.setType(MessageType.READSEMP);
 				chatMessage.setSender("SYSTEM");
 				chatMessage.setRoomId(roomId);
-				chatMessage.setMsg(this.messageService.getMessage("talk.message.reads"));
+				chatMessage.setMsg(this.messageService.getMessage("talk.reads"));
 				sendPayload(chatMessage);
 				
 			}else {	// 회원일 경우.
@@ -180,7 +180,7 @@ public class TalkHandler {
 						
 					}
 					
-					String startMessage = this.messageService.getMessage("talk.message.start.type" + isWorkType);
+					String startMessage = this.messageService.getMessage("talk.start.type" + isWorkType);
 					chatMessage = new ChatMessage();
 					chatMessage.setType(MessageType.READS);
 					chatMessage.setSender("SYSTEM");
@@ -240,7 +240,9 @@ public class TalkHandler {
 				this.talkDao.updateSpace(params);
 				
 				this.logger.debug("Step. [DB] 웰컴 메세지 생성.");
-				String startMessage = this.messageService.getMessage("talk.message.welcome");
+				Object[] messageParam = new String[1];
+				messageParam[0] = this.messageService.getMessage("company.cid" + user.getCid());
+				String startMessage = this.messageService.getMessage("talk.welcome", messageParam);
 				
 		    	Speak speak = makeSpeak(user.getCid(), (int)roomId, user.getSpeaker(), 0, 0, startMessage, null, 0, (user.getEmp() > 0 ? 1 : 0), null);
 		    	this.logger.debug("Speak : " + speak.toString());
@@ -290,10 +292,11 @@ public class TalkHandler {
     	Speak speak = makeSpeak(user.getCid(), Integer.parseInt(data.getRoomId()), user.getSpeaker(), data.getMtype(), data.getSysmsg(), data.getMsg(), null, 0, (user.getEmp() > 0 ? 1 : 0), null);
     	this.logger.debug("Speak : " + speak.toString());
 
-    	data.setSpeaker(user.getSpeaker());
+    	data.setUserno(user.getUserno());
+    	
     	
     	this.logger.debug("Step. [Socket] 메세지 전달.");
-    	sendPayload(data);
+    	sendPayload(MessageType.MESSAGE, speak);
     	
     	// 고객이 오프라인 and 상담원의 메세지일 경우.
     	if(speak.isIsonline() == false && speak.isIsemp() == true && speak.getOnlyadm() == 0) {
@@ -305,7 +308,7 @@ public class TalkHandler {
     			Customer customer = this.customerDao.selectCustomerInSpace(params);
     			
     			this.logger.debug("Step. [PUSH] 고객이 온라인상태가 아닐경우 푸시메세지 발송");
-    			//this.pushService.sendPush(Integer.parseInt(DataUtils.getString(customer, "userno", "0")), this.messageService.getMessage("talk.message.push"));
+    			//this.pushService.sendPush(Integer.parseInt(DataUtils.getString(customer, "userno", "0")), this.messageService.getMessage("talk.push"));
     		}catch(Exception e) {
     			e.printStackTrace();
     		}
@@ -388,24 +391,29 @@ public class TalkHandler {
 		this.logger.debug("[End] user : " + user);
     	this.logger.debug("[End] message : " + message);
     	
-		if(user.getEmp() > 0) {	// 상담사의 상담종료일 경우.
+    	String endMessage = this.messageService.getMessage("talk.end");
+    	Speak speak = makeSpeak(user.getCid(), Integer.parseInt(message.getRoomId()), user.getSpeaker(), 0, 1, endMessage, null, 0, user.getEmp() > 0 ? 1 : 0, null);
+    	this.logger.debug("Speak : " + speak.toString());
+    	
+		// 채팅방 참여자들에게 상담종료 메세지 전달.
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.setType(MessageType.END);
+		chatMessage.setRoomId(message.getRoomId());
+		chatMessage.setSysmsg(1);
+		chatMessage.setMsg(endMessage);
+		
+		//sendPayload(chatMessage);
+		sendPayload(MessageType.END, speak);
 			
-			
-			
-		}else {	// 고객의 상담종료일 경우.
-			this.logger.debug("Step. [DB] 채팅방 바로 종료처리.");
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("acting", "2");
-			params.put("space", message.getRoomId());
-			this.talkDao.updateSpace(params);
-			
-			this.logger.debug("Step. [DB] 다른 상담원들에게 상담목록 갱신요청 메세지 전송.");
-			sendPayload(MessageType.RELOAD, getLobbySpace(user.getCid()), user.getEmpno(), this.messageService.getMessage("talk.message.reload"));
-			
-			// 로비에 있는 상담사들에게 대기상담 건수 및 목록 갱신 메세지 전달.
-			sendReadyRoomCountMessage(user);
-			sendReloadMessage(user);
-		}
+		this.logger.debug("Step. [DB] 채팅방 바로 종료처리.");
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("acting", "2");
+		params.put("space", message.getRoomId());
+		this.talkDao.updateSpace(params);
+		
+		this.logger.debug("Step. [DB] 다른 상담원들에게 상담목록 및 대기건수 갱신요청 메세지 전송.");
+		sendReadyRoomCountMessage(user);
+		sendReloadMessage(user);
 	}
 	
 	/**
@@ -424,6 +432,7 @@ public class TalkHandler {
     	
 		this.logger.debug("Step. [DB] 이전 상담내역 조회");
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("cid", user.getCid());
 		params.put("spaceId", roomId);
 		List<Map<String, Object>> histories = this.talkDao.history(params);
 		
@@ -465,6 +474,7 @@ public class TalkHandler {
     	
 		this.logger.debug("Step. [DB] 상담 대화내용 조회");
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("cid", user.getCid());
 		params.put("spaceId", roomId);
 		//List<Map<String, Object>> speaks = this.talkDao.speaks(params);
 		List<Speak> speaks = this.talkDao.speaks(params);
@@ -495,7 +505,6 @@ public class TalkHandler {
 			this.talkDao.updateOnline(params);
 			
 			this.logger.debug("Step. [DB] 다른 상담원들에게 상담목록 갱신요청 메세지 전송.");
-			sendPayload(MessageType.RELOAD, roomId, user.getEmpno(), this.messageService.getMessage("talk.message.reload"));
 			sendReloadMessage(user);
 		}
 	}
@@ -511,7 +520,7 @@ public class TalkHandler {
      */
     public void sendReloadMessage(User user) {
     	this.logger.debug("Step. [DB] 다른 상담원들에게 상담목록 갱신요청 메세지 전송.");
-    	sendPayload(MessageType.RELOAD, getLobbySpace(user.getCid()), user.getEmpno(), this.messageService.getMessage("talk.message.reload"));
+    	sendPayload(MessageType.RELOAD, getLobbySpace(user.getCid()), user.getEmpno(), this.messageService.getMessage("talk.reload"));
     }
     
     /**
@@ -560,6 +569,36 @@ public class TalkHandler {
 	public void sendPayload(MessageType type, String roomId, String sender, String message, long count, Map<String, Object> data) {
 		ChatMessage chatMessage = new ChatMessage(type, roomId, sender, message, count, data);
 		sendPayload(chatMessage);
+	}
+	
+	// 메세지 발송 모듈.
+	public void sendPayload(MessageType type, Speak speak) {
+		sendPayload(type, speak, null);	
+	}
+	
+	// 메세지 발송 모듈.
+	public void sendPayload(MessageType type, Speak speak, Map<String, Object> data) {
+		ChatMessage message = new ChatMessage();
+		
+		message.setType(type);
+		message.setCid(speak.getCid());
+		message.setId(speak.getId());
+		message.setIsemp(speak.isIsemp() ? 1 : 0);
+		message.setIsonline(speak.isIsonline() ? 1 : 0);
+		message.setMtype(speak.getMtype());
+		message.setNotread(speak.getNotread());
+		message.setOnlyadm(speak.getOnlyadm());
+		message.setRoomId(Long.toString(speak.getSpace()));
+		message.setSpeaker(speak.getSpeaker());
+		message.setMsg(speak.getMsg());
+		message.setSysmsg(speak.getSysmsg());
+		//message.setCreatedate(speak.getCreateDate());
+		//message.setWorkdadate(speak.getWorkDate());
+		message.setData(data);
+		
+		this.logger.info("Message : " + message);
+		
+		sendPayload(message);		
 	}
 
 	// 메세지 발송 모듈.

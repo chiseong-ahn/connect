@@ -31,7 +31,7 @@ public class OpenApiConfig {
 	   return new OpenAPI()
 	          .components(new Components()
 	          .addSecuritySchemes("bearer-key", 
-	          new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").description("로그인을 통해 발급된 인증토큰을 삽입한다.<br>eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoyLCJzcGVha2VyIjoxNzcsImVtcCI6MSwiZW1wbm8iOiJjc21hc3RlcjEiLCJleHAiOjE2MDI4OTI1MzAsImlhdCI6MTYwMjgwNjEzMCwiY2lkIjoxfQ.yI4Hkr3ZFGngCzQNTCJhws-8-ftWYtNn_3X1GCqwFog")));
+	          new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").description("로그인을 통해 발급된 인증토큰을 삽입한다.<br>eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoyLCJzcGVha2VyIjoxNzcsIm5hbWUiOiLshJzsmrjrj4Tsi5zqsIDsiqQiLCJlbXAiOjEsImVtcG5vIjoiY3NtYXN0ZXIxIiwiZXhwIjoxNjAzODQ1MTgzLCJpYXQiOjE2MDM3NTg3ODMsImNpZCI6MX0.X8BsWZ3g9e3YI4_PukdGyFWVx_YLNcydQhLzbeDT1V8")));
 	}
 	
 	@Bean
@@ -48,7 +48,7 @@ public class OpenApiConfig {
 	
 	@Bean
 	public GroupedOpenApi customer() {
-		String[] paths = { "/customer/**" };
+		String[] paths = { "/customers/**" };
 		return GroupedOpenApi.builder().setGroup("고객(회원) API").pathsToMatch(paths).build();
 	}
 	

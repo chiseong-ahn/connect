@@ -2,9 +2,6 @@ package com.scglab.connect.services.customer;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +38,28 @@ public class CustomerController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="고객 토큰발급", description = "", security = {@SecurityRequirement(name = "bearer-key")})
-    @Parameters({
+	@Parameters({
     	@Parameter(name = "cid", description = "기관코드", required = true, in = ParameterIn.QUERY, example = "1"),
     	@Parameter(name = "userno", description = "회원번호", required = true, in = ParameterIn.QUERY, example = "3825"),
     	@Parameter(name = "name", description = "이름", required = true, in = ParameterIn.QUERY, example = "안치성"),
     	@Parameter(name = "telno", description = "휴대폰번호", required = true, in = ParameterIn.QUERY, example = "01022820317"),
     })
-	public Map<String, Object> token(@Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+	@RequestBody(
+			
+//			{
+//				@Content(mediaType = MediaType.APPLICATION_FORM_URLENCODED_VALUE, schema = @Schema(name = "cid", title = "cid", required = true, example = "1", description = "기관코드")),
+//				@Content(mediaType = MediaType.APPLICATION_FORM_URLENCODED_VALUE, schema = @Schema(name = "userno", title = "userno", required = true, example = "1", description = "회원번호")),
+//		}
+			)
+	public Map<String, Object> token( @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
 		return this.customerService.token(params);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/token2", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="고객 토큰발급", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+	public Map<String, Object> token2(@RequestBody Customer customer) throws Exception {
+		//return this.customerService.token(params);
+		return null;
 	}
 	
 	@Auth

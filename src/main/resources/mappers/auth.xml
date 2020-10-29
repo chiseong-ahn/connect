@@ -4,8 +4,9 @@
 <mapper namespace="sdtalk.auth">
 	
 	<select id="selectOne" parameterType="map" resultType="map">
-		select a.id as emp, a.cid, a.speaker, a.auth, a.empno
+		select a.id as emp, a.cid, a.speaker, a.auth, a.empno, b.name
 		from Emp as a
+			 inner join Speaker as b on (b.id = a.speaker)
 		where 1=1
 		and a.cid = #{cid}
 		and a.empno = #{empno}
