@@ -13,16 +13,17 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.adminmenu.automsg.Automsg;
+import com.scglab.connect.services.adminmenu.automsg.AutomsgDao;
 import com.scglab.connect.services.chat.ChatRoomRepository;
+import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.common.service.PushService;
+import com.scglab.connect.services.company.Company;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
-import com.scglab.connect.services.external.External;
-import com.scglab.connect.services.external.ExternalInc;
-import com.scglab.connect.services.external.ExternalScg;
 import com.scglab.connect.services.talk.ChatMessage.MessageType;
 import com.scglab.connect.utils.DataUtils;
 
@@ -37,6 +38,9 @@ public class TalkHandler {
 	private final ChannelTopic channelTopic;
     private final RedisTemplate redisTemplate;
     private final ChatRoomRepository chatRoomRepository;
+    
+    @Autowired
+    private CommonService commonService;
     
     @Autowired
 	private TalkService talkService;
@@ -56,6 +60,9 @@ public class TalkHandler {
     @Autowired
     private PushService pushService;
     
+    @Autowired
+    private AutomsgDao automsgDao;
+    
     
     
     /**
@@ -72,7 +79,7 @@ public class TalkHandler {
     }
     
     public String getLobbySpace(int cid) {
-    	return Constant.SPACE_LOBBY + "_" + cid;
+    	return Constant.SPACE_LOBBY + cid;
     }
     
     
@@ -117,12 +124,14 @@ public class TalkHandler {
 			
 			params.put("emp", user.getEmp());
 			Map<String, Object> space = this.talkDao.space(params);
+			this.logger.debug("space : " + space);
 			
 			if(user.getEmp() > 0) {	// 관리자(상담사)일 경우.
 				
-				// 상담사가 자기상담에 Join하였다면 다른 상담원들에게 상담목록을 갱신하도록 요청메세지 전송.
-				this.logger.debug("Step. [Socket] 다른 상담원들에게 스페이스 목록 갱신요청.");
-				sendReloadMessage(user);
+				this.logger.debug("Step. [Socket] 상담사가 자기 상담에 Join하였다면 다른 상담원들에게 상담목록 갱신요청.");
+				if(DataUtils.getLong(space, "emp", 0) == user.getEmp()){
+					sendReloadMessage(user);
+				}
 				
 				// 고객 기본정보 전달.
 				customer(user, roomId);
@@ -162,27 +171,20 @@ public class TalkHandler {
 					params.put("isemp", 1);
 					
 					this.logger.debug("Step. 시작메세지 전달.");
-					
-					// 외부 연동클래스.
-					External external = null;
-					if(user.getCid() == 1) {		// 서울도시가스일 경우.
-						external = new ExternalScg();
-					
-					}else if(user.getCid() == 2) {	// 인천도시가스일 경우.
-						external = new ExternalInc();
-					}
-					int isWorkType = external.isWorking();
-					
-					if(isWorkType == 1) {	// 근무중일 경우.
-						
-						// 로비에 상담가능 상담사 존재확인.
-						isWorkType = this.chatRoomRepository.getUserCount(getLobbySpace(user.getCid())) > 0 ? 0 : 1;
-						
-					}
-					
+				
+					this.logger.debug("Step. [Socket] 상담 근수요일 및 근무시간이 아닐경우 안내 메세지 전송.");
+			    	Company company = this.commonService.getCompany(user.getCid());
+			    	
+					// 근무상태 (1-근무 중, 2-근무 외 시간, 3-점심시간.
+			    	int isWorkType = company.isWorking();
+			    	if(isWorkType == 1) {
+			    		// 로비에 상담가능 상담사 존재확인.
+			    		isWorkType = this.chatRoomRepository.getUserCount(getLobbySpace(user.getCid())) > 0 ? 0 : 1;
+			    	}
+			    	
 					String startMessage = this.messageService.getMessage("talk.start.type" + isWorkType);
 					chatMessage = new ChatMessage();
-					chatMessage.setType(MessageType.READS);
+					chatMessage.setType(MessageType.MESSAGE);
 					chatMessage.setSender("SYSTEM");
 					chatMessage.setRoomId(roomId);
 					chatMessage.setMsg(startMessage);
@@ -239,22 +241,16 @@ public class TalkHandler {
 				this.logger.debug("Step. [DB] 대기상담 할당처리.");
 				this.talkDao.updateSpace(params);
 				
-				this.logger.debug("Step. [DB] 웰컴 메세지 생성.");
-				Object[] messageParam = new String[1];
-				messageParam[0] = this.messageService.getMessage("company.cid" + user.getCid());
-				String startMessage = this.messageService.getMessage("talk.welcome", messageParam);
+				this.logger.debug("Step. [DB] 고객에게 웰컴 메세지 조회.");
+				params.put("cid", user.getCid());
+				params.put("type", 0);
+				Automsg welcomeMsg = this.automsgDao.selectRandomOne(params);
 				
-		    	Speak speak = makeSpeak(user.getCid(), (int)roomId, user.getSpeaker(), 0, 0, startMessage, null, 0, (user.getEmp() > 0 ? 1 : 0), null);
+				Speak speak = makeSpeak(user.getCid(), (int)roomId, user.getSpeaker(), 0, 0, welcomeMsg.getMsg(), null, 0, (user.getEmp() > 0 ? 1 : 0), null);
 		    	this.logger.debug("Speak : " + speak.toString());
 				
-				ChatMessage chatMessage = new ChatMessage();
-				chatMessage.setType(MessageType.MESSAGE);
-				chatMessage.setSender(user.getEmpno());
-				chatMessage.setRoomId(Long.toString(roomId));
-				chatMessage.setMsg(startMessage);
-				
-				this.logger.debug("Step. [Socket] 고객에게 웰컴 메세지 전송.");
-				sendPayload(chatMessage);
+		    	this.logger.debug("Step. [Socket] 고객에게 웰컴 메세지 전송.");
+				sendPayload(MessageType.MESSAGE, speak);
 				
 				this.logger.debug("Step. [Socket] 로비에 있는 상담사들에게 대기상담 건수 및 목록 갱신 메세지 전송.");
 				sendReadyRoomCountMessage(user);
@@ -263,11 +259,12 @@ public class TalkHandler {
 				this.logger.debug("Step. [Socket] 해당 상담사에게 할당완료 알림.");
 				Map<String, Object> data2 = new HashMap<String, Object>();
 				data2.put("roomId", roomId);
-				chatMessage = new ChatMessage();
+				ChatMessage chatMessage = new ChatMessage();
 				chatMessage.setType(MessageType.ASSIGNED);
 				chatMessage.setSender(user.getEmpno());
 				chatMessage.setRoomId(getLobbySpace(user.getCid()));
 				chatMessage.setMsg(this.messageService.getMessage("assigned"));
+				chatMessage.setOnlyadm(1);
 				chatMessage.setData(data2);
 				sendPayload(chatMessage);
 			}
@@ -293,7 +290,7 @@ public class TalkHandler {
     	this.logger.debug("Speak : " + speak.toString());
 
     	data.setUserno(user.getUserno());
-    	
+    	 
     	
     	this.logger.debug("Step. [Socket] 메세지 전달.");
     	sendPayload(MessageType.MESSAGE, speak);

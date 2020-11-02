@@ -20,10 +20,10 @@ public class ChatRoomRepository {
 	
 	
     // Redis CacheKeys
-    private static final String CHAT_ROOMS = "CHAT_ROOM"; // 채팅룸 저장
-    public static final String USER_COUNT = "USER_COUNT"; // 채팅룸에 입장한 클라이언트수 저장
-    public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-    public static final String SESSION_TOKEN = "SESSION_TOKEN"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
+    private static final String CHAT_ROOMS = "CHATROOM"; // 채팅룸 저장
+    public static final String USER_COUNT = "USERCOUNT"; // 채팅룸에 입장한 클라이언트수 저장
+    public static final String JOIN_INFO = "JOIN_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
+    public static final String SESSION_TOKEN = "SESSION_TOKEN"; // 채팅룸에 입장한 클라이언트의 sessionId와 Token를 맵핑한 정보 저장
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
@@ -50,6 +50,12 @@ public class ChatRoomRepository {
         return chatRoom;
     }
     
+ // 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
+    public void deleteChatRoom(String name) {
+    	this.logger.info("Delete chat room - " + name);
+        this.hashOpsChatRoom.delete(CHAT_ROOMS, name);
+    }
+    
     // 커넥션한 유저의 토큰 저장.
     public void setUserToken(String sessionId, String token) {
     	this.logger.info("mapping session - token : " + sessionId + " - " + token);
@@ -61,26 +67,30 @@ public class ChatRoomRepository {
     public String getUserToken(String sessionId) {
     	return hashOpsEnterInfo.get(SESSION_TOKEN, sessionId);
     }
+    
+    // 커넥션한 유저 토큰 삭제.
+    public void dropUserToken(String sessionId) {
+    	this.hashOpsEnterInfo.delete(SESSION_TOKEN, sessionId);
+    }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
-    public void setUserEnterInfo(String sessionId, String roomId) {
+    public void setUserJoinInfo(String sessionId, String roomId) {
     	this.logger.info("mapping session - roomId : " + sessionId + " - " + roomId);
     	
-        hashOpsEnterInfo.put(ENTER_INFO, sessionId, roomId);
+        hashOpsEnterInfo.put(JOIN_INFO, sessionId, roomId);
     }
 
     // 유저 세션으로 입장해 있는 채팅방 ID 조회
-    public String getUserEnterRoomId(String sessionId) {
-    	
-    	
-    	String roomId = hashOpsEnterInfo.get(ENTER_INFO, sessionId);
+    public String getUserJoinRoomId(String sessionId) {
+    	String roomId = hashOpsEnterInfo.get(JOIN_INFO, sessionId);
     	this.logger.info("Search chat room[" + sessionId + "] - " + roomId);
         return roomId;
     }
 
     // 유저 세션정보와 맵핑된 채팅방ID 삭제
-    public void removeUserEnterInfo(String sessionId) {
-        hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
+    public void removeUserJoinInfo(String sessionId) {
+    	this.logger.info("Delete join : " + sessionId);
+        hashOpsEnterInfo.delete(JOIN_INFO, sessionId);
     }
 
     // 채팅방 유저수 조회
@@ -96,6 +106,19 @@ public class ChatRoomRepository {
 
     // 채팅방에 입장한 유저수 -1
     public long minusUserCount(String roomId) {
-        return Optional.ofNullable(valueOps.decrement(USER_COUNT + "_" + roomId)).filter(count -> count > 0).orElse(0L);
+    	long result = 0;
+    	if(getUserCount(roomId) > 0) {
+    		result = Optional.ofNullable(this.valueOps.decrement(USER_COUNT + "_" + roomId)).filter(count -> count > 0).orElse(0L);
+    	}
+    	return result;
     }
 }
+
+
+
+
+
+
+
+
+

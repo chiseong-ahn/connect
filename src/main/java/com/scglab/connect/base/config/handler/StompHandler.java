@@ -48,7 +48,7 @@ public class StompHandler implements ChannelInterceptor {
             this.logger.info("StompHandler - sessionId : " + sessionId);
             
             
-            chatRoomRepository.setUserEnterInfo(sessionId, roomId);
+            chatRoomRepository.setUserJoinInfo(sessionId, roomId);
             // 채팅방의 인원수를 +1한다.
             chatRoomRepository.plusUserCount(roomId);
             // 클라이언트 입장 메시지를 채팅방에 발송한다.(redis publish)
@@ -58,14 +58,14 @@ public class StompHandler implements ChannelInterceptor {
         } else if (StompCommand.DISCONNECT == accessor.getCommand()) { // Websocket 연결 종료
             // 연결이 종료된 클라이언트 sesssionId로 채팅방 id를 얻는다.
             String sessionId = (String) message.getHeaders().get("simpSessionId");
-            String roomId = chatRoomRepository.getUserEnterRoomId(sessionId);
+            String roomId = chatRoomRepository.getUserJoinRoomId(sessionId);
             // 채팅방의 인원수를 -1한다.
             chatRoomRepository.minusUserCount(roomId);
             // 클라이언트 퇴장 메시지를 채팅방에 발송한다.(redis publish)
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
             //chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.LEAVE).roomId(roomId).sender(name).build());
             // 퇴장한 클라이언트의 roomId 맵핑 정보를 삭제한다.
-            chatRoomRepository.removeUserEnterInfo(sessionId);
+            chatRoomRepository.removeUserJoinInfo(sessionId);
             this.logger.info("DISCONNECTED {}, {}" + sessionId + roomId);
         }
         return message;

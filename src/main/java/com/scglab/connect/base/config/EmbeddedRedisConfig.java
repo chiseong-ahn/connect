@@ -15,7 +15,7 @@ import redis.embedded.RedisServer;
 
 @Slf4j
 @Profile("local")
-@Configuration
+//@Configuration
 public class EmbeddedRedisConfig {
 	@Value("${spring.redis.port}")
 	private int redisPort;

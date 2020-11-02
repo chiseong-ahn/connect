@@ -149,6 +149,7 @@
                 contracts: [],
                 histories: [],
                 roomId: '',
+                roomCount: 0,
                 selectedRoom: {},
                 header: {},
                 token: '',
@@ -165,7 +166,7 @@
 				init: function(){
 
 					// 기존 연결 해제.
-					this.disconnect();
+					// this.disconnect();
 
 					// 기존 데이터 초기화.
                 	this.messages = [];
@@ -182,29 +183,32 @@
 
 				// 기본 스페이스 연결
 				baseJoin: function(){
-					//this.roomId = this.baseroom;
-	            	//this.connect();
-	            	this.join(this.baseroom);
+					this.join(this.baseroom);
 				},
 
 				// 웹소켓 연결 및 스페이스 구독 설정.
-                connect: function(){
+                connect: function(ws){
+                
+                	// 기존 소켓 연결해제.
+                	this.disconnect();
+                
                 	var _this = this;
                 	
                 	// SockJs 객체 초기화.
                 	var sock = new SockJS(this.wsUri);
                 	
                 	// Stomp 객체 초기화.
-                	this.ws = Stomp.over(sock);
+                	ws = Stomp.over(sock);
+                	this.ws = ws;
                 	
                 	// 웹소켓 연결.
-                	this.ws.connect(
+                	ws.connect(
 						{"Authorization": "Bearer " + _this.token}, 
 						function(frame) {
 							if(_this.roomId != ''){
-
+								console.log('_this connected : ' + ws.connected);
 								// 스페이스(room) 구독.
-								_this.ws.subscribe(
+								ws.subscribe(
 									"/sub/chat/room/"+ _this.roomId, 
 									function(message) {
 										// 수신메세지 처리.
@@ -216,8 +220,10 @@
 							}
 	                    
 	                	}, function(error) {
-	                    	alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
-	                    	location.href="/";
+	                    	//alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
+	                    	setTimeout(function(){
+	                    		document.location.href = "/";
+	                    	}, 1000);
 	                	}
 					);
                 },
@@ -225,6 +231,7 @@
 				// 소켓 연결해제.
                 disconnect: function(){
                 	if(this.ws != undefined){
+                		console.log('this.ws : ' + this.ws.connected);
                 		if(this.ws.connected){
                 			this.ws.disconnect();
 	                	}
@@ -271,7 +278,7 @@
                 	}
                     
                     this.roomId = roomId;	// 스페이스 설정.
-                    this.connect();			// 스페이스 소켓 연결 및 구독.
+                    this.connect(this.ws);			// 스페이스 소켓 연결 및 구독.
                 },
                 
                 // 스페이스 나가기
@@ -421,6 +428,7 @@
 							
 						case "END" : 		// 상담 종료.
 							break;
+							this.init();
                     
                     }
                 },
@@ -488,7 +496,7 @@
             			if(response.data){
             				this.emp = response.data;
             				console.log(JSON.stringify(this.emp));
-            				this.baseroom = this.baseroom + "_" + this.emp.cid;
+            				this.baseroom = this.baseroom + this.emp.cid;
 							console.log("baseroom : " + this.baseroom)
 							//this.findAllRoom();
 

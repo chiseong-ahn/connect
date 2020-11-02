@@ -1,4 +1,4 @@
-package com.scglab.connect.services.external;
+package com.scglab.connect.services.company;
 
 import java.util.Calendar;
 
@@ -9,7 +9,7 @@ import com.scglab.connect.services.common.auth.User;
 
 import lombok.RequiredArgsConstructor;
 
-public class ExternalScg implements External {
+public class CompanyScg implements Company {
 	
 	@Override
 	public int isWorking() {

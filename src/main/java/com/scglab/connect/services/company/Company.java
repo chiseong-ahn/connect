@@ -1,9 +1,9 @@
-package com.scglab.connect.services.external;
+package com.scglab.connect.services.company;
 
 import com.scglab.connect.services.common.auth.Contract;
 import com.scglab.connect.services.common.auth.User;
 
-public interface External {
+public interface Company {
 	
 	/**
 	 * 
