@@ -15,6 +15,8 @@ server:
       enabled: false
     
 spring:
+  application:
+    name: 상담톡 v2.0 
   banner:
     charset: UTF-8
     location: 'classpath:config/banner.txt'
@@ -30,6 +32,16 @@ spring:
     cache: false
   jwt:
     secret: #@SCGLAB_SDTALK__$$
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  metrics:
+    tags:
+      application: ${spring.application.name}  
+
 
 logging:
   config: 'classpath:config/logback-dev.xml'
@@ -80,7 +92,7 @@ spring:
     suffix: .ftl
   
 server:
-  port: 8080
+  port: 8081
   
 domain:
   sdtalk: localhost.gasapp.co.kr
@@ -89,6 +101,50 @@ domain:
   
 path:
   upload: /Volumes/Data/_upload
+  
+---
+# 로컬환경 
+spring:
+  profiles: local2
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  datasource:
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: 'jdbc:log4jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      username: cstalk
+      password: cstalk12#$
+      idle-timeout: 10000
+      connection-timeout: 300000
+      maximumPoolSize: 10
+      minimum-idle: 5
+      max-lifetime: 60000
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  redis:
+    host: localhost
+    port: 6379
+  freemarker:
+    template-loader-path: 'classpath:/templates'
+    suffix: .ftl
+  
+server:
+  port: 8082
+  
+domain:
+  sdtalk: localhost.gasapp.co.kr
+  mobileapi: msc-dev.seoulgas.co.kr
+  relay: relay-scg.gasapp.co.kr
+  
+path:
+  upload: /Volumes/Data/_upload
+  
+
   
 ---
 # 개발환경 
