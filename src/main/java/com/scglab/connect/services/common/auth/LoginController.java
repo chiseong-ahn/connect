@@ -18,7 +18,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -36,9 +41,12 @@ public class LoginController {
 	@RequestMapping(method = RequestMethod.POST, value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="로그인", description = "아이디 비밀번호를 통해 로그인한다.")
 	@Parameters({
-		@Parameter(name = "cid", description = "", required = true, in = ParameterIn.QUERY, example = "1"),
-		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csmaster1"),
+		@Parameter(name = "cid", description = "", required = true, in = ParameterIn.QUERY, example = "2"),
+		@Parameter(name = "empno", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csahn"),
 		@Parameter(name = "passwd", description = "비밀번호", required = true, in = ParameterIn.QUERY, example = "1212")
+	})
+	@ApiResponse(responseCode = "200", description = "OK", content = {
+		@Content(schema = @Schema(oneOf = User.class)),
 	})
 	public Map<String, Object> login(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.loginService.login(params, request, response);

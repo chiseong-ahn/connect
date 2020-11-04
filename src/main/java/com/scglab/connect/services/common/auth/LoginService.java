@@ -104,6 +104,7 @@ public class LoginService {
 			
 			data.put("login", true);
 			data.put("accessToken", accessToken);
+			data.put("user", user);
 //			data.put("refreshToken", refreshToken);
 		}
 		return data;
