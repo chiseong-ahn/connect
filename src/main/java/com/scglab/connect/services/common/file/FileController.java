@@ -1,7 +1,11 @@
 package com.scglab.connect.services.common.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -9,7 +13,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.scglab.connect.base.annotatios.Auth;
+import com.scglab.connect.properties.PathProperties;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +39,27 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class FileController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private PathProperties pathProperty;
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/download")
+	@Operation(summary = "파일 다운로드", description = "파일을 다운로드 한다.")
+	public ResponseEntity<Resource> download() throws IOException {
+		
+		// 파일 경로
+		Path path = Paths.get("/Users/anchiseong/Downloads/test1.jpg");
+		String contentType = Files.probeContentType(path);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + path.getFileName().toString());
+		headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+
+		Resource resource = new InputStreamResource(Files.newInputStream(path));
+		
+		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+	}
+	
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,14 +77,15 @@ public class FileController {
 			String saveFileName = md5Generator(originFileName).toString();
 			
 			// 실제 저장할 파일경로.
-			String savePath = "";
+			String savePath = pathProperty.getUpload();
 			
 			// 저장할 디렉토리가 존재하지 않으면 생성.
 			if (!new File(savePath).exists()) {
 				try {
 					new File(savePath).mkdir();
 				} catch (Exception e) {
-					e.getStackTrace();
+					//e.getStackTrace();
+					throw new Exception(e);
 				}
 			}
 			
@@ -69,7 +102,8 @@ public class FileController {
 			this.logger.debug("file : " + obj.toString());
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			throw new Exception(e);
 		}
 		return obj;
 	}

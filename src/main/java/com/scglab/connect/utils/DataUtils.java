@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class DataUtils {
 	
 	public static String getParameter(HttpServletRequest request, String name, String defaultValue) {
@@ -97,6 +99,12 @@ public class DataUtils {
 		}
 		
 		return value.trim();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> convertMap(Object object){
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.convertValue(object, Map.class);
 	}
 	
 	
