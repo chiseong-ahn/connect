@@ -15,16 +15,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.adminmenu.automsg.Automsg;
 import com.scglab.connect.services.adminmenu.automsg.AutomsgDao;
-import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.CommonService;
-import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.common.service.PushService;
 import com.scglab.connect.services.company.Company;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
-import com.scglab.connect.services.talk.ChatMessage.MessageType;
+import com.scglab.connect.services.talk.TalkMessage.MessageType;
 import com.scglab.connect.utils.DataUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -43,13 +41,7 @@ public class TalkHandler {
     private CommonService commonService;
     
     @Autowired
-	private TalkService talkService;
-    
-    @Autowired
 	private TalkDao talkDao;
-    
-    @Autowired
-	private AuthService authService;
     
     @Autowired
     private CustomerDao customerDao;
@@ -63,26 +55,19 @@ public class TalkHandler {
     @Autowired
     private AutomsgDao automsgDao;
     
-    
-    
     /**
      * 
-     * @Method Name : connected
-     * @작성일 : 2020. 10. 20.
+     * @Method Name : getLobbySpace
+     * @작성일 : 2020. 11. 6.
      * @작성자 : anchiseong
      * @변경이력 : 
-     * @Method 설명 : 소켓 연결.
-     * @param user
+     * @Method 설명 : cid에 맞는 Lobby space명 반환 
+     * @param cid
+     * @return
      */
-    public void connected(User user) {
-    	
-    }
-    
     public String getLobbySpace(int cid) {
     	return Constant.SPACE_LOBBY + cid;
     }
-    
-    
     
     
     /**
@@ -100,7 +85,7 @@ public class TalkHandler {
 		
 		this.logger.debug("---------------------------------------------------------------------");
 
-		ChatMessage chatMessage;
+		TalkMessage talkMessage;
 		
 		this.logger.debug("roomId : " + roomId);
 		this.logger.debug("lobby : " + getLobbySpace(user.getCid()));
@@ -115,12 +100,12 @@ public class TalkHandler {
 			this.talkDao.join(params);
 			
 			// 채팅방 참여자들에게 Join 메세지 전송.
-			chatMessage = new ChatMessage();
-			chatMessage.setType(MessageType.JOIN);
-			chatMessage.setRoomId(roomId);
-			chatMessage.setMsg(user.getSpeaker() + "님이 연결되었습니다.");
-			chatMessage.setUserCount(this.chatRoomRepository.getUserCount(roomId));
-			sendPayload(chatMessage);
+			talkMessage = new TalkMessage();
+			talkMessage.setType(MessageType.JOIN);
+			talkMessage.setRoomId(roomId);
+			talkMessage.setMsg(user.getSpeaker() + "님이 연결되었습니다.");
+			talkMessage.setUserCount(this.chatRoomRepository.getUserCount(roomId));
+			sendPayload(talkMessage);
 			
 			params.put("emp", user.getEmp());
 			Map<String, Object> space = this.talkDao.space(params);
@@ -153,12 +138,12 @@ public class TalkHandler {
 		    	//this.talkDao.updateSpaceSpeaker(params);
 		    	
 		    	this.logger.debug("Step. [Socket] 이전 메세지 읽음 알림.");
-		    	chatMessage = new ChatMessage();
-				chatMessage.setType(MessageType.READSEMP);
-				chatMessage.setSender("SYSTEM");
-				chatMessage.setRoomId(roomId);
-				chatMessage.setMsg(this.messageService.getMessage("talk.reads"));
-				sendPayload(chatMessage);
+		    	talkMessage = new TalkMessage();
+				talkMessage.setType(MessageType.READSEMP);
+				talkMessage.setSender("SYSTEM");
+				talkMessage.setRoomId(roomId);
+				talkMessage.setMsg(this.messageService.getMessage("talk.reads"));
+				sendPayload(talkMessage);
 				
 			}else {	// 회원일 경우.
 				
@@ -183,12 +168,12 @@ public class TalkHandler {
 			    	}
 			    	
 					String startMessage = this.messageService.getMessage("talk.start.type" + isWorkType);
-					chatMessage = new ChatMessage();
-					chatMessage.setType(MessageType.MESSAGE);
-					chatMessage.setSender("SYSTEM");
-					chatMessage.setRoomId(roomId);
-					chatMessage.setMsg(startMessage);
-					sendPayload(chatMessage);
+					talkMessage = new TalkMessage();
+					talkMessage.setType(MessageType.MESSAGE);
+					talkMessage.setSender("SYSTEM");
+					talkMessage.setRoomId(roomId);
+					talkMessage.setMsg(startMessage);
+					sendPayload(talkMessage);
 				}
 				
 				this.logger.debug("Step. [DB] 채팅방 상태(회원접속상태)를 온라인으로 변경한다.");
@@ -220,7 +205,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param data
 	 */
-	public void assign(User user, ChatMessage data) {
+	public void assign(User user, TalkMessage data) {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		
@@ -259,14 +244,14 @@ public class TalkHandler {
 				this.logger.debug("Step. [Socket] 해당 상담사에게 할당완료 알림.");
 				Map<String, Object> data2 = new HashMap<String, Object>();
 				data2.put("roomId", roomId);
-				ChatMessage chatMessage = new ChatMessage();
-				chatMessage.setType(MessageType.ASSIGNED);
-				chatMessage.setSender(user.getEmpno());
-				chatMessage.setRoomId(getLobbySpace(user.getCid()));
-				chatMessage.setMsg(this.messageService.getMessage("assigned"));
-				chatMessage.setOnlyadm(1);
-				chatMessage.setData(data2);
-				sendPayload(chatMessage);
+				TalkMessage talkMessage = new TalkMessage();
+				talkMessage.setType(MessageType.ASSIGNED);
+				talkMessage.setSender(user.getEmpno());
+				talkMessage.setRoomId(getLobbySpace(user.getCid()));
+				talkMessage.setMsg(this.messageService.getMessage("assigned"));
+				talkMessage.setOnlyadm(1);
+				talkMessage.setData(data2);
+				sendPayload(talkMessage);
 			}
 		}
 	}
@@ -282,7 +267,7 @@ public class TalkHandler {
      * @param data
 	 * @throws JsonProcessingException 
      */
-    public void message(User user, ChatMessage data) {
+    public void message(User user, TalkMessage data) {
     	this.logger.debug("---------------------------------------------------------------------");
 
     	this.logger.debug("Step. [DB] 메세지 생성.");
@@ -367,7 +352,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param roomId
 	 */
-	public void leave(User user, ChatMessage message) {
+	public void leave(User user, TalkMessage message) {
 		this.logger.debug("[leave] user : " + user);
     	this.logger.debug("[leave] message : " + message);
     	sendReloadMessage(user);
@@ -384,7 +369,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param message
 	 */
-	public void end(User user, ChatMessage message) {
+	public void end(User user, TalkMessage message) {
 		this.logger.debug("[End] user : " + user);
     	this.logger.debug("[End] message : " + message);
     	
@@ -393,13 +378,13 @@ public class TalkHandler {
     	this.logger.debug("Speak : " + speak.toString());
     	
 		// 채팅방 참여자들에게 상담종료 메세지 전달.
-		ChatMessage chatMessage = new ChatMessage();
-		chatMessage.setType(MessageType.END);
-		chatMessage.setRoomId(message.getRoomId());
-		chatMessage.setSysmsg(1);
-		chatMessage.setMsg(endMessage);
+		TalkMessage talkMessage = new TalkMessage();
+		talkMessage.setType(MessageType.END);
+		talkMessage.setRoomId(message.getRoomId());
+		talkMessage.setSysmsg(1);
+		talkMessage.setMsg(endMessage);
 		
-		//sendPayload(chatMessage);
+		//sendPayload(talkMessage);
 		sendPayload(MessageType.END, speak);
 			
 		this.logger.debug("Step. [DB] 채팅방 바로 종료처리.");
@@ -439,6 +424,16 @@ public class TalkHandler {
 		sendPayload(MessageType.PREHISTORY, roomId, user.getEmpno(), "", data);
 	}
 	
+	/**
+	 * 
+	 * @Method Name : customer
+	 * @작성일 : 2020. 11. 6.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객 정보 조회.
+	 * @param user
+	 * @param roomId
+	 */
 	public void customer(User user, String roomId) {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -537,16 +532,16 @@ public class TalkHandler {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("count", count);
 			
-			ChatMessage chatMessage = new ChatMessage();
-	    	chatMessage.setType(MessageType.READYCOUNT);
-	    	chatMessage.setCid(user.getCid());
-	    	chatMessage.setRoomId(getLobbySpace(user.getCid()));
-	    	chatMessage.setAppid("sdtadm");
-	    	chatMessage.setMsg("");
-	    	chatMessage.setData(result);
+			TalkMessage talkMessage = new TalkMessage();
+	    	talkMessage.setType(MessageType.READYCOUNT);
+	    	talkMessage.setCid(user.getCid());
+	    	talkMessage.setRoomId(getLobbySpace(user.getCid()));
+	    	talkMessage.setAppid("sdtadm");
+	    	talkMessage.setMsg("");
+	    	talkMessage.setData(result);
 	    	
 	    	this.logger.debug("Step. [Socket] 상담원들에게 대기상담 알림.");
-	    	sendPayload(chatMessage);
+	    	sendPayload(talkMessage);
 		}
 	}
 	
@@ -564,8 +559,8 @@ public class TalkHandler {
 	}
 	
 	public void sendPayload(MessageType type, String roomId, String sender, String message, long count, Map<String, Object> data) {
-		ChatMessage chatMessage = new ChatMessage(type, roomId, sender, message, count, data);
-		sendPayload(chatMessage);
+		TalkMessage talkMessage = new TalkMessage(type, roomId, sender, message, count, data);
+		sendPayload(talkMessage);
 	}
 	
 	// 메세지 발송 모듈.
@@ -575,7 +570,7 @@ public class TalkHandler {
 	
 	// 메세지 발송 모듈.
 	public void sendPayload(MessageType type, Speak speak, Map<String, Object> data) {
-		ChatMessage message = new ChatMessage();
+		TalkMessage message = new TalkMessage();
 		
 		message.setType(type);
 		message.setCid(speak.getCid());
@@ -599,7 +594,7 @@ public class TalkHandler {
 	}
 
 	// 메세지 발송 모듈.
-	public void sendPayload(ChatMessage message) {
+	public void sendPayload(TalkMessage message) {
 		this.redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 	}
 }

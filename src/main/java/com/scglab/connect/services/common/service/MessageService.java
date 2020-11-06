@@ -67,6 +67,8 @@ public class MessageService {
 	
 	public String getMessage(String code, Object[] parameters, Locale locale) {
 		
+		this.logger.debug("Message [" + code + ", " + locale);
+		
 		// 파라미터 확인.
 		if(parameters != null) {
 			if(parameters.length > 0) {

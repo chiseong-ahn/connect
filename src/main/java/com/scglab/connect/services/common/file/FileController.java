@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.scglab.connect.base.annotatios.Auth;
+import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.properties.PathProperties;
 
 import io.swagger.v3.oas.annotations.Operation;

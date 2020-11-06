@@ -3,9 +3,9 @@ package com.scglab.connect.services.company;
 import java.util.Calendar;
 
 import com.scglab.connect.constant.Constant;
-import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.Contract;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.talk.ChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 

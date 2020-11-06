@@ -1,4 +1,4 @@
-package com.scglab.connect.base.annotatios;
+package com.scglab.connect.base.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

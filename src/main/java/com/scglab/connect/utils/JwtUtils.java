@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scglab.connect.base.exception.UnauthorizedException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -61,6 +63,7 @@ public class JwtUtils {
     		Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
     		isValid = true;
     	}catch(Exception e) {
+    		throw new UnauthorizedException("error.auth.type2");
     	}
         return isValid;
     }
@@ -68,23 +71,8 @@ public class JwtUtils {
     private Jws<Claims> getClaims(String jwt) {
         try {
         	return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
-        } catch (SignatureException ex) {
-            this.logger.error("Invalid JWT signature");
-            throw ex;
-        } catch (MalformedJwtException ex) {
-        	this.logger.error("Invalid JWT token");
-            throw ex;
-        } catch (ExpiredJwtException ex) {
-        	this.logger.error("Expired JWT token");
-            throw ex;
-        } catch (UnsupportedJwtException ex) {
-        	this.logger.error("Unsupported JWT token");
-            throw ex;
-        } catch (IllegalArgumentException ex) {
-        	this.logger.error("JWT claims string is empty.");
-            throw ex;
         } catch (Exception ex) {
-        	throw ex;
+        	throw new UnauthorizedException("error.auth.type2");
         }
     }
 }

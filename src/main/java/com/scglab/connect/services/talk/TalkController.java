@@ -16,24 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.scglab.connect.base.annotatios.Auth;
-import com.scglab.connect.services.chat.ChatRoomRepository;
-import com.scglab.connect.services.chat.JwtTokenProvider;
+import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.talk.ChatMessage.MessageType;
+import com.scglab.connect.services.talk.TalkMessage.MessageType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/talk")
 @Tag(name = "상담 채팅", description = "상담 채팅")
@@ -49,9 +44,6 @@ public class TalkController {
 	
 	@Autowired
 	private TalkHandler talkHandler;
-	
-	private final JwtTokenProvider jwtTokenProvider;
-    private final ChatRoomRepository chatRoomRepository;
     
     @Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/minwons", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -173,7 +165,7 @@ public class TalkController {
 	
 	
 	@MessageMapping("/talk/message")
-    public void talkMessage(ChatMessage message) {
+    public void talkMessage(TalkMessage message) {
 		
 		User user = this.authService.getUserInfo(message.getToken());
 		

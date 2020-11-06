@@ -12,9 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.scglab.connect.base.annotatios.Auth;
+import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.base.exception.UnauthorizedException;
 import com.scglab.connect.services.common.auth.AuthService;
+import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.JwtUtils;
 
@@ -28,6 +29,12 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		
+		String uri = request.getRequestURI();
+		if(uri.indexOf(".js") > -1 || uri.indexOf(".css") > -1 || uri.indexOf(".map") > -1) {
+			return true;
+		}
+		
 		return isAccess(request, handler);
 	}
 	
@@ -36,7 +43,9 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 		Auth auth = null;
 		try {
 			auth = ((HandlerMethod)handler).getMethodAnnotation(Auth.class);
-		}catch(Exception e) {}
+		}catch(Exception e) {
+			auth = null;
+		}
 		
 		if(auth != null) {
 			// 로그인이 되어야 있어야 진행되는 라우팅.
@@ -44,7 +53,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			String accessToken = getAccessToken(request);
 			if(accessToken.equals("")) {
 				// 인증토큰이 존재하지 않을경우.
-				throw new UnauthorizedException("AccessToken is nothing!");
+				throw new UnauthorizedException("error.auth.type1");
 			}
 			
 			JwtUtils jwtUtils = new JwtUtils();
@@ -52,7 +61,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			
 			if(!jwtUtils.validateToken(accessToken)) {
 				// 토큰이 유효하지 않거나 만료된 경우.
-				throw new UnauthorizedException("Invalid credentials");
+				throw new UnauthorizedException("error.auth.type2");
 			}
 			
 			Map<String, Object> claims = jwtUtils.getJwtData(accessToken);

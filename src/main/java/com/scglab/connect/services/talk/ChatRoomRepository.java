@@ -1,4 +1,4 @@
-package com.scglab.connect.services.chat;
+package com.scglab.connect.services.talk;
 
 import lombok.RequiredArgsConstructor;
 

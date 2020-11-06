@@ -17,9 +17,9 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import com.scglab.connect.base.interceptor.CommonInterceptor;
-import com.scglab.connect.services.chat.ChatRoomRepository;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.talk.ChatRoomRepository;
 import com.scglab.connect.services.talk.TalkHandler;
 import com.scglab.connect.services.talk.TalkService;
 
