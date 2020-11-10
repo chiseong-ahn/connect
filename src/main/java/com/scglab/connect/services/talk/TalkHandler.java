@@ -22,6 +22,7 @@ import com.scglab.connect.services.common.service.PushService;
 import com.scglab.connect.services.company.Company;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
+import com.scglab.connect.services.talk.MessageVo.MsgType;
 import com.scglab.connect.services.talk.TalkMessage.MessageType;
 import com.scglab.connect.utils.DataUtils;
 
@@ -89,6 +90,14 @@ public class TalkHandler {
 		
 		this.logger.debug("roomId : " + roomId);
 		this.logger.debug("lobby : " + getLobbySpace(user.getCid()));
+		
+		
+//		Map<String, Object> data = new HashMap<String, Object>();
+//		data.put("test1", "111");
+//		data.put("test2", "222");
+//		data.put("test3", "333");
+//		sendData(MsgType.JOINED, roomId, user.getCid(), user.getEmp(), 0, data);
+				
 		
 		if(!roomId.equals(getLobbySpace(user.getCid()))) {
 			
@@ -174,6 +183,8 @@ public class TalkHandler {
 					talkMessage.setRoomId(roomId);
 					talkMessage.setMsg(startMessage);
 					sendPayload(talkMessage);
+					
+					sendReloadMessage(user);
 				}
 				
 				this.logger.debug("Step. [DB] 채팅방 상태(회원접속상태)를 온라인으로 변경한다.");
@@ -597,4 +608,21 @@ public class TalkHandler {
 	public void sendPayload(TalkMessage message) {
 		this.redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 	}
+	
+	// 새로운 메세지 발송 처리.
+	public void sendData(MsgType msgType, String roomId, int cid, int isemp, int userno, Object data) {
+		MessageVo message = new MessageVo();
+		message.setMsgType(msgType);
+		message.setRoomId(roomId);
+		message.setCid(cid);
+		message.setIsemp(isemp);
+		message.setUserno(userno);
+		message.setData(data);
+		
+		this.logger.debug("sendData - " + message.toString());
+		
+		this.redisTemplate.convertAndSend(channelTopic.getTopic(), message);
+	}
+	
+	
 }

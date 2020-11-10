@@ -103,9 +103,6 @@ public class TalkService {
 		Map<String, Object> result = httpUtils.postApi(url, data, httpHeaders);
 		this.logger.debug(result.toString());
 		
-		//POST 
-		
-		
 		return data;
 	}
 	

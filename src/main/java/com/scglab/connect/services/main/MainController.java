@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.scglab.connect.properties.JwtProperties;
 import com.scglab.connect.services.common.service.MessageService;
 
 @Controller
@@ -20,6 +21,9 @@ public class MainController {
 	
 	@Autowired
 	private MessageService messageService;
+	
+	@Autowired
+	private JwtProperties jwtProperties;
 	
 	@RequestMapping(method = RequestMethod.GET, name = "main", value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String main(HttpServletRequest request, HttpServletResponse response) {
@@ -34,6 +38,16 @@ public class MainController {
 	@RequestMapping(method = RequestMethod.GET, name = "관리자메뉴 > 계정관리", value = "/admin/emp", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String adminEmp(HttpServletRequest request, HttpServletResponse response) {
 		return "admin/emp";
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, name = "main", value = "/jwt", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String jwt(HttpServletRequest request, HttpServletResponse response) {
+		
+		this.logger.debug("jwt secretkey : " + this.jwtProperties.getSecretKey());
+		this.logger.debug("jwt admin valid time : " + this.jwtProperties.getValidTimeAdmin());
+		this.logger.debug("jwt customer valid time : " + this.jwtProperties.getValidTimeCustomer());
+		
+		return null;
 	}
 	
 }
