@@ -1,4 +1,4 @@
-package com.scglab.connect.base.config;
+package com.scglab.connect.base.websocket;
 
 import java.util.List;
 import java.util.Map;

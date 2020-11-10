@@ -1,4 +1,4 @@
-package com.scglab.connect.base.config;
+package com.scglab.connect.base.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

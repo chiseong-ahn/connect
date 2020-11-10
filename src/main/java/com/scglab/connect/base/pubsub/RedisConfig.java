@@ -1,4 +1,4 @@
-package com.scglab.connect.base.config;
+package com.scglab.connect.base.pubsub;
 
 
 import org.springframework.context.annotation.Bean;
@@ -10,8 +10,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import com.scglab.connect.base.pubsub.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,9 +29,7 @@ public class RedisConfig {
      * redis에 발행(publish)된 메시지 처리를 위한 리스너 설정
      */
     @Bean
-    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory,
-                                                              MessageListenerAdapter listenerAdapter,
-                                                              ChannelTopic channelTopic) {
+    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter, ChannelTopic channelTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(listenerAdapter, channelTopic);
