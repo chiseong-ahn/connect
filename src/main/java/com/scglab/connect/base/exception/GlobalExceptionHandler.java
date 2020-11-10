@@ -24,11 +24,6 @@ public class GlobalExceptionHandler {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	private final static String EXCEPTION_CODE_NULL_POINT = "A001";
-	private final static String EXCEPTION_CODE_ARITHMETIC = "B001";
-	private final static String EXCEPTION_CODE_NOT_FOUND = "C001";
-	private final static String EXCEPTION_CODE_UNKNOWN = "Z001";
-	
 	@Autowired
 	private MessageService messageService;
 	

@@ -21,10 +21,10 @@ import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.talk.ChatRoomRepository;
 import com.scglab.connect.services.talk.TalkHandler;
-import com.scglab.connect.services.talk.TalkService;
 
 import lombok.RequiredArgsConstructor;
 
+@SuppressWarnings(value = {"unused", "unchecked", "rawtypes"})
 @RequiredArgsConstructor
 @Component
 public class WebSocketEventListener {
@@ -34,9 +34,6 @@ public class WebSocketEventListener {
 
 	@Autowired
 	private SimpMessageSendingOperations messagingTemplate;
-
-	@Autowired
-	private TalkService talkService;
 
 	@Autowired
 	private TalkHandler talkHandler;

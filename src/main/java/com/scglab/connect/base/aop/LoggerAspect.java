@@ -5,15 +5,16 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import ch.qos.logback.classic.Logger;
 
 @Component
 @Aspect
 public class LoggerAspect {
-protected final Logger logger = (Logger) LoggerFactory.getLogger(getClass());
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Pointcut("execution(* com.scglab.connect..*Controller.*(..))")
 	public void controllerPointcut(){}
