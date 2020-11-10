@@ -32,8 +32,12 @@ spring:
     encoding: UTF-8
   freemarker:
     cache: false
-  jwt:
-    secret: #@SCGLAB_SDTALK__$$
+
+# Jsonwebtoken  
+jwt:
+  secret-key: '#@SCGLAB_SDTALK__$$'
+  validtime-admin: 86400 
+  validtime-customer: 86400
 
 # Prometheus 설정.
 management:
