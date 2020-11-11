@@ -19,6 +19,8 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import com.scglab.connect.base.interceptor.CommonInterceptor;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.talk.ChatRoomRepository;
 import com.scglab.connect.services.talk.TalkHandler;
 
@@ -40,6 +42,9 @@ public class WebSocketEventListener {
 
 	@Autowired
 	private AuthService authService;
+	
+	@Autowired
+	private LoginService loginService;
 
 	/**
 	 * 
@@ -103,11 +108,11 @@ public class WebSocketEventListener {
 		String token = getToken(sessionId, headerAccessor);
 		this.logger.info("token : " + token);
 
-		User user = this.authService.getUserInfo(token);
-		this.logger.info("user : " + user);
+		Profile profile = this.loginService.getProfile(token);
+		this.logger.info("profile : " + profile);
 
 		// if(!roomId.equals(this.talkHandler.getLobbySpace(user.getCid()))) {
-		this.talkHandler.join(user, roomId);
+		this.talkHandler.join(profile, roomId);
 		// }
 	}
 
@@ -132,11 +137,11 @@ public class WebSocketEventListener {
 			String roomId = getRoomId(this.chatRoomRepository.getUserJoinRoomId(sessionId));
 
 			String token = this.chatRoomRepository.getUserToken(sessionId);
-			User user = this.authService.getUserInfo(token);
-			this.logger.debug("user : " + user.toString());
+			Profile profile = this.loginService.getProfile(token);
+			this.logger.debug("profile : " + profile.toString());
 
-			if (user.getUserno() > 0) {
-				this.talkHandler.disconnected(user, roomId);
+			if (profile.getIsAdmin() == 0) {
+				this.talkHandler.disconnected(profile, roomId);
 			}
 			
 			// 채팅방의 인원수 -1.
