@@ -29,7 +29,7 @@ public class LoggerAspect {
 	public void beforeController(JoinPoint jp){
 		String className = jp.getTarget().getClass().getName();
 		String methodName = jp.getSignature().getName();
-		this.logger.debug(className + "." + methodName + " Before ==========================================");
+		//this.logger.debug(className + "." + methodName + " Before ==========================================");
 		
 		Object[] args = jp.getArgs();
 		if(args != null){
@@ -50,7 +50,7 @@ public class LoggerAspect {
 	public void beforeService(JoinPoint jp){
 		String className = jp.getTarget().getClass().getName();
 		String methodName = jp.getSignature().getName();
-		this.logger.debug(className + "." + methodName + " Before ==========================================");
+		//this.logger.debug(className + "." + methodName + " Before ==========================================");
 		
 		Object[] args = jp.getArgs();
 		if(args != null){
@@ -72,7 +72,7 @@ public class LoggerAspect {
 	public void afterReturningService(JoinPoint jp, Object returnData){
 		String className = jp.getTarget().getClass().getName();
 		String methodName = jp.getSignature().getName();
-		this.logger.debug(className + "." + methodName + " AfterReturn ==========================================");
+		//this.logger.debug(className + "." + methodName + " AfterReturn ==========================================");
 		
 		if(returnData != null){
 			String logMessage  = "returnData : " + returnData.toString();
@@ -84,7 +84,7 @@ public class LoggerAspect {
 	public void beforeDao(JoinPoint jp){
 		String className = jp.getTarget().getClass().getName();
 		String methodName = jp.getSignature().getName();
-		this.logger.debug(className + "." + methodName + " Before ==========================================");
+		//this.logger.debug(className + "." + methodName + " Before ==========================================");
 		
 		Object[] args = jp.getArgs();
 		if(args != null){
@@ -105,7 +105,7 @@ public class LoggerAspect {
 	public void afterReturningDao(JoinPoint jp, Object returnData){
 		String className = jp.getTarget().getClass().getName();
 		String methodName = jp.getSignature().getName();
-		this.logger.debug(className + "." + methodName + " After Return ==========================================");
+		//this.logger.debug(className + "." + methodName + " After Return ==========================================");
 		
 		if(returnData != null){
 			String logMessage  = "returnData : " + returnData.toString();
