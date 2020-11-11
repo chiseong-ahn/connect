@@ -19,7 +19,7 @@
     <div class="container" id="app" v-cloak>
         <div class="row">
             <div class="col-md-6">
-            	<span>로그인 : {{emp.empno}}</span><br />
+            	<span>로그인 : {{profile.loginName}}</span><br />
             	<span>선택된 스페이스 : {{roomId}}</span>
             </div>
             <div class="col-md-6 text-right">
@@ -115,6 +115,19 @@
             data: {
             	wsUri: "/ws-stomp",
             	ws: undefined,	//  웹소켓 객체.
+            	profile: {
+            		id: 0,
+            		companyId: '',
+            		companyUseConfigJson: '',
+            		companyName: '',
+            		isAdmin: 1,
+            		authLevel: 0,
+            		loginName: '',
+            		state: 0,
+            		profileImageId: 0,
+            		speakerId: 0,
+            		name: ''
+            	},
             	emp: {
             		emp: 0,
 					cid: 0,
@@ -157,7 +170,7 @@
             },
             created() {
 				// 인증정보 조회.
-            	this.getEmpInfo(); 
+            	this.getProfile(); 
                 //setInterval(this.findReadyRoom, 1000)
             },
             methods: {
@@ -485,18 +498,18 @@
                	},
 
 				// 상담사 정보 조회.
-            	getEmpInfo: function() {
+            	getProfile: function() {
             		this.token = localStorage.accessToken;
             		
             		this.header = {
             			headers: {'Authorization' : 'Bearer ' + this.token}
             		}
             		            		
-            		axios.get('/auth/user', this.header).then(response => {
+            		axios.get('/auth/profile', this.header).then(response => {
             			if(response.data){
-            				this.emp = response.data;
-            				console.log(JSON.stringify(this.emp));
-            				this.baseroom = this.baseroom + this.emp.cid;
+            				this.profile = response.data.profile;
+            				console.log(JSON.stringify(this.profile));
+            				this.baseroom = this.baseroom + this.profile.companyId;
 							console.log("baseroom : " + this.baseroom)
 							//this.findAllRoom();
 

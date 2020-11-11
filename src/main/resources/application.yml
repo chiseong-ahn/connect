@@ -1,6 +1,6 @@
 # 서버 설정.
 server:
-  port: 80
+  port: 8080
   servlet:
     context-path: '/'
     session:
@@ -24,6 +24,8 @@ spring:
     location: 'classpath:config/banner.txt'
   profiles:
     active: local
+  main:
+    web-application-type: none
   jackson:
     serialization:
       INDENT_OUTPUT: true
@@ -32,12 +34,25 @@ spring:
     encoding: UTF-8
   freemarker:
     cache: false
+  datasource:
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: 'jdbc:log4jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      username: cstalk
+      password: cstalk12#$
+      idle-timeout: 10000
+      connection-timeout: 300000
+      maximumPoolSize: 10
+      minimum-idle: 5
+      max-lifetime: 60000
+
 
 # Jsonwebtoken  
 jwt:
   secret-key: '#@SCGLAB_SDTALK__$$'
-  validtime-admin: 86400 
-  validtime-customer: 86400
+  valid-time-admin: 86400000
+  valid-time-customer: 86400000
+
 
 # Prometheus 설정.
 management:
@@ -49,22 +64,6 @@ management:
     tags:
       application: ${spring.application.name}  
 
-# Logging 설정.
-logging:
-  config: 'classpath:config/logback-dev.xml'
-  
-# Swagger 설정.
-springdoc:
-  cache:
-    disabled: true
-  version: 0.1
-  api-docs:
-    groups:
-      enabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    displayRequestDuration: true
-    groups-order: ASC
 
 
 ---
@@ -76,83 +75,63 @@ spring:
       enabled: true
     restart:
       enabled: true
-  datasource:
-    hikari:
-      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: 'jdbc:log4jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
-      username: cstalk
-      password: cstalk12#$
-      idle-timeout: 10000
-      connection-timeout: 300000
-      maximumPoolSize: 10
-      minimum-idle: 5
-      max-lifetime: 60000
   redis:
     host: localhost
     port: 6379
   freemarker:
     template-loader-path: 'classpath:/templates'
     suffix: .ftl
-  
-server:
-  port: 8081
-  
-domain:
-  sdtalk: localhost.gasapp.co.kr
-  mobileapi: msc-dev.seoulgas.co.kr
-  relay: relay-scg.gasapp.co.kr
-  
-path:
-  upload: /Volumes/Data/_upload
-  
----
-# 로컬환경 
-spring:
-  profiles: local2
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-  datasource:
-    hikari:
-      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: 'jdbc:log4jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
-      username: cstalk
-      password: cstalk12#$
-      idle-timeout: 10000
-      connection-timeout: 300000
-      maximumPoolSize: 10
-      minimum-idle: 5
-      max-lifetime: 60000
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  redis:
-    host: localhost
-    port: 6379
-  freemarker:
-    template-loader-path: 'classpath:/templates'
-    suffix: .ftl
-  
-server:
-  port: 8082
-  
-domain:
-  sdtalk: localhost.gasapp.co.kr
-  mobileapi: msc-dev.seoulgas.co.kr
-  relay: relay-scg.gasapp.co.kr
-  
-path:
-  upload: /Volumes/Data/_upload
-  
+  main:
+    web-application-type: servlet
 
+domain:
+  sdtalk: localhost.gasapp.co.kr
+  mobileapi: msc-dev.seoulgas.co.kr
+  relay: relay-scg.gasapp.co.kr
   
+path:
+  upload: /Volumes/Data/_upload
+
+# Logging 설정.
+logging:
+  config: 'classpath:config/logback-local.xml'
+
+# Swagger 설정.
+springdoc:
+  cache:
+    disabled: true
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    displayRequestDuration: true
+    groups-order: ASC
+
+
+
 ---
 # 개발환경 
 spring:
   profiles: dev
+
+# Logging 설정.
+logging:
+  config: 'classpath:config/logback-dev.xml'
+
+# Swagger 설정.
+springdoc:
+  cache:
+    disabled: true
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    displayRequestDuration: true
+    groups-order: ASC
+
+
 
 ---
 # 운영환경 

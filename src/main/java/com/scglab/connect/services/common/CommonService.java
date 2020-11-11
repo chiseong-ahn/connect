@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.auth.AuthService;
-import com.scglab.connect.services.company.Company;
-import com.scglab.connect.services.company.CompanyInc;
-import com.scglab.connect.services.company.CompanyScg;
+import com.scglab.connect.services.company.external.CompanyInc;
+import com.scglab.connect.services.company.external.CompanyScg;
+import com.scglab.connect.services.company.external.ICompany;
 
 @Service
 public class CommonService {
@@ -18,14 +18,14 @@ public class CommonService {
 	@Autowired
 	private AuthService authService;
 	
-	public Company getCompany(int cid) {
-		Company company = null;
+	public ICompany getCompany(String companyId) {
+		ICompany company = null;
 		
-		switch(cid) {
-			case 1: 
+		switch(companyId) {
+			case "1": 
 				company = new CompanyScg();
 				break;
-			case 2:
+			case "2":
 				company = new CompanyInc();
 				break;
 		}

@@ -81,6 +81,36 @@ public abstract class CommonDao {
 	}
 	
 	
+	public <E> List<E> findAll(String sqlId, Object params) {
+		return this.sqlSession.selectList(sqlId, params);
+	}
+	
+	public <T> T findOne(String sqlId, Object params){
+		this.logger.debug("selectOne : " + this.getNamespace() + this.getMethodName(new Object() {}.getClass()));
+		return this.sqlSession.selectOne(sqlId, params);
+	}
+	
+	public <E> List<E> findAll(String sqlId, Map<String, Object> params) {
+		return this.sqlSession.selectList(sqlId, params);
+	}
+	
+	public <T> T findOne(String sqlId, Map<String, Object> params){		
+		return this.sqlSession.selectOne(sqlId, params);
+	}
+	
+	public int insert(String sqlId, Map<String, Object> params) {
+		return this.sqlSession.insert(sqlId, params);
+	}
+	
+	public int update(String sqlId, Map<String, Object> params) {
+		return (int)this.sqlSession.update(sqlId, params);
+	}
+	
+	public int delete(String sqlId, Map<String, Object> params) {
+		return (int)this.sqlSession.delete(sqlId, params);
+	}
+	
+	
 
 	
 }

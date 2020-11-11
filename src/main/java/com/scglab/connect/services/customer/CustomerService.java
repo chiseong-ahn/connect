@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.utils.DataUtils;
-import com.scglab.connect.utils.JwtUtils;
 
 @Service
 public class CustomerService {
@@ -21,6 +21,9 @@ public class CustomerService {
 	
 	@Autowired
 	private CustomerDao customerDao;
+	
+	@Autowired
+	private JwtService jwtService;
 	
 	public Map<String, Object> token(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -36,8 +39,7 @@ public class CustomerService {
 		claims.put("space", customer.getSpace());
 		claims.put("speaker", customer.getSpeaker());
 		
-		JwtUtils jwtUtils = new JwtUtils();
-		String accessToken = jwtUtils.generateToken(claims);
+		String accessToken = this.jwtService.generateToken(claims);
 		this.logger.debug("accessToken : " + accessToken);
 		
 		data.put("accessToken", accessToken);

@@ -3,6 +3,18 @@ SCGLAB Connect System
 
 ### 개발환경
 - Repository : https://github.com/chiseong-ahn/connect.git
+- Redis : 로컬실행시 redis가 구동되어 있어야 함.
+
+
+### Redis 실행
+- application.yml (Redis 정보) 
+
+### 실행
+```
+# mvn install
+# mvn spring-boot:run
+```
+
 
 ### CORS
 - com.scglab.connect.base.config.WebMvcConfig.java
@@ -56,6 +68,15 @@ public class SampleController {
 ### Example (CRUD)
 - com/scglab/connect/services/sample 디렉토리 참고.
 
+
+### Batch(Schedule) 사용
+- com.scglab.connect.batch.ScheduleTask.java
+```
+@Scheduled(cron = "0 10 0 * * *")
+public void dailyStatistics() {
+	this.logger.debug("schedule - current data : " + LocalDateTime.now());
+}
+```
 
 ### Logger
 - 사용방법

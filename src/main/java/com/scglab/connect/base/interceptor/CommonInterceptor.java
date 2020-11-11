@@ -14,9 +14,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.base.exception.UnauthorizedException;
-import com.scglab.connect.services.common.auth.AuthService;
+import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.common.service.JwtService;
+import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.utils.DataUtils;
-import com.scglab.connect.utils.JwtUtils;
 
 @Configuration
 public class CommonInterceptor extends HandlerInterceptorAdapter {
@@ -24,16 +25,10 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	Logger logger = LoggerFactory.getLogger(CommonInterceptor.class);
 	
 	@Autowired
-	private AuthService authService;
+	private JwtService jwtService;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		
-		String uri = request.getRequestURI();
-		if(uri.indexOf(".js") > -1 || uri.indexOf(".css") > -1 || uri.indexOf(".map") > -1) {
-			// 정적리소스에 대해서는 별도 처리를 진행하지 않는다.
-			return true;
-		}
 		
 		// 접근권한 리턴.
 		return isAccess(request, handler);
@@ -68,24 +63,26 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			
 			if(accessToken.equals("")) {
 				// 인증토큰이 존재하지 않을경우.
-				throw new UnauthorizedException("error.auth.type1");
+				throw new UnauthorizedException("auth.valid.fail.reason1");
 			}
 			
-			JwtUtils jwtUtils = new JwtUtils();
-			if(!jwtUtils.validateToken(accessToken)) {
+			if(!this.jwtService.validateToken(accessToken)) {
 				// 토큰이 유효하지 않거나 만료된 경우.
-				throw new UnauthorizedException("error.auth.type2");
+				throw new UnauthorizedException("auth.valid.fail.reason2");
 			}
 			
-			Map<String, Object> claims = jwtUtils.getJwtData(accessToken);
+			Map<String, Object> claims = this.jwtService.getJwtData(accessToken);
 			request.setAttribute("accessToken", accessToken);
 			
-			// Request객체에 로그인 정보 저장.
-			this.authService.setUserInfo(claims, request);
+			Profile profile = new Profile();
+			profile = (Profile) DataUtils.convertMapToObject(claims, profile);
+			
+			// token에서 추출한 Profile 정보를 request객체에 저장.
+			//setProfile(profile, request);
+			request.setAttribute(Constant.AUTH_PROFILE, profile);
 		}
 		
 		return true;
-		
 	}
 	
 	// Header에서 인증토큰 추출.
@@ -95,8 +92,3 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 		return accessToken;
 	}
 }
-
-
-
-
-
