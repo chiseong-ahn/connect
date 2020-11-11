@@ -1,33 +1,34 @@
-	package com.scglab.connect.utils;
+package com.scglab.connect.services.common.service;
 
 import java.util.Date;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.scglab.connect.base.exception.UnauthorizedException;
+import com.scglab.connect.properties.JwtProperties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-public class JwtUtils {
+@Service
+public class JwtService {
+private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	private String secretKey = "#@SCGLAB_SDTALK__$$";
-
-    private long tokenValidMilisecond = 1000L * 60 * 60 * 24; // 토큰 유효시간 - 1일. 
-	//private long tokenValidMilisecond = 1000L * 30; // 토큰 유효시간 - 30초. 
+	@Autowired
+	private JwtProperties jwtProperty; 
 
     /**
      * 이름으로 Jwt Token을 생성한다.
      */
     public String generateToken(Map<String, Object> claims) {
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + this.tokenValidMilisecond);
+        Date expireDate = new Date(now.getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin()));
         return generateToken(claims, expireDate);
     }
     
@@ -38,7 +39,7 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setIssuedAt(now) // 토큰 발행일자
                 .setExpiration(expire) // 유효시간 설정
-                .signWith(SignatureAlgorithm.HS256, this.secretKey) // 암호화 알고리즘, secret값 세팅
+                .signWith(SignatureAlgorithm.HS256, this.jwtProperty.getSecretKey()) // 암호화 알고리즘, secret값 세팅
                 .compact();
     }
 
@@ -56,19 +57,19 @@ public class JwtUtils {
     public boolean validateToken(String jwt) {
     	boolean isValid = false;
     	try {
-    		Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
+    		Jwts.parser().setSigningKey(this.jwtProperty.getSecretKey()).parseClaimsJws(jwt);
     		isValid = true;
     	}catch(Exception e) {
-    		throw new UnauthorizedException("error.auth.type2");
+    		throw new UnauthorizedException("auth.valid.fail.reason2");
     	}
         return isValid;
     }
 
     private Jws<Claims> getClaims(String jwt) {
         try {
-        	return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
+        	return Jwts.parser().setSigningKey(this.jwtProperty.getSecretKey()).parseClaimsJws(jwt);
         } catch (Exception ex) {
-        	throw new UnauthorizedException("error.auth.type2");
+        	throw new UnauthorizedException("auth.valid.faill.reason2");
         }
     }
 }
