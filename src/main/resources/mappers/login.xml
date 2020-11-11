@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="login">
+
+	<parameterMap type="com.scglab.connect.services.login.Profile" id="profile"></parameterMap>
+	<resultMap type="com.scglab.connect.services.login.Profile" id="profile">
+		<result column="id" property="id" />
+		<result column="cid" property="companyId" />
+		<result column="speaker" property="speakerId" />
+		<result column="auth" property="authLevel" />
+		<result column="profileimg" property="profileImageId" />
+	</resultMap>
+	
+	<select id="profileCount" parameterType="map" resultType="int">
+		select count(*) as cnt
+		from Emp as a
+		where 1=1
+		and a.cid = #{companyId}
+		and a.empno = #{loginName}
+	</select>
+	
+	<select id="findProfile" parameterType="map" resultMap="profile">
+		select *
+		from Emp as a
+			 inner join Speaker as b on (b.id = a.speaker)
+		where 1=1
+		and a.cid = #{companyId}
+		and a.empno = #{loginName}
+	</select>
+	
+	<insert id="saveProfile" parameterMap="profile"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		CALL regist_member(#{companyId}, #{loginName}, #{name}, #{authLevel})
+	</insert>
+</mapper>

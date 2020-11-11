@@ -23,17 +23,17 @@
 		    	<form v-on:submit.prevent="onSubmit">
 			    	<ul class="list-group">
 			            <li class="list-group-item">
-							<select id="cid" name="cid" v-model="cid">
+							<select id="companyId" name="companyId" v-model="companyId">
 								<option value="1">서울도시가스</option>
 								<option value="2">인천도시가스</option>
 								<option value="3">제주도시가스</option>
 							</select>
 			            </li>
 			            <li class="list-group-item">
-							<input type="text" v-model="empno" />
+							<input type="text" v-model="loginName" />
 			            </li>
 			            <li class="list-group-item">
-							<input type="text" v-model="passwd" />
+							<input type="text" v-model="password" />
 			            </li>
 			            <li class="list-group-item">
 			            	<button type="submit">로그인</button>
@@ -51,9 +51,9 @@
     	var vm = new Vue({
             el: '#app',
             data: {
-            	cid: 1,
-            	empno: 'csmaster1',
-            	passwd: '1212',
+            	companyId: 2,
+            	loginName: 'csahn',
+            	password: '1212',
             	appid: 2,
             	header: {},
             	isShow: false,
@@ -76,7 +76,7 @@
 	            			headers: {'Authorization' : 'Bearer ' + this.accessToken}
 	            		}
 	            		
-	            		axios.get('/auth/user', this.header).then(response => {
+	            		axios.get('/auth/profile', this.header).then(response => {
 	            			
 	            			if(response.data){
 		                		this.moveTalk();
@@ -119,16 +119,16 @@
             	onSubmit: function(){
             		var header = {'Content-Type': 'multipart/form-data'};
             		var data = new FormData();
-            			data.append("cid", this.cid);
-            			data.append("empno", this.empno);
-            			data.append("passwd", this.passwd);
+            			data.append("companyId", this.companyId);
+            			data.append("loginName", this.loginName);
+            			data.append("password", this.password);
             		
             		localStorage.removeItem("accessToken");
             		axios.post('/auth/login', data, header).then(response => {
 	                	console.log(response.data);
-	                	if(response.data.login == true){
+	                	if(response.data.token != ''){
 	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.
-	                		localStorage.accessToken = response.data.accessToken;
+	                		localStorage.accessToken = response.data.token;
 	                		//localStorage.refreshToken = response.data.refreshToken;
 	                		this.moveTalk();
 	                	}
