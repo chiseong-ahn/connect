@@ -1,16 +1,25 @@
-package com.scglab.connect.services.company;
+package com.scglab.connect.services.company.external;
 
 import java.util.Calendar;
 
-import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.auth.Contract;
-import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.talk.ChatRoomRepository;
+import com.scglab.connect.services.login.Profile;
 
-import lombok.RequiredArgsConstructor;
-
-public class CompanyScg implements Company {
+public class CompanyInc implements ICompany {
 	
+	private final String companyId = "2";
+	private final String companyName = "인천도시가스";
+	
+	@Override
+	public String getCompanyId() {
+		return this.companyId;
+	}
+
+	@Override
+	public String getCompanyName() {
+		return this.companyName;
+	}
+
 	@Override
 	public int isWorking() {
 		int iswork = 1;
@@ -43,19 +52,23 @@ public class CompanyScg implements Company {
 			}
 		}
 		
-		return iswork;
+		//return iswork;
+		return 2;
 	}
 
 	@Override
-	public User login(String id, String passwd) {
-		User user = new User();
-		user.setCid(1);
-		user.setEmpno(id);
-		return user;
+	public Profile login(String loginName, String password) {
+		Profile profile = new Profile();
+		profile.setCompanyId(companyId);
+		profile.setCompanyName(companyName);
+		profile.setIsAdmin(1);
+		profile.setLoginName(loginName);
+		profile.setName("관리자");
+		return profile;
 	}
 
 	@Override
-	public User getMemberInfo(int userno) {
+	public Profile getMemberInfo(int userno) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -79,5 +92,6 @@ public class CompanyScg implements Company {
 	}
 
 	
+
 
 }

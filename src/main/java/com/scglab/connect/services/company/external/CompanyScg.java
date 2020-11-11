@@ -1,12 +1,25 @@
-package com.scglab.connect.services.company;
+package com.scglab.connect.services.company.external;
 
 import java.util.Calendar;
 
 import com.scglab.connect.services.common.auth.Contract;
-import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.login.Profile;
 
-public class CompanyInc implements Company {
+public class CompanyScg implements ICompany {
+	
+	private final String companyId = "1";
+	private final String companyName = "서울도시가스";
+	
+	@Override
+	public String getCompanyId() {
+		return this.companyId;
+	}
 
+	@Override
+	public String getCompanyName() {
+		return this.companyName;
+	}
+	
 	@Override
 	public int isWorking() {
 		int iswork = 1;
@@ -39,20 +52,22 @@ public class CompanyInc implements Company {
 			}
 		}
 		
-		//return iswork;
-		return 2;
+		return iswork;
 	}
 
 	@Override
-	public User login(String id, String passwd) {
-		User user = new User();
-		user.setCid(2);
-		user.setEmpno(id);
-		return user;
+	public Profile login(String loginName, String password) {
+		Profile profile = new Profile();
+		profile.setCompanyId(companyId);
+		profile.setCompanyName(companyName);
+		profile.setIsAdmin(1);
+		profile.setLoginName(loginName);
+		profile.setName("관리자");
+		return profile;
 	}
 
 	@Override
-	public User getMemberInfo(int userno) {
+	public Profile getMemberInfo(int userno) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -75,5 +90,6 @@ public class CompanyInc implements Company {
 		return 0;
 	}
 
+	
 
 }
