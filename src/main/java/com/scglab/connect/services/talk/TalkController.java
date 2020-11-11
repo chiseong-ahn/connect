@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.talk.TalkMessage.MessageType;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +43,9 @@ public class TalkController {
 	
 	@Autowired
 	private AuthService authService;
+	
+	@Autowired
+	private LoginService loginService;
 	
 	@Autowired
 	private TalkHandler talkHandler;
@@ -167,25 +172,26 @@ public class TalkController {
 	@MessageMapping("/talk/message")
     public void talkMessage(TalkMessage message) {
 		
-		User user = this.authService.getUserInfo(message.getToken());
+		//User user = this.authService.getUserInfo(message.getToken());
+		Profile profile = this.loginService.getProfile(message.getToken());
 		
 		if(message.getType().equals(MessageType.ASSIGN)) {
-			this.talkHandler.assign(user, message);
+			this.talkHandler.assign(profile, message);
 			
 		}else if(message.getType().equals(MessageType.MESSAGE)) {
-        	this.talkHandler.message(user, message);
+        	this.talkHandler.message(profile, message);
         	
 		}else if(message.getType().equals(MessageType.LEAVE)) {
-        	this.talkHandler.leave(user, message);
+        	this.talkHandler.leave(profile, message);
         	
 		}else if(message.getType().equals(MessageType.END)) {
-			this.talkHandler.end(user, message);
+			this.talkHandler.end(profile, message);
 			
 		}else if(message.getType().equals(MessageType.PREHISTORY)) {
-			this.talkHandler.prehistory(user, message.getRoomId());
+			this.talkHandler.prehistory(profile, message.getRoomId());
 			
 		}else if(message.getType().equals(MessageType.SPEAKS)) {
-			this.talkHandler.speaks(user, message.getRoomId());
+			this.talkHandler.speaks(profile, message.getRoomId());
 			
 		}
     }

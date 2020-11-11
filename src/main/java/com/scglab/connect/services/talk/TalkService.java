@@ -16,12 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.adminmenu.emp.EmpDao;
-import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.HttpUtils;
-import com.scglab.connect.utils.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +37,7 @@ public class TalkService {
     private final ChatRoomRepository chatRoomRepository;
 	
     @Autowired
-    private AuthService authServier;
+    private LoginService loginService;
     
 	@Autowired
 	private TalkDao talkDao;
@@ -50,19 +51,22 @@ public class TalkService {
 	@Autowired
     private MessageService messageService;
 	
+	@Autowired
+	private JwtService jwtService;
+	
 	public Map<String, Object> token(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		JwtUtils jwtUtils = new JwtUtils();
-		String token = jwtUtils.generateToken(params);
+		String token = this.jwtService.generateToken(params);
 		data.put("token", token);
 		return data;
 	}
 	
 	public Map<String, Object> minwons(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 		
 		//Map<String, Object> data = new HashMap<String, Object>();
 		HttpUtils httpUtils = new HttpUtils();
@@ -109,8 +113,8 @@ public class TalkService {
 	
 	public Map<String, Object> today(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		Map<String, Object> today = this.talkDao.today(params);
@@ -121,9 +125,9 @@ public class TalkService {
 	
 	public Map<String, Object> state(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("id", user.getEmp());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
+		params.put("id", profile.getId());
 				
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -137,8 +141,8 @@ public class TalkService {
 	
 	public Map<String, Object> spaces(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 		
 		String keyfield = DataUtils.getObjectValue(params, "keyfield", "");
 		String keyword = DataUtils.getObjectValue(params, "keyword", "");
@@ -164,8 +168,8 @@ public class TalkService {
 	
 	public Map<String, Object> space(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		Map<String, Object> space = this.talkDao.space(params);
@@ -176,8 +180,8 @@ public class TalkService {
 	
 	public Map<String, Object> speaker(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		Map<String, Object> speaker = this.talkDao.speaker(params);
@@ -188,8 +192,8 @@ public class TalkService {
 	
 	public Map<String, Object> speaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 				
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Speak> list = this.talkDao.speaks(params);
@@ -200,8 +204,8 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> history(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.history(params);
@@ -232,8 +236,8 @@ public class TalkService {
 	
 	public Map<String, Object> historySpeaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		User user = this.authServier.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Profile profile = this.loginService.getProfile(request);
+		params.put("cid", profile.getCompanyId());
 				
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = this.talkDao.historySpeaks(params);
@@ -247,6 +251,8 @@ public class TalkService {
 
 		Map<String, Object> data = new HashMap<String, Object>();
 		
+		
+		
 		int emp = DataUtils.getInt(params, "emp", 0);
 		int acting = DataUtils.getInt(params, "acting", 0);
 		int space = DataUtils.getInt(params, "space", 0);
@@ -254,9 +260,9 @@ public class TalkService {
 		
 		if(emp == 0) {
 			// 본인 상담으로 가져오기.
-			User user = this.authServier.getUserInfo(request);
-			emp = user.getEmp();
-			empname = user.getName();
+			Profile profile = this.loginService.getProfile(request);
+			emp = profile.getId();
+			empname = profile.getLoginName();
 		}
 		
 		this.logger.debug("acting : " + acting);

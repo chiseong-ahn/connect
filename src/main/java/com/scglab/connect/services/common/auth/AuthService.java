@@ -13,13 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.properties.JwtProperties;
+import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.utils.DataUtils;
-import com.scglab.connect.utils.JwtUtils;
+
 
 @Service
 public class AuthService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private JwtService jwtService;
+	
+	@Autowired
+	private JwtProperties jwtProperty;
 	
 	@Autowired
 	private AuthDao authDao;
@@ -52,8 +60,7 @@ public class AuthService {
 	}
 	
 	public User getUserInfo(String token) {
-		JwtUtils jwtUtils = new JwtUtils();
-    	Map<String, Object> claims = jwtUtils.getJwtData(token);
+		Map<String, Object> claims = this.jwtService.getJwtData(token);
     	return getUserInfo(claims);
 	}
 	
@@ -92,7 +99,6 @@ public class AuthService {
 	public Map<String, Object> refreshToken(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		// 인증토큰(JWT) 생성.
-		JwtUtils jwtUtils = new JwtUtils();
 		Date now = new Date();
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -100,8 +106,8 @@ public class AuthService {
 		
 		String refreshToken = DataUtils.getString(params, "refreshToken", "");
 		if(!refreshToken.equals("")) {
-			if(jwtUtils.validateToken(refreshToken)) {
-				Map<String, Object> claims = jwtUtils.getJwtData(refreshToken);
+			if(this.jwtService.validateToken(refreshToken)) {
+				Map<String, Object> claims = this.jwtService.getJwtData(refreshToken);
 				if(claims.containsKey("accessToken")) {
 					String token = DataUtils.getSafeValue((String)claims.get("accessToken"));
 					String empno = DataUtils.getSafeValue((String)claims.get("empno"));
@@ -115,13 +121,13 @@ public class AuthService {
 						// 회원정보 조회
 						Map<String, Object> object = this.authDao.selectOne(params);
 						
-						String newAccessToken = jwtUtils.generateToken(object, new Date(now.getTime() + this.accessTokenValidMilisecond));
+						String newAccessToken = this.jwtService.generateToken(object, new Date(now.getTime() + Long.parseLong(this.jwtProperty.getValidTimeCustomer())));
 						
 						Map<String, Object> refreshData = new HashMap<String, Object>();
 						refreshData.put("empno", DataUtils.getString(object, "empno", ""));
 						refreshData.put("cid", DataUtils.getString(object, "cid", ""));
 						refreshData.put("accessToken", accessToken);
-						String newRefreshToken = jwtUtils.generateToken(refreshData, new Date(now.getTime() + this.refreshTokenValidMilisecond));
+						String newRefreshToken = this.jwtService.generateToken(refreshData, new Date(now.getTime() + this.jwtProperty.getValidTimeCustomer()));
 						
 						result = true;
 						data.put("accessToken", accessToken);

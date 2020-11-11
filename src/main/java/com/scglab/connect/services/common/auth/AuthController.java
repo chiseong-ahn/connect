@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth1")
 @Tag(name = "인증관리", description = "인증관리")
 public class AuthController {
 	

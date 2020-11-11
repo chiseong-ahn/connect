@@ -26,7 +26,7 @@ public class TalkMessage {
 	private long userCount;				// 채팅방 인원수, 채팅방 내에서 메시지가 전달될때 인원수 갱신시 사용
 	private String prj;					// 프로젝트 구분.
 	private String appid;				// 어플리케이션 구분(sdtapp-app, sdtadmin-admin)
-	private int cid;					// 기관구분(1-SCG, 2-INC)
+	private String companyId;					// 기관구분(1-SCG, 2-INC)
 	private int isemp;					// 상담사여부 (1-상담사)
 	private int isonline;
 	private int startid;
@@ -46,24 +46,24 @@ public class TalkMessage {
 		super();
 	}
 
-	public TalkMessage(MessageType type, int cid, String roomId) {
+	public TalkMessage(MessageType type, String companyId, String roomId) {
 		super();
-		this.cid = cid;
+		this.companyId = companyId;
 		this.roomId = roomId;
 		this.type = type;
 	}
 
-	public TalkMessage(MessageType type, int cid, String roomId, String message) {
+	public TalkMessage(MessageType type, String companyId, String roomId, String message) {
 		super();
-		this.cid = cid;
+		this.companyId = companyId;
 		this.roomId = roomId;
 		this.type = type;
 		this.msg = message;
 	}
 
-	public TalkMessage(MessageType type, int cid, String roomId, String msg, Map<String, Object> data) {
+	public TalkMessage(MessageType type, String companyId, String roomId, String msg, Map<String, Object> data) {
 		super();
-		this.cid = cid;
+		this.companyId = companyId;
 		this.roomId = roomId;
 		this.type = type;
 		this.msg = msg;
