@@ -25,13 +25,78 @@ public class CustomerService {
 	@Autowired
 	private JwtService jwtService;
 	
+	/**
+	 * 
+	 * @Method Name : findAll
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객 검색.
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, Object> findAll(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		return data;
 	}
 	
+	/**
+	 * 
+	 * @Method Name : block
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 관심고객 지정/해제
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> block(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		int result = this.customerDao.enableBlackStatus(params);
+		if(result > 0) {
+			data = this.customerDao.findCustomer(params);
+		}
+		
+		return data;
+	}
 	
+	/**
+	 * 
+	 * @Method Name : unBlock
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 관심고객 해제.
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> unBlock(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		int result = this.customerDao.disbleBlackStatus(params);
+		if(result > 0) {
+			data = this.customerDao.findCustomer(params);
+		}
+		
+		return data;
+	}
+	
+	/**
+	 * 
+	 * @Method Name : token
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 사용자 토큰 발급.
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, Object> token(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -40,11 +105,11 @@ public class CustomerService {
 		this.logger.debug("customer : " + customer);
 		
 		Map<String, Object> claims = new HashMap<String, Object>();
-		claims.put("cid", customer.getCid());
-		claims.put("userno", customer.getUserno());
+		claims.put("cid", customer.getCompanyId());
+		claims.put("userno", customer.getGasappMemberNumber());
 		claims.put("name", customer.getName());
-		claims.put("space", customer.getSpace());
-		claims.put("speaker", customer.getSpeaker());
+		claims.put("space", customer.getRoomId());
+		claims.put("speaker", customer.getSpeakerId());
 		
 		String accessToken = this.jwtService.generateToken(claims);
 		this.logger.debug("accessToken : " + accessToken);
@@ -54,6 +119,17 @@ public class CustomerService {
 		return data;
 	}
 	
+	/**
+	 * 
+	 * @Method Name : update
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 :
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, Object> update(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		

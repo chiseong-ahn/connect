@@ -49,6 +49,28 @@ public class CustomerController {
 	}
 	
 	
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="관심고객 지정 / 해제", description = "관심고객을 지정/해제합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	@Parameters({
+    	@Parameter(name = "blockType", description = "관심고객 지정 사유", required = true, in = ParameterIn.QUERY, example = ""),
+    	@Parameter(name = "remark", description = "메모", required = false, in = ParameterIn.QUERY, example = ""),
+    })
+	public Map<String, Object> block(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+		params.put("id", id);
+		return this.customerService.block(params);
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="관심고객 지정 / 해제", description = "관심고객을 지정/해제합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	@Parameters({
+    	@Parameter(name = "blockType", description = "관심고객 지정 사유", required = true, in = ParameterIn.QUERY, example = ""),
+    	@Parameter(name = "remark", description = "메모", required = false, in = ParameterIn.QUERY, example = ""),
+    })
+	public Map<String, Object> unBlock(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+		params.put("id", id);
+		return this.customerService.unBlock(params);
+	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,12 +92,14 @@ public class CustomerController {
 		return this.customerService.token(params);
 	}
 	
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/token2", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="고객 토큰발급", description = "", security = {@SecurityRequirement(name = "bearer-key")})
 	public Map<String, Object> token2(@RequestBody Customer customer) throws Exception {
 		//return this.customerService.token(params);
 		return null;
 	}
+	
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,6 +109,7 @@ public class CustomerController {
 		return this.customerService.update(params);
 	}
 	
+	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/swear", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="욕설/비속어 사용 카운트 증가", description = "", security = {@SecurityRequirement(name = "bearer-key")})
@@ -93,6 +118,7 @@ public class CustomerController {
 		params.put("swear",  "Y");
 		return this.customerService.update(params);
 	}
+	
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/insult", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,7 +1,5 @@
 package com.scglab.connect.services.customer;
 
-import java.time.LocalDateTime;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,19 +10,19 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Customer {
-	private long id;
-	private LocalDateTime createDate;
-	private LocalDateTime workDate;
-	private String userno;
-	private long speaker;
-	private int state;
-	private int blocktype;
-	private LocalDateTime blockdt;
-	private long blockemp;
-	private String remark;
-	private long space;
-	private int cid;
+	private int id;
+	private String companyId;
+	private String gasappMemberNumber;
 	private String name;
-	private int swear;
-	private int insult;
+	private String telNumber;
+	private int isBlock;
+	private String blockType;
+	private String remark;
+	private int blockMemberId;
+	private int roomId;
+	private int speakerId;
+	private int swearCount;
+	private int insultCount;
+	private int state;
+	private String blockDate;
 }
