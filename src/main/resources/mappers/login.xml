@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="login">
+<mapper namespace="auth.login">
 
 	<parameterMap type="com.scglab.connect.services.member.Member" id="member"></parameterMap>
 	<resultMap type="com.scglab.connect.services.member.Member" id="member">

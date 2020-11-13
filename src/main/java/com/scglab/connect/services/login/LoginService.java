@@ -76,14 +76,15 @@ public class LoginService {
 		}
 		
 		// 상담톡에 계정정보가 존재하는지 체크.
-		int count = this.loginDao.findOne("login.memberCount", params);
+		int count = this.loginDao.findCount(params);
 		if(count == 0) {
 			// 상담톡에 계정정보가 존재하지 않는다면 등록.
-			
+			params.put("authLevel", 9);
+			this.loginDao.saveProfile(params);
 		}
 		
 		// 계정정보 조회
-		member = this.loginDao.findOne("login.findmember", params);
+		member = this.loginDao.findProfile(params);
 		member.setCompanyName(company.getCompanyName());
 		member.setIsAdmin(1);
 		member.setLoginName(member.getName());
@@ -95,7 +96,7 @@ public class LoginService {
 		String token = this.jwtService.generateToken(memberMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
 		this.logger.debug("token : " + token);
 		data.put("token", token);
-		data.put("member", member);
+		data.put("profile", member);
 		
 		return data;
 	}

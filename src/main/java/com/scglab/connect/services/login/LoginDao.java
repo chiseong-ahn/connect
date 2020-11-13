@@ -1,10 +1,13 @@
 package com.scglab.connect.services.login;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.scglab.connect.services.common.dao.CommonDao;
+import com.scglab.connect.services.member.Member;
 
 @Repository
 public class LoginDao extends CommonDao {
@@ -15,10 +18,22 @@ public class LoginDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "login.";
+	public String namespace = "auth.login.";
 	
 	@Override
 	protected String getNamespace() {
 		return namespace;
+	}
+	
+	public int findCount(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "profileCount", params);
+	}
+	
+	public Member findProfile(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "findProfile", params);
+	}
+	
+	public int saveProfile(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "saveProfile", params);
 	}
 }
