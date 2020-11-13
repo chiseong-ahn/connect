@@ -1,4 +1,4 @@
-package com.scglab.connect.services.login;
+package com.scglab.connect.services.member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class Profile {
+public class Member {
 	private int id;
 	private String companyId;
 	private Object companyUseConfigJson;

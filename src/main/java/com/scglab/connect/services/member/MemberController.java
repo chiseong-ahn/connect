@@ -16,14 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotations.Auth;
+import com.scglab.connect.constant.Constant;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +36,33 @@ public class MemberController {
 	private MemberService memberService;
 	
 	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="회원목록 조회", description = "회원 목록 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public Map<String, Object> members(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.memberService.members(params, id, request, response);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="회원 등록", description = "회원 등록", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public Map<String, Object> regist(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.memberService.regist(params, id, request, response);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="회원 수정", description = "회원 수정", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.memberService.update(params, id, request, response);
+	}
+	
+	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원상태 수정", description = "회원 상담상태 수정", security = {@SecurityRequirement(name = "bearer-key")})
-	public Map<String, Object> state(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Operation(summary="회원상태 수정", description = "회원 상담상태 수정", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public Map<String, Object> updateState(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.memberService.state(params, id, request, response);
 	}
+	
+	
 }
 	
