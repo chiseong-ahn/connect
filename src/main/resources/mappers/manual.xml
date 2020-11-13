@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="api.manual">
+
+	<parameterMap type="com.scglab.connect.services.manual.Manual" id="manual"></parameterMap>
+	<resultMap type="com.scglab.connect.services.manual.Manual" id="manual"></resultMap>
+
+	<!-- 등록된 매뉴얼의 태그목록 조회 -->
+	<select id="findTagAll" parameterType="map" resultType="String">
+		SELECT DISTINCT tags
+		FROM  manual
+		WHERE company_id = #{companyId}
+		AND manual_index = #{manualIndex}
+		AND tags != '' AND tags IS NOT NULL
+	</select>
+	
+	<!-- 매뉴얼 검색 -->
+	<select id="findSearch" parameterType="map" resultMap="manual">
+		SELECT f.id AS favorite_id,
+			m.*
+		FROM manual m
+		LEFT OUTER JOIN manual_favorite f ON m.id = f.manual_id AND f.member_id = #{loginId}
+		WHERE m.company_id = #{companyId}
+		AND (
+			CASE
+				WHEN #{checkFavorite} = 1 THEN f.member_id = #{loginId}
+				ELSE 1 = 1
+			END 
+		)
+		AND (
+			CASE
+				WHEN IFNULL(#{searchValue1},
+				'') = '' THEN 1 = 1
+				ELSE ( m.title LIKE CONCAT( '%', IFNULL(#{searchValue1}, ''), '%' )
+				OR m.page_no = #{searchValue1} )
+			END 
+		)
+		AND m.content LIKE CONCAT( '%', IFNULL(#{searchValue2}, ''), '%' )
+		AND m.tags LIKE CONCAT( '%', IFNULL(#{tag}, ''), '%' )
+		ORDER BY (m.page_no + 0)
+		LIMIT #{limit}, #{pageSize}
+				
+	</select>
+	
+	<!-- 매뉴얼 검색 카운트 -->
+	<select id="findSearchCount" parameterType="map" resultMap="manual">
+		SELECT COUNT(*) as total_count
+		FROM manual m
+		LEFT OUTER JOIN manual_favorite f ON m.id = f.manual_id AND f.member_id = #{loginId}
+		WHERE m.company_id = #{companyId}
+		AND (
+			CASE
+				WHEN #{checkFavorite} = 1 THEN f.member_id = #{loginId}
+				ELSE 1 = 1
+			END 
+		)
+		AND (
+			CASE
+				WHEN IFNULL(#{searchValue1}, '') = '' THEN 1 = 1
+				ELSE ( m.title LIKE CONCAT( '%', IFNULL(#{searchValue1}, ''), '%' )
+				OR m.page_no = #{searchValue1} )
+			END 
+		)
+		AND m.content LIKE CONCAT( '%', IFNULL(#{searchValue2}, ''), '%' )
+		AND m.tags LIKE CONCAT( '%', IFNULL(#{tag}, ''), '%' )
+	</select>
+	
+	<!-- 다음 매뉴얼 -->
+	<select id="NextManual" parameterType="map" resultMap="manual">
+		SELECT *
+		FROM manual
+		WHERE company_id = #{companyId}
+		AND page_number > #{pageNumber}
+		ORDER BY page_number, id
+		LIMIT 1
+	</select>
+	
+	<!-- 매뉴얼 즐겨찾기 추가 -->
+	<insert id="createFavorite" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO manual_favorite(company_id, manual_id, member_id)
+		VALUES(:companyId, :manualId, :loginId)
+	</insert>
+	
+	<!-- 사용자가 즐겨찾기한 매뉴얼 삭제 -->
+	<delete id="deleteFavoriteToMember" parameterType="map">
+		DELETE
+		FROM manual_favorite
+		WHERE manual_id = #{id}
+		AND member_id = #{loginId}
+	</delete>
+	
+	<!-- 매뉴얼 등록 -->
+	<insert id="create" parameterMap="manaul" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO manual(company_id, update_member_id, manual_index, page_number, page_no, page_code, title, tags, content, pdf_image_path)
+		VALUES(#{companyId}, #{loginId}, #{manualIndex}, #{pageNumber}, #{pageNo}, #{pageCode}, #{title}, #{tags}, #{content}, #{pdf_image_path})
+	</insert>
+	
+	<!-- 매뉴얼 수정 -->
+	<update id="update" parameterMap="manaul">
+		UPDATE manual
+		SET update_member_id = #{loginId},
+			page_number = #{pageNumber},
+			page_no = #{pageNo},
+			page_code = #{pageCode},
+			title = #{title},
+			tags = #{tags},
+			content = #{content},
+			pdf_image_path = #{pdf_image_path}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 매뉴얼 삭제 -->
+	<delete id="delete" parameterType="map">
+		DELETE 
+		FORM manual
+		WHERE id = #{id}
+	</delete>
+	
+	<!-- 매뉴얼 즐겨찾기 삭제(매뉴얼 삭제시 딸려있는) -->
+	<delete id="deleteFavoriteToManual">
+		DELETE 
+		FROM manual_favorite
+		WHERE manual_id = #{id}
+	</delete>	
+	
+</mapper>
+
+
