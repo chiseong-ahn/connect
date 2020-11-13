@@ -104,6 +104,12 @@ public class OpenApiConfig {
 	}
 	
 	@Bean
+	public GroupedOpenApi keyword() {
+		String[] paths = { "/api/keyword/**" };
+		return GroupedOpenApi.builder().setGroup("키워드관리 API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
 	public GroupedOpenApi manual() {
 		String[] paths = { "/api/manual/**" };
 		return GroupedOpenApi.builder().setGroup("메뉴얼 API").pathsToMatch(paths).build();

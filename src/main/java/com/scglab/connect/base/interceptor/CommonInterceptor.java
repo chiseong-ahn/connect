@@ -16,7 +16,7 @@ import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.base.exception.UnauthorizedException;
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.service.JwtService;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 
 @Configuration
@@ -74,12 +74,12 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			Map<String, Object> claims = this.jwtService.getJwtData(accessToken);
 			request.setAttribute("accessToken", accessToken);
 			
-			Profile profile = new Profile();
-			profile = (Profile) DataUtils.convertMapToObject(claims, profile);
+			Member profile = new Member();
+			profile = (Member) DataUtils.convertMapToObject(claims, profile);
 			
 			// token에서 추출한 Profile 정보를 request객체에 저장.
 			//setProfile(profile, request);
-			request.setAttribute(Constant.AUTH_PROFILE, profile);
+			request.setAttribute(Constant.AUTH_MEMBER, profile);
 		}
 		
 		return true;

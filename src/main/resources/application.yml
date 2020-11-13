@@ -37,7 +37,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: 'jdbc:log4jdbc:mysql://CSTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      jdbc-url: 'jdbc:log4jdbc:mysql://SDTALK-DEV-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
       username: cstalk
       password: cstalk12#$
       idle-timeout: 10000
@@ -86,8 +86,8 @@ spring:
 
 domain:
   sdtalk: localhost.gasapp.co.kr
-  mobileapi: msc-dev.seoulgas.co.kr
-  relay: relay-scg.gasapp.co.kr
+  mobileapi: GASAPP-DEV
+  relay: GASAPP-RELAY-SCG-DEV
   
 path:
   upload: /Volumes/Data/_upload
