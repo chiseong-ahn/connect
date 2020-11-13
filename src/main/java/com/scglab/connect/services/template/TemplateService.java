@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.auth.AuthService;
-import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -28,12 +28,24 @@ public class TemplateService {
 	private MessageService messageService;
 	
 	@Autowired
-	private AuthService authService;
+	private LoginService loginService;
 	
-	public Map<String, Object> list(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+	/**
+	 * 
+	 * @Method Name : findAll
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 목록 조회
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Template> findAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -42,85 +54,83 @@ public class TemplateService {
 		page = page < 1 ? 1 : page;
 		
 		// 페이지당 노출할 게시물 수.
-		int pageSize = Integer.parseInt(DataUtils.getObjectValue(params, "pageSize", "15"));
-		pageSize = pageSize < 1 ? 15 : pageSize;
-		
-		// 대분류 카테고리
-		String catelg = DataUtils.getObjectValue(params, "catelg", "");
-		
-		// 중분류 카테고리
-		String catemd = DataUtils.getObjectValue(params, "catemd", "");
-		
-		// 소분류 카테고리
-		String catesm = DataUtils.getObjectValue(params, "catesm", "");
-		
-		// 검색유형
-		String keyfield = DataUtils.getObjectValue(params, "keyfield", "");
-		
-		// 검색어
-		String keyword = DataUtils.getObjectValue(params, "keyword", "");
+		int pageSize = Integer.parseInt(DataUtils.getObjectValue(params, "pageSize", "10"));
+		pageSize = pageSize < 1 ? 10 : pageSize;
 		
 		// 조회 시작 번호.
 		int startNum = (page - 1) * pageSize + 1;
 		// 조회 마지막 번호.
 		int endNum = pageSize;
 		
-		
-		params.put("catelg", catelg);
-		params.put("catemd", catemd);
-		params.put("catesm", catesm);
-		params.put("keyfield", keyfield);
-		params.put("keyword", keyword);
 		params.put("startNum", startNum);
 		params.put("endNum", endNum);
-		params.put("emp", user.getEmp());
+
+		this.logger.debug("params : " + params.toString());
+		List<Template> list = this.templateDao.selectAll(params);
 		
-		List<Map<String, Object>> list = null;
-		int count = this.templateDao.selectCount(params);
-		if(count > 0) {
-			list = this.templateDao.selectAll(params);
-		}
-		
-		data.put("total", count);
-		data.put("list", list);
-		data.put("page", page);
-		data.put("pageSize", pageSize);
-		
-		return data;
+		return list;
 	}
 	
-	public Map<String, Object> object(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+	/**
+	 * 
+	 * @Method Name : findTemplate
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 상세 조회
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public Template findTemplate(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		Map<String, Object> object = this.templateDao.selectOne(params);
-		return object;
+		this.logger.debug("params : " + params.toString());
+		return this.templateDao.findTemplate(params);
 	}
 	
 	public Map<String, Object> saveKeyword(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Member member = this.loginService.getMember(request);
+		params.put("company", member.getCompanyId());
+		params.put("memberId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
+		this.logger.debug("params : " + params.toString());
 		int count = this.templateDao.selectCountKeyword(params);
 		if(count == 0) {
+			this.logger.debug("params : " + params.toString());
 			this.templateDao.insertKeyword(params);
 		}
 		
+		this.logger.debug("params : " + params.toString());
 		Map<String, Object> keyword = this.templateDao.selectKeyword(params);
 		
 		data.put("keyword", keyword);
 		return data;
 	}
 	
-	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+	/**
+	 * 
+	 * @Method Name : regist
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 등록
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public Template regist(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
+		Template template = null;
 		int result = 0;
 		
 		result = this.templateDao.insert(params);
@@ -135,6 +145,8 @@ public class TemplateService {
 						for(String keyword : keywords) {
 							if(!DataUtils.getSafeValue(keyword).equals("")) {
 								params.put("keyword", keyword.trim());
+								
+								this.logger.debug("params : " + params.toString());
 								this.templateDao.insertTemplateKeyword(params);
 							}
 						}
@@ -143,24 +155,37 @@ public class TemplateService {
 				}else{
 					this.logger.debug("keywords is nothing!");
 				}
-			Map<String, Object> template = this.templateDao.selectOne(params);
-			data.put("template", template);
+				
+				this.logger.debug("params : " + params.toString());
+				template = this.templateDao.selectOne(params);
 				
 			}else {
 				this.logger.debug("generated key is nothing!");
 			}
 		}
 		
-		data.put("isSuccess", result > 0 ? true : false);
-		return data;
+		return template;
 	}
 	
-	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+	
+	/**
+	 * 
+	 * @Method Name : update
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 수정.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public Template update(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
+		Template template = null;
 		int result = 0;
 		
 		result = this.templateDao.update(params);
@@ -184,21 +209,31 @@ public class TemplateService {
 					this.logger.debug("keywords is nothing!");
 				}
 				
-				Map<String, Object> template = this.templateDao.selectOne(params);
-				data.put("template", template);
+				template = this.templateDao.selectOne(params);
 			}else {
 				this.logger.debug("generated key is nothing!");
 			}
 		}
 		
-		data.put("isSuccess", result > 0 ? true : false);
-		return data;
+		return template;
 	}
 	
+	/**
+	 * 
+	 * @Method Name : delete
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 삭제
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = 0;
@@ -212,14 +247,26 @@ public class TemplateService {
 			result = this.templateDao.delete(params);
 		}
 		
-		data.put("isSuccess", result > 0 ? true : false);
+		data.put("success", result > 0 ? true : false);
 		return data;
 	}
 	
+	/**
+	 * 
+	 * @Method Name : favorite
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 즐겨찾기 등록/삭제
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, Object> favorite(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		boolean isFavorite = (boolean)params.get("isFavorite");
@@ -230,7 +277,7 @@ public class TemplateService {
 			result = this.templateDao.deleteFavorite(params);
 		}
 		
-		data.put("isSuccess", result > 0 ? true : false);
+		data.put("success", result > 0 ? true : false);
 		return data;
 	}
 }

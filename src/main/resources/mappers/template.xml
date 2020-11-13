@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sdtalk.template">
+<mapper namespace="api.template">
+
+	<parameterMap type="com.scglab.connect.services.template.Template" id="template"></parameterMap>
+	<resultMap type="com.scglab.connect.services.template.Template" id="template"></resultMap>
 
 	<!-- 답변템플릿 카운트 조회 -->
 	<select id="selectCount" parameterType="map" resultType="int">
@@ -67,7 +70,7 @@
 	</select>
 	
 	<!-- 템플릿 목록 조회 -->
-	<select id="selectAll" parameterType="map" resultType="map">
+	<select id="selectAll" parameterType="map" resultMap="template">
 		
 		select  c.name as sname,
 				c.catelg,
@@ -151,62 +154,68 @@
 	</select>
 	
 	<!-- 템플릿 조회 -->
-	<select id="selectOne" parameterType="map" resultType="map">
-		select  t.*
-		from Template t
-		where 1=1
-		and id = #{id}
+	<select id="selectOne" parameterType="map" resultMap="template">
+		SELECT  vc.name AS category_small_name,
+				vc.category_large_id AS category_large_id,
+				vc.category_middle_id AS category_middle_id,
+				vc.category_large_name AS category_large_name,
+				vc.category_middle_name AS category_middle_name,
+				t.*,
+				(
+					SELECT GROUP_CONCAT(keyword_id)
+					FROM template_keyword
+					WHERE template_id = 1 
+				) AS keywordIds,
+				(
+					SELECT COUNT(1)
+					FROM template_favorite
+					WHERE template_id = t.id
+					AND member_id = #{memberId}
+				) AS is_favorite
+		FROM template2 t
+		LEFT OUTER JOIN v_category vc ON t.category_small_id = vc.id
+		WHERE t.id = #{id}
 	</select>
 	
-	<!-- 템플릿 정보 등록 -->
+	<!-- 템플릿 등록 -->
 	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		insert into Template (cid, catesm, emp, ask, askmorp, reply, link, img)
- 		values(#{cid}, #{catesm}, #{emp}, #{ask}, null, #{reply}, #{link}, #{img})
+ 		INSERT INTO template2 (company_id, category_small_id, ask, reply, link, link_protocol, image_path, image_name, member_id, update_member_id)
+		VALUES (#{companyId}, #{categorySmallId}, #{ask}, #{reply}, #{link}, #{linkProtocol}, #{imagePath}, #{imageName}, #{loginId}, #{loginId})
 	</insert>
 	
-	<!-- 템플릿 키워드 등록 -->
-	<insert id="insertTemplateKeyword" parameterType="map">
-		insert into TemplateKeyword(template, keyword)
-		values(#{id}, #{keyword})
-	</insert>
-	
-	<!-- 템플릿 삭제 -->
-	<delete id="deleteTemplateKeywords" parameterType="map">
-		delete 
-		from TemplateKeyword
-		where template = #{id}
-	</delete>
-	
-	<!-- 템플릿 정보 수정 -->
+	<!-- 템플릿 수정 -->
 	<update id="update" parameterType="map">
-		update Template
-		set cid = #{cid},
-			catesm = #{catesm},
-			emp = #{emp},
-			ask = #{ask},
-			reply = #{reply},
-			link = #{link},
-			img = #{img}
-		where 1=1
-		and id = #{id}
+		UPDATE template2 
+		SET category_small_id = #{categorySmallId}, 
+			member_id = #{loginId}, 
+			ask = #{ask}, 
+			reply = #{reply}, 
+			link = #{link}, 
+			image_path = #{imagePath}, 
+			image_name = #{imageName},
+			update_member_id = #{loginId}
+		WHERE id = #{id}
 	</update>
 	
-	<!-- 템플릿 정보 삭제 -->
+	<!-- 템플릿 삭제 -->
 	<delete id="delete" parameterType="map">
-		delete 
-		from Template where id = #{id}
+		DELETE 
+		FROM template2
+		WHERE id = #{id}
 	</delete>
 	
 	<!-- 즐겨찾기 등록 -->
-	<insert id="saveFavorite" parameterType="map">
-		insert into TemplateFavorite(emp, template) 
-		values(#{emp}, #{template})
+	<insert id="saveFavorite" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO template_favorite(company_id, template_id, member_id)
+		VALUES (#{companyId}, #{templateId}, #{loginId})
 	</insert>
 	
 	<!-- 즐겨찾기 삭제 -->
 	<delete id="deleteFavorite" parameterType="map">
-		delete 
-		from TemplateFavorite where emp = #{emp} and template = #{template}
+		DELETE 
+		FROM template_favorite
+		WHERE template_id = #{templateId}
+		AND member_id = #{loginId}
 	</delete>
 	
 	<!-- 키워드 카운트 조회 -->
@@ -218,19 +227,23 @@
 		and k.name = #{name}
 	</select>
 	
-	<!-- 키워드 조회 -->
+	<!-- 템플릿 키워드 조회 -->
 	<select id="selectKeyword" parameterType="map" resultType="map">
-		select k.id, k.createdate, k.workdate, k.name, k.cid
-		from Keyword k
-		where 1=1
-		and k.cid = #{cid}
-		and k.name = #{name}
-		limit 1
+		SELECT *
+		FROM  template_keyword
+		WHERE id = #{id}
 	</select>
 	
-	<!-- 키워드 등록 -->
-	<insert id="insertKeyword" parameterType="map">
-		 insert into Keyword(cid, name)
-		 values(#{cid}, #{name})
+	<!-- 템플릿 키워드 등록 -->
+	<insert id="insertTemplateKeyword" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO template_keyword(company_id, keyword_id, template_id, update_member_id)
+        VALUES (#{companyId}, #{keywordId}, #{templateId}, #{loginId})
 	</insert>
+	
+	<!-- 템플릿 키워드 삭제 -->
+	<delete id="deleteTemplateKeywords" parameterType="map">
+		DELETE 
+		FROM template_keywword
+		WHERE template_id = #{id}
+	</delete>
 </mapper>
