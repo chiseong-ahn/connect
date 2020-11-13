@@ -27,14 +27,29 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/customers")
-@Tag(name = "고객관리", description = "고객관리")
+@RequestMapping("/customer")
+@Tag(name = "고객관리", description = "고객 API를 제공합니다.")
 public class CustomerController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private CustomerService customerService;
+	
+	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="고객 검색", description = "고객정보를 검색합니다.", security = {@SecurityRequirement(name = "bearer-key")})
+	@Parameters({
+    	@Parameter(name = "searchType", description = "검색 타입", required = true, in = ParameterIn.QUERY, example = "name"),
+    	@Parameter(name = "searchValue", description = "검색 값", required = true, in = ParameterIn.QUERY, example = "안치성"),
+    	@Parameter(name = "page", description = "페이지 번호", required = true, in = ParameterIn.QUERY, example = "1"),
+    	@Parameter(name = "pageSize", description = "한 페이지에 보여줄 목록 갯수", required = true, in = ParameterIn.QUERY, example = "10"),
+    })
+	public Map<String, Object> findAll( @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+		return this.customerService.findAll(params);
+	}
+	
+	
+	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="고객 토큰발급", description = "", security = {@SecurityRequirement(name = "bearer-key")})

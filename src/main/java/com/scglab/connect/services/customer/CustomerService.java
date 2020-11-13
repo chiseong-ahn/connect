@@ -25,11 +25,18 @@ public class CustomerService {
 	@Autowired
 	private JwtService jwtService;
 	
+	public Map<String, Object> findAll(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		return data;
+	}
+	
+	
 	public Map<String, Object> token(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		this.customerDao.insert(params);
-		Customer customer = this.customerDao.findCustomer(params);
+		Customer customer = this.customerDao.findByGassappMemberNumber(params);
 		this.logger.debug("customer : " + customer);
 		
 		Map<String, Object> claims = new HashMap<String, Object>();

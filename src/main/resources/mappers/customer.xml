@@ -1,27 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sdtalk.customer">
+<mapper namespace="api.customer">
 
 	<resultMap type="com.scglab.connect.services.customer.Customer" id="customer"></resultMap>
 	
-	<select id="info" parameterType="map" resultMap="customer">
-		select * 
-		from Customer a
-		where a.speaker = #{speaker}
+	<!-- 고객 상세 -->
+	<select id="getDetail" parameterType="map" resultType="map">
+		SELECT * 
+		FROM   v_customer
+		WHERE  customer_id = #{id}
 	</select>
 	
-	<insert id="insert" parameterType="map">
-		CALL reg_customer(#{cid}, #{userno}, #{name}, #{telno})
+	<!-- 고객 상세(speaker) -->
+	<select id="getBySpeakerId" parameterType="map" resultMap="customer">
+		SELECT *
+		FROM   customer2
+		WHERE  speaker_id = #{speakerId}
+	</select>
+	
+	<!-- 고객 상세(gasapp_member_number) -->
+	<select id="getByGasappMemberNumber" parameterType="map" resultMap="customer">
+		SELECT *
+		FROM   customer2
+		WHERE  gasapp_member_number = #{gasappMemberNumber}
+	</select>
+	
+	<!-- 고객 등록 -->
+	<insert id="regist" parameterType="map">
+		CALL regist_customer(#{companyId}, #{gasappMemberNumber}, #{name}, #{telNumber}) 
 	</insert>
 	
-	<select id="findCustomer" parameterType="map" resultMap="customer">
-		select *
-		from Customer a
-		where 1=1
-		and a.userno  = #{userno}
-		limit 1
+	<!-- 고객 정보 수정(욕설, 부적잘한 메세지 사용 최신화) -->
+	<update id="updateSwearInsultCount" parameterType="map">
+		UPDATE	customer_company 
+		SET		swear_count = #{swearCount}, 
+				insult_count = #{insultCount},
+				update_member_id = #{loginId}
+		WHERE	company_id = #{companyId} 
+		AND		customer_id = #{id}
+	</update>
+	
+	<!-- 고객 관심고객으로 수정 -->
+	<update id="enableBlackStatus" parameterType="map">
+		UPDATE customer_company 
+		SET    block_member_id = #{loginId}, 
+		       block_date = NOW(), 
+		       block_type = #{blockType}, 
+		       remark = #{remark}, 
+		       is_block = 1,
+		       update_member_id = #{loginId}
+		WHERE  company_id = #{companyId} 
+		       AND customer_id = #{id}
+	</update>
+	
+	<!-- 고객 관심고객 해제 -->
+	<update id="disbleBlackStatus" parameterType="map">
+		UPDATE customer_company 
+		SET    block_member_id = NULL, 
+		       block_date = NULL, 
+		       block_type = NULL, 
+		       is_block = 0,
+		      update_member_id = #{loginId},
+		      remark = #{remark}
+		WHERE  company_id = #{companyId} 
+		       AND customer_id = #{id}
+	</update>
+	
+	<!-- 고객의 욕설 count 증가 -->
+	<update id="plusSwearCount" parameterType="map">
+		UPDATE customer_company 
+		SET    swear_count = swear_count + 1,
+		       update_member_id = #{loginId}
+		WHERE  company_id = #{companyId} 
+		       AND customer_id = #{id}
+	</update>
+	
+	<!-- 고객의 부적절한 count 증가 -->
+	<update id="plusInsultCount" parameterType="map">
+		UPDATE customer_company 
+		SET    insult_count = insult_count + 1,
+		       update_member_id = #{loginId}
+		WHERE  company_id = #{companyId} 
+		       AND customer_id = #{id}
+	</update>
+	
+	<!-- 블록인 사용자 목록 가져오기 -->
+	<select id="findBlockMember" parameterType="map" resultType="map">
+		SELECT *
+		FROM  v_customer
+		WHERE company_id = #{companyId}
+		AND is_block = 1
 	</select>
+	
+	<!-- 고객 상세 정보(방 정보 포함) -->
+	<select id="getDetailRoom" parameterType="map" resultType="map">
+		SELECT  r.member_id, 
+				r.state AS room_state, 
+				(
+		    		SELECT read_last_message_id 
+		    		FROM room_speaker 
+		    		WHERE room_speaker.room_id = r.id 
+		      		AND speaker_id = sp.id
+		  		) AS read_last_message_id, 
+		  		(
+		    		SELECT  DATEDIFF(
+			        			NOW(), 
+			        			MAX(create_date)
+		      				) 
+		    		FROM chat_message 
+		    		WHERE room_id = r.id
+		  		) AS end_after_day, 
+		  		(
+		    		SELECT COUNT(id) 
+		    		FROM chat_message 
+		    		WHERE room_id = r.id 
+		      		AND id > read_last_message_id 
+		      		AND is_system_message = 0 
+		      		AND message_admin_type = 0
+		  		) AS no_read_count, 
+		  		vc.* 
+		FROM v_customer vc 
+			 INNER JOIN room r ON vc.room_id = r.id 
+			 INNER JOIN speaker2 sp ON vc.speaker_id = sp.id 
+		WHERE vc.company_id = #{companyId} 
+		AND vc.gasapp_member_number = #{gasappMemberNumber}
+	</select>	
 	
 	<!-- 채팅방의 고객 조회 -->
 	<select id="selectCustomerInSpace" parameterType="map" resultMap="customer">
@@ -34,19 +138,4 @@
 		and b.iscustomer = 1
 		limit 1
 	</select>
-	
-	<!-- 고객 정보 변경. -->
-	<update id="update">		
-		update Customer 
-		set  name = name
-		<if test='swear == "Y"'>
-			,swear = swear + 1
-		</if>
-		<if test='insult == "Y"'>
-			,insult = insult + 1
-		</if>	
-		where 1=1
-		and id = #{id}
-	</update>
-	
 </mapper>
