@@ -2,7 +2,7 @@ package com.scglab.connect.services.company.external;
 
 import com.scglab.connect.services.common.auth.Contract;
 import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 
 public interface ICompany {
 	
@@ -50,7 +50,7 @@ public interface ICompany {
 	 * @param password - 비밀번호.
 	 * @return
 	 */
-	public Profile login(String loginName, String password);
+	public Member login(String loginName, String password);
 	
 	/**
 	 * 
@@ -62,7 +62,7 @@ public interface ICompany {
 	 * @param userno
 	 * @return
 	 */
-	public Profile getMemberInfo(int userno);
+	public Member getMemberInfo(int userno);
 	
 	/**
 	 * 

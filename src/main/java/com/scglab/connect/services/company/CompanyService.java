@@ -43,24 +43,10 @@ public class CompanyService {
 	}
 	
 	public Company getCompany(Map<String, Object> params, int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Company company = null;
-		if(id > 0) {
-			params.put("id", id);
-			// todo : company = this.companyDao.findOne("api.company.findCompany", params);
-			company = new Company();
-			company.setId(id);
-			company.setName(id == 1 ? "서울도시가스" : "인천도시가스");	
-			
-			if(company == null) {
-				String message = this.messageService.getMessage("error.data.type2");
-				throw new RuntimeException(message);
-			}
-		}else {
-			Object[] errorParams = new String[1];
-			errorParams[0] = "id";
-			String message = this.messageService.getMessage("error.params.type4", errorParams);
-			throw new RuntimeException(message);
-		}
+		Company company = new Company();
+		company.setId(id);
+		company.setName(id == 1 ? "서울도시가스" : "인천도시가스");	
+		
 		return company;
 	}
 	

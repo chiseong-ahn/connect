@@ -3,7 +3,7 @@ package com.scglab.connect.services.company.external;
 import java.util.Calendar;
 
 import com.scglab.connect.services.common.auth.Contract;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 
 public class CompanyInc implements ICompany {
 	
@@ -57,8 +57,8 @@ public class CompanyInc implements ICompany {
 	}
 
 	@Override
-	public Profile login(String loginName, String password) {
-		Profile profile = new Profile();
+	public Member login(String loginName, String password) {
+		Member profile = new Member();
 		profile.setCompanyId(companyId);
 		profile.setCompanyName(companyName);
 		profile.setIsAdmin(1);
@@ -68,7 +68,7 @@ public class CompanyInc implements ICompany {
 	}
 
 	@Override
-	public Profile getMemberInfo(int userno) {
+	public Member getMemberInfo(int userno) {
 		// TODO Auto-generated method stub
 		return null;
 	}
