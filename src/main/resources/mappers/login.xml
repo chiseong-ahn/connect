@@ -3,8 +3,8 @@
 
 <mapper namespace="login">
 
-	<parameterMap type="com.scglab.connect.services.login.Profile" id="profile"></parameterMap>
-	<resultMap type="com.scglab.connect.services.login.Profile" id="profile">
+	<parameterMap type="com.scglab.connect.services.member.Member" id="member"></parameterMap>
+	<resultMap type="com.scglab.connect.services.member.Member" id="member">
 		<result column="id" property="id" />
 		<result column="cid" property="companyId" />
 		<result column="speaker" property="speakerId" />
@@ -20,7 +20,7 @@
 		and a.empno = #{loginName}
 	</select>
 	
-	<select id="findProfile" parameterType="map" resultMap="profile">
+	<select id="findProfile" parameterType="map" resultMap="member">
 		select *
 		from Emp as a
 			 inner join Speaker as b on (b.id = a.speaker)
@@ -29,7 +29,7 @@
 		and a.empno = #{loginName}
 	</select>
 	
-	<insert id="saveProfile" parameterMap="profile"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+	<insert id="saveProfile" parameterMap="member"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		CALL regist_member(#{companyId}, #{loginName}, #{name}, #{authLevel})
 	</insert>
 </mapper>

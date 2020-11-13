@@ -20,6 +20,7 @@ import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.company.external.ICompany;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.CompanyUtils;
 import com.scglab.connect.utils.DataUtils;
 
@@ -56,7 +57,7 @@ public class LoginService {
 		
 		if(companyId.equals("") || loginName.equals("") || password.equals("")) {	// 로그인 정보가 부족할 경우.
 			data.put("token", null);
-			data.put("profile", null);
+			data.put("member", null);
 			data.put("reason", this.messageService.getMessage("auth.login.fail.reason1"));
 			return data;
 		}
@@ -65,36 +66,36 @@ public class LoginService {
 		ICompany company = CompanyUtils.getCompany(companyId);
 
 		// 기간계 로그인.
-		Profile profile = company.login(loginName, password);
-		if(profile == null) {
+		Member member = company.login(loginName, password);
+		if(member == null) {
 			// 기간계에 로그인 정보가 맞지않을경우.
 			data.put("token", null);
-			data.put("profile", null);
+			data.put("member", null);
 			data.put("reason", this.messageService.getMessage("auth.login.fail.reason2"));
 			return data;
 		}
 		
 		// 상담톡에 계정정보가 존재하는지 체크.
-		int count = this.loginDao.findOne("login.profileCount", params);
+		int count = this.loginDao.findOne("login.memberCount", params);
 		if(count == 0) {
 			// 상담톡에 계정정보가 존재하지 않는다면 등록.
 			
 		}
 		
 		// 계정정보 조회
-		profile = this.loginDao.findOne("login.findProfile", params);
-		profile.setCompanyName(company.getCompanyName());
-		profile.setIsAdmin(1);
-		profile.setLoginName(profile.getName());
-		this.logger.debug("profile : " + profile.toString());
+		member = this.loginDao.findOne("login.findmember", params);
+		member.setCompanyName(company.getCompanyName());
+		member.setIsAdmin(1);
+		member.setLoginName(member.getName());
+		this.logger.debug("member : " + member.toString());
 			
 		ObjectMapper objectMapper = new ObjectMapper();
-		Map profileMap = objectMapper.convertValue(profile, Map.class);
+		Map memberMap = objectMapper.convertValue(member, Map.class);
 		
-		String token = this.jwtService.generateToken(profileMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
+		String token = this.jwtService.generateToken(memberMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
 		this.logger.debug("token : " + token);
 		data.put("token", token);
-		data.put("profile", profile);
+		data.put("member", member);
 		
 		return data;
 	}
@@ -102,41 +103,41 @@ public class LoginService {
 	public Map<String, Object> profile(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		Profile profile = getProfile(request);
-		if(profile != null) {
+		Member member = getMember(request);
+		if(member != null) {
 			ObjectMapper objectMapper = new ObjectMapper();
-			Map profileMap = objectMapper.convertValue(profile, Map.class);
-			String token = this.jwtService.generateToken(profileMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
-			data.put("profile", profile);
+			Map memberMap = objectMapper.convertValue(member, Map.class);
+			String token = this.jwtService.generateToken(memberMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
+			data.put("member", member);
 			data.put("token", token);
 		}
 		
 		return data;
 	}
 	
-	public Profile getProfile(String token) {
+	public Member getMember(String token) {
 		Map<String, Object> claims = this.jwtService.getJwtData(token);
-		Profile profile = new Profile();
-		return (Profile) DataUtils.convertMapToObject(claims, profile);
+		Member member = new Member();
+		return (Member) DataUtils.convertMapToObject(claims, member);
 	}
 	
-	public void convertMapToProfile(Map<String, Object> data) {
-		Profile profile = new Profile();
-		profile = (Profile) DataUtils.convertMapToObject(data, profile);
+	public void convertMapTomember(Map<String, Object> data) {
+		Member member = new Member();
+		member = (Member) DataUtils.convertMapToObject(data, member);
 		
-		this.logger.debug("convertMapToProfile" + profile.toString());
+		this.logger.debug("convertMapTomember" + member.toString());
 		
 	}
 	
-	public void setProfile(Profile profile, HttpServletRequest request) {
-		request.setAttribute(Constant.AUTH_PROFILE, profile);
+	public void setMember(Member member, HttpServletRequest request) {
+		request.setAttribute(Constant.AUTH_MEMBER, member);
 	}
 	
-	public Profile getProfile(HttpServletRequest request) {
-		if(request.getAttribute(Constant.AUTH_PROFILE) == null) {
+	public Member getMember(HttpServletRequest request) {
+		if(request.getAttribute(Constant.AUTH_MEMBER) == null) {
 			return null;
 		}
-		return (Profile) request.getAttribute(Constant.AUTH_PROFILE);
+		return (Member) request.getAttribute(Constant.AUTH_MEMBER);
 	}
 }
 

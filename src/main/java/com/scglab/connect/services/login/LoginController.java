@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotations.Auth;
+import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.member.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,7 +49,7 @@ public class LoginController {
 		@Parameter(name = "name", description = "이름(개발용)", required = true, in = ParameterIn.QUERY, example = "홍길동")
 	})
 	@ApiResponse(responseCode = "200", description = "OK", content = {
-		@Content(schema = @Schema(oneOf = Profile.class)),
+		@Content(schema = @Schema(oneOf = Member.class)),
 	})
 	public Map<String, Object> login(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.loginService.login(params, request, response);
@@ -55,9 +57,9 @@ public class LoginController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="인증 정보 조회", description = "인증 정보를 조회한다.", security = {@SecurityRequirement(name = "bearer-key")})
+	@Operation(summary="인증 정보 조회", description = "인증 정보를 조회한다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@ApiResponse(responseCode = "200", description = "OK", content = {
-		@Content(schema = @Schema(oneOf = Profile.class)),
+		@Content(schema = @Schema(oneOf = Member.class)),
 	})
 	
 	public Map<String, Object> profile(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {

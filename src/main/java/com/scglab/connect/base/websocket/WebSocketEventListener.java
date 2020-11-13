@@ -20,7 +20,7 @@ import com.scglab.connect.base.interceptor.CommonInterceptor;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.login.LoginService;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.services.talk.ChatRoomRepository;
 import com.scglab.connect.services.talk.TalkHandler;
 
@@ -108,7 +108,7 @@ public class WebSocketEventListener {
 		String token = getToken(sessionId, headerAccessor);
 		this.logger.info("token : " + token);
 
-		Profile profile = this.loginService.getProfile(token);
+		Member profile = this.loginService.getMember(token);
 		this.logger.info("profile : " + profile);
 
 		// if(!roomId.equals(this.talkHandler.getLobbySpace(user.getCid()))) {
@@ -137,7 +137,7 @@ public class WebSocketEventListener {
 			String roomId = getRoomId(this.chatRoomRepository.getUserJoinRoomId(sessionId));
 
 			String token = this.chatRoomRepository.getUserToken(sessionId);
-			Profile profile = this.loginService.getProfile(token);
+			Member profile = this.loginService.getMember(token);
 			this.logger.debug("profile : " + profile.toString());
 
 			if (profile.getIsAdmin() == 0) {

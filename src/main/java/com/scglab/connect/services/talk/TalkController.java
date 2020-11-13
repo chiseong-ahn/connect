@@ -20,7 +20,7 @@ import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.login.LoginService;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.services.talk.TalkMessage.MessageType;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -173,7 +173,7 @@ public class TalkController {
     public void talkMessage(TalkMessage message) {
 		
 		//User user = this.authService.getUserInfo(message.getToken());
-		Profile profile = this.loginService.getProfile(message.getToken());
+		Member profile = this.loginService.getMember(message.getToken());
 		
 		if(message.getType().equals(MessageType.ASSIGN)) {
 			this.talkHandler.assign(profile, message);

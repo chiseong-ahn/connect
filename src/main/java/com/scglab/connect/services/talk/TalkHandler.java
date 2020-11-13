@@ -22,7 +22,7 @@ import com.scglab.connect.services.common.service.PushService;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.services.talk.MessageVo.MsgType;
 import com.scglab.connect.services.talk.TalkMessage.MessageType;
 import com.scglab.connect.utils.DataUtils;
@@ -82,7 +82,7 @@ public class TalkHandler {
      * @param user
      * @param roomId
      */
-	public void join(Profile profile, String roomId) {
+	public void join(Member profile, String roomId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		
 		this.logger.debug("---------------------------------------------------------------------");
@@ -217,7 +217,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param data
 	 */
-	public void assign(Profile profile, TalkMessage data) {
+	public void assign(Member profile, TalkMessage data) {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		
@@ -279,7 +279,7 @@ public class TalkHandler {
      * @param data
 	 * @throws JsonProcessingException 
      */
-    public void message(Profile profile, TalkMessage data) {
+    public void message(Member profile, TalkMessage data) {
     	this.logger.debug("---------------------------------------------------------------------");
 
     	this.logger.debug("Step. [DB] 메세지 생성.");
@@ -364,7 +364,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param roomId
 	 */
-	public void leave(Profile profile, TalkMessage message) {
+	public void leave(Member profile, TalkMessage message) {
 		this.logger.debug("[leave] profile : " + profile);
     	this.logger.debug("[leave] message : " + message);
     	sendReloadMessage(profile);
@@ -381,7 +381,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param message
 	 */
-	public void end(Profile profile, TalkMessage message) {
+	public void end(Member profile, TalkMessage message) {
 		this.logger.debug("[End] profile : " + profile);
     	this.logger.debug("[End] message : " + message);
     	
@@ -420,7 +420,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param message
 	 */
-	public void prehistory(Profile profile, String roomId) {
+	public void prehistory(Member profile, String roomId) {
 		this.logger.debug("[prehistory] profile : " + profile);
     	this.logger.debug("[prehistory] roomId : " + roomId);
     	
@@ -446,7 +446,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param roomId
 	 */
-	public void customer(Profile profile, String roomId) {
+	public void customer(Member profile, String roomId) {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("space", roomId);
@@ -472,7 +472,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param message
 	 */
-	public void speaks(Profile profile, String roomId) {
+	public void speaks(Member profile, String roomId) {
 		this.logger.debug("[speaks] profile : " + profile);
     	this.logger.debug("[speaks] roomId : " + roomId);
     	
@@ -499,7 +499,7 @@ public class TalkHandler {
 	 * @param user
 	 * @param roomId
 	 */
-	public void disconnected(Profile profile, String roomId) {
+	public void disconnected(Member profile, String roomId) {
 		if(profile.getIsAdmin() == 0) {  // 고객일 경우
 			// 채팅방을 오프라인 상태로 변경한다.
 			this.logger.debug("Step. [DB] 채팅방 상태(회원접속상태)를 오프라인으로 변경한다.");
@@ -522,7 +522,7 @@ public class TalkHandler {
      * @Method 설명 : 상담목록 갱신요청 메세지 전송.
      * @param profile
      */
-    public void sendReloadMessage(Profile profile) {
+    public void sendReloadMessage(Member profile) {
     	this.logger.debug("Step. [DB] 다른 상담원들에게 상담목록 갱신요청 메세지 전송.");
     	sendPayload(MessageType.RELOAD, getLobbySpace(profile.getCompanyId()), profile.getLoginName(), this.messageService.getMessage("talk.reload"));
     }
@@ -537,7 +537,7 @@ public class TalkHandler {
 	 * @param profile
 	 * @param data
 	 */
-	public void sendReadyRoomCountMessage(Profile profile) {
+	public void sendReadyRoomCountMessage(Member profile) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		int count = this.talkDao.selectReadySpaceCount(params);
 		if(count > 0) {

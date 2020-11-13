@@ -20,7 +20,7 @@ import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageService;
 import com.scglab.connect.services.login.LoginService;
-import com.scglab.connect.services.login.Profile;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.HttpUtils;
 
@@ -65,7 +65,7 @@ public class TalkService {
 	public Map<String, Object> minwons(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
 
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		
 		//Map<String, Object> data = new HashMap<String, Object>();
@@ -113,7 +113,7 @@ public class TalkService {
 	
 	public Map<String, Object> today(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -125,7 +125,7 @@ public class TalkService {
 	
 	public Map<String, Object> state(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		params.put("id", profile.getId());
 				
@@ -141,7 +141,7 @@ public class TalkService {
 	
 	public Map<String, Object> spaces(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		
 		String keyfield = DataUtils.getObjectValue(params, "keyfield", "");
@@ -168,7 +168,7 @@ public class TalkService {
 	
 	public Map<String, Object> space(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -180,7 +180,7 @@ public class TalkService {
 	
 	public Map<String, Object> speaker(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -192,7 +192,7 @@ public class TalkService {
 	
 	public Map<String, Object> speaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 				
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -204,7 +204,7 @@ public class TalkService {
 	}
 	
 	public Map<String, Object> history(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -236,7 +236,7 @@ public class TalkService {
 	
 	public Map<String, Object> historySpeaks(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		
-		Profile profile = this.loginService.getProfile(request);
+		Member profile = this.loginService.getMember(request);
 		params.put("cid", profile.getCompanyId());
 				
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -260,7 +260,7 @@ public class TalkService {
 		
 		if(emp == 0) {
 			// 본인 상담으로 가져오기.
-			Profile profile = this.loginService.getProfile(request);
+			Member profile = this.loginService.getMember(request);
 			emp = profile.getId();
 			empname = profile.getLoginName();
 		}
