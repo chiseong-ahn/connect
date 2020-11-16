@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="api.automessage">
+	<resultMap type="com.scglab.connect.services.automessage.AutoMessage" id="autoMessage"></resultMap>
+	
+	<!-- 자동메세지 목록 조회 -->
+	<select id="findAutoMessageAll" parameterType="map" resultMap="autoMessage">
+		SELECT *
+		FROM   auto_message
+		WHERE company_id = #{companyId}
+			  and type = #{type}
+		ORDER BY type ASC
+	</select>
+	
+	<!-- 자동메세지 상세 조회 -->
+	<select id="getAutoMessage" parameterType="map" resultMap="autoMessage">
+		SELECT *
+		FROM   auto_message
+		WHERE  id = #{id}
+	</select>
+	
+	<!-- 자동메세지 등록 -->
+	<insert id="createAutoMessage" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO auto_message(company_id, type, message, update_member_id)
+		VALUES(#{companyId}, #{type}, #{message}, #{loginId})
+	</insert>
+	
+	<!-- 자동메세지 수정 -->
+	<update id="updateAutoMessage" parameterType="map">
+		UPDATE auto_message 
+		SET    message = #{message}, 
+		       update_member_id = #{loginId}
+		WHERE  id = #{id}
+	</update>
+	
+	
+	<!-- 자동메세지 삭제 -->
+	<delete id="deleteAutoMessage" parameterType="map">
+		DELETE
+		FORM auto_message
+		WHERE  id = #{id}
+	</delete>
+	
+	<!-- 신규대화 시작시 인사 메세지 -->
+	<select id="getAutoMessageWelcome" parameterType="map" resultMap="autoMessage">
+		SELECT *
+		FROM auto_message 
+		where  company_id = #{companyId}
+		       and type = 0
+		order  by rand()
+		limit  1 
+	</select>
+	
+	<!-- 배정지연 자동메세지 조회 -->
+	<select id="getAutoMessageByMatchWait" parameterType="map" resultMap="autoMessage">
+		SELECT *
+		FROM auto_message 
+		where  company_id = #{companyId}
+		       and type = 1
+		order  by rand()
+		limit  1 
+	</select>
+	
+	<!-- 답변지연 자동메세지 조회 -->
+	<select id="getAutoMessageByReplyWait" parameterType="map" resultMap="autoMessage">
+		SELECT *
+		FROM auto_message 
+		where  company_id = #{companyId}
+		       and type = 2 
+		order  by rand()
+		limit  1 
+	</select>
+	
+	
+</mapper>
