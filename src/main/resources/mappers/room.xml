@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="api.room">
+	<resultMap type="com.scglab.connect.services.socket.Speak" id="speak"></resultMap>
+	<resultMap type="com.scglab.connect.services.room.Room" id="room"></resultMap>
+	
+	<!-- 현재 시간 방 통계 정보 -->
+	<select id="getCurrentTimeStats" parameterType="map" resultType="map">
+		SELECT 
+		  COUNT(*) AS ing_count, 
+		  SUM(
+		    CASE WHEN r.member_id IS NULL THEN 1 ELSE 0 end
+		  ) AS ready_count, 
+		  (
+		    SELECT 
+		      COUNT(id) AS cnt 
+		    FROM 
+		      chat_message 
+		    WHERE 
+		      id = r.join_message_id 
+		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
+		  ) AS new_count, 
+		  (
+		    SELECT 
+		      COUNT(DISTINCT room_id) 
+		    FROM 
+		      room_join_history 
+		    WHERE 
+		      company_id = #{companyId} 
+		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
+		  ) AS end_count, 
+		  (
+		    SELECT 
+		      COUNT(DISTINCT room_id) 
+		    FROM 
+		      room_join_history 
+		    WHERE 
+		      company_id = #{companyId}
+		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d') 
+		      AND (member_id IS NULL)
+		  ) AS out_count, 
+		  (
+		    select 
+		      IFNULL(
+		        AVG(
+		          TIMESTAMPDIFF(MINUTE, create_date, end_date)
+		        ), 
+		        0
+		      ) 
+		    from 
+		      room_join_history 
+		    where 
+		      end_date is not null 
+		      AND DATE_FORMAT(end_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
+		  ) as speak_avg_time 
+		FROM 
+		  room r 
+		WHERE 
+		  company_id = #{companyId}
+		  AND state <![CDATA[<]]> 2
+				
+	</select>
+	
+	<!-- 진행중인 방 목록 -->
+	<select id="findIngState" parameterType="map" resultMap="room">
+		SELECT 
+		    sub_room.*, 
+		    chat_message.id AS last_message_id, 
+		    chat_message.message AS last_message, 
+		    chat_message.create_date AS last_message_create_date, 
+		    v_customer.name AS customer_name,
+		    v_customer.is_block AS is_block_customer,
+		    v_customer.gasapp_member_number as gasapp_member_number,
+		    v_customer.tel_number as tel_number,
+		    c.name as company_name,
+		    TIMESTAMPDIFF(MINUTE, sub_room.join_start_date, chat_message.create_date) as speak_minute,
+		     (
+		        SELECT COUNT(1)
+		            FROM room_join_history rjh
+		         WHERE rjh.room_id = sub_room.id
+		              AND end_date IS NOT NULL
+		      ) AS joinHistoryCount
+		FROM 
+		  (
+		    SELECT 
+		      r.*, 
+		      IFNULL(
+		        (
+		          SELECT 
+		            create_date 
+		          FROM 
+		            chat_message 
+		          WHERE 
+		            id = r.join_message_id
+		        ), 
+		        r.create_date
+		      ) AS join_start_date, 
+		      (
+		        SELECT 
+		          MAX(id) 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          room_id = r.id
+		      ) AS recent_message_id, 
+		      (
+		        SELECT 
+		          speaker2.id 
+		        FROM 
+		          room_speaker 
+		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
+		        WHERE 
+		          room_id = r.id 
+		          AND speaker2.is_customer = 1
+		      ) AS customer_speaker_id, 
+		      (
+		        SELECT 
+		          COUNT(DISTINCT chat_message.id) 
+		        FROM 
+		          chat_message 
+		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		        WHERE 
+		          chat_message.room_id = r.id 
+		          AND chat_message.is_employee = 0 
+		          AND message_read.speaker_id != chat_message.speaker_id 
+		          AND message_read.read_date IS NULL 
+		          AND chat_message.id > (
+		            SELECT 
+		              MAX(id) 
+		            FROM 
+		              chat_message 
+		            WHERE 
+		              is_employee = 1 
+		              AND room_id = r.id
+		          )
+		      ) AS no_read_count, 
+		      (
+		        SELECT 
+		          MIN(chat_message.create_date) 
+		        FROM 
+		          chat_message 
+		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		        WHERE 
+		          chat_message.room_id = r.id 
+		          AND chat_message.is_employee = 0 
+		          AND message_read.speaker_id != chat_message.speaker_id 
+		          AND message_read.read_date IS NULL 
+		          AND chat_message.id > (
+		            SELECT 
+		              MAX(id) 
+		            FROM 
+		              chat_message 
+		            WHERE 
+		              is_employee = 1 
+		              AND room_id = r.id
+		          )
+		      ) AS wait_start_date,
+		      mb.name as member_name
+		    FROM 
+		      room r
+		      INNER JOIN member mb ON r.member_id = mb.id
+		      INNER JOIN (
+		        SELECT 
+		          DISTINCT(room_id), 
+		          room_id AS message_search_room_id 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          is_system_message = 0
+		          AND message_admin_type = 0 
+		          AND message LIKE concat('%', #{message}, '%')
+		      ) messasge_search ON r.id = messasge_search.message_search_room_id
+		    WHERE 
+		      r.company_id = :companyId 
+		      AND r.state <![CDATA[<]]> 2 
+		      AND (
+		        CASE WHEN :memberId IS NULL THEN 1 = 1 ELSE member_id = #{memberId} END
+		      )
+		      AND mb.name LIKE concat('%', #{memberName}, '%')
+		  ) AS sub_room 
+		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
+		  INNER JOIN v_customer ON sub_room.customer_speaker_id = v_customer.speaker_id
+		  INNER JOIN company c ON sub_room.company_id = c.id
+		WHERE 
+		  v_customer.company_id = #{companyId}
+		  AND v_customer.name LIKE concat('%', #{customerName}, '%')
+		ORDER BY 
+		  last_message_create_date DESC
+	</select>
+	
+	<!-- 대기중인 방 목록. -->
+	<select id="findReadyState" parameterType="map" resultMap="room">
+		SELECT 
+		    sub_room.*, 
+		    chat_message.id AS last_message_id, 
+		    chat_message.message AS last_message, 
+		    chat_message.create_date AS last_message_create_date, 
+		    v_customer.name AS customer_name,
+		    v_customer.is_block AS is_block_customer,
+		    v_customer.gasapp_member_number as gasapp_member_number,
+		    v_customer.tel_number as tel_number,
+		    c.name as company_name,
+		    TIMESTAMPDIFF(MINUTE, sub_room.join_start_date, chat_message.create_date) as speak_minute,
+		     (
+		        SELECT COUNT(1)
+		            FROM room_join_history rjh
+		         WHERE rjh.room_id = sub_room.id
+		              AND end_date IS NOT NULL
+		      ) AS joinHistoryCount
+		FROM 
+		  (
+		    SELECT 
+		      r.*, 
+		      IFNULL(
+		        (
+		          SELECT 
+		            create_date 
+		          FROM 
+		            chat_message 
+		          WHERE 
+		            id = r.join_message_id
+		        ), 
+		        r.create_date
+		      ) AS join_start_date, 
+		      (
+		        SELECT 
+		          MAX(id) 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          room_id = r.id
+		      ) AS recent_message_id, 
+		      (
+		        SELECT 
+		          speaker2.id 
+		        FROM 
+		          room_speaker 
+		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
+		        WHERE 
+		          room_id = r.id 
+		          AND speaker2.is_customer = 1
+		      ) AS customer_speaker_id,
+		      (
+		        SELECT 
+		          COUNT(DISTINCT chat_message.id) 
+		        FROM 
+		          chat_message 
+		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		        WHERE 
+		          chat_message.room_id = r.id 
+		          AND chat_message.is_employee = 0 
+		          AND message_read.speaker_id != chat_message.speaker_id 
+		          AND message_read.read_date IS NULL 
+		          AND chat_message.id > (
+		            SELECT 
+		              MAX(id) 
+		            FROM 
+		              chat_message 
+		            WHERE 
+		              is_employee = 1 
+		              AND room_id = r.id
+		          )
+		      ) AS no_read_count, 
+		      (
+		        SELECT 
+		          MIN(chat_message.create_date) 
+		        FROM 
+		          chat_message 
+		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		        WHERE 
+		          chat_message.room_id = r.id 
+		          AND chat_message.is_employee = 0 
+		          AND message_read.speaker_id != chat_message.speaker_id 
+		          AND message_read.read_date IS NULL 
+		          AND chat_message.id > (
+		            SELECT 
+		              MAX(id) 
+		            FROM 
+		              chat_message 
+		            WHERE 
+		              is_employee = 1 
+		              AND room_id = r.id
+		          )
+		      ) AS wait_start_date,
+		      mb.name as member_name
+		    FROM 
+		      room r
+		      LEFT OUTER JOIN member mb ON r.last_member_id = mb.id
+		                      AND mb.name LIKE concat('%', #{memberName}, '%')
+		      INNER JOIN (
+		        SELECT 
+		          DISTINCT(room_id), 
+		          room_id AS message_search_room_id 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          is_system_message = 0
+		          AND message_admin_type = 0 
+		          AND message LIKE concat('%', #{message}, '%')
+		      ) messasge_search ON r.id = messasge_search.message_search_room_id
+		    WHERE 
+		      r.company_id = #{companyId}
+		      AND r.state <![CDATA[<]]> 2 
+		      AND r.member_id IS NULL
+		  ) AS sub_room 
+		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
+		  INNER JOIN v_customer ON sub_room.customer_speaker_id = v_customer.speaker_id
+		  INNER JOIN company c ON sub_room.company_id = c.id
+		WHERE 
+		  v_customer.company_id = #{companyId}
+		  AND v_customer.name LIKE concat('%', #{customerName}, '%')
+		ORDER BY #{sort}
+	</select>
+	
+	<!-- 종료된 방 목록. -->
+	<select id="findCloseState" parameterType="map" resultMap="room">
+		SELECT 
+		    sub_room.*, 
+		    chat_message.id AS last_message_id, 
+		    chat_message.message AS last_message, 
+		    chat_message.create_date AS last_message_create_date, 
+		    v_customer.name AS customer_name,
+		    v_customer.is_block AS is_block_customer,
+		    v_customer.gasapp_member_number as gasapp_member_number,
+		    v_customer.tel_number as tel_number,
+		    TIMESTAMPDIFF(MINUTE, sub_room.join_start_date, chat_message.create_date) as speak_minute,
+		     (
+		        SELECT COUNT(1)
+		            FROM room_join_history rjh
+		         WHERE rjh.room_id = sub_room.id
+		              AND end_date IS NOT NULL
+		      ) AS joinHistoryCount
+		FROM 
+		  (
+		    SELECT 
+		      r.*, 
+		      IFNULL(
+		        (
+		          SELECT 
+		            create_date 
+		          FROM 
+		            chat_message 
+		          WHERE 
+		            id = r.join_message_id
+		        ), 
+		        r.create_date
+		      ) AS join_start_date, 
+		      (
+		        SELECT 
+		          MAX(id) 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          room_id = r.id
+		      ) AS recent_message_id, 
+		      (
+		        SELECT 
+		          speaker2.id 
+		        FROM 
+		          room_speaker 
+		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
+		        WHERE 
+		          room_id = r.id 
+		          AND speaker2.is_customer = 1
+		      ) AS customer_speaker_id,
+		      mb.name as member_name
+		    FROM 
+		      room r
+		      INNER JOIN (
+		        SELECT 
+		          DISTINCT(room_id), 
+		          room_id AS message_search_room_id 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          is_system_message = 0
+		          AND message_admin_type = 0 
+		          AND message LIKE concat('%', #{message}, '%')
+		      ) messasge_search ON r.id = messasge_search.message_search_room_id
+		      LEFT OUTER JOIN member mb ON r.last_member_id = mb.id
+		                      AND mb.name LIKE concat('%', #{memberName}, '%')
+		    WHERE 
+		      r.company_id = #{companyId} 
+		      AND r.state = 8
+		      AND (
+		        CASE WHEN #{memberId} IS NULL THEN 1 = 1 ELSE last_member_id = #{memberId} END
+		      ) 
+		      AND date_format(end_date, '%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
+		  ) AS sub_room 
+		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
+		  INNER JOIN v_customer ON sub_room.customer_speaker_id = v_customer.speaker_id 
+		WHERE 
+		  v_customer.company_id = #{companyId}
+		  AND v_customer.name LIKE concat('%', #{customerName}, '%')
+		ORDER BY 
+		  last_message_create_date DESC
+	</select>
+	
+	<!-- 이전 상담 검색 -->
+	<select id="findSearchJoinHistory" parameterType="map" resultType="map">
+		SELECT rjh.create_date AS join_start_date, 
+		       TIMESTAMPDIFF(MINUTE, rjh.create_date, rjh.end_date) speak_minute, 
+		       rjh.*, 
+		       mb.name AS member_name,
+		       mb2.name AS last_member_name,
+		       (SELECT GROUP_CONCAT(DISTINCT message_detail)
+		           FROM chat_message
+		        WHERE room_id = #{roomId} AND id BETWEEN rjh.start_message_id 
+		              AND rjh.end_message_id) AS tags
+		FROM   room_join_history rjh 
+		       INNER JOIN chat_message m 
+		               ON rjh.start_message_id = m.id 
+		       LEFT OUTER JOIN member mb 
+		              ON mb.id = rjh.member_id 
+		       LEFT OUTER JOIN speaker2 sp 
+		              ON mb.speaker_id = sp.id
+		       LEFT OUTER JOIN member mb2
+		              ON mb2.id = rjh.last_member_id 
+		WHERE  rjh.room_id = #{roomId}
+		       AND rjh.end_date IS NOT NULL 
+		       AND rjh.room_id IN(SELECT DISTINCT room_id 
+		                          FROM   chat_message 
+		                          WHERE  room_id = #{roomId} 
+		                                 AND id BETWEEN rjh.start_message_id AND rjh.end_message_id 
+		                                 AND is_system_message = 0 
+		                                 AND message_admin_type = 0 
+		                                 AND message LIKE CONCAT('%', #{message}, '%')) 
+		ORDER  BY rjh.id DESC 
+	</select>
+	
+	
+	<!-- 방 종료시키기 -->
+	<select id="closeRoom" parameterType="map" resultMap="room">
+		CALL close_room(#{roomId}, #{loginId})
+	</select>
+	
+	<!-- 방 이관시키기 -->
+	<select id="transferRoom" parameterType="map" resultMap="room">
+		CALL transfer_room(#{transferType}, #{roomId}, #{memberId}, #{loginId})
+	</select>
+	
+	<!-- 방 상담사 매칭시키기 -->
+	<select id="matchRoom" parameterType="map" resultType="map">
+		CALL match_room(#{roomId}, #{memberId})
+	</select>
+	
+	<!-- 방 상세. -->
+	<select id="getDetail" parameterType="map" resultType="map">
+		SELECT 
+		  sub_room.*, 
+		  chat_message.id AS last_message_id, 
+		  chat_message.message AS last_message, 
+		  chat_message.create_date AS last_message_create_date, 
+		  v_customer.name AS customer_name,
+		  v_customer.is_block AS is_block_customer,
+		    v_customer.gasapp_member_number as gasapp_member_number,
+		    v_customer.tel_number as tel_number,
+		    TIMESTAMPDIFF(MINUTE, sub_room.join_start_date, chat_message.create_date) as speak_minute,
+		     (
+		        SELECT COUNT(1)
+		            FROM room_join_history rjh
+		         WHERE rjh.room_id = sub_room.id
+		              AND end_date IS NOT NULL
+		      ) AS joinHistoryCount
+		FROM 
+		  (
+		    SELECT 
+		      r.*, 
+		      IFNULL(
+		        (
+		          SELECT 
+		            create_date 
+		          FROM 
+		            chat_message 
+		          WHERE 
+		            id = r.join_message_id
+		        ), 
+		        r.create_date
+		      ) AS join_start_date, 
+		      (
+		        SELECT 
+		          MAX(id) 
+		        FROM 
+		          chat_message 
+		        WHERE 
+		          room_id = r.id
+		      ) AS recent_message_id, 
+		      (
+		        SELECT 
+		          speaker2.id 
+		        FROM 
+		          room_speaker 
+		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
+		        WHERE 
+		          room_id = r.id 
+		          AND speaker2.is_customer = 1
+		      ) AS customer_speaker_id,
+		      (
+		        SELECT 
+		          COUNT(DISTINCT chat_message.id) 
+		        FROM 
+		          chat_message 
+		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		        WHERE 
+		          chat_message.room_id = r.id 
+		          AND chat_message.is_employee = 0 
+		          AND message_read.speaker_id != chat_message.speaker_id 
+		          AND message_read.read_date IS NULL 
+		          AND chat_message.id > (
+		            SELECT 
+		              MAX(id) 
+		            FROM 
+		              chat_message 
+		            WHERE 
+		              is_employee = 1 
+		              AND room_id = r.id
+		          )
+		      ) AS no_read_count, 
+		      (
+		        SELECT 
+		          MIN(chat_message.create_date) 
+		        FROM 
+		          chat_message 
+		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		        WHERE 
+		          chat_message.room_id = r.id 
+		          AND chat_message.is_employee = 0 
+		          AND message_read.speaker_id != chat_message.speaker_id 
+		          AND message_read.read_date IS NULL 
+		          AND chat_message.id > (
+		            SELECT 
+		              MAX(id) 
+		            FROM 
+		              chat_message 
+		            WHERE 
+		              is_employee = 1 
+		              AND room_id = r.id
+		          )
+		      ) AS wait_start_date
+		    FROM 
+		      room r 
+		    WHERE 
+		      id = #{id}
+		  ) AS sub_room
+		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
+		  INNER JOIN v_customer ON sub_room.customer_speaker_id = v_customer.speaker_id
+	</select>
+	
+	<!-- 방 조인 -->
+	<select id="joinRoom" parameterType="map" resultType="map">
+		CALL join_room(#{roomId}, #{speakerId})
+	</select>
+	
+	<!-- 방 온라인 설정 -->
+	<update id="updateOnline" parameterType="map">
+		UPDATE room 
+		SET    is_online = #{isOnline} 
+		WHERE  id = #{id}
+	</update>
+	
+</mapper>
