@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.scglab.connect.services.adminmenu.emp.EmpDao;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.JwtService;
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
@@ -49,7 +49,7 @@ public class TalkService {
 	private EmpDao empDao;
 	
 	@Autowired
-    private MessageService messageService;
+    private MessageHandler messageService;
 	
 	@Autowired
 	private JwtService jwtService;

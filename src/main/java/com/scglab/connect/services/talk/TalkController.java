@@ -21,6 +21,7 @@ import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.services.socket.SocketData;
 import com.scglab.connect.services.talk.TalkMessage.MessageType;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +50,7 @@ public class TalkController {
 	
 	@Autowired
 	private TalkHandler talkHandler;
+	
     
     @Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/minwons", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -169,7 +171,7 @@ public class TalkController {
 	
 	
 	
-	@MessageMapping("/talk/message")
+	@MessageMapping("/talk/message_old")
     public void talkMessage(TalkMessage message) {
 		
 		//User user = this.authService.getUserInfo(message.getToken());

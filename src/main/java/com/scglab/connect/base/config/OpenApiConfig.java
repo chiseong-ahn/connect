@@ -80,12 +80,6 @@ public class OpenApiConfig {
 	}
 	
 	@Bean
-	public GroupedOpenApi room() {
-		String[] paths = { "/api/room/**" };
-		return GroupedOpenApi.builder().setGroup("상담(채팅방)관리 API").pathsToMatch(paths).build();
-	}
-	
-	@Bean
 	public GroupedOpenApi minwon() {
 		String[] paths = { "/api/minwon/**" };
 		return GroupedOpenApi.builder().setGroup("민원관리 API").pathsToMatch(paths).build();
@@ -126,4 +120,24 @@ public class OpenApiConfig {
 		String[] paths = { "/api/stats/**" };
 		return GroupedOpenApi.builder().setGroup("통계관리 API").pathsToMatch(paths).build();
 	}
+	
+	@Bean
+	public GroupedOpenApi room() {
+		String[] paths = { "/api/room/**" };
+		return GroupedOpenApi.builder().setGroup("채팅방 API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
+	public GroupedOpenApi message() {
+		String[] paths = { "/api/message/**" };
+		return GroupedOpenApi.builder().setGroup("메세지 API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
+	public GroupedOpenApi autMessage() {
+		String[] paths = { "/api/auto-message/**" };
+		return GroupedOpenApi.builder().setGroup("자동메세지 API").pathsToMatch(paths).build();
+	}
+	
+	
 }

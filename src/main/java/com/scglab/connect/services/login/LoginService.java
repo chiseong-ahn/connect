@@ -18,7 +18,7 @@ import com.scglab.connect.properties.JwtProperties;
 import com.scglab.connect.services.adminmenu.emp.EmpDao;
 import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.JwtService;
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.CompanyUtils;
@@ -30,7 +30,7 @@ public class LoginService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private MessageService messageService;
+	private MessageHandler messageService;
 	
 	@Autowired
 	private LoginDao loginDao;

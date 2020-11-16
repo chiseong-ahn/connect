@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
@@ -25,7 +25,7 @@ public class KeywordService {
 	private KeywordDao keywordDao;
 	
 	@Autowired
-	private MessageService messageService;
+	private MessageHandler messageService;
 	
 	@Autowired
 	private LoginService loginService;

@@ -15,11 +15,20 @@ public class TalkMessage {
 
 	// 메시지 타입
 	public enum MessageType {
-		TOKEN, JOIN, JOINED, WELCOME, DELAY, MESSAGE, LEAVE, END, RELOAD, PREHISTORY, SPEAKS, READS, READSEMP,
-		MEBMER_INFO, READYCOUNT, ASSIGN, ASSIGNED, SPACEINFO, CUSTOMER_INFO
+		READYCOUNT,
+		JOIN, JOINED, WELCOME, DELAY,
+		ASSIGN, ASSIGNED,
+		PREHISTORY, SPEAKS,
+		MESSAGE,
+		READS, READ_BY_EMP, READ_BY_CUSOMTER, READSEMP,
+		MEBMER_INFO, SPACEINFO, CUSTOMER_INFO,
+		LEAVE,
+		END, END_BY_EMP, END_BY_CUSTOMER,
+		RELOAD
 	}
 
 	private MessageType type;			// 메시지 타입
+	
 	private long id;
 	private String roomId;				// 방번호
 	private String sender;				// 메시지 보낸사람

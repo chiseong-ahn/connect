@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.service.MessageHandler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private MessageService messageService;
+	private MessageHandler messageService;
 	
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<?> handleBaseException(Exception e) {

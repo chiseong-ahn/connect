@@ -54,7 +54,7 @@ public class BlacklistService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.blacklistDao.update(params);
 		if(result > 0) {
-			Customer customer = this.customerDao.findCustomer(params);
+			Map<String, Object> customer = this.customerDao.findCustomer(params);
 			data.put("customer", customer);
 		}
 		

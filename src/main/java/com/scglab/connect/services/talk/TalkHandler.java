@@ -17,7 +17,7 @@ import com.scglab.connect.services.adminmenu.automsg.Automsg;
 import com.scglab.connect.services.adminmenu.automsg.AutomsgDao;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.common.service.PushService;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.customer.Customer;
@@ -49,7 +49,7 @@ public class TalkHandler {
     private CustomerDao customerDao;
     
     @Autowired
-    private MessageService messageService;
+    private MessageHandler messageService;
     
     @Autowired
     private PushService pushService;
@@ -72,6 +72,28 @@ public class TalkHandler {
     }
     
     
+    public void join1(Member profile, String roomId) {
+    	this.logger.debug("roomId : " + roomId);
+		this.logger.debug("lobby : " + getLobbySpace(profile.getCompanyId()));
+		
+		
+		if(roomId.equals(getLobbySpace(profile.getCompanyId()))) {
+			// 조인된 방이 로비일 경우.
+
+		
+		}else {
+			// 조인된 방이 상담채팅방일 경우(로비가 아닌 경우)
+			Map<String, Object> recvData = new HashMap<String, Object>();
+			recvData.put("roomId", roomId);
+			recvData.put("message", "환영합니다.");
+			recvData.put("profile", profile);
+			
+			this.redisTemplate.convertAndSend(channelTopic.getTopic(), recvData);
+		}
+		
+		
+    }
+    
     /**
      * 
      * @Method Name : join
@@ -92,16 +114,7 @@ public class TalkHandler {
 		this.logger.debug("roomId : " + roomId);
 		this.logger.debug("lobby : " + getLobbySpace(profile.getCompanyId()));
 		
-		
-//		Map<String, Object> data = new HashMap<String, Object>();
-//		data.put("test1", "111");
-//		data.put("test2", "222");
-//		data.put("test3", "333");
-//		sendData(MsgType.JOINED, roomId, user.getCid(), user.getEmp(), 0, data);
-				
-		
 		if(!roomId.equals(getLobbySpace(profile.getCompanyId()))) {
-			
 			// 대기실이 아닐경우 
 			
 			this.logger.debug("[DB] 스페이스 조인처리.");
@@ -116,6 +129,15 @@ public class TalkHandler {
 			talkMessage.setMsg(profile.getSpeakerId() + "님이 연결되었습니다.");
 			talkMessage.setUserCount(this.chatRoomRepository.getUserCount(roomId));
 			sendPayload(talkMessage);
+			
+			
+			// 채팅방 참여자들에게 조인한 사용자정보 전달.
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("profile", profile);
+			sendMessage(MessageType.JOINED, roomId, data);
+			
+			
+			
 			
 			params.put("emp", profile.getId());
 			Map<String, Object> space = this.talkDao.space(params);
@@ -624,6 +646,22 @@ public class TalkHandler {
 		
 		this.redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 	}
+	
+	
+	// 발송할 메세지 템플릿
+	public Map<String, Object> getDataTemplate(String roomId){
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("roomId", roomId);
+		return data;
+	}
+	
+	// 메세지 발송처리
+	public void sendMessage(MessageType messageType, String roomId, Map<String, Object> data) {
+		data.put("MESSAGE_TYPE", messageType);
+		data.put("roomId", roomId);
+		this.redisTemplate.convertAndSend(channelTopic.getTopic(), data);
+	}
+	
 	
 	
 }

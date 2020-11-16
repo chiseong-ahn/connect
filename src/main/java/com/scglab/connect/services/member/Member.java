@@ -15,6 +15,7 @@ public class Member {
 	private Object companyUseConfigJson;
 	private String companyName;
 	private int isAdmin;
+	private int isCustomer;
 	private int authLevel;
 	private String loginName;
 	private int state;

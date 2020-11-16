@@ -7,6 +7,8 @@ public class Constant {
 	
 	public final static String AUTH_BEARERR_KEY = "bearer-key";
 	
+	public final static String TALK_ROOM_PREFIX = "/sub/chat/room/";
+	
 	// 상담내용(대화내용) 페이징 수.
 	public final static int LIMIT_MESSAGE_LIST = 15;
 }

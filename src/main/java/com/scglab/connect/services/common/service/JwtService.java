@@ -69,7 +69,7 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
         	return Jwts.parser().setSigningKey(this.jwtProperty.getSecretKey()).parseClaimsJws(jwt);
         } catch (Exception ex) {
-        	throw new UnauthorizedException("auth.valid.faill.reason2");
+        	throw new UnauthorizedException("auth.valid.fail.reason2");
         }
     }
 }

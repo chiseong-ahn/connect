@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.service.MessageService;
+import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.utils.DataUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@ public class SampleService {
 	private SampleDao sampleDao;
 	
 	@Autowired
-	private MessageService messageService;
+	private MessageHandler messageService;
 	
 	public Map<String, Object> selectAll(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
