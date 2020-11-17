@@ -42,6 +42,16 @@
 		WHERE  id = #{id}
 	</delete>
 	
+	<!-- 자동메세지 조회 -->
+	<select id="getAutoMessageRandom" parameterType="map" resultMap="autoMessage">
+		SELECT *
+		FROM auto_message 
+		where  company_id = #{companyId}
+		       and type = #{type}
+		order  by rand()
+		limit  1 
+	</select>
+	
 	<!-- 신규대화 시작시 인사 메세지 -->
 	<select id="getAutoMessageWelcome" parameterType="map" resultMap="autoMessage">
 		SELECT *

@@ -24,8 +24,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	
 	Logger logger = LoggerFactory.getLogger(CommonInterceptor.class);
 	
-	@Autowired
-	private JwtService jwtService;
+	@Autowired private JwtService jwtService;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

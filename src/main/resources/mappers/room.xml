@@ -559,4 +559,58 @@
 		WHERE  id = #{id}
 	</update>
 	
+	<!-- 방 상세정보(speaer id기준) -->
+	<select id="getDetailBySpeakerId" parameterType="map" resultMap="room">
+		SELECT *
+		FROM  room 
+		WHERE id = (
+			SELECT room_id 
+            FROM   room_speaker 
+            WHERE speaker_id = #{speakerId}
+		) 
+	</select>
+	
+	<!-- 고객의 조인 히스토리 정보 최신화 -->
+	<update id="updateJoinHistory" parameterType="map">
+		UPDATE room 
+		SET  join_history_json = #{history} 
+		WHERE id = #{roomId}
+	</update>
+	
+	<!-- 방 종료 상세 정보 -->
+	<select id="getRoomJoinHistoryDetail" parameterType="map" resultType="map">
+		SELECT *
+		FROM   room_join_history 
+		WHERE  id = #{id}
+	</select>
+	
+	<!-- 메세지 조회 -->
+	<select id="findSearchRangeById" parameterType="map" resultType="map">
+		SELECT * 
+		FROM   chat_message 
+		WHERE  room_id = #{roomId}
+		AND    id BETWEEN #{startId} AND #{endId} 
+		AND    is_system_message = 0 
+		AND    message_admin_type = 0
+	</select>
+	
+	<!-- chatid의 카테고리 소분류 정보 수정 -->
+	<update id="updateJoinHistoryByChatId" parameterType="map">
+		UPDATE room_join_history
+		SET category_small_id = #{categorySmallId}
+		WHERE id = #{chatid}
+	</update>
+	
+	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+

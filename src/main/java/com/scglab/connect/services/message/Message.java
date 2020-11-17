@@ -10,6 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Message {
-	private Long id;					// 방id
+	private long id;					// 방id
+	private long joinMessageId;
 	
 }

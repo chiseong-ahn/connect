@@ -41,7 +41,7 @@ public class RedisSubscriber {
     		String roomId = DataUtils.getString(data, "roomId", "");
     		data.remove("roomId");
     		
-    		this.messagingTemplate.convertAndSend(Constant.TALK_ROOM_PREFIX + roomId, data);
+    		this.messagingTemplate.convertAndSend(Constant.SOCKET_ROOM_PREFIX + roomId, data);
     	}catch(Exception e) {
     		this.logger.error(e.getMessage());
     	}

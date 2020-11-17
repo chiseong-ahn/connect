@@ -121,4 +121,6 @@ public class RoomService {
 		Map<String, Object> data = this.roomDao.findSearchJoinHistory(params);
 		return data;
 	}
+	
+	
 }

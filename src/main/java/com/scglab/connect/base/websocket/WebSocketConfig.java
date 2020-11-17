@@ -6,12 +6,14 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import com.scglab.connect.constant.Constant;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp") // 연결할 socket space.
+        registry.addEndpoint(Constant.SOCKET_BASE_URI) // 연결할 socket space.
         		.setAllowedOrigins("*")	  // socket CORS.
         		.withSockJS();			  // sockjs 사용.
     }

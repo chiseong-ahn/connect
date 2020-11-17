@@ -1,50 +1,25 @@
 package com.scglab.connect.base.websocket;
 
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import com.scglab.connect.base.interceptor.CommonInterceptor;
-import com.scglab.connect.services.common.auth.AuthService;
-import com.scglab.connect.services.common.auth.User;
-import com.scglab.connect.services.login.LoginService;
-import com.scglab.connect.services.member.Member;
-import com.scglab.connect.services.talk.ChatRoomRepository;
-import com.scglab.connect.services.talk.TalkHandler;
+import com.scglab.connect.services.socket.SocketService;
 
 import lombok.RequiredArgsConstructor;
 
-@SuppressWarnings(value = {"unused", "unchecked", "rawtypes"})
 @RequiredArgsConstructor
 @Component
 public class WebSocketEventListener {
 	Logger logger = LoggerFactory.getLogger(CommonInterceptor.class);
 
-	private final ChatRoomRepository chatRoomRepository;
-
-	@Autowired
-	private SimpMessageSendingOperations messagingTemplate;
-
-	@Autowired
-	private TalkHandler talkHandler;
-
-	@Autowired
-	private AuthService authService;
-	
-	@Autowired
-	private LoginService loginService;
+	@Autowired private SocketService socketService;
 
 	/**
 	 * 
@@ -57,6 +32,7 @@ public class WebSocketEventListener {
 	 */
 	@EventListener
 	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+		/*
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		this.logger.info("[Connection] headerAccessor : " + headerAccessor.toString());
 
@@ -80,11 +56,13 @@ public class WebSocketEventListener {
 		this.logger.info("token : " + token);
 
 		this.chatRoomRepository.setUserToken(sessionId, token);
-
+		*/
+		this.socketService.connect(event);
 	}
 
 	@EventListener
 	public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
+		/*
 		this.logger.info("Socket subscribe!!");
 
 		this.logger.debug("event : " + event.toString());
@@ -114,6 +92,9 @@ public class WebSocketEventListener {
 		// if(!roomId.equals(this.talkHandler.getLobbySpace(user.getCid()))) {
 		this.talkHandler.join(profile, roomId);
 		// }
+		 */
+		
+		this.socketService.subscribe(event);
 	}
 
 	/**
@@ -127,6 +108,7 @@ public class WebSocketEventListener {
 	 */
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+		/*
 		this.logger.info("Socket Disconnected!");
 
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -161,8 +143,11 @@ public class WebSocketEventListener {
 		
 		// 커네션한 유저 토큰 삭제.
 		this.chatRoomRepository.dropUserToken(sessionId);
+		*/
+		this.socketService.disconnect(event);
 	}
-
+	
+	/*
 	private String getSocketPath(StompHeaderAccessor headerAccessor) {
 		MessageHeaders headers = headerAccessor.getMessageHeaders();
 		String path = (String) headers.get("simpDestination");
@@ -210,4 +195,5 @@ public class WebSocketEventListener {
 		}
 		return token;
 	}
+	*/
 }

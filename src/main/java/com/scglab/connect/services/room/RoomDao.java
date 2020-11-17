@@ -166,7 +166,7 @@ public class RoomDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public int joinRoom(Map<String, Object> params) {
+	public Map<String, Object> joinRoom(Map<String, Object> params) {
 		return this.sqlSession.selectOne(this.namespace + "joinRoom", params);
 	}
 	
@@ -184,12 +184,75 @@ public class RoomDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "updateOnline", params);
 	}
 	
+	/**
+	 * 
+	 * @Method Name : getDetailBySpeakerId
+	 * @작성일 : 2020. 11. 17.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 방 상세정보(speaer id기준)
+	 * @param params
+	 * @return
+	 */
+	public Room getDetailBySpeakerId(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "getDetailBySpeakerId", params);
+	}
 	
+	/**
+	 * 
+	 * @Method Name : updateJoinHistory
+	 * @작성일 : 2020. 11. 17.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객의 조인 히스토리 정보 최신화
+	 * @param params
+	 * @return
+	 */
+	public int updateJoinHistory(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "updateJoinHistory", params);
+	}
 	
+	/**
+	 * 
+	 * @Method Name : getRoomJoinHstoryDetail
+	 * @작성일 : 2020. 11. 17.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 방 종료 상세 정보
+	 * @param params
+	 * @return
+	 */
+	public Map<String, Object> getRoomJoinHstoryDetail(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "getRoomJoinHstoryDetail", params);
+	}
 	
+	/**
+	 * 
+	 * @Method Name : findSearchRangeById
+	 * @작성일 : 2020. 11. 17.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 메세지 조회
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> findSearchRangeById(Map<String, Object> params) {
+		return this.sqlSession.selectList(this.namespace + "findSearchRangeById", params);
+	}
 	
-	
-	
+	/**
+	 * 
+	 * @Method Name : updateJoinHistoryByChatId
+	 * @작성일 : 2020. 11. 17.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : chatid의 카테고리 소분류 정보 수정
+	 * @param params
+	 * @return
+	 */
+	public int updateJoinHistoryByChatId(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "updateJoinHistoryByChatId", params);
+	}
 	
 	
 	

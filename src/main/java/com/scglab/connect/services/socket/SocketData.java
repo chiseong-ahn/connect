@@ -1,5 +1,7 @@
 package com.scglab.connect.services.socket;
 
+import java.util.Map;
+
 import com.scglab.connect.services.socket.SocketService.EventName;
 
 import lombok.Getter;
@@ -15,6 +17,6 @@ public class SocketData {
 	private String companyId;
 	private String roomId;
 	private String token;
-	private Object data;
+	private Map<String, Object> data;
 	
 }
