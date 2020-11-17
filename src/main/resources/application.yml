@@ -14,7 +14,9 @@ server:
     path: /error/error
     whitelabel:
       enabled: false
-    
+
+
+
 # 스프링부트 기본 설정.
 spring:
   application:
@@ -45,14 +47,6 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
-
-
-# Jsonwebtoken  
-jwt:
-  secret-key: '#@SCGLAB_SDTALK__$$'
-  valid-time-admin: 86400000
-  valid-time-customer: 86400000
-
 
 # Prometheus 설정.
 management:

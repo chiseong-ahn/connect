@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.constant.Constant;
-import com.scglab.connect.properties.JwtProperties;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.utils.DataUtils;
 
@@ -25,9 +24,6 @@ public class AuthService {
 	
 	@Autowired
 	private JwtService jwtService;
-	
-	@Autowired
-	private JwtProperties jwtProperty;
 	
 	@Autowired
 	private AuthDao authDao;
@@ -121,13 +117,13 @@ public class AuthService {
 						// 회원정보 조회
 						Map<String, Object> object = this.authDao.selectOne(params);
 						
-						String newAccessToken = this.jwtService.generateToken(object, new Date(now.getTime() + Long.parseLong(this.jwtProperty.getValidTimeCustomer())));
+						String newAccessToken = this.jwtService.generateToken(object);
 						
 						Map<String, Object> refreshData = new HashMap<String, Object>();
 						refreshData.put("empno", DataUtils.getString(object, "empno", ""));
 						refreshData.put("cid", DataUtils.getString(object, "cid", ""));
 						refreshData.put("accessToken", accessToken);
-						String newRefreshToken = this.jwtService.generateToken(refreshData, new Date(now.getTime() + this.jwtProperty.getValidTimeCustomer()));
+						String newRefreshToken = this.jwtService.generateToken(refreshData);
 						
 						result = true;
 						data.put("accessToken", accessToken);

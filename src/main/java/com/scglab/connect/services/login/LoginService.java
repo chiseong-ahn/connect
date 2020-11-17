@@ -1,6 +1,5 @@
 package com.scglab.connect.services.login;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scglab.connect.constant.Constant;
-import com.scglab.connect.properties.JwtProperties;
-import com.scglab.connect.services.adminmenu.emp.EmpDao;
-import com.scglab.connect.services.common.auth.User;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
@@ -29,20 +25,9 @@ import com.scglab.connect.utils.DataUtils;
 public class LoginService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private LoginDao loginDao;
-	
-	@Autowired
-	private EmpDao empDao;
-	
-	@Autowired
-	private JwtProperties jwtProperty;
-	
-	@Autowired
-	private JwtService jwtService;
+	@Autowired private MessageHandler messageService;
+	@Autowired private LoginDao loginDao;
+	@Autowired private JwtService jwtService;
 	
 	public Map<String, Object> login(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -91,9 +76,9 @@ public class LoginService {
 		this.logger.debug("member : " + member.toString());
 			
 		ObjectMapper objectMapper = new ObjectMapper();
-		Map memberMap = objectMapper.convertValue(member, Map.class);
+		Map<String, Object> memberMap = objectMapper.convertValue(member, Map.class);
 		
-		String token = this.jwtService.generateToken(memberMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
+		String token = this.jwtService.generateToken(memberMap);
 		this.logger.debug("token : " + token);
 		data.put("token", token);
 		data.put("profile", member);
@@ -107,8 +92,8 @@ public class LoginService {
 		Member member = getMember(request);
 		if(member != null) {
 			ObjectMapper objectMapper = new ObjectMapper();
-			Map memberMap = objectMapper.convertValue(member, Map.class);
-			String token = this.jwtService.generateToken(memberMap, new Date(new Date().getTime() + Long.parseLong(this.jwtProperty.getValidTimeAdmin())));
+			Map<String, Object> memberMap = objectMapper.convertValue(member, Map.class);
+			String token = this.jwtService.generateToken(memberMap);
 			data.put("member", member);
 			data.put("token", token);
 		}
