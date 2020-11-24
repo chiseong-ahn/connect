@@ -42,7 +42,7 @@ public class TemplateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Template> findAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> findAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
@@ -59,16 +59,23 @@ public class TemplateService {
 		
 		// 조회 시작 번호.
 		int startNum = (page - 1) * pageSize + 1;
-		// 조회 마지막 번호.
-		int endNum = pageSize;
 		
 		params.put("startNum", startNum);
-		params.put("endNum", endNum);
+		params.put("pageSize", pageSize);
 
 		this.logger.debug("params : " + params.toString());
-		List<Template> list = this.templateDao.selectAll(params);
 		
-		return list;
+		int totalCount = this.templateDao.findAllCount(params);
+		List<Map<String, Object>> list = null;
+		if(totalCount > 0) {
+			list = this.templateDao.findAll(params);
+		}
+		
+		
+		data.put("totalCount", totalCount);
+		data.put("data", list);
+		
+		return data;
 	}
 	
 	/**
@@ -83,13 +90,13 @@ public class TemplateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Template findTemplate(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> findTemplate(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
 		this.logger.debug("params : " + params.toString());
-		return this.templateDao.findTemplate(params);
+		return this.templateDao.getDetail(params);
 	}
 	
 	public Map<String, Object> saveKeyword(Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -115,7 +122,7 @@ public class TemplateService {
 	
 	/**
 	 * 
-	 * @Method Name : regist
+	 * @Method Name : create
 	 * @작성일 : 2020. 11. 13.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
@@ -125,46 +132,50 @@ public class TemplateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Template regist(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> create(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Template template = null;
+		Map<String, Object> data = null;
 		int result = 0;
 		
-		result = this.templateDao.insert(params);
-		if(result > 0) {
-			if(params.containsKey("id")) {
-				this.logger.debug("generated key : " + params.get("id"));
-				
-				if(params.containsKey("keywords")) {
-					String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
-					this.logger.debug("keywords : " + keywords.toString());
-					if(keywords.length > 0) {
-						for(String keyword : keywords) {
-							if(!DataUtils.getSafeValue(keyword).equals("")) {
-								params.put("keyword", keyword.trim());
-								
-								this.logger.debug("params : " + params.toString());
-								this.templateDao.insertTemplateKeyword(params);
-							}
+		// 템플릿 등록.
+		result = this.templateDao.create(params);
+		
+		if(result > 0) {	// 등록 성공
+			this.logger.debug("generated key : " + params.get("id"));
+			
+			if(params.containsKey("keywords")) {
+				String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
+				this.logger.debug("keywords : " + keywords.toString());
+				if(keywords.length > 0) {
+					for(String keyword : keywords) {
+						if(!DataUtils.getSafeValue(keyword).equals("")) {
+							params.put("keyword", keyword.trim());
+							
+							this.logger.debug("params : " + params.toString());
+							
+							// 템플릿 키워드 연결.
+							this.templateDao.insertTemplateKeyword(params);
 						}
 					}
-					
-				}else{
-					this.logger.debug("keywords is nothing!");
 				}
 				
-				this.logger.debug("params : " + params.toString());
-				template = this.templateDao.selectOne(params);
-				
-			}else {
-				this.logger.debug("generated key is nothing!");
+			}else{
+				this.logger.debug("keywords is nothing!");
 			}
+			
+			this.logger.debug("params : " + params.toString());
+			
+			// 등록된 템플릿 정보 조회.
+			data = this.templateDao.getDetail(params);
+			
+		}else {
+			throw new RuntimeException("error.template.regist");
 		}
 		
-		return template;
+		return data;
 	}
 	
 	
@@ -188,31 +199,33 @@ public class TemplateService {
 		Template template = null;
 		int result = 0;
 		
+		// 템플릿 정보 수정.
 		result = this.templateDao.update(params);
 		if(result > 0) {
-			if(params.containsKey("id")) {
-				this.templateDao.deleteTemplateKeywords(params);
-				if(params.containsKey("keywords")) {
-					String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
-					this.logger.debug("keywords : " + keywords.toString());
-				
-					if(keywords.length > 0) {
-						for(String keyword : keywords) {
-							if(!DataUtils.getSafeValue(keyword).equals("")) {
-								params.put("keyword", keyword.trim());
-								this.templateDao.insertTemplateKeyword(params);
-							}
+			// 이전에 연결된 키워드정보 삭제.
+			this.templateDao.deleteTemplateKeywords(params);
+			if(params.containsKey("keywords")) {
+				String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
+				this.logger.debug("keywords : " + keywords.toString());
+			
+				if(keywords.length > 0) {
+					for(String keyword : keywords) {
+						if(!DataUtils.getSafeValue(keyword).equals("")) {
+							params.put("keyword", keyword.trim());
+							
+							// 신규 키워드 연결.
+							this.templateDao.insertTemplateKeyword(params);
 						}
 					}
-					
-				}else{
-					this.logger.debug("keywords is nothing!");
 				}
 				
-				template = this.templateDao.selectOne(params);
-			}else {
-				this.logger.debug("generated key is nothing!");
+			}else{
+				this.logger.debug("keywords is nothing!");
 			}
+			
+			template = this.templateDao.selectOne(params);
+		}else {
+			throw new RuntimeException("error.template.update");
 		}
 		
 		return template;
@@ -242,8 +255,10 @@ public class TemplateService {
 		if(template == null) {
 			Object[] messageParams = new String[1];
 			messageParams[0] = "id = " + DataUtils.getString(params, "id", "");
-			data.put("reason", this.messageService.getMessage("error.update1", messageParams));
+			data.put("reason", this.messageService.getMessage("error.template.notexist", messageParams));
 		}else {
+			
+			// 템플릿 삭제.
 			result = this.templateDao.delete(params);
 		}
 		

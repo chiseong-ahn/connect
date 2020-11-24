@@ -82,6 +82,16 @@ public class DataUtils {
 		return defaultValue.trim();
 	}
 	
+	public static boolean getBoolean(Map<String, Object> object, String name, boolean defaultValue) {
+		
+		if(object != null) {
+			if(object.containsKey(name)) {
+				return (boolean) object.get(name);
+			}
+		}
+		return defaultValue;
+	}
+	
 	
 	
 	public static String getSafeValue(String value) {
@@ -107,25 +117,30 @@ public class DataUtils {
 	}
 	
 	public static Object convertMapToObject(Map<String,Object> map,Object obj){
-	    String keyAttribute = null;
-	    String setMethodString = "set";
-	    String methodString = null;
-	    Iterator itr = map.keySet().iterator();
+		if(map == null) {
+			obj = new Object();
+		}else {
+			String keyAttribute = null;
+		    String setMethodString = "set";
+		    String methodString = null;
+		    Iterator itr = map.keySet().iterator();
 
-	    while(itr.hasNext()){
-	        keyAttribute = (String) itr.next();
-	        methodString = setMethodString+keyAttribute.substring(0,1).toUpperCase()+keyAttribute.substring(1);
-	        Method[] methods = obj.getClass().getDeclaredMethods();
-	        for(int i=0;i<methods.length;i++){
-	            if(methodString.equals(methods[i].getName())){
-	                try{
-	                    methods[i].invoke(obj, map.get(keyAttribute));
-	                }catch(Exception e){
-	                    e.printStackTrace();
-	                }
-	            }
-	        }
-	    }
+		    while(itr.hasNext()){
+		        keyAttribute = (String) itr.next();
+		        methodString = setMethodString+keyAttribute.substring(0,1).toUpperCase()+keyAttribute.substring(1);
+		        Method[] methods = obj.getClass().getDeclaredMethods();
+		        for(int i=0;i<methods.length;i++){
+		            if(methodString.equals(methods[i].getName())){
+		                try{
+		                    methods[i].invoke(obj, map.get(keyAttribute));
+		                }catch(Exception e){
+		                    e.printStackTrace();
+		                }
+		            }
+		        }
+		    }
+		}
+	    
 	    return obj;
 	}
 	

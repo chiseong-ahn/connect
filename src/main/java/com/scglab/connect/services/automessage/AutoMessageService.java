@@ -13,17 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.service.MessageHandler;
-import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
 
 @Service
 public class AutoMessageService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private AutoMessageDao autoMessageDao;
+	@Autowired private MessageHandler messageService;
+	@Autowired private AutoMessageDao autoMessageDao;
+	@Autowired private LoginService loginService;
 	
 	/**
 	 * 
@@ -38,6 +37,8 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public List<AutoMessage> findAll(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
 		return this.autoMessageDao.findAutoMessageAll(params); 
 	}
 	

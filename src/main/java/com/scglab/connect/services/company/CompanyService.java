@@ -19,11 +19,8 @@ import com.scglab.connect.services.common.service.MessageHandler;
 public class CompanyService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private CompanyDao companyDao;
+	@Autowired private MessageHandler messageService;	
+	@Autowired private CompanyDao companyDao;
 	
 	public List<Company> getCompanies(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		List<Company> companies = new ArrayList<Company>();

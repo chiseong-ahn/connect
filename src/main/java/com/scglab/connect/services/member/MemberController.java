@@ -20,6 +20,8 @@ import com.scglab.connect.constant.Constant;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,28 +39,35 @@ public class MemberController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원목록 조회", description = "회원 목록 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> members(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.memberService.members(params, id, request, response);
-	}
-	
-	@Auth
-	@RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원 등록", description = "회원 등록", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> regist(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.memberService.regist(params, id, request, response);
+	@Operation(summary="회원 검색", description = "회원 검색 : 이름, 사번", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+    	@Parameter(name = "searchType", description = "검색 타입", required = true, in = ParameterIn.QUERY, example = "name"),
+    	@Parameter(name = "searchValue", description = "검색 값", required = true, in = ParameterIn.QUERY, example = "서울"),
+    	@Parameter(name = "page", description = "페이지 번호", required = true, in = ParameterIn.QUERY, example = "1"),
+    	@Parameter(name = "pageSize", description = "한 페이지에 보여줄 목록 갯수", required = true, in = ParameterIn.QUERY, example = "10"),
+    })
+	public Map<String, Object> members(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.memberService.members(params, request, response);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원 수정", description = "회원 수정", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Operation(summary="회원 수정 : 권한, 상태", description = "회원 수정 : 권한, 상태", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+    	@Parameter(name = "authLevel", description = "권한레벨", required = true, in = ParameterIn.QUERY, example = "2"),
+    	@Parameter(name = "state", description = "상태", required = true, in = ParameterIn.QUERY, example = "0"),
+    })
+	public Member update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		params.put("id", id);
 		return this.memberService.update(params, id, request, response);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원상태 수정", description = "회원 상담상태 수정", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="회원 수정 : 상태", description = "회원 수정 : 상태", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+    	@Parameter(name = "state", description = "상태", required = true, in = ParameterIn.QUERY, example = "0"),
+    })
 	public Map<String, Object> updateState(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.memberService.state(params, id, request, response);
 	}

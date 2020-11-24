@@ -44,7 +44,15 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
      */
     public Claims getJwtData(String jwt) {
     	jwt = jwt.replaceAll("Bearer", "").trim();
-        return getClaims(jwt).getBody();
+        Claims claims = null;
+        
+        try {
+        	claims = getClaims(jwt).getBody();
+        }catch(Exception e) {
+        	//
+        }
+        
+        return claims;
     }
 
     /**
@@ -56,7 +64,7 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
     		Jwts.parser().setSigningKey(Constant.JSONTOKEN_SECRETKEY).parseClaimsJws(jwt);
     		isValid = true;
     	}catch(Exception e) {
-    		throw new UnauthorizedException("auth.valid.fail.reason2");
+    		//e.printStackTrace();
     	}
         return isValid;
     }
@@ -65,7 +73,8 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
         	return Jwts.parser().setSigningKey(Constant.JSONTOKEN_SECRETKEY).parseClaimsJws(jwt);
         } catch (Exception ex) {
-        	throw new UnauthorizedException("auth.valid.fail.reason2");
+        	//ex.printStackTrace();
         }
+        return null;
     }
 }

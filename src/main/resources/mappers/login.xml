@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="auth.login">
+<mapper namespace="login">
 
 	<parameterMap type="com.scglab.connect.services.member.Member" id="member"></parameterMap>
-	<resultMap type="com.scglab.connect.services.member.Member" id="member">
-		<result column="id" property="id" />
-		<result column="cid" property="companyId" />
-		<result column="speaker" property="speakerId" />
-		<result column="auth" property="authLevel" />
-		<result column="profileimg" property="profileImageId" />
-	</resultMap>
+	<resultMap type="com.scglab.connect.services.member.Member" id="member"></resultMap>
 	
 	<select id="profileCount" parameterType="map" resultType="int">
-		select count(*) as cnt
-		from Emp as a
-		where 1=1
-		and a.cid = #{companyId}
-		and a.empno = #{loginName}
+		SELECT count(*) as cnt
+		FROM member as a
+		WHERE 1=1
+		AND a.company_id = #{companyId}
+		AND a.login_name = #{loginName}
 	</select>
 	
 	<select id="findProfile" parameterType="map" resultMap="member">
-		select *
-		from Emp as a
-			 inner join Speaker as b on (b.id = a.speaker)
-		where 1=1
-		and a.cid = #{companyId}
-		and a.empno = #{loginName}
+		SELECT *
+		FROM member As a
+		WHERE 1=1
+		AND a.company_id = #{companyId} 
+		AND a.login_name = #{loginName}
 	</select>
 	
 	<insert id="saveProfile" parameterMap="member"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">

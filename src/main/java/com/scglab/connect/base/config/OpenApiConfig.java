@@ -26,7 +26,7 @@ public class OpenApiConfig {
 	   return new OpenAPI()
 	          .components(new Components()
 	          .addSecuritySchemes("bearer-key", 
-	          new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").description("로그인을 통해 발급된 인증토큰을 삽입한다.<br>eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NzAsImNvbXBhbnlJZCI6IjIiLCJjb21wYW55VXNlQ29uZmlnSnNvbiI6bnVsbCwiY29tcGFueU5hbWUiOiLsnbjsspzrj4Tsi5zqsIDsiqQiLCJpc0FkbWluIjoxLCJhdXRoTGV2ZWwiOjIsImxvZ2luTmFtZSI6bnVsbCwic3RhdGUiOjAsInByb2ZpbGVJbWFnZUlkIjowLCJzcGVha2VySWQiOjIxOSwibmFtZSI6IuyViOy5mOyEsSIsImlhdCI6MTYwNDk5MjM4NiwiZXhwIjoxNjA1MDc4Nzg2fQ.Da4hSzwLSbqb9wiTtZ5Hfce6m8bbLuEYXU2MzcdmiuE")));
+	          new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").description("eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiY29tcGFueUlkIjoiMSIsImNvbXBhbnlVc2VDb25maWdKc29uIjpudWxsLCJjb21wYW55TmFtZSI6IuyEnOyauOuPhOyLnOqwgOyKpCIsImlzQWRtaW4iOjEsImlzQ3VzdG9tZXIiOjAsImF1dGhMZXZlbCI6MiwibG9naW5OYW1lIjoiY3NtYXN0ZXIxIiwic3RhdGUiOjAsInByb2ZpbGVJbWFnZUlkIjowLCJzcGVha2VySWQiOjE3NywibmFtZSI6IuyEnOyauOuPhOyLnOqwgOyKpCIsImNyZWF0ZURhdGUiOiIyMDE5LTExLTA4IDE0OjEwOjA5IiwidXBkYXRlRGF0ZSI6IjIwMjAtMTEtMjQgMTQ6MDc6NTUiLCJ1cGRhdGVNZW1iZXJJZCI6bnVsbCwiaWF0IjoxNjA2MTk1NDMwLCJleHAiOjE2MDYyODE4MzB9.MGE-_-P5gYAV2K3zp_oSyfYaNIaUf9yebFUx_sH9jPE")));
 	}
 	
 	@Bean
@@ -38,34 +38,8 @@ public class OpenApiConfig {
 	@Bean
 	public GroupedOpenApi auth() {
 		String[] paths = { "/auth/**" };
-		return GroupedOpenApi.builder().setGroup("인증 API").pathsToMatch(paths).build();
+		return GroupedOpenApi.builder().setGroup("로그인 API").pathsToMatch(paths).build();
 	}
-	
-	/*
-	@Bean
-	public GroupedOpenApi customer() {
-		String[] paths = { "/customers/**" };
-		return GroupedOpenApi.builder().setGroup("고객(회원) API").pathsToMatch(paths).build();
-	}
-	
-	@Bean
-	public GroupedOpenApi template() {
-		String[] paths = { "/templates/**" };
-		return GroupedOpenApi.builder().setGroup("답변템플릿 API").pathsToMatch(paths).build();
-	}
-	
-	@Bean
-	public GroupedOpenApi adminMenu() {
-		String[] paths = { "/admin/**" };
-		return GroupedOpenApi.builder().setGroup("관리자 메뉴 API").pathsToMatch(paths).build();
-	}
-	
-	@Bean
-	public GroupedOpenApi talkMenu() {
-		String[] paths = { "/talk/**" };
-		return GroupedOpenApi.builder().setGroup("상담채팅 API").pathsToMatch(paths).build();
-	}
-	*/
 	
 	@Bean
 	public GroupedOpenApi company() {
@@ -139,5 +113,22 @@ public class OpenApiConfig {
 		return GroupedOpenApi.builder().setGroup("자동메세지 API").pathsToMatch(paths).build();
 	}
 	
+	@Bean
+	public GroupedOpenApi link() {
+		String[] paths = { "/api/link/**" };
+		return GroupedOpenApi.builder().setGroup("링크 API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
+	public GroupedOpenApi extenal() {
+		String[] paths = { "/api/extenal/**" };
+		return GroupedOpenApi.builder().setGroup("외부 연동 API").pathsToMatch(paths).build();
+	}
+	
+	@Bean
+	public GroupedOpenApi file() {
+		String[] paths = { "/api/file/**" };
+		return GroupedOpenApi.builder().setGroup("파일 API").pathsToMatch(paths).build();
+	}
 	
 }

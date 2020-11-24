@@ -18,7 +18,7 @@ public class LinkDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.link.";
+	public String namespace = "link.";
 	
 	@Override
 	protected String getNamespace() {

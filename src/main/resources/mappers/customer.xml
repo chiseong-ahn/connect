@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="api.customer">
+<mapper namespace="customer">
 
 	<resultMap type="com.scglab.connect.services.customer.Customer" id="customer"></resultMap>
+	
+	<!-- 고객 카운트 -->
+	<select id="findAllCount" parameterType="map" resultType="int">
+		SELECT count(*) totalCount
+		FROM   v_customer
+		WHERE  1=1
+		AND name like concat('%', #{searchValue}, '%')
+	</select>
+	
+	<!-- 고객 검색 -->
+	<select id="findAll" parameterType="map" resultType="map">
+		SELECT *
+		FROM   v_customer
+		WHERE  1=1
+		AND name like concat('%', #{searchValue}, '%')
+		ORDER BY id DESC
+		Limit 1, 10
+	</select>
 	
 	<!-- 고객 상세 -->
 	<select id="getDetail" parameterType="map" resultType="map">

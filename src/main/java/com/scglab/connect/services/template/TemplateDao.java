@@ -18,23 +18,27 @@ public class TemplateDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.template.";
+	public String namespace = "template.";
 	
 	@Override
 	protected String getNamespace() {
 		return namespace;
 	}
 	
-	public List<Template> findAll(Map<String, Object> params){
+	public int findAllCount(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "findAllCount", params);
+	}
+	
+	public List<Map<String, Object>> findAll(Map<String, Object> params){
 		return this.sqlSession.selectList(this.namespace + "findAll", params);
 	}
 	
-	public Template findTemplate(Map<String, Object> params){
-		return this.sqlSession.selectOne(this.namespace + "findTemplate", params);
+	public Map<String, Object> getDetail(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "getDetail", params);
 	}
 	
-	public int regist(Map<String, Object> params) {
-		return this.sqlSession.insert(this.namespace + "regist", params);
+	public int create(Map<String, Object> params) {
+		return this.sqlSession.insert(this.namespace + "create", params);
 	}
 	
 	public int update(Map<String, Object> params) {

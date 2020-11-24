@@ -16,4 +16,5 @@ public class DomainProperties {
 	private String sdtalk;
 	private String mobileapi;
 	private String relay;
+	private String mscrelay;
 }

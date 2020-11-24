@@ -36,11 +36,11 @@
     </appender>
     
     <logger name="jdbc" level="OFF"/>
-	<logger name="jdbc.sqlonly" level="WARN"/>
+	<logger name="jdbc.sqlonly" level="INFO"/>
 	<logger name="jdbc.sqltiming" level="OFF"/>
 	<logger name="jdbc.audit" level="OFF"/>
 	<logger name="jdbc.resultset" level="OFF"/>
-	<logger name="jdbc.resultsettable" level="WARN"/>
+	<logger name="jdbc.resultsettable" level="INFO"/>
 	<logger name="jdbc.connection" level="OFF"/>
     <logger name="io.swagger.models.parameters.AbstractSerializableParameter" level="ERROR" />
     <logger name="com.scglab.connect" level="DEBUG">

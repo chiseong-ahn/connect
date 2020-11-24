@@ -45,7 +45,7 @@ public class PushService {
 		params.put("message", message);
 		
 		HttpHeaders headers = new HttpHeaders();
-		httpUtils.postApi(url, params, headers);
+		httpUtils.postApiForString(url, params, headers);
 	}
 	
 	/**

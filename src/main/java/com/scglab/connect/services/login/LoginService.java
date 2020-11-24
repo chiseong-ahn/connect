@@ -50,15 +50,20 @@ public class LoginService {
 		// 각 회사별 기간망 클래스 가져오기.
 		ICompany company = CompanyUtils.getCompany(companyId);
 
-		// 기간계 로그인.
-		Member member = company.login(loginName, password);
-		if(member == null) {
-			// 기간계에 로그인 정보가 맞지않을경우.
-			data.put("token", null);
-			data.put("member", null);
-			data.put("reason", this.messageService.getMessage("auth.login.fail.reason2"));
-			return data;
+		// 기간계 로그인
+		if(company.login(loginName, password)) {
+			//
 		}
+		
+		// 기간계 로그인.
+//		Member member = company.getMemberInfo(params);
+//		if(member == null) {
+//			// 기간계에 로그인 정보가 맞지않을경우.
+//			data.put("token", null);
+//			data.put("member", null);
+//			data.put("reason", this.messageService.getMessage("auth.login.fail.reason2"));
+//			return data;
+//		}
 		
 		// 상담톡에 계정정보가 존재하는지 체크.
 		int count = this.loginDao.findCount(params);
@@ -69,10 +74,10 @@ public class LoginService {
 		}
 		
 		// 계정정보 조회
-		member = this.loginDao.findProfile(params);
+		Member member = this.loginDao.findProfile(params);
 		member.setCompanyName(company.getCompanyName());
 		member.setIsAdmin(1);
-		member.setLoginName(member.getName());
+		member.setLoginName(member.getLoginName());
 		this.logger.debug("member : " + member.toString());
 			
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -93,9 +98,9 @@ public class LoginService {
 		if(member != null) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			Map<String, Object> memberMap = objectMapper.convertValue(member, Map.class);
-			String token = this.jwtService.generateToken(memberMap);
+//			String token = this.jwtService.generateToken(memberMap);
 			data.put("member", member);
-			data.put("token", token);
+//			data.put("token", token);
 		}
 		
 		return data;
@@ -104,7 +109,12 @@ public class LoginService {
 	public Member getMember(String token) {
 		Map<String, Object> claims = this.jwtService.getJwtData(token);
 		Member member = new Member();
-		return (Member) DataUtils.convertMapToObject(claims, member);
+		try {
+			member = (Member) DataUtils.convertMapToObject(claims, member);
+		}catch(Exception e) {
+			//e.printStackTrace();
+		}
+		return member;
 	}
 	
 	public void convertMapTomember(Map<String, Object> data) {

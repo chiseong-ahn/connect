@@ -21,6 +21,8 @@ import com.scglab.connect.constant.Constant;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,10 @@ public class AutoMessageController {
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="자동메세지 목록", description = "자동메세지 목록", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+		@Parameter(name = "type", description = "메세지 유형", required = true, in = ParameterIn.QUERY, example = "1"),
+		@Parameter(name = "message", description = "메세지", required = false, in = ParameterIn.QUERY, example = ""),
+	})
 	public List<AutoMessage> findAll(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.autoMessageService.findAll(params, request, response);
 	}
@@ -46,7 +52,7 @@ public class AutoMessageController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="자동메세지 등록", description = "자동메세지 상세", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="자동메세지 상세", description = "자동메세지 상세", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public AutoMessage detail(@Parameter(description = "자동메세지 id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.autoMessageService.getDetail(params, request, response);
@@ -76,6 +82,27 @@ public class AutoMessageController {
 	public Map<String, Object> delete(@Parameter(description = "자동메세지 id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.autoMessageService.delete(params, request, response);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/getAutoMessageWelcome", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="신규대화 시작시 인사메세지 랜덤 조회", description = "신규대화 시작시 인사메세지 랜덤 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public AutoMessage getAutoMessageWelcome(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.autoMessageService.getAutoMessageWelcome(params, request, response);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/getAutoMessageByMatchWait", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="상담사 배정지연 안내 메세지 랜덤 조회.", description = "상담사 배정지연 안내 메세지 랜덤 조회.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public AutoMessage getAutoMessageByMatchWait(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.autoMessageService.getAutoMessageByMatchWait(params, request, response);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/getAutoMessageByReplyWait", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="답변 지연 안내 메세지 랜덤 조회.", description = "답변 지연 안내 메세지 랜덤 조회.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public AutoMessage getAutoMessageByReplyWait(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.autoMessageService.getAutoMessageByReplyWait(params, request, response);
 	}
 	
 	

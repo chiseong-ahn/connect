@@ -13,7 +13,7 @@ import com.scglab.connect.constant.Constant;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(Constant.SOCKET_BASE_URI) // 연결할 socket space.
+        registry.addEndpoint(Constant.SOCKET_ENDPOINT) // 연결할 socket space.
         		.setAllowedOrigins("*")	  // socket CORS.
         		.withSockJS();			  // sockjs 사용.
     }

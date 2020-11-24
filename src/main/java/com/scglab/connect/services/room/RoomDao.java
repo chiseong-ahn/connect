@@ -18,7 +18,7 @@ public class RoomDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.room.";
+	public String namespace = "room.";
 	
 	@Override
 	protected String getNamespace() {

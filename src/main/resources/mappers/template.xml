@@ -1,160 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="api.template">
+<mapper namespace="template">
 
 	<parameterMap type="com.scglab.connect.services.template.Template" id="template"></parameterMap>
 	<resultMap type="com.scglab.connect.services.template.Template" id="template"></resultMap>
-
-	<!-- 답변템플릿 카운트 조회 -->
-	<select id="selectCount" parameterType="map" resultType="int">
-		select count(*) as cnt
-		from Template t
-			inner join v_cate c on t.catesm = c.id 
-			left outer join TemplateFavorite f on t.id = f.template
-		where t.cid = #{cid}
-		
-		<if test='type=="1"'>
-		 	and t.emp = #{emp}
-		</if>
-		
-		<if test='type=="2"'>
-			and f.emp = #{emp}
-		</if>
-		
-		<if test='catemd == "" and catelg != ""'>
-			and c.catelg = #{catelg}
-		</if>
-		
-		<if test='catesm == "" and catemd != ""'>
-			and c.catemd = #{catemd}
-		</if>
-		
-		<if test='catesm != ""'>
-			and c.id = #{catesm}
-		</if>
-		
-		<if test='keyword != "" and keyfield != ""'>
-			<choose>
-				<when test='keyfield == "ask"'>
-					and t.ask like concat('%', #{keyword}, '%')
-				</when>
-				<when test='keyfield == "reply"'>
-					and t.reply like concat('%', #{keyword}, '%')
-				</when>
-				<when test='keyfield == "keyword"'>
-					and t.id in (
-						select template
-						from TemplateKeyword
-						where keyword in (
-							select id
-							from Keyword
-							where name = #{keyword}
-						)
-					)
-				</when>
-				<when test='keyfield == "empname"'>
-					and t.emp in (
-						select id
-						from Emp
-						where speaker in (
-							select id
-							from Speaker
-							where cid = t.cid
-							and name like concat('%', #{keyword}, '%') 
-						)
-					)
-				</when>
-			</choose>
-		</if>
+	
+	<!-- 템플릿 카운트 조회 -->
+	<select id="findAllCount" parameterType="map" resultType="int">
+		SELECT count(*) as total_count
+	      FROM 
+	        template2 t 
+	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
+	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
+	      WHERE t.company_id = #{companyId}
+	      	<if test='categoryLargeId != null'>
+	      		AND vc.category_large_id = #{categoryLargeId}
+	      	</if>
+	        <if test='categoryMiddleId != null'>
+	        	AND vc.category_middle_id = #{categoryMiddleId}
+	        </if>
+	        <if test='categorySmallId != null'>
+	        	AND vc.id = #{categorySmallId}
+	        </if>
+	        <if test='checkFavorite == "1"'>
+	        	AND f.member_id = #{loginId}
+	        </if>
+	        <if test='checkMyAdd == "1"'>
+	        	AND t.member_id = #{loginId}
+	        </if>
+	        <if test='searchType != null and searchValue != null'>
+	        	<choose>
+		        	<when test='searchType == "memberName"'>
+		        		AND vc.member_name like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "ask"'>
+		        		AND t.ask like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "reply"'>
+		        		AND t.reply like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "keyword"'>
+		        		AND t.id in (
+		        			select distinct(tk.template_id)
+							from template_keyword tk 
+								 inner join keyword2 k on (k.id  = tk.keyword_id)
+							where 1=1
+							and k.name like concat('%', searchValue, '%')
+		        		)
+		        	</when>
+		        </choose>
+	        </if>
 	</select>
 	
-	<!-- 템플릿 목록 조회 -->
-	<select id="selectAll" parameterType="map" resultMap="template">
-		
-		select  c.name as sname,
-				c.catelg,
-				c.lname,
-				c.catemd,
-				c.mname,
-				(
-					select group_concat(k.id)
-					from TemplateKeyword tk
-						inner join Keyword k on tk.keyword = k.id
-					where tk.template = t.id
-				) as arr_keywords,
-				t.*,
-				(
-					case
-						when f.emp = #{emp} then 1
-						else 0
-					end
-				) as isfav
-		from Template t
-			inner join v_cate c on t.catesm = c.id 
-			left outer join TemplateFavorite f on t.id = f.template
-		where t.cid = #{cid}
-		
-		<if test='type=="my"'>
-		 	and t.emp = #{emp}		-- 나의 답변템플릿 조건.
-		</if>
-		
-		<if test='type=="favorite"'>
-			and f.emp = #{emp}		-- 즐겨찾기 답변템플릿 조건.
-		</if>
-		
-		<if test='catemd == "" and catelg != ""'>
-			and c.catelg = #{catelg}
-		</if>
-		
-		<if test='catesm == "" and catemd != ""'>
-			and c.catemd = #{catemd}
-		</if>
-		
-		<if test='catesm != ""'>
-			and c.id = #{catesm}
-		</if>
-		
-		<if test='keyword != "" and keyfield != ""'>
-			<choose>
-				<when test='keyfield == "ask"'>
-					and t.ask like concat('%', #{keyword}, '%')
-				</when>
-				<when test='keyfield == "reply"'>
-					and t.reply like concat('%', #{keyword}, '%')
-				</when>
-				<when test='keyfield == "keyword"'>
-					and t.id in (
-						select template
-						from TemplateKeyword
-						where keyword in (
-							select id
-							from Keyword
-							where name = #{keyword}
-						)
-					)
-				</when>
-				<when test='keyfield == "empname"'>
-					and t.emp in (
-						select id
-						from Emp
-						where speaker in (
-							select id
-							from Speaker
-							where cid = t.cid
-							and name like concat('%', #{keyword}, '%') 
-						)
-					)
-				</when>
-			</choose>
-		</if>
-		order by t.id desc
-		limit #{startNum}, #{endNum}
-		
+	<!-- 템플릿 전체 조회 -->
+	<select id="findAll" parameterType="map" resultType="map">
+		SELECT 
+	        vc.name AS category_small_name, 
+	        vc.category_large_id, 
+	        vc.category_large_name, 
+	        vc.category_middle_id, 
+	        vc.category_middle_name, 
+	        (
+	          SELECT 
+	            GROUP_CONCAT(k.id) 
+	          FROM 
+	            template_keyword tk 
+	            INNER JOIN keyword2 k ON tk.keyword_id = k.id 
+	          WHERE 
+	            tk.template_id = t.id
+	        ) AS keyword_ids, 
+	        t.*, 
+	        (
+	          CASE WHEN f.member_id = #{loginId} THEN 1 ELSE 0 END
+	        ) AS is_favortie 
+	      FROM 
+	        template2 t 
+	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
+	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
+	      WHERE t.company_id = #{companyId}
+	      	<if test='categoryLargeId != null'>
+	      		AND vc.category_large_id = #{categoryLargeId}
+	      	</if>
+	        <if test='categoryMiddleId != null'>
+	        	AND vc.category_middle_id = #{categoryMiddleId}
+	        </if>
+	        <if test='categorySmallId != null'>
+	        	AND vc.id = #{categorySmallId}
+	        </if>
+	        <if test='checkFavorite == "1"'>
+	        	AND f.member_id = #{loginId}
+	        </if>
+	        <if test='checkMyAdd == "1"'>
+	        	AND t.member_id = #{loginId}
+	        </if>
+	        <if test='searchType != null and searchValue != null'>
+	        	<choose>
+		        	<when test='searchType == "memberName"'>
+		        		AND vc.member_name like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "ask"'>
+		        		AND t.ask like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "reply"'>
+		        		AND t.reply like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "keyword"'>
+		        		AND t.id in (
+		        			select distinct(tk.template_id)
+							from template_keyword tk 
+								 inner join keyword2 k on (k.id  = tk.keyword_id)
+							where 1=1
+							and k.name like concat('%', searchValue, '%')
+		        		)
+		        	</when>
+		        </choose>
+	        </if>
+	      ORDER BY t.id DESC
+	      limit #{startNum}, #{pageSize}
 	</select>
 	
 	<!-- 템플릿 조회 -->
-	<select id="selectOne" parameterType="map" resultMap="template">
+	<select id="getDetail" parameterType="map" resultMap="template">
 		SELECT  vc.name AS category_small_name,
 				vc.category_large_id AS category_large_id,
 				vc.category_middle_id AS category_middle_id,
@@ -178,9 +145,15 @@
 	</select>
 	
 	<!-- 템플릿 등록 -->
-	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+	<insert id="create" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
  		INSERT INTO template2 (company_id, category_small_id, ask, reply, link, link_protocol, image_path, image_name, member_id, update_member_id)
 		VALUES (#{companyId}, #{categorySmallId}, #{ask}, #{reply}, #{link}, #{linkProtocol}, #{imagePath}, #{imageName}, #{loginId}, #{loginId})
+	</insert>
+	
+	<!-- 템플릿 키워드 등록 -->
+	<insert id="insertTemplateKeyword" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO template_keyword(company_id, keyword_id, template_id, update_member_id)
+        VALUES (#{companyId}, #{keywordId}, #{templateId}, #{loginId})
 	</insert>
 	
 	<!-- 템플릿 수정 -->
@@ -234,11 +207,7 @@
 		WHERE id = #{id}
 	</select>
 	
-	<!-- 템플릿 키워드 등록 -->
-	<insert id="insertTemplateKeyword" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO template_keyword(company_id, keyword_id, template_id, update_member_id)
-        VALUES (#{companyId}, #{keywordId}, #{templateId}, #{loginId})
-	</insert>
+	
 	
 	<!-- 템플릿 키워드 삭제 -->
 	<delete id="deleteTemplateKeywords" parameterType="map">

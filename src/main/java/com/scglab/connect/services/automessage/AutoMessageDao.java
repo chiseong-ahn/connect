@@ -14,11 +14,7 @@ public class AutoMessageDao extends CommonDao {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	/**
-	 * XML의 매핑되는 prefix namespace
-	 * ex. sdtalk.sample.selectList => sdtalk.sample 
-	 */
-	public String namespace = "api.auto-message.";
+	public String namespace = "automessage.";
 	
 	@Override
 	protected String getNamespace() {

@@ -1,6 +1,7 @@
 package com.scglab.connect.services.customer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.utils.DataUtils;
@@ -38,7 +40,14 @@ public class CustomerService {
 	 */
 	public Map<String, Object> findAll(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
+		int totalCount = this.customerDao.findAllCount(params);
+		List<Map<String, Object>> list = null;
+		if(totalCount > 0) {
+			list = this.customerDao.findAll(params);
+		}
 		
+		data.put("totalCount", totalCount);
+		data.put("data", list);
 		return data;
 	}
 	
@@ -100,43 +109,14 @@ public class CustomerService {
 	public Map<String, Object> token(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		this.customerDao.insert(params);
+		this.customerDao.regist(params);
 		Customer customer = this.customerDao.findByGassappMemberNumber(params);
 		this.logger.debug("customer : " + customer);
 		
-		Map<String, Object> claims = new HashMap<String, Object>();
-		claims.put("cid", customer.getCompanyId());
-		claims.put("userno", customer.getGasappMemberNumber());
-		claims.put("name", customer.getName());
-		claims.put("space", customer.getRoomId());
-		claims.put("speaker", customer.getSpeakerId());
-		
-		String accessToken = this.jwtService.generateToken(claims);
-		this.logger.debug("accessToken : " + accessToken);
-		
-		data.put("accessToken", accessToken);
-		
-		return data;
-	}
-	
-	public Map<String, Object> token_old(Map<String, Object> params) throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
-		
-		//this.customerDao.insert(params);
-		Map<String, Object> customer = this.customerDao.selectOne(params);
-		this.logger.debug("customer : " + customer);
-		
-		Map<String, Object> claims = new HashMap<String, Object>();
-		claims.put("cid", DataUtils.getInt(customer, "cid", 0));
-		claims.put("userno", DataUtils.getString(customer, "userno", ""));
-		claims.put("name", DataUtils.getString(customer, "name", ""));
-		claims.put("space", DataUtils.getLong(customer, "space", 0));
-		claims.put("speaker", DataUtils.getLong(customer, "speaker", 0));
-		
-		String accessToken = this.jwtService.generateToken(claims);
-		this.logger.debug("accessToken : " + accessToken);
-		
-		data.put("accessToken", accessToken);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> customerMap = objectMapper.convertValue(customer, Map.class);
+		String token = this.jwtService.generateToken(customerMap);
+		data.put("token", token);
 		
 		return data;
 	}

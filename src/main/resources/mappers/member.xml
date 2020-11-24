@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="api.member">
+<mapper namespace="member">
 
 	<parameterMap type="com.scglab.connect.services.member.Member" id="member"></parameterMap>
 	<resultMap type="com.scglab.connect.services.member.Member" id="member"></resultMap>
+	
+	<!-- 회원 목록 카운트 -->
+	<select id="findAllCount" parameterType="map" resultType="int">
+		SELECT count(*) as totalCount
+		FROM member
+		WHERE company_id = #{companyId}
+		AND auth_level > 0
+		<if test='searchType != null and searchValue != null'>
+        	<choose>
+	        	<when test='searchType == "loginName"'>
+	        		AND login_name like concat ('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "name"'>
+					AND name like concat ('%', #{searchValue}, '%')
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+	<!-- 회원 목록 -->
+	<select id="findAll" parameterType="map" resultMap="member">
+		SELECT *
+		FROM member
+		WHERE company_id = #{companyId}
+		AND auth_level > 0
+		<if test='searchType != null and searchValue != null'>
+        	<choose>
+	        	<when test='searchType == "loginName"'>
+	        		AND login_name like concat ('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "name"'>
+					AND name like concat ('%', #{searchValue}, '%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY id desc
+	</select>
 
 	<!-- 회원 목록(관리자가 아닌 회원) -->
 	<select id="findNotAdmin" parameterType="map" resultMap="member">
@@ -41,7 +78,7 @@
 		       m.* 
 		FROM   member m 
 		INNER JOIN company c ON m.company_id = c.id 
-		WHERE  m.id = :id 
+		WHERE  m.id = #{id} 
 	</select>
 	
 	<!-- 회원등록 -->
@@ -56,14 +93,13 @@
 			state = IFNULL(#{state}, state), 
 			profile_image_id = IFNULL(#{profileImageId}, profile_image_id),
 			update_member_id = #{loginId}
-		WHERE  id = :id 
+		WHERE  id = #{id} 
 	</update>
 	
 	<!-- 회원 수정(상담상태, 레벨) -->
 	<update id="updateState" parameterType="map">
 		UPDATE member 
-		SET state = #{state},
-			auth_level = #{authLevel}
+		SET state = #{state}
 			update_member_id = #{loginId}
 		WHERE id = #{id} 
 	</update>

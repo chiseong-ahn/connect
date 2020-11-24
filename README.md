@@ -13,7 +13,7 @@
 | API | Rest | REST 기반의 API |
 | 웹소켓 | Websocket | STOMP + SockJs + Redis pub/sub |
 | 배치작업 | Spring batch | |
-| 인증 | JWT | Token을를 이용한 인증방식 |
+| 인증 | JWT | Token을 이용한 인증방식 |
 | XSS Filter | lucy xss servlet filter | |
 | template engine | freemarker | |
 | 테스팅 | Junit | |

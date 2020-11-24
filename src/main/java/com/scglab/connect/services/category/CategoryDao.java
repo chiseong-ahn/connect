@@ -18,7 +18,7 @@ public class CategoryDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.category.";
+	public String namespace = "category.";
 	
 	@Override
 	protected String getNamespace() {

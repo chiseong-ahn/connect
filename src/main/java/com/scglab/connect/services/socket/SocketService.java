@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.scglab.connect.base.interceptor.CommonInterceptor;
 import com.scglab.connect.constant.Constant;
@@ -31,6 +35,7 @@ import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.Room;
 import com.scglab.connect.services.room.RoomDao;
+import com.scglab.connect.services.talk.ChatRoom;
 import com.scglab.connect.services.talk.ChatRoomRepository;
 import com.scglab.connect.utils.DataUtils;
 
@@ -71,11 +76,11 @@ public class SocketService {
 	}
 	
 	// 에러 이벤트메세지 전송.
-	public void sendErrorMessage(String roomId, int speakerId, String reason, SocketData socketData) {
+	public void sendErrorMessage(String roomId, int speakerId, String reason, SocketData payload) {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("eventName", EventName.ERROR);
 		data.put("roomId", roomId);
-		data.put("socketData", socketData);
+		data.put("socketData", payload);
 		data.put("reason", reason);
 		data.put("targetSpeakerId", speakerId);
 		
@@ -95,14 +100,14 @@ public class SocketService {
 	
 	// 이벤트 메세지 전송.
 	public void sendMessage(EventName eventName, String companyId, String roomId, Map<String, Object> data) {
-		if(data == null) {
-			data = new HashMap<String, Object>();
-		}
-		data.put("eventName", eventName);
-		data.put("roomId", roomId);
+		SocketData socketData = new SocketData();
+		socketData.setEventName(eventName);
+		socketData.setRoomId(roomId);
+		socketData.setCompanyId(companyId);
+		socketData.setData(data);
 		
-		this.logger.info("Send message > " + data.toString());
-		this.redisTemplate.convertAndSend(channelTopic.getTopic(), data);
+		this.logger.info("Send message > " + socketData.toString());
+		this.redisTemplate.convertAndSend(channelTopic.getTopic(), socketData);
 	}
 	
 	// 연결처리.
@@ -152,30 +157,63 @@ public class SocketService {
 		String token = this.chatRoomRepository.getUserToken(sessionId);
 
 		// 토큰에서 인증정보 추출.
-		Member profile = this.loginService.getMember(token);
+//		Member profile = this.loginService.getMember(token);
+//		SocketData socketData = new SocketData();
+//		socketData.setEventName(EventName.JOIN);
+//		socketData.setRoomId(roomId);
+//		socketData.setCompanyId(profile.getCompanyId());
+//		socketData.setToken(token);
+//		socketData.setData(DataUtils.convertMap(profile));
 		SocketData socketData = new SocketData();
-		socketData.setEventName(EventName.JOIN);
-		socketData.setRoomId(roomId);
-		socketData.setCompanyId(profile.getCompanyId());
-		socketData.setToken(token);
-		socketData.setData(DataUtils.convertMap(profile));
-		
 		// 조인처리.
 		join(socketData);
 	}
 	
+	public void unsubscribe(SessionUnsubscribeEvent event) {
+		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+		this.logger.info("[Unsubscribe] headerAccessor : " + headerAccessor.toString());
+
+		MessageHeaders headers = headerAccessor.getMessageHeaders();
+		this.logger.info("unsubscribe headers : " + headers.toString());
+		
+		String sessionId = (String) headers.get("simpSessionId");
+		String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId);
+		
+		this.logger.info("roomId : " + roomId);
+		this.logger.info("sessionId : " + sessionId);
+		
+		if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
+			// [Redis] 채팅방의 인원수 -1.
+			this.chatRoomRepository.minusUserCount(roomId);
+			
+			// [Redis] 채팅에 참여중인 인원 확인.
+			long joinCount = this.chatRoomRepository.getUserCount(roomId);
+
+			if (joinCount <= 0) {
+				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
+				this.chatRoomRepository.deleteChatRoom(roomId);
+			}
+		}
+		
+		// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
+		this.chatRoomRepository.removeUserJoinInfo(sessionId);
+		
+		// [Redis] 커네션한 유저 토큰 삭제.
+		this.chatRoomRepository.dropUserToken(sessionId);
+	}
+	
 	
 	// 방 상세 조회
-	public void roomDetail(SocketData socketData) {
+	public void roomDetail(SocketData payload) {
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 		
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
 		// [DB] 방 상세정보 조회
 		params = new HashMap<String, Object>();
-		params.put("id", socketData.getRoomId());
+		params.put("id", payload.getRoomId());
 		Room room = this.roomDao.getDetail(params);
 		
 		if(room != null) {
@@ -183,16 +221,23 @@ public class SocketService {
 			// [Socket] 방 상세 정보 전송.
 			sendData = new HashMap<String, Object>();
 			sendData.put("room", room);
-			sendMessage(EventName.ROOM_DETAIL, socketData.getCompanyId(), socketData.getRoomId(), sendData);
+			sendMessage(EventName.ROOM_DETAIL, payload.getCompanyId(), payload.getRoomId(), sendData);
 		}else {
 			
 			// [Socket] 오류 알림 메세지 전송. - 일치하는 채팅상담이 존재하지 않음.
-			sendErrorMessage(socketData.getRoomId(), profile.getSpeakerId(), this.messageHandler.getMessage("error.room.room-detail"), socketData);
+			sendErrorMessage(payload.getRoomId(), profile.getSpeakerId(), this.messageHandler.getMessage("error.room.room-detail"), payload);
 		}
 	}
 	
 	// 방 조인
-	public void join(SocketData socketData) {
+	public void join(SocketData payload) {
+		
+		// [Socket] > 채팅방 참여자들에게 조인완료 메세지 전송.
+		Map<String, Object> testData = new HashMap<String, Object>();
+		testData.put("member", "test");
+		sendMessage(EventName.JOINED, payload.getCompanyId(), "111", testData);
+		
+		/*
 		// 토큰에서 사용자정보 추출.
 		Member profile = this.loginService.getMember(socketData.getToken());
 		
@@ -322,33 +367,36 @@ public class SocketService {
 		
 		// [Socket] 상담목록 갱신요청 메세지 전송.
 		sendReloadMessage(socketData.getCompanyId());
+		
+		*/
+		
 	}
 	
 	
 	// 메세지 전송
-	public void message(SocketData socketData) {
+	public void message(SocketData payload) {
 		
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 		
-		Map<String, Object> data = socketData.getData();
+		Map<String, Object> data = payload.getData();
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
 		// [DB] 채팅방 정보 조회
 		params = new HashMap<String, Object>();
-		params.put("id", socketData.getRoomId());
+		params.put("id", payload.getRoomId());
 		Room room = this.roomDao.getDetail(params);
 		
 		// [DB] 신규 메세지 생성.
 		params = new HashMap<String, Object>();
-		params.put("companyId", socketData.getCompanyId());
-		params.put("roomId", socketData.getRoomId());
+		params.put("companyId", payload.getCompanyId());
+		params.put("roomId", payload.getRoomId());
 		params.put("speakerId", profile.getSpeakerId());
 		params.put("messageType", DataUtils.getInt(data, "messageType", 0));
 		params.put("isSystemMessage", DataUtils.getInt(data, "isSystemMessage", 0));
-		params.put("message", socketData.getRoomId());
-		params.put("messageAdminType", socketData.getRoomId());
+		params.put("message", payload.getRoomId());
+		params.put("messageAdminType", payload.getRoomId());
 		params.put("isEmployee", profile.getIsCustomer() == 1 ? 0 : 1);
 		params.put("messageDetail", DataUtils.getString(data, "messageDetail", ""));
 		params.put("templateId", DataUtils.getString(data, "templateId", null));
@@ -359,14 +407,14 @@ public class SocketService {
 			// [Socket] 생성된 메세지 전송.
 			sendData = new HashMap<String, Object>();
 			sendData.put("message", newMessage);
-			sendMessage(EventName.MESSAGE, socketData.getCompanyId(), socketData.getRoomId(), sendData);
+			sendMessage(EventName.MESSAGE, payload.getCompanyId(), payload.getRoomId(), sendData);
 			
 			// 고객이 작성한 메세지일 경우.
 			if(profile.getIsCustomer() == 1) {
 				
 				// 조인 메세지id와 마지막 생성된 메세지가 동일한 경우.
 				if(newMessage.getJoinMessageId() == newMessage.getId()) {
-					sendReloadMessage(socketData.getCompanyId());
+					sendReloadMessage(payload.getCompanyId());
 				}
 				
 			}else {	// 상담사의 메세지일 경우.
@@ -382,35 +430,34 @@ public class SocketService {
 	}
 	
 	
-	
 	// 챗봇 이력저장
-	public void saveHistory(SocketData socketData) {
-		Map<String, Object> data = socketData.getData();
+	public void saveHistory(SocketData payload) {
+		Map<String, Object> data = payload.getData();
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
-		String roomId = socketData.getRoomId();
+		String roomId = payload.getRoomId();
 		String history = DataUtils.getString(data, "history", "");
 		
-		// [DB] 챗봇 이력저장.
+		// [DB] 이력저장.
 		params = new HashMap<String, Object>();
 		params.put("roomId", roomId);
 		params.put("history", history);
 		int result = this.roomDao.updateJoinHistory(params);
 		
-		// [Socket] 챗봇 이력저장 완료메세지 전송.
+		// [Socket] 이력저장 완료메세지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("success", result > 0 ? true : false);
-		sendMessage(EventName.SAVE_HISTORY, socketData.getCompanyId(), socketData.getRoomId(), sendData);
+		sendMessage(EventName.SAVE_HISTORY, payload.getCompanyId(), payload.getRoomId(), sendData);
 	}
 	
 	
 	// 메세지 삭제
-	public void deleteMessage(SocketData socketData) {
+	public void deleteMessage(SocketData payload) {
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 				
-		Map<String, Object> data = socketData.getData();
+		Map<String, Object> data = payload.getData();
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
@@ -424,7 +471,7 @@ public class SocketService {
 			if(readCount < 0) {
 			
 				// [Socket] 메세지를 이미 읽은상태이기에 삭제불가 알림 전송.
-				sendErrorMessage(socketData.getRoomId(), profile.getSpeakerId(), this.messageHandler.getMessage("error.message.delete"), socketData);
+				sendErrorMessage(payload.getRoomId(), profile.getSpeakerId(), this.messageHandler.getMessage("error.message.delete"), payload);
 			
 			}else {
 				// [DB] 메세지 삭제처리.
@@ -433,23 +480,23 @@ public class SocketService {
 				//[Socket] 메세지 삭제완료 알림 전송.
 				sendData = new HashMap<String, Object>();
 				sendData.put("success", result > 0 ? true : false);
-				sendMessage(EventName.DELETE_MESSAGE, socketData.getCompanyId(), socketData.getRoomId(), sendData);
+				sendMessage(EventName.DELETE_MESSAGE, payload.getCompanyId(), payload.getRoomId(), sendData);
 			}
 		}
 	}
 	
 	
 	// 메시지 읽음
-	public void readMessage(SocketData socketData) {
+	public void readMessage(SocketData payload) {
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 				
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
 		// [DB] 메세지 읽음 처리.
 		params = new HashMap<String, Object>();
-		params.put("roomId", socketData.getRoomId());
+		params.put("roomId", payload.getRoomId());
 		params.put("speakerId", profile.getSpeakerId());
 		params.put("startId", DataUtils.getLong(params, "startId", 0));
 		params.put("endId", DataUtils.getLong(params, "endId", 0));
@@ -459,56 +506,56 @@ public class SocketService {
 		// [DB] 메세지 읽음처리 완료알림 메세지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("success", result > 0 ? true : false);
-		sendMessage(EventName.READ_MESSAGE, socketData.getCompanyId(), socketData.getRoomId(), sendData);
+		sendMessage(EventName.READ_MESSAGE, payload.getCompanyId(), payload.getRoomId(), sendData);
 	}
 	
 	
 	// 상담 종료.
-	public void end(SocketData socketData) {
+	public void end(SocketData payload) {
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 		
 		if(profile.getIsCustomer() == 1) {
-			endByCustomer(socketData);
+			endByCustomer(payload);
 		}else {
-			endByEmp(socketData);
+			endByEmp(payload);
 		}
 	}
 	
 	
 	// 고객의 상담 종료
-	public void endByCustomer(SocketData socketData) {
+	public void endByCustomer(SocketData payload) {
 		Map<String, Object> params = null;
 		
 		// [DB] 채팅상담 종료처리.
 		params = new HashMap<String, Object>();
-		params.put("roomId", socketData.getRoomId());
+		params.put("roomId", payload.getRoomId());
 		params.put("loginId", null);
 		this.roomDao.closeRoom(params);
 		
 		// [Socket] 상담종료 메세지 전송.
-		sendMessage(EventName.END, socketData.getCompanyId(), socketData.getRoomId(), null);
+		sendMessage(EventName.END, payload.getCompanyId(), payload.getRoomId(), null);
 	}
 	
 	
 	// 상담사 상담 종료
-	public void endByEmp(SocketData socketData) {
+	public void endByEmp(SocketData payload) {
 		
 	}
 	
 	
 	// 메세지 더보기
-	public void messageList(SocketData socketData) {
+	public void messageList(SocketData payload) {
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 				
-		Map<String, Object> data = socketData.getData();
+		Map<String, Object> data = payload.getData();
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
 		// [DB] 메시지 조회
 		params = new HashMap<String, Object>();
-		params.put("roomId", socketData.getRoomId());
+		params.put("roomId", payload.getRoomId());
 		params.put("speakerId", profile.getSpeakerId());
 		params.put("messageAdminType", DataUtils.getInt(data, "messageAdminType", 0));
 		params.put("startId", DataUtils.getLong(params, "startId", 0));
@@ -521,7 +568,7 @@ public class SocketService {
 			// [Socket] 메세지 전송.
 			sendData = new HashMap<String, Object>();
 			sendData.put("messages", messages);
-			sendMessage(EventName.MESSAGE_LIST, socketData.getCompanyId(), socketData.getRoomId(), sendData);
+			sendMessage(EventName.MESSAGE_LIST, payload.getCompanyId(), payload.getRoomId(), sendData);
 		}
 	}
 	
@@ -558,6 +605,7 @@ public class SocketService {
 			if (joinCount <= 0) {
 				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
 				this.chatRoomRepository.deleteChatRoom(roomId);
+				this.chatRoomRepository.deleteUserCount(roomId);
 			}
 		}
 		
@@ -570,20 +618,20 @@ public class SocketService {
 	
 	
 	// 상담사 채팅방 나가기.
-	public void leave(SocketData socketData) {
+	public void leave(SocketData payload) {
 		// STOMP에서 leave는 사용하지 않고 해당 채팅방과의 Socket 연결을 해제(disconnected)한다.
 	}
 	
 	
 	// 로그인.
-	public void login(SocketData socketData) {
+	public void login(SocketData payload) {
 		// 토큰에서 사용자정보 추출.
-		Member profile = this.loginService.getMember(socketData.getToken());
+		Member profile = this.loginService.getMember(payload.getToken());
 		
 		if(profile.getIsCustomer() == 1) {
-			loginCustomer(socketData);
+			loginCustomer(payload);
 		}else {
-			loginMember(socketData);
+			loginMember(payload);
 		}
 	}
 	
@@ -601,6 +649,12 @@ public class SocketService {
 	// 로비룸 조회
 	public String getLobbyRoom(String companyId) {
 		return "LOBBY" + companyId;
+	}
+	
+	// 운영중인 룸 정보 조회
+	public List<ChatRoom> findRooms(HttpServletRequest request, HttpServletResponse response){
+		List<ChatRoom> rooms = this.chatRoomRepository.findAllRoom();
+		return rooms;
 	}
 	
 }

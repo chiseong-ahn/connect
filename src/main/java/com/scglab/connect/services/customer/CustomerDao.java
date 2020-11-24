@@ -18,11 +18,19 @@ public class CustomerDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.customer.";
+	public String namespace = "customer.";
 	
 	@Override
 	protected String getNamespace() {
 		return namespace;
+	}
+	
+	public int findAllCount(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "findAllCount", params);
+	}
+	
+	public List<Map<String, Object>> findAll(Map<String, Object> params) {
+		return this.sqlSession.selectList(this.namespace + "findAll", params);
 	}
 	
 	/**

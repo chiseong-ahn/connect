@@ -104,7 +104,7 @@ public class TalkService {
         this.logger.debug("data : " + data.toString());
         this.logger.debug("headers : " + httpHeaders.toString());
         
-		Map<String, Object> result = httpUtils.postApi(url, data, httpHeaders);
+		Map<String, Object> result = httpUtils.postApiForMap(url, data, httpHeaders);
 		this.logger.debug(result.toString());
 		
 		return data;

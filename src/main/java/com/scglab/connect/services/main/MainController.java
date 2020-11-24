@@ -30,4 +30,13 @@ public class MainController {
 		return "admin/emp";
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/socket", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String socket(HttpServletRequest request, HttpServletResponse response) {
+		return "socket/index";
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String upload(HttpServletRequest request, HttpServletResponse response) {
+		return "file/upload";
+	}
 }

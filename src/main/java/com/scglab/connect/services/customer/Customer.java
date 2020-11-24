@@ -11,6 +11,9 @@ import lombok.ToString;
 @ToString
 public class Customer {
 	private int id;
+	private String createDate;
+	private String updateDate;
+	private long updateMemberId;
 	private String companyId;
 	private String gasappMemberNumber;
 	private String name;

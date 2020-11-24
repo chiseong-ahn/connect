@@ -1,5 +1,6 @@
 package com.scglab.connect.services.member;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,11 +19,40 @@ public class MemberDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.member.";
+	public String namespace = "member.";
 	
 	@Override
 	protected String getNamespace() {
 		return namespace;
+	}
+	
+	/**
+	 * 
+	 * @Method Name : findAllCount
+	 * @작성일 : 2020. 11. 24.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 회원 목록 카운트 조회
+	 * @param params
+	 * @return
+	 */
+	public int findAllCount(Map<String, Object> params){
+		return this.sqlSession.selectOne(namespace + "findAllCount", params);
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : findAll
+	 * @작성일 : 2020. 11. 24.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 회원 목록 조회.
+	 * @param params
+	 * @return
+	 */
+	public List<Member> findAll(Map<String, Object> params){
+		return this.sqlSession.selectList(namespace + "findAll", params);
 	}
 	
 	/**

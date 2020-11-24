@@ -47,6 +47,12 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+        
+        
 
 # Prometheus 설정.
 management:
@@ -80,8 +86,8 @@ spring:
 
 domain:
   sdtalk: localhost.gasapp.co.kr
-  mobileapi: GASAPP-DEV
-  relay: GASAPP-RELAY-SCG-DEV
+  mobileapi: app-dev.gasapp.co.kr
+  relay: http://msc-dev-relay:12081
   
 path:
   upload: /Volumes/Data/_upload
@@ -126,7 +132,6 @@ springdoc:
     groups-order: ASC
 
 
-
 ---
 # 운영환경 
 spring:
@@ -134,5 +139,3 @@ spring:
   
 logging:
   config: 'classpath:config/logback-live.xml'
-  
-  

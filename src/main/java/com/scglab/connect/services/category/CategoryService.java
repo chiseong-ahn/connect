@@ -11,23 +11,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.auth.AuthService;
 import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
 
 @Service
 public class CategoryService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private CategoryDao categoryDao;
-	
-	@Autowired
-	private AuthService authService;
+	@Autowired private CategoryDao categoryDao;
+	@Autowired private LoginService loginService;
 	
 	public Map<String, Object> total(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -52,8 +51,9 @@ public class CategoryService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> categories(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -67,8 +67,9 @@ public class CategoryService {
 	}
 	
 	public Map<String, Object> category(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -82,9 +83,9 @@ public class CategoryService {
 	}
 	
 	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.categoryDao.insert(params);
@@ -97,9 +98,9 @@ public class CategoryService {
 	}
 	
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
-		params.put("emp", user.getEmp());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.categoryDao.update(params);
@@ -112,8 +113,9 @@ public class CategoryService {
 	}
 	
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		User user = this.authService.getUserInfo(request);
-		params.put("cid", user.getCid());
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.categoryDao.delete(params);

@@ -1,14 +1,24 @@
 package com.scglab.connect.services.socket;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.socket.SocketService.EventName;
+import com.scglab.connect.services.talk.ChatRoom;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -58,6 +68,12 @@ public class SocketController {
     		this.socketService.end(socketData);
     		
     	}
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, value = "socket/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary="상담채팅 현황 조회")
+    public List<ChatRoom> getRoomsList(HttpServletRequest request, HttpServletResponse response){
+    	return this.socketService.findRooms(request, response);
     }
 }
 

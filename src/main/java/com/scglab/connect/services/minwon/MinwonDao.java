@@ -17,7 +17,7 @@ public class MinwonDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.minwon.";
+	public String namespace = "minwon.";
 	
 	@Override
 	protected String getNamespace() {

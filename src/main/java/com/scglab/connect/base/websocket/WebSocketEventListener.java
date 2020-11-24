@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.scglab.connect.base.interceptor.CommonInterceptor;
 import com.scglab.connect.services.socket.SocketService;
@@ -59,7 +60,7 @@ public class WebSocketEventListener {
 		*/
 		this.socketService.connect(event);
 	}
-
+	
 	@EventListener
 	public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
 		/*
@@ -95,6 +96,11 @@ public class WebSocketEventListener {
 		 */
 		
 		this.socketService.subscribe(event);
+	}
+	
+	@EventListener
+	public void handleWebSocketUnSubscribeListener(SessionUnsubscribeEvent event) {
+		this.socketService.unsubscribe(event);
 	}
 
 	/**

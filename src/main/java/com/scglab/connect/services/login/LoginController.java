@@ -43,10 +43,10 @@ public class LoginController {
 	@RequestMapping(method = RequestMethod.POST, value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="로그인", description = "아이디 비밀번호를 통해 로그인한다.")
 	@Parameters({
-		@Parameter(name = "companyId", description = "회사 id", required = true, in = ParameterIn.QUERY, example = "2"),
-		@Parameter(name = "loginName", description = "로그인 id", required = true, in = ParameterIn.QUERY, example = "csahn"),
+		@Parameter(name = "companyId", description = "회사 id", required = true, in = ParameterIn.QUERY, example = "1"),
+		@Parameter(name = "loginName", description = "로그인 id", required = true, in = ParameterIn.QUERY, example = "csmaster1"),
 		@Parameter(name = "password", description = "비밀번호", required = true, in = ParameterIn.QUERY, example = "1212"),
-		@Parameter(name = "name", description = "이름(개발용)", required = true, in = ParameterIn.QUERY, example = "홍길동")
+		@Parameter(name = "name", description = "이름(개발용)", required = true, in = ParameterIn.QUERY, example = "서울도시가스")
 	})
 	@ApiResponse(responseCode = "200", description = "OK", content = {
 		@Content(schema = @Schema(oneOf = Member.class)),

@@ -1,7 +1,5 @@
 package com.scglab.connect.base.pubsub;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -9,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scglab.connect.constant.Constant;
-import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.services.socket.SocketData;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,12 +34,12 @@ public class RedisSubscriber {
     
     public void sendMessage(String publishMessage) {
     	try {
-    		Map<String, Object> data = this.objectMapper.readValue(publishMessage, Map.class);
+    		//Map<String, Object> data = this.objectMapper.readValue(publishMessage, Map.class);
+    		SocketData payload = this.objectMapper.readValue(publishMessage, SocketData.class);
+    		String roomId = payload.getRoomId();
+    		//data.remove("roomId");
     		
-    		String roomId = DataUtils.getString(data, "roomId", "");
-    		data.remove("roomId");
-    		
-    		this.messagingTemplate.convertAndSend(Constant.SOCKET_ROOM_PREFIX + roomId, data);
+    		this.messagingTemplate.convertAndSend(Constant.SOCKET_ROOM_PREFIX + roomId, payload);
     	}catch(Exception e) {
     		this.logger.error(e.getMessage());
     	}

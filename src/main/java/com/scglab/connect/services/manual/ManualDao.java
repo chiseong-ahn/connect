@@ -19,7 +19,7 @@ public class ManualDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.manual.";
+	public String namespace = "manual.";
 	
 	@Override
 	protected String getNamespace() {

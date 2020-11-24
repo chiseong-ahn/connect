@@ -15,7 +15,7 @@ public class CompanyDao extends CommonDao {
 	 * XML의 매핑되는 prefix namespace
 	 * ex. sdtalk.sample.selectList => sdtalk.sample 
 	 */
-	public String namespace = "api.company.";
+	public String namespace = "company.";
 	
 	@Override
 	protected String getNamespace() {

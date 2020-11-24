@@ -1,96 +1,87 @@
 package com.scglab.connect.services.company.external;
 
-import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.auth.Contract;
 import com.scglab.connect.services.member.Member;
-
+@Service
 public class CompanyInc implements ICompany {
-	
-	private final String companyId = "2";
-	private final String companyName = "인천도시가스";
+
+	@Override
+	public boolean login(String id, String password) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMembers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Member getMemberInfo(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int sendMinwon(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Map<String, Object>> getContractList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	@Override
+	public Map<String, Object> getCustomerInfo(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Contract getContractDetail(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public Map<String, Object> getContractMonthlyDetail(Map<String, Object> params){
+		
+		return null;
+	}
+
+	@Override
+	public int isHoliday(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String getCompanyName() {
-		return this.companyName;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public int isWorking() {
-		int iswork = 1;
-		
-		Calendar cal = Calendar.getInstance();
-		
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH) + 1;
-		int day = cal.get(Calendar.DAY_OF_MONTH);
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		int min = cal.get(Calendar.MINUTE);
-		int sec = cal.get(Calendar.SECOND);
-		System.out.println("현재 시각은 " + year + "년도 " + month + "월 " + day + "일 " + hour + "시 " + min + "분 " + sec + "초입니다.");
-		
-		if(hour < 9 || hour > 17 || (hour == 17 && min > 30)) {
-			// 근무 외 시간.(9시 이전, 17시 30분 이후)
-			iswork = 2;
-		
-		}else{
-			if(false) {	// 휴일 또는 근무 외 시 (MIS를 통해 확인)	
-				iswork = 2;
-				
-			}else {		// 근무일자일 경우
-				if(hour == 12) {
-					// 점심시간.
-					iswork = 3;
-				}else {
-					
-				}
-			}
-		}
-		
-		//return iswork;
-		return 2;
-	}
-
-	@Override
-	public Member login(String loginName, String password) {
-		Member profile = new Member();
-		profile.setCompanyId(companyId);
-		profile.setCompanyName(companyName);
-		profile.setIsAdmin(1);
-		profile.setLoginName(loginName);
-		profile.setName("관리자");
-		return profile;
-	}
-
-	@Override
-	public Member getMemberInfo(int userno) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Contract getMemberContractDetail(int contractNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int sendMinwon() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	@Override
-	public int getHoliday() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	
 	
 
 

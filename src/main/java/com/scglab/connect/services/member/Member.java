@@ -22,4 +22,7 @@ public class Member {
 	private int profileImageId;
 	private int speakerId;
 	private String name;
+	private String createDate;
+	private String updateDate;
+	private String updateMemberId;
 }
