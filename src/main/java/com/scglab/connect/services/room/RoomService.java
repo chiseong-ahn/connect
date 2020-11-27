@@ -29,6 +29,7 @@ public class RoomService {
 	
 	public Object getRoomInfo(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
 		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
 		
 		Object object = null;
 		
@@ -43,8 +44,9 @@ public class RoomService {
 			}else {
 				params.put("sort", "wait_start_date asc");
 			}
+		}
 			
-		}else if(queryId.indexOf("state") > -1) {		// 그 외 조회
+		if(queryId.indexOf("State") > -1) {		// 그 외 조회
 			String checkSelf = DataUtils.getString(params, "checkSelf", Constant.NO); 
 			if(checkSelf.equals(Constant.YES)) {
 				params.put("memberId", member.getLoginName());
@@ -52,30 +54,30 @@ public class RoomService {
 			}else if(member.getAuthLevel() < 4){
 				params.put("memberId", null);
 				
-			}else {
-				params.put("memberId", member.getLoginName());
 			}
 			
-			if(searchType.equals("message")) {DataUtils.getString(params, "searchType", "");
-				params.put("memberName", "");
-				params.put("customerName", "");
+			if(searchType.equals("message")) {					// 메세지 조건으로 검색.
 				params.put("message", member.getLoginName());
-				
-			}else if(searchType.equals("customerName")) {
-				params.put("message", "");
+				params.put("customerName", "");
 				params.put("memberName", "");
-				params.put("customerName", searchValue);
 				
-			}else if(searchType.equals("memberName")) {
+			}else if(searchType.equals("customerName")) {		// 고객명 조건으로 검색.
+				params.put("message", "");
+				params.put("customerName", searchValue);
+				params.put("memberName", "");
+				
+			}else if(searchType.equals("memberName")) {			// 멤버명 조건으로 검색.
 				params.put("message", "");
 				params.put("customerName", "");
 				params.put("memberName", searchValue);
-			}else {
+				
+			}else {												// 검색조건 없을경우.
 				params.put("message", "");
 				params.put("customerName", "");
 				params.put("memberName", "");
 			}	
 		}
+		this.logger.debug("params : " + params.toString());
 		
 		switch(queryId) {
 		case "getCurrentTimeStats" :	// 현재 시간 방 통계정보.

@@ -23,6 +23,7 @@ public class Room {
 	private int joinMessageId;			// 조인 시작id 
 	private int chatId;					// 민원 연동id
 	private Object joinHistoryJson;		// 조인 히스토리
+	private String recentMessageId;		// 
 	private int isOnline;				// 방의 온라인 상태
 	
 	private String endDate;				// 종료일
@@ -38,8 +39,14 @@ public class Room {
 	
 	private String customerName;		// 고객이름
 	private String gasappMemberNumber;	// 고객의 가스앱 모바일 id
+	private String telNumber;			// 고객 전화번호
 	private int isBlockCustomer;		// 고객의 block 상태
 	
 	private int speakMinute;			// 상담 시간
 	private int joinHistoryCount;		// 이전 상담대화 건 수.
+	
+	private String createDate;
+	private String updateDate;
+	private String updateMemberId;
+	
 }

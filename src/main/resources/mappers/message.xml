@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="message">
+
+	<parameterMap type="com.scglab.connect.services.message.Message" id="message"></parameterMap>
 	<resultMap type="com.scglab.connect.services.message.Message" id="message"></resultMap>
-	
-	
 	
 	<!-- 채팅메세지 목록 -->
 	<select id="findByRoomIdAll" parameterType="map" resultType="map">
@@ -56,7 +56,7 @@
 
 	
 	<!-- 담당자 또는 고객이 보는 메세지 -->
-	<select id="findByRoomIdToSpeaker" parameterType="map" resultType="map">
+	<select id="findByRoomIdToSpeaker" parameterType="map" resultMap="message">
 		SELECT 
 		  r.join_message_id, 
 		  m.*,
@@ -166,9 +166,9 @@
 	</update>
 	
 	<!-- 메세지 생성 -->
-	<select id="create" parameterType="map" resultType="map">
+	<select id="create" parameterType="map" resultMap="message" statementType="CALLABLE">
 		CALL make_message(
-			#{companyId}, #{roomId}, #{speakerId}, #{mesasgeType}, #{isSystemMessage}, 
+			#{companyId}, #{roomId}, #{speakerId}, #{messageType}, #{isSystemMessage}, 
 			#{message}, #{messageAdminType}, #{isEmployee}, #{messageDetail}, #{templateId}
 		)
 	</select>
@@ -229,6 +229,11 @@
 		  LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE 
 		  m.id = #{id}
+	</select>
+	
+	<!-- 메시지 읽음 처리-->
+	<select id="readMessage" parameterType="map" statementType="CALLABLE">
+		CALL read_message(#{roomId}, #{speakerId}, #{startId}, #{endId})
 	</select>
 	
 	

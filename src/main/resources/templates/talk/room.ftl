@@ -529,7 +529,7 @@
             	// 내 상담으로 가져오기
             	assignToMe(){
             		var _this = this;
-					var uri = '/talk/spaces/' + this.roomId + '/manager';
+					var uri = '/api/room/' + this.roomId + '/manager';
 					var data = {
 						'acting': 11
 					}

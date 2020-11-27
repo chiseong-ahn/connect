@@ -193,6 +193,19 @@ public class MessageDao extends CommonDao {
 		return this.sqlSession.delete(this.namespace + "deleteMessageRead", params);
 	}
 	
+	/**
+	 * 
+	 * @Method Name : readMessage
+	 * @작성일 : 2020. 11. 27.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 메시지 읽음 처리.
+	 * @param params
+	 */
+	public void readMessage(Map<String, Object> params) {
+		this.sqlSession.update(this.namespace + "readMessage");
+	}
+	
 	
 	
 	

@@ -5,6 +5,23 @@
 
 	<parameterMap type="com.scglab.connect.services.category.Category" id="category"></parameterMap>
 	<resultMap type="com.scglab.connect.services.category.Category" id="category"></resultMap>
+	
+	<!-- 카테고리 전체 조회 -->
+	<select id="findAllCategory" parameterType="map" resultType="map">
+		select a.id as category_large_id
+				,a.name as category_large_name
+				,b.id as category_middle_id
+				,b.name as category_middle_name
+				,c.id as category_small_id
+				,c.name as category_small_name
+		from category_large a
+			 inner join category_middle b on (b.category_large_id = a.id and b.name is not null)
+			 inner join category_small c on (c.category_middle_id  = b.id and c.name is not null)
+		where 1=1
+		and a.company_id  = #{companyId}
+		and a.name is not null
+		order by a.sort_index, b.sort_index, c.sort_index
+	</select>
 
 	<!-- 카테고리 대분류 목록 -->
 	<select id="findCategoryLarge" parameterType="map" resultType="map">
@@ -106,7 +123,7 @@
 	<update id="updateCategorySmall" parameterType="map">
 		UPDATE category_middle 
 		SET    name = #{name}, 
-		           category_middle_id = #{categoryMiddleId},
+		       category_middle_id = #{categoryMiddleId},
 		       minwon_code = #{minwonCode}, 
 		       minwon_name = #{minwonName}, 
 		       update_member_id = #{loginId} 

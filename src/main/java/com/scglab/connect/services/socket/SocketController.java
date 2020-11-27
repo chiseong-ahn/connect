@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +45,7 @@ public class SocketController {
     	EventName eventName = socketData.getEventName();
     	
     	if(eventName.equals(EventName.LOGIN)) {
-    		this.socketService.login(socketData);;
+    		this.socketService.login(socketData);
     		
     	}else if(eventName.equals(EventName.ROOM_DETAIL)) {		// 방 정보 요청.
     		this.socketService.roomDetail(socketData);
@@ -60,9 +61,6 @@ public class SocketController {
     		
     	}else if(eventName.equals(EventName.DELETE_MESSAGE)) {	// 메세지 삭제 요청.
     		this.socketService.deleteMessage(socketData);
-    		
-    	//}else if(eventName.equals(EventName.LEAVE)) {
-    	//	this.socketService.leave(socketData);
     		
     	}else if(eventName.equals(EventName.END)) {			// 고객의 상담종료 요청.
     		this.socketService.end(socketData);

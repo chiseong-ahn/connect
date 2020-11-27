@@ -39,9 +39,9 @@
 	
 	<!-- 고객 상세(gasapp_member_number) -->
 	<select id="getByGasappMemberNumber" parameterType="map" resultMap="customer">
-		SELECT *
-		FROM   customer2
-		WHERE  gasapp_member_number = #{gasappMemberNumber}
+		select *
+		from v_customer
+		where gasapp_member_number = #{gasappMemberNumber}
 	</select>
 	
 	<!-- 고객 등록 -->

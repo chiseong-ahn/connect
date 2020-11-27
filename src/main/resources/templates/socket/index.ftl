@@ -16,7 +16,98 @@
     </style>
   </head>
   <body>
-    
+    <div class="container" id="app" v-cloak>
+        <div class="row">
+            <div class="col-md-6">
+            	<span>로그인 : {{profile.loginName}} </span><br />
+            	<span>선택된 스페이스 : {{socket.roomId}}</span>
+            </div>
+            <div class="col-md-6 text-right">
+                <a class="btn btn-primary btn-sm" @click="logout">로그아웃</a>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-md-2">
+        		<ul>
+        			<li><a href="/page/main" class="btn btn-default" type="button">상담채팅</a></li>
+        			<li><a href="/page/template" class="btn btn-default" type="button">답변템플릿</a></li>
+        			<li><a href="/page/helper" class="btn btn-default" type="button">답변도우미</a></li>
+        			<li><a href="/admin/emp" class="btn btn-default" type="button">관리자메뉴</a></li>
+        		</ul>
+        	</div>
+        	<div class="col-md-3">
+		        <h4>상담대기</h4>
+		        <span><button type="button" class="btn btn-primary" @click="assign()">대기상담 가져오기 ({{readyCount}}건)</button></span>
+		        <ul class="list-group">
+		            <li class="list-group-item list-group-item-action" v-for="obj in activeRooms" v-bind:key="obj.id" v-on:click="join(obj.id)">
+		            	<dt>[{{obj.id}}] 
+		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
+		            		<span v-else>{{obj.customerName}}</span>
+		            		<span class="badge badge-info badge-pill">{{obj.memberName}}</span>
+		            		<span v-if="obj.isOnline == 1" class="badge badge-primary badge-pill">Online</span>
+							<span v-if="obj.noReadCount > 0 " class="badge badge-info badge-pill">{{obj.noReadCount}}</span>
+		            	</dt>
+		                <dd>{{obj.lastMessage}}</dd>
+		            </li>
+		        </ul>
+		    </div>
+		    <div class="col-md-3">
+		    	<h4>상담채팅 - </h4>
+		    	<span v-if="socket.roomId != socket.lobbyName"><button type="button" @click="leave()">채팅나가기</button></span>
+		    	<span v-if="socket.roomId != socket.lobbyName"><button type="button" @click="end()">상담종료</button></span>
+		    	<ul  v-if="socket.roomId != socket.lobbyName" class="list-group">
+		            <li class="list-group-item" v-for="obj in messages">
+		            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
+		                <br />&gt;&gt; {{obj.message}} {{obj.createDate}}</a>
+		            </li>
+		       	</ul>
+		       	<div v-if="socket.roomId != socket.lobbyName">
+			       	<div>
+				       	<div v-if="profile.id == selectedRoom.memberId">
+				            <textarea class="form-control" v-model="message" placeholder="내용을 입력하세요."></textarea>
+				            <div class="input-group-append">
+				                <button class="btn btn-primary" type="button" @click="sendDialog()">보내기</button>
+				            </div>
+				       	</div>
+				       	<div v-else>
+				            <textarea disabled class="form-control" v-model="message" placeholder="내용을 입력하세요."></textarea>
+				            <div class="input-group-append">
+				                <button disabled class="btn btn-primary" type="button" @click="sendDialog()">보내기</button>
+				            </div>
+				       	</div>
+						<div v-if="socket.roomId != socket.lobbyName">
+							<button type="button" class="btn btn-info" @click="warnSwear">욕설/비속어 경고메세지</button>
+							<button type="button" class="btn btn-info" @click="warnInsult">부적절한 대화 경고메세지</button>
+						</div>
+					</div>
+					<div v-else>
+				       	<div>
+							<button type="button" class="btn btn-info" @click="assignToMe()">내 상담으로 가져오기</button>
+						</div>
+					</div>
+				</div>
+		    </div>
+		    <div class="col-md-3">
+		    	<h4>계약정보 </h4>
+		    	<ul class="list-group">
+		            <li class="list-group-item" v-for="obj in contracts">
+		                {{obj.createdate}} - {{obj.workdate}}</a>
+		            </li>
+		       	</ul>
+		    	<h4>이전 상담목록</h4>
+		    	<ul class="list-group">
+		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="getHistorySpeaks(obj.space, obj.startid, obj.endid)">
+		                {{obj.createdate}} - {{obj.workdate}}
+		                <ul v-if="obj.showSpeaks == true">
+		            		<li v-for="(speak, idx) in obj.speaks">
+		            			<strong>[시스템:{{speak.sysmsg}}, 상담사:{{speak.isemp}},작성자:{{speak.speaker}}]</strong>
+		            			<br>>> {{speak.msg}}
+		            		</li>
+		            	</ul>
+		            </li>
+		       	</ul>
+		    </div>
+		</div>
     </div>
     <!-- JavaScript -->
     <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
@@ -29,28 +120,94 @@
             el: '#app',
             data: {
             	socket: {
+            		host: "http://localhost",
+            		port: 8080,
+            		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
-            		connectEndPoint: "http://localhost:8080/ws-stomp",			// 연결 end point
+            		connectEndPoint: "/ws-stomp",			// 연결 end point
 	            	sendEndPoint: '/pub/socket/message',	// 메세지 전송 end point
-	            	roomPrefix: '/sub/chat/room/',			// 조인(구독)룸 end point의 prefix
-	            	header: {},								// 공통 header
+	            	roomPrefix: '/sub/socket/room/',			// 조인(구독)룸 end point의 prefix
 	            	lobbyName: 'LOBBY1',					// 서울도시가스 조인(구독) 기본룸 Id (인천도시가스 - LOBBY2)
 	            	roomId: '',								// 현재 조인(구독)중인 방
             	},
             	companyId: 1,								// 가스사 Id
-            	token: 'dfdfjsdfslfesjdlksfs',				// 인증토큰
-				
+            	header: {},				// 공통 header
+            	token: '',				// 인증토큰
+            	profile: {},
+            	readyCount: 0,			// 대기상담 카운트
+				readyRooms: [],			// 대기상담목록
+				activeRooms: [],		// 진행상담목록
+				finishRooms: [],		// 종료상담목록
+				histories: [],			// 이전상담목록
+				contracts: [],			// 계약정보
+				messages: [],			// 대화메세지
+				message: "",			// 작성하는 메세지
+				selectedRoom: {},	// 선택된 룸 정보.
             },
             created() {
             },
             
             mounted() {
-            	// 웹소켓 연결.
-            	this.connect();
+            	this.init();
             },
             
             methods: {
+            	/**************************************************************
+                * 초기화
+                **************************************************************/
+                init: function(){
+                	this.getProfile();
+                },	
+            
+            	/**************************************************************
+                * 멤버정보 조회
+                **************************************************************/
+            	getProfile: function() {
+            		this.token = localStorage.accessToken;
+            		//this.token = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiY29tcGFueUlkIjoiMSIsImNvbXBhbnlVc2VDb25maWdKc29uIjpudWxsLCJjb21wYW55TmFtZSI6IuyEnOyauOuPhOyLnOqwgOyKpCIsImlzQWRtaW4iOjEsImlzQ3VzdG9tZXIiOjAsImF1dGhMZXZlbCI6MiwibG9naW5OYW1lIjoiY3NtYXN0ZXIxIiwic3RhdGUiOjMsInByb2ZpbGVJbWFnZUlkIjowLCJzcGVha2VySWQiOjE3NywibmFtZSI6IuyEnOyauOuPhOyLnOqwgOyKpCIsImNyZWF0ZURhdGUiOiIyMDE5LTExLTA4IDE0OjEwOjA5IiwidXBkYXRlRGF0ZSI6IjIwMjAtMTEtMjQgMTQ6MjY6NDQiLCJ1cGRhdGVNZW1iZXJJZCI6IjEiLCJpYXQiOjE2MDYyODMxNjcsImV4cCI6MTYwNjM2OTU2N30.5FmZjUqz120n6vmmb-XJw8wxkNHvlJH4TmbeoEvTs7M";
+            		
+            		this.header = {
+            			headers: {'Authorization' : 'Bearer ' + this.token}
+            		}
+
+					if(this.token == ""){
+						// 인증정보가 존재하지 않을경우.
+						//document.location.href = '/';
+						console.log("error : " + this.token);
+						
+					}else{
+	            		axios.get('/auth/profile', this.header).then(response => {
+	            			if(response.data){
+	            				this.profile = response.data;
+	            				console.log(JSON.stringify(this.profile));
+	
+								//인증되었을 경우 소켓 연결.
+								this.connect();
+								
+	            			}else{
+	            			
+	            				// 인증정보가 존재하지 않을 경우.
+	            				//document.location.href = '/';
+	            				console.log("error2");
+	            			}
+		                	
+			            }, function(e){
+			            	localStorage.removeItem("accessToken");
+			            	console.log("error3");
+			            	document.location.href = '/';
+			            });
+			           }
+            	},
+            	
+            	/**************************************************************
+                * 로그아웃
+                **************************************************************/
+            	logout: function(){
+            		localStorage.removeItem("accessToken");
+            		document.location.href = "/";
+            	},
+                
             
             	/**************************************************************
                 * 웹소켓 연결
@@ -58,7 +215,8 @@
                 connect: function(){
                 
                 	// SockJs 객체 초기화.
-                	var sock = new SockJS(this.socket.connectEndPoint);
+                	var connectUrl = this.socket.host + ":" + this.socket.port + this.socket.connectEndPoint;
+                	var sock = new SockJS(connectUrl);
                 	
                 	// Stomp 객체 초기화.
                 	this.socket.ws = Stomp.over(sock);
@@ -87,19 +245,10 @@
                 **************************************************************/
                 connectSuccessCallback: function(){
                 	// 기본룸 조인.
-                	// this.join(this.socket.lobbyName);
+                	this.join(this.socket.lobbyName);
                 	
-                	// 기본룸 조인해제.
-                	// this.unjoin();
-                	
-                	// 일반룸 조인.
-                	this.join("111");
-                	
-                	// 일반룸 조인해제.
-                	// this.unjoin();
-                	
-                	// 연결 해제.
-                	// this.disconnect();
+                	// 상담목록 조회.
+                	this.findRooms();
                 },
                 
 
@@ -117,8 +266,20 @@
                 **************************************************************/
                 join: function(roomId){
                 	this.socket.roomId = roomId;
+                	rooms = this.activeRooms.filter(room => room.id == roomId);
+                	if(rooms.length == 1){
+                		this.selectedRoom = rooms[0];
+                		console.log("selectedRoom : " + JSON.stringify(this.selectedRoom));
+                	}
                 	
-                	uri = this.socket.roomPrefix + roomId;
+                	// 조인방 이름 생성.(예, /sub/chat/room/93)
+                	var uri = this.socket.roomPrefix + roomId;
+                	
+                	// 기존에 연결된 조인(구독)이 있을경우.
+                	if(this.socket.subscribe){
+                		// 조인(구독) 해제.
+                		this.unjoin();
+                	}
                 	
                 	// 구독
                 	this.socket.subscribe = this.socket.ws.subscribe(
@@ -144,7 +305,7 @@
                 **************************************************************/
                 receiveMessage: function(recvData){
                 	var payload = JSON.parse(recvData.body);
-					// console.log(payload);
+					console.log(payload);
 					
 					var eventName = payload.eventName;		// 이벤트 구분.
 					var roomId = payload.roomId;			// 룸 아이디.
@@ -152,11 +313,18 @@
 					
 					// 각 이벤트에 따른 처리.
 					switch(eventName){
+					
 						case "JOINED" :	// 조인완료 수신.
 							// todo
 							// 메세지 전송.
-		                	payload = {etc: 'test'}
-		            		this.sendMessage("MESSAGE", payload);
+		                	data = {
+		                		speakerId: '',
+		                		messageType: 0,
+		                		message: '상담사의 메시지입니다.',
+		                		messageDetail: '',
+		                		templateId: '',
+		                	}
+		            		//this.sendMessage("MESSAGE", data);
             		
 							break;
 							
@@ -164,20 +332,33 @@
 							// todo
 							break;
 							
-						case "MESSAGE" : 		//	대화 메세지 수신.
+						case "ASSIGNED" :		// 상담사 배정완료 수신.
 							// todo
 							break;
 						
-						case "MESSAGES" : 		// 이전대화 목록 수신.
+						case "MESSAGE" : 		//	대화 메세지 수신.
 							// todo
+							this.messages.push(data.message);
+							
+							break;
+						
+						case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
+							// todo
+							messages = data.messages;
+							messages.reverse()		// 배열 뒤집기.
+							this.messages = messages;
 							break;
 						
 						case "END" :			// 상담 종료 수신.
 							// todo
+							join(this.socket.lobbyName);
+							
 							break;
 					
 						case "RELOAD" :			// 상담목록 갱신요청 수신.
 							// todo
+							this.findRooms();
+							
 							break;
 							
 						case "ERROR" :			// 에러 발생정보 수신.
@@ -202,7 +383,118 @@
                 	this.socket.ws.send(uri, header, JSON.stringify(payload));
                 },
                 
+                // 진행중인 상담 조회 조회
+                findRooms: function() {
+                	this.findReadyRooms();
+                	this.findActiveRooms();
+                	this.findEndRooms();
+                },
                 
+                // 대기중인 상담목록 조회
+                findReadyRooms: function(){
+                	var uri = '/api/room?queryId=findReadyState';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							this.readyRooms = response.data;
+							
+							console.log(">> 대기상담 목록");
+							console.log(this.readyRooms);
+							
+							this.readyCount = this.readyRooms.length;
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+                },
+                
+                // 진행중인 상담목록 조회
+                findActiveRooms: function(){
+                	var uri = '/api/room?queryId=findIngState';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							this.activeRooms = response.data;
+							
+							console.log(">> 진행중인 상담 목록");
+							console.log(this.activeRooms);
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+                },
+                
+                // 종료된 상담목록 조회
+                findEndRooms: function(){
+                	var uri = '/api/room?queryId=findCloseState';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							this.finishRooms = response.data;
+							
+							console.log(">> 종료상담 목록");
+							console.log(this.finishRooms);
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+                },
+                
+                // 대기상담 가져오기
+                assign: function(){
+                	
+                },
+                
+                // 채팅나가기
+                leave: function(){
+                	this.join(this.socket.lobbyName);
+                },
+                
+                // 상담 종료하기
+                end: function(){
+                	if(confirm("상담을 종료하시겠습니까?")){
+                		this.sendMessage("END", {})
+                	}
+                },
+                
+                
+                // 대화메세지 보내기
+                sendDialog: function(){
+                	data = {
+                		messageType: 0,
+                		message: this.message,
+                		messageDetail: '',
+                		templateId: '1',
+                	}
+            		this.sendMessage("MESSAGE", data);
+                },
+                
+                
+                // 욕설/비속어 경고 메세지 전송.
+				warnSwear: function(){
+					console.log("욕설/비속어 경고 메세지 전송.");
+				},
+				
+				// 부적절한 대화 경고 메세지 발송.
+				warnInsult: function(){
+				
+				},
+				
+				// 이전 상담목록 조회.
+				getHistory: function(){
+					var uri = '/api/room/' + this.socket.roomId + '/findSearchJoinHistory';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							this.histories = response.data;
+							
+							console.log(">> 종료상담 목록");
+							console.log(this.finishRooms);
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+				},
                 
             }
         });

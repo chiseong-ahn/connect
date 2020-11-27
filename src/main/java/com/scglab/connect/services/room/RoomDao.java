@@ -111,7 +111,7 @@ public class RoomDao extends CommonDao {
 	 * @return
 	 */
 	public int closeRoom(Map<String, Object> params) {
-		return this.sqlSession.selectOne(this.namespace + "closeRoom", params);
+		return this.sqlSession.update(this.namespace + "closeRoom", params);
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class RoomDao extends CommonDao {
 	 * @return
 	 */
 	public int updateOnline(Map<String, Object> params) {
-		return this.sqlSession.selectOne(this.namespace + "updateOnline", params);
+		return this.sqlSession.update(this.namespace + "updateOnline", params);
 	}
 	
 	/**

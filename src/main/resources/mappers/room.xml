@@ -172,10 +172,10 @@
 		          AND message LIKE concat('%', #{message}, '%')
 		      ) messasge_search ON r.id = messasge_search.message_search_room_id
 		    WHERE 
-		      r.company_id = :companyId 
+		      r.company_id = #{companyId} 
 		      AND r.state <![CDATA[<]]> 2 
 		      AND (
-		        CASE WHEN :memberId IS NULL THEN 1 = 1 ELSE member_id = #{memberId} END
+		        CASE WHEN #{memberId} IS NULL THEN 1 = 1 ELSE member_id = #{memberId} END
 		      )
 		      AND mb.name LIKE concat('%', #{memberName}, '%')
 		  ) AS sub_room 
@@ -310,7 +310,7 @@
 		WHERE 
 		  v_customer.company_id = #{companyId}
 		  AND v_customer.name LIKE concat('%', #{customerName}, '%')
-		ORDER BY #{sort}
+		ORDER BY ${sort}
 	</select>
 	
 	<!-- 종료된 방 목록. -->
@@ -425,28 +425,31 @@
 		                                 AND id BETWEEN rjh.start_message_id AND rjh.end_message_id 
 		                                 AND is_system_message = 0 
 		                                 AND message_admin_type = 0 
-		                                 AND message LIKE CONCAT('%', #{message}, '%')) 
+		                                 <if test='message != null'>
+		                                 	AND message LIKE CONCAT('%', #{message}, '%'))
+		                                 </if>
+		                                  
 		ORDER  BY rjh.id DESC 
 	</select>
 	
 	
 	<!-- 방 종료시키기 -->
-	<select id="closeRoom" parameterType="map" resultMap="room">
+	<select id="closeRoom" parameterType="map" statementType="CALLABLE">
 		CALL close_room(#{roomId}, #{loginId})
 	</select>
 	
 	<!-- 방 이관시키기 -->
-	<select id="transferRoom" parameterType="map" resultMap="room">
+	<select id="transferRoom" parameterType="map" resultMap="room" statementType="CALLABLE">
 		CALL transfer_room(#{transferType}, #{roomId}, #{memberId}, #{loginId})
 	</select>
 	
 	<!-- 방 상담사 매칭시키기 -->
-	<select id="matchRoom" parameterType="map" resultType="map">
+	<select id="matchRoom" parameterType="map" resultType="map" statementType="CALLABLE">
 		CALL match_room(#{roomId}, #{memberId})
 	</select>
 	
 	<!-- 방 상세. -->
-	<select id="getDetail" parameterType="map" resultType="map">
+	<select id="getDetail" parameterType="map" resultMap="room">
 		SELECT 
 		  sub_room.*, 
 		  chat_message.id AS last_message_id, 
@@ -548,8 +551,13 @@
 	</select>
 	
 	<!-- 방 조인 -->
-	<select id="joinRoom" parameterType="map" resultType="map">
-		CALL join_room(#{roomId}, #{speakerId})
+	<select id="joinRoom" parameterType="map" resultType="map" statementType="CALLABLE">
+		CALL join_room(
+			#{roomId, mode=IN, jdbcType=INTEGER}, 
+			#{speakerId, mode=IN, jdbcType=INTEGER},
+			#{readLastMessageId, mode=OUT, jdbcType=INTEGER},
+			#{maxMessageId, mode=OUT, jdbcType=INTEGER}			
+		)
 	</select>
 	
 	<!-- 방 온라인 설정 -->
@@ -570,7 +578,7 @@
 		) 
 	</select>
 	
-	<!-- 고객의 조인 히스토리 정보 최신화 -->
+	<!-- 챗봇 이력 저장. -->
 	<update id="updateJoinHistory" parameterType="map">
 		UPDATE room 
 		SET  join_history_json = #{history} 

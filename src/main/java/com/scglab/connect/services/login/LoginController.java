@@ -61,8 +61,7 @@ public class LoginController {
 	@ApiResponse(responseCode = "200", description = "OK", content = {
 		@Content(schema = @Schema(oneOf = Member.class)),
 	})
-	
-	public Map<String, Object> profile(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public Member profile(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.loginService.profile(params, request, response);
 	}
 }

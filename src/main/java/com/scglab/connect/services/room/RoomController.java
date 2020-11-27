@@ -46,8 +46,8 @@ public class RoomController {
 				"  2.진행인 방 목록 : findIngState<br>" + 
 				"  3.대기인 방 목록 : findReadyState<br>" + 
 				"  4.종료인 방 검색 : findSearchCloseState", required = true, in = ParameterIn.QUERY, example = "getCurrentTimeStats"),
-		@Parameter(name = "searchType", description = "검색유형", required = true, in = ParameterIn.QUERY, example = "message"),
-		@Parameter(name = "searchValue", description = "검색어", required = true, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "searchType", description = "검색유형", required = false, in = ParameterIn.QUERY, example = "message"),
+		@Parameter(name = "searchValue", description = "검색어", required = false, in = ParameterIn.QUERY, example = ""),
 	})
 	public Object currentTimeStats(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.roomService.getRoomInfo(params, request, response);

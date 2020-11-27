@@ -39,7 +39,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      jdbc-url: 'jdbc:log4jdbc:mysql://183.102.12.111:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
       username: cstalk
       password: cstalk12#$
       idle-timeout: 10000
@@ -114,6 +114,27 @@ springdoc:
 # 개발환경 
 spring:
   profiles: dev
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  freemarker:
+    template-loader-path: 'classpath:/templates'
+    suffix: .ftl
+  main:
+    web-application-type: servlet
+
+domain:
+  sdtalk: localhost.gasapp.co.kr
+  mobileapi: app-dev.gasapp.co.kr
+  relay: http://msc-dev-relay:12081
+  
+path:
+  upload: /data/project/cstalk/apache/data/attach
 
 # Logging 설정.
 logging:
@@ -130,6 +151,7 @@ springdoc:
     path: /swagger-ui.html
     displayRequestDuration: true
     groups-order: ASC
+
 
 
 ---

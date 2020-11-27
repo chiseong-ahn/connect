@@ -27,6 +27,20 @@ public class CategoryDao extends CommonDao {
 	
 	/**
 	 * 
+	 * @Method Name : findAllCategory
+	 * @작성일 : 2020. 11. 26.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 전체 카테고리 조회
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> findAllCategory(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findAllCategory", params);
+	}
+	
+	/**
+	 * 
 	 * @Method Name : findCategoryLarge
 	 * @작성일 : 2020. 11. 12.
 	 * @작성자 : anchiseong

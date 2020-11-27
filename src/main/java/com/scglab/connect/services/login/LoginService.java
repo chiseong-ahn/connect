@@ -16,6 +16,7 @@ import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
+import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.CompanyUtils;
 import com.scglab.connect.utils.DataUtils;
@@ -91,19 +92,8 @@ public class LoginService {
 		return data;
 	}
 	
-	public Map<String, Object> profile(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
-		
-		Member member = getMember(request);
-		if(member != null) {
-			ObjectMapper objectMapper = new ObjectMapper();
-			Map<String, Object> memberMap = objectMapper.convertValue(member, Map.class);
-//			String token = this.jwtService.generateToken(memberMap);
-			data.put("member", member);
-//			data.put("token", token);
-		}
-		
-		return data;
+	public Member profile(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return getMember(request);
 	}
 	
 	public Member getMember(String token) {
@@ -112,9 +102,22 @@ public class LoginService {
 		try {
 			member = (Member) DataUtils.convertMapToObject(claims, member);
 		}catch(Exception e) {
+			this.logger.error(token);
 			//e.printStackTrace();
 		}
 		return member;
+	}
+	
+	public Customer getCustomer(String token) {
+		Map<String, Object> claims = this.jwtService.getJwtData(token);
+		Customer customer = new Customer();
+		try {
+			customer = (Customer) DataUtils.convertMapToObject(claims, customer);
+		}catch(Exception e) {
+			this.logger.error(token);
+			//e.printStackTrace();
+		}
+		return customer;
 	}
 	
 	public void convertMapTomember(Map<String, Object> data) {

@@ -36,6 +36,9 @@
 							<input type="text" v-model="password" />
 			            </li>
 			            <li class="list-group-item">
+							<input type="text" v-model="name" />
+			            </li>
+			            <li class="list-group-item">
 			            	<button type="submit">로그인</button>
 			            </li>
 			       	</ul>
@@ -51,10 +54,10 @@
     	var vm = new Vue({
             el: '#app',
             data: {
-            	companyId: 2,
-            	loginName: 'csahn',
+            	companyId: 1,
+            	loginName: 'csmaster1',
             	password: '1212',
-            	appid: 2,
+            	name: '서울도시가스',
             	header: {},
             	isShow: false,
             	accessToken: '',
@@ -122,6 +125,7 @@
             			data.append("companyId", this.companyId);
             			data.append("loginName", this.loginName);
             			data.append("password", this.password);
+            			data.append("name", this.name);
             		
             		localStorage.removeItem("accessToken");
             		axios.post('/auth/login', data, header).then(response => {
@@ -137,7 +141,7 @@
             	
             	// 상담톡 페이지로 이동
             	moveTalk: function(){
-            		document.location.href = "/talk";
+            		document.location.href = "/socket";
             	}
             }
         });
