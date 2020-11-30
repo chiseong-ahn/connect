@@ -65,9 +65,10 @@ public class RoomController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}/matchRoom", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="채팅방 종료", description = "방 상담사 매칭시키기", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="방 상담사 매칭시키기", description = "방 상담사 매칭시키기", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Room matchRoom(@Parameter(description = "방 id") @PathVariable Long id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
+		params.put("roomId", id);
 		return this.roomService.matchRoom(params, request, response);
 	}
 	
@@ -76,6 +77,7 @@ public class RoomController {
 	@Operation(summary="방 종료", description = "방 종료", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Room closeRoom(@Parameter(description = "방 id") @PathVariable Long id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
+		params.put("roomId", id);
 		return this.roomService.closeRoom(params, request, response);
 	}
 	

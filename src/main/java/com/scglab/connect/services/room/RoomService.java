@@ -1,5 +1,7 @@
 package com.scglab.connect.services.room;
 
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,14 +17,21 @@ import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.services.message.Message;
+import com.scglab.connect.services.message.MessageDao;
+import com.scglab.connect.services.socket.SocketService;
+import com.scglab.connect.services.socket.SocketService.EventName;
+import com.scglab.connect.services.socket.SocketService.Target;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class RoomService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired private MessageHandler messageService;
+	@Autowired private MessageHandler messageHandler;
+	@Autowired private MessageDao messageDao;
 	@Autowired private LoginService loginService;
+	@Autowired private SocketService socketService;
 	
 	@Autowired
 	private RoomDao roomDao;
@@ -130,20 +139,25 @@ public class RoomService {
 	 * @return
 	 */
 	public Room matchRoom(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		Member member = this.loginService.getMember(request);
+		params.put("memberId", member.getId());
 		
 		// 대상 방 정보조회.
 		Room room = this.roomDao.getDetail(params);
 		if(room.getMemberId() > 0) {
 			// "이미 상담사가 배정되어 있는 경우" Exception 발생시킴.
-			throw new RuntimeException(this.messageService.getMessage("error.room.assigned"));
+			throw new RuntimeException(this.messageHandler.getMessage("error.room.assigned"));
 		}
 		
 		// 매칭처리.
-		int result = this.roomDao.matchRoom(params);
-		if(result > 0) {
-			// 매칭된 방 정보조회.
-			room = this.roomDao.getDetail(params);
-		}
+		this.roomDao.matchRoom(params);
+		
+		// 매칭된 방 정보조회.
+		room = this.roomDao.getDetail(params);
+		Map<String, Object> sendData = new HashMap<String, Object>();
+		sendData.put("room", room);
+		
+		this.socketService.sendMessage(EventName.ASSIGNED, member.getCompanyId(), room.getId() + "", Target.ALL, sendData);
 		
 		return room;
 	}
@@ -161,6 +175,9 @@ public class RoomService {
 	 * @return
 	 */
 	public Room closeRoom(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		Member member = this.loginService.getMember(request);
+		params.put("loginId", member.getId());
+		
 		Room room = null;
 		
 		int result = this.roomDao.closeRoom(params);
@@ -207,7 +224,16 @@ public class RoomService {
 		List<Map<String, Object>> list = this.roomDao.findSearchJoinHistory(params);
 		
 		for(Map<String, Object> obj : list) {
-			//
+			// 대화 메시지 조회
+			BigInteger roomId = (BigInteger) obj.get("room_id");
+			BigInteger startMessageId = (BigInteger) obj.get("start_message_id");
+			BigInteger endMessageId = (BigInteger) obj.get("end_message_id");
+			
+			obj.put("roomId", roomId);
+			obj.put("startMessageId", startMessageId);
+			obj.put("endMessageId", endMessageId);
+			List<Message> messages = this.messageDao.findRangeById(obj);
+			obj.put("messages", messages);
 		}
 		
 		return list;

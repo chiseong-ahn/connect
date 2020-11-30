@@ -444,9 +444,9 @@
 	</select>
 	
 	<!-- 방 상담사 매칭시키기 -->
-	<select id="matchRoom" parameterType="map" resultType="map" statementType="CALLABLE">
+	<update id="matchRoom" parameterType="map" statementType="CALLABLE">
 		CALL match_room(#{roomId}, #{memberId})
-	</select>
+	</update>
 	
 	<!-- 방 상세. -->
 	<select id="getDetail" parameterType="map" resultMap="room">

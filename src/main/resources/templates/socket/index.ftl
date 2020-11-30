@@ -37,9 +37,52 @@
         	</div>
         	<div class="col-md-3">
 		        <h4>상담대기</h4>
-		        <span><button type="button" class="btn btn-primary" @click="assign()">대기상담 가져오기 ({{readyCount}}건)</button></span>
-		        <ul class="list-group">
-		            <li class="list-group-item list-group-item-action" v-for="obj in activeRooms" v-bind:key="obj.id" v-on:click="join(obj.id)">
+		        <ul>
+		        	<li><button type="button" @click="swapList(0);">대기목록({{readyCount}})</button></li>
+		        	<li><button type="button" @click="swapList(1);">진행목록</button></li>
+		        	<li><button type="button" @click="swapList(2);">종료목록</button></li>
+		        </ul>
+		        <ul v-if="showRooms == 0" class="list-group">
+		        	<h3>대기상담 목록</h3>
+		            <li class="list-group-item list-group-item-action" v-for="obj in readyRooms" v-bind:key="obj.id">
+		            	<dt>[{{obj.id}}] 
+		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
+		            		<span v-else>{{obj.customerName}}님</span>
+		            		<span class="badge badge-info badge-pill">{{obj.memberName}}</span>
+		            		<span v-if="obj.isOnline == 1" class="badge badge-primary badge-pill">Online</span>
+							<span v-if="obj.noReadCount > 0 " class="badge badge-info badge-pill">{{obj.noReadCount}}</span>
+							<br />{{obj.lastMessage}}
+		            	</dt>
+		                <dd>
+		                	<button type="button" @click="">챗봇대화</button>
+		                	<button type="button" @click="matchRoom(obj.id)">상담하기</button>
+		                	<button type="button" @click="">이관</button>
+		                </dd>
+		                
+		            </li>
+		        </ul>
+		        <ul v-if="showRooms == 1" class="list-group">
+		        	<h3>진행상담 목록</h3>
+		            <li class="list-group-item list-group-item-action" v-for="obj in activeRooms" v-bind:key="obj.id">
+		            	<dt>[{{obj.id}}] 
+		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
+		            		<span v-else>{{obj.customerName}}님</span>
+		            		<span class="badge badge-info badge-pill">{{obj.memberName}}</span>
+		            		<span v-if="obj.isOnline == 1" class="badge badge-primary badge-pill">Online</span>
+							<span v-if="obj.noReadCount > 0 " class="badge badge-info badge-pill">{{obj.noReadCount}}</span>
+							<br />{{obj.lastMessage}}
+		            	</dt>
+		                <dd>
+		                	<button type="button" @click="alert(obj.joinHistoryJson)">챗봇대화</button>
+		                	<button type="button" @click="join(obj.id)">상담하기</button>
+		                	<button type="button" @click="">이관</button>
+		                	<button type="button" @click="closeRoom(obj.id)">종료</button>
+		                </dd>
+		            </li>
+		        </ul>
+		        <ul v-if="showRooms == 2" class="list-group">
+		        	<h3>종료상담 목록</h3>
+		            <li class="list-group-item list-group-item-action" v-for="obj in finishRooms" v-bind:key="obj.id" v-on:click="join(obj.id)">
 		            	<dt>[{{obj.id}}] 
 		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
 		            		<span v-else>{{obj.customerName}}</span>
@@ -54,7 +97,6 @@
 		    <div class="col-md-3">
 		    	<h4>상담채팅 - </h4>
 		    	<span v-if="socket.roomId != socket.lobbyName"><button type="button" @click="leave()">채팅나가기</button></span>
-		    	<span v-if="socket.roomId != socket.lobbyName"><button type="button" @click="end()">상담종료</button></span>
 		    	<ul  v-if="socket.roomId != socket.lobbyName" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
 		            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
@@ -96,12 +138,12 @@
 		       	</ul>
 		    	<h4>이전 상담목록</h4>
 		    	<ul class="list-group">
-		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="getHistorySpeaks(obj.space, obj.startid, obj.endid)">
-		                {{obj.createdate}} - {{obj.workdate}}
-		                <ul v-if="obj.showSpeaks == true">
-		            		<li v-for="(obj, idx) in obj.speaks">
-		            			<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
-		                <br />&gt;&gt; {{obj.message}} {{obj.createDate}}</a>
+		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="toggleHistory(index)">
+		                {{obj.create_date}} - {{obj.end_date}}
+		                <ul v-if="obj.toggle">
+		            		<li v-for="(message, idx) in obj.messages">
+		            			<strong>[시스템:{{message.isSystemMessage}}, 상담사:{{message.isEmployee}}, 고객:{{message.isCustomer}}, 작성자:{{message.speakerName}}]</strong>
+		                <br />&gt;&gt; {{message.message}} {{message.createDate}}</a>
 		            		</li>
 		            	</ul>
 		            </li>
@@ -136,6 +178,7 @@
             	token: '',				// 인증토큰
             	profile: {},
             	readyCount: 0,			// 대기상담 카운트
+            	showRooms: 1,			// 노출할 상담영역(0-대기, 1-진행, 2-종료)
 				readyRooms: [],			// 대기상담목록
 				activeRooms: [],		// 진행상담목록
 				finishRooms: [],		// 종료상담목록
@@ -143,7 +186,7 @@
 				contracts: [],			// 계약정보
 				messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
-				selectedRoom: {},	// 선택된 룸 정보.
+				selectedRoom: {},	// 선택된 룸 정보
             },
             created() {
             },
@@ -310,63 +353,72 @@
                 	var payload = JSON.parse(recvData.body);
 					console.log(payload);
 					
-					var eventName = payload.eventName;		// 이벤트 구분.
-					var roomId = payload.roomId;			// 룸 아이디.
-					var data = payload.data;				// 각 메세지에 대한 기타 정보데이터.
+					var target = payload.target;
 					
-					// 각 이벤트에 따른 처리.
-					switch(eventName){
-					
-						case "JOINED" :	// 조인완료 수신.
-							// todo
-							// 메세지 전송.
-		                	data = {
-		                		speakerId: '',
-		                		messageType: 0,
-		                		message: '상담사의 메시지입니다.',
-		                		messageDetail: '',
-		                		templateId: '',
-		                	}
-		            		//this.sendMessage("MESSAGE", data);
-            		
-							break;
-							
-						case "ROOM_DETAIL" : 	// 방 상세정보 수신.
-							// todo
-							break;
-							
-						case "ASSIGNED" :		// 상담사 배정완료 수신.
-							// todo
-							break;
+					if(target == 'ALL' || target == 'MEMBER'){
+						var eventName = payload.eventName;		// 이벤트 구분.
+						var roomId = payload.roomId;			// 룸 아이디.
+						var data = payload.data;				// 각 메세지에 대한 기타 정보데이터.
 						
-						case "MESSAGE" : 		//	대화 메세지 수신.
-							// todo
-							this.messages.push(data.message);
-							
-							break;
+						// 각 이벤트에 따른 처리.
+						switch(eventName){
 						
-						case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
-							// todo
-							messages = data.messages;
-							messages.reverse()		// 배열 뒤집기.
-							this.messages = messages;
-							break;
+							case "JOINED" :	// 조인완료 수신.
+								// todo
+								// 메세지 전송.
+			                	data = {
+			                		speakerId: '',
+			                		messageType: 0,
+			                		message: '상담사의 메시지입니다.',
+			                		messageDetail: '',
+			                		templateId: '',
+			                	}
+			            		//this.sendMessage("MESSAGE", data);
+	            		
+								break;
+								
+							case "ROOM_DETAIL" : 	// 방 상세정보 수신.
+								// todo
+								break;
+								
+							case "ASSIGNED" :		// 상담사 배정완료 수신.
+								// todo
+								// this.findRooms();
+								// this.join(roomId);
+								
+								break;
+							
+							case "MESSAGE" : 		//	대화 메세지 수신.
+								// todo
+								this.messages.push(data.message);
+								
+								break;
+							
+							case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
+								// todo
+								messages = data.messages;
+								messages.reverse()		// 배열 뒤집기.
+								this.messages = messages;
+								break;
+							
+							case "END" :			// 상담 종료 수신.
+								// todo
+								this.findRooms(); 
+								this.join(this.socket.lobbyName);
+								
+								
+								break;
 						
-						case "END" :			// 상담 종료 수신.
-							// todo
-							join(this.socket.lobbyName);
-							
-							break;
-					
-						case "RELOAD" :			// 상담목록 갱신요청 수신.
-							// todo
-							this.findRooms();
-							
-							break;
-							
-						case "ERROR" :			// 에러 발생정보 수신.
-							// todo
-							break;
+							case "RELOAD" :			// 상담목록 갱신요청 수신.
+								// todo
+								this.findRooms();
+								
+								break;
+								
+							case "ERROR" :			// 에러 발생정보 수신.
+								// todo
+								break;
+						}
 					}
                 },
                 
@@ -387,9 +439,9 @@
                 },
                 
                 // 진행중인 상담 조회 조회
-                findRooms: function() {
+                findRooms: function(roomId) {
                 	this.findReadyRooms();
-                	this.findActiveRooms();
+                	this.findActiveRooms(roomId);
                 	this.findEndRooms();
                 },
                 
@@ -412,7 +464,7 @@
                 },
                 
                 // 진행중인 상담목록 조회
-                findActiveRooms: function(){
+                findActiveRooms: function(roomId){
                 	var uri = '/api/room?queryId=findIngState';
                     axios.get(uri, this.header).then(response => {
                         // prevent html, allow json array
@@ -421,6 +473,10 @@
 							
 							console.log(">> 진행중인 상담 목록");
 							console.log(this.activeRooms);
+							
+							if(roomId){
+								this.join(roomId)
+							}
 						}
                     }, function(e){
                     	console.log("error : " + e.message);
@@ -470,6 +526,7 @@
                 		templateId: '1',
                 	}
             		this.sendMessage("MESSAGE", data);
+            		this.message = '';
                 },
                 
                 
@@ -491,7 +548,12 @@
 	                    axios.get(uri, this.header).then(response => {
 	                        // prevent html, allow json array
 							if(Object.prototype.toString.call(response.data) === "[object Array]"){
-								this.histories = response.data;
+								//this.histories = response.data;
+								histories = response.data;
+								for(var i=0; i<histories.length; i++){
+									histories[i].toggle = false;
+								}
+								this.histories = histories;
 								
 								console.log(">> 이전상담 목록");
 								console.log(this.histories);
@@ -499,6 +561,64 @@
 	                    }, function(e){
 	                    	console.log("error : " + e.message);
 	                    });
+					}
+				},
+				
+				// 이전 상담 대화내용 조회
+				toggleHistory: function(index){
+					console.log('history index : ' + index);
+					this.histories[index].toggle = !this.histories[index].toggle;
+				},
+				
+				// 대기상담 가져오기
+				matchRoom: function(roomId){
+					if(confirm('상담을 시작하시겠습니까?')){
+						var uri = '/api/room/' + roomId + '/matchRoom';
+						axios.post(uri, {}, this.header).then(response => {
+							// prevent html, allow json array
+							room = response.data;
+							console.log(room);
+							
+							this.showRooms = 1;
+							this.findRooms(roomId);
+							
+						}, function(e){
+							console.log("error : " + e.message);
+						});
+					}
+					
+				},
+				
+				// 내 상담으로 이관하기
+				assignToMe: function(){
+				
+				},
+				
+				// 상담목록 노출.
+				swapList: function(num){
+					this.showRooms = num;
+				},
+				
+				// 상담종료.
+				closeRoom: function(roomId){
+					if(confirm('상담을 종료하시겠습니까?')){
+						/*
+						var uri = '/api/room/' + roomId + '/closeRoom';
+						axios.post(uri, {}, this.header).then(response => {
+							// prevent html, allow json array
+							room = response.data;
+							console.log(room);
+							
+							this.findRooms();
+							
+							
+						}, function(e){
+							console.log("error : " + e.message);
+						});	
+						*/
+						
+						data = {roomId: roomId}
+	            		this.sendMessage("END", data);
 					}
 				},
                 

@@ -29,8 +29,8 @@
 	</select>
 	
 	
-	<!-- 메시지 조회 -->
-	<select id="findRangeById" parameterType="map" resultType="map">
+	<!-- 메시지 조회 : 범위. -->
+	<select id="findRangeById" parameterType="map" resultMap="message">
 		SELECT 
 		  m.*,
 		  (
@@ -51,7 +51,7 @@
 		INNER JOIN chat_message m ON r.id = m.room_id
 		LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE  r.id = #{roomId}
-		AND id BETWEEN #{startId} AND #{endId}
+		AND m.id BETWEEN #{startMessageId} AND #{endMessageId}
 	</select>
 
 	

@@ -138,8 +138,8 @@ public class RoomDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public int matchRoom(Map<String, Object> params) {
-		return this.sqlSession.selectOne(this.namespace + "matchRoom", params);
+	public void matchRoom(Map<String, Object> params) {
+		this.sqlSession.update(this.namespace + "matchRoom", params);
 	}
 	
 	/**

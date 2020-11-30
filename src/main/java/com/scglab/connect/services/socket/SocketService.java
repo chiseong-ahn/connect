@@ -69,6 +69,7 @@ public class SocketService {
 		LOGIN,
 		READ_MESSAGE,
 		ROOM_DETAIL,
+		ASSIGN, ASSIGNED, 
 		JOIN, JOINED,
 		AUTO_MESSAGE,
 		WELCOME_MESSAGE, START_MESSAGE,
@@ -276,6 +277,41 @@ public class SocketService {
 		
 		return member;
 	}
+	
+	// 상담사 배정.
+	public void assign(SocketData payload) {
+		// 사용자정보 추출.
+		Member profile = getProfile(payload.getToken());
+		
+		this.logger.debug("profile : " + profile.toString());
+		
+		Map<String, Object> sendData = null;
+		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> data = payload.getData();
+		
+		params.put("memberId", profile.getId());
+		params.put("id", DataUtils.getInt(data, "roomId", 0));
+		params.put("roomId", DataUtils.getInt(data, "roomId", 0));
+		
+		Room room = this.roomDao.getDetail(params);
+		if(room.getMemberId() > 0) {
+			// "이미 상담사가 배정되어 있는 경우" Exception 발생시킴.
+			throw new RuntimeException(this.messageHandler.getMessage("error.room.assigned"));
+		}
+		
+		// 매칭처리.
+		this.roomDao.matchRoom(params);
+		
+		// 매칭된 방 정보조회.
+		room = this.roomDao.getDetail(params);
+		
+		// [Socket] > 상담사 배정메시지 전송.
+		sendData = new HashMap<String, Object>();
+		sendData.put("roomId", room.getId());
+		sendData.put("speakerId", profile.getSpeakerId());
+		sendData.put("room", room);
+		sendMessage(EventName.ASSIGNED, payload.getCompanyId(), room.getId() + "", getProfileTarget(profile), sendData);
+	}
 
 	// 방 조인
 	public void join(SocketData payload) {
@@ -460,9 +496,9 @@ public class SocketService {
 			if(profile.getIsCustomer() == 1) {
 				
 				// 조인 메세지id와 마지막 생성된 메세지가 동일한 경우.
-				if(newMessage.getJoinMessageId() == newMessage.getId()) {
+				//if(newMessage.getJoinMessageId() == newMessage.getId()) {
 					sendReloadMessage(payload.getCompanyId());
-				}
+				//}
 				
 			}else {	// 상담사의 메세지일 경우.
 				
@@ -585,12 +621,14 @@ public class SocketService {
 	
 	// 고객의 상담 종료
 	public void endByCustomer(SocketData payload) {
+		Member customer = getProfile(payload.getToken());
+		
 		Map<String, Object> params = null;
 		
 		// [DB] 채팅상담 종료처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
-		params.put("loginId", null);
+		params.put("loginId", customer.getId());
 		this.roomDao.closeRoom(params);
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -603,16 +641,30 @@ public class SocketService {
 	
 	// 상담사 상담 종료
 	public void endByEmp(SocketData payload) {
-		Map<String, Object> params = null;
+		Member member = getProfile(payload.getToken());
 		
-		// [DB] 채팅상담 종료처리.
+		Map<String, Object> params = null;
+		Map<String, Object> data = payload.getData();
+		Map<String, Object> sendData = payload.getData();
+		
+		
+		Room room = null;
+		
+		// [DB] 룸 종료처리.
 		params = new HashMap<String, Object>();
-		params.put("roomId", payload.getRoomId());
-		params.put("loginId", null);
-		this.roomDao.closeRoom(params);
+		params.put("roomId", DataUtils.getInt(data, "roomId", 0));
+		params.put("id", DataUtils.getInt(data, "roomId", 0));
+		params.put("loginId", member.getId());
+		int result = this.roomDao.closeRoom(params);
+		if(result > 0) {
+			
+			// [DB] 종료된 룸 정보 조회.
+			room = this.roomDao.getDetail(params);
+			sendData.put("room", room);
+		}
 		
 		// [Socket] 상담종료 메세지 전송.
-		sendMessage(EventName.END, payload.getCompanyId(), payload.getRoomId(), Target.ALL, null);
+		sendMessage(EventName.END, payload.getCompanyId(), room.getId() + "", Target.ALL, sendData);
 		sendReloadMessage(payload.getCompanyId());
 	}
 	

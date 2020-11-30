@@ -44,10 +44,10 @@ public class SocketController {
     public void receiveMessage(SocketData socketData) {
     	EventName eventName = socketData.getEventName();
     	
-    	if(eventName.equals(EventName.LOGIN)) {
-    		this.socketService.login(socketData);
-    		
-    	}else if(eventName.equals(EventName.ROOM_DETAIL)) {		// 방 정보 요청.
+    	if(eventName.equals(EventName.ASSIGN)) {
+    		this.socketService.assign(socketData);
+    	}
+    	else if(eventName.equals(EventName.ROOM_DETAIL)) {		// 방 정보 요청.
     		this.socketService.roomDetail(socketData);
     		
     	}else if(eventName.equals(EventName.MESSAGE_LIST)) {	// 이전 대화내용 요청.(더보기)
