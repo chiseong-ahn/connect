@@ -1,5 +1,6 @@
 package com.scglab.connect.services.room;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,10 +88,11 @@ public class RoomController {
 	}
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.POST, value = "/{id}/findSearchJoinHistory", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/findSearchJoinHistory", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="이전 상담 검색", description = "이전 상담 검색", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> findSearchJoinHistory(@Parameter(description = "방 id") @PathVariable Long id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<Map<String, Object>> findSearchJoinHistory(@Parameter(description = "방 id") @PathVariable Long id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
+		params.put("roomId", id);
 		return this.roomService.findSearchJoinHistory(params, request, response);
 	}
 }

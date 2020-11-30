@@ -1,6 +1,6 @@
 package com.scglab.connect.services.room;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -203,9 +203,14 @@ public class RoomService {
 	 * @param response
 	 * @return
 	 */
-	public Map<String, Object> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
-		Map<String, Object> data = this.roomDao.findSearchJoinHistory(params);
-		return data;
+	public List<Map<String, Object>> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		List<Map<String, Object>> list = this.roomDao.findSearchJoinHistory(params);
+		
+		for(Map<String, Object> obj : list) {
+			//
+		}
+		
+		return list;
 	}
 	
 	

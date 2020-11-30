@@ -125,7 +125,6 @@ public class LoginService {
 		member = (Member) DataUtils.convertMapToObject(data, member);
 		
 		this.logger.debug("convertMapTomember" + member.toString());
-		
 	}
 	
 	public void setMember(Member member, HttpServletRequest request) {

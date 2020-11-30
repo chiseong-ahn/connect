@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="room">
-	<resultMap type="com.scglab.connect.services.socket.Speak" id="speak"></resultMap>
+	<resultMap type="com.scglab.connect.services.message.Message" id="message"></resultMap>
 	<resultMap type="com.scglab.connect.services.room.Room" id="room"></resultMap>
 	
 	<!-- 현재 시간 방 통계 정보 -->
@@ -428,7 +428,7 @@
 		                                 <if test='message != null'>
 		                                 	AND message LIKE CONCAT('%', #{message}, '%'))
 		                                 </if>
-		                                  
+								)         
 		ORDER  BY rjh.id DESC 
 	</select>
 	

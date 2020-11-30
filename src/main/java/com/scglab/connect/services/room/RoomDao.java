@@ -96,8 +96,8 @@ public class RoomDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> findSearchJoinHistory(Map<String, Object> params){
-		return this.sqlSession.selectOne(this.namespace + "findSearchJoinHistory", params);
+	public List<Map<String, Object>> findSearchJoinHistory(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findSearchJoinHistory", params);
 	}
 	
 	/**

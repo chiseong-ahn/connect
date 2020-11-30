@@ -1,10 +1,10 @@
-company:
-  cid1: 서울도시가스
-  cid2: 인천도시가스
+title:
+  company1: 서울도시가스
+  company2: 인천도시가스
   
 main:
-  greeting: 안녕하세요 {0}
-
+  greeting: 안녕하세요 {0}님.
+  
 socket:
   startmessage:
     type0: 안녕하세요, 고객님\r\n상담사 배정 대기 중 입니다.\r\n기다리시는 동안 먼저 문의 남겨주시면\r\n상담사가 배정되는 대로 답변 드리겠습니다.

@@ -99,9 +99,9 @@
 		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="getHistorySpeaks(obj.space, obj.startid, obj.endid)">
 		                {{obj.createdate}} - {{obj.workdate}}
 		                <ul v-if="obj.showSpeaks == true">
-		            		<li v-for="(speak, idx) in obj.speaks">
-		            			<strong>[시스템:{{speak.sysmsg}}, 상담사:{{speak.isemp}},작성자:{{speak.speaker}}]</strong>
-		            			<br>>> {{speak.msg}}
+		            		<li v-for="(obj, idx) in obj.speaks">
+		            			<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
+		                <br />&gt;&gt; {{obj.message}} {{obj.createDate}}</a>
 		            		</li>
 		            	</ul>
 		            </li>
@@ -287,6 +287,9 @@
                 		this.receiveMessage, 				// 구독 성공시 호출되는 함수.	 
                 		headers = {'token': this.token}		// 구독 요청시 전달하는 헤더.
                 	);
+                	
+                	// 이전 상담목록 조회
+                	this.getHistory();
                 },
                 
 
@@ -482,18 +485,21 @@
 				
 				// 이전 상담목록 조회.
 				getHistory: function(){
-					var uri = '/api/room/' + this.socket.roomId + '/findSearchJoinHistory';
-                    axios.get(uri, this.header).then(response => {
-                        // prevent html, allow json array
-						if(Object.prototype.toString.call(response.data) === "[object Array]"){
-							this.histories = response.data;
-							
-							console.log(">> 종료상담 목록");
-							console.log(this.finishRooms);
-						}
-                    }, function(e){
-                    	console.log("error : " + e.message);
-                    });
+					if(this.socket.roomId != this.socket.lobbyName){	// 대기룸이 아닐경우.
+					
+						var uri = '/api/room/' + this.socket.roomId + '/findSearchJoinHistory';
+	                    axios.get(uri, this.header).then(response => {
+	                        // prevent html, allow json array
+							if(Object.prototype.toString.call(response.data) === "[object Array]"){
+								this.histories = response.data;
+								
+								console.log(">> 이전상담 목록");
+								console.log(this.histories);
+							}
+	                    }, function(e){
+	                    	console.log("error : " + e.message);
+	                    });
+					}
 				},
                 
             }
