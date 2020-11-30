@@ -10,12 +10,14 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Manual {
-	private int id;
-	private int companyId;
-	private int updateMemberId;
+	private long id;
+	private String createDate;
+	private String updateDate;
+	private String companyId;
+	private long updateMemberId;
 	private int manualIndex;
 	private int pageNumber;
-	private int pageNo;
+	private String pageNo;
 	private String pageCode;
 	private String title;
 	private String tags;

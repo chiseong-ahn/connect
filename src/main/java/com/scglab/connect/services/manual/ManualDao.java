@@ -138,6 +138,34 @@ public class ManualDao extends CommonDao {
 		return this.sqlSession.selectOne(namespace + "findNextPageNumber", params);
 	}
 	
+	/**
+	 * 
+	 * @Method Name : createFavorite
+	 * @작성일 : 2020. 11. 30.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 즐거찾기 등록
+	 * @param params
+	 * @return
+	 */
+	public int createFavorite(Map<String, Object> params) {
+		return this.sqlSession.insert(this.namespace + "createFavorite", params);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : deleteFavoriteToMember
+	 * @작성일 : 2020. 11. 30.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 즐겨찾기 삭제.
+	 * @param params
+	 * @return
+	 */
+	public int deleteFavoriteToMember(Map<String, Object> params) {
+		return this.sqlSession.delete(this.namespace + "deleteFavoriteToMember", params);
+	}
+	
 	
 	
 	

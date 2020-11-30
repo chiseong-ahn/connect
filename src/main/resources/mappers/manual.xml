@@ -30,8 +30,7 @@
 		)
 		AND (
 			CASE
-				WHEN IFNULL(#{searchValue1},
-				'') = '' THEN 1 = 1
+				WHEN IFNULL(#{searchValue1}, '') = '' THEN 1 = 1
 				ELSE ( m.title LIKE CONCAT( '%', IFNULL(#{searchValue1}, ''), '%' )
 				OR m.page_no = #{searchValue1} )
 			END 
@@ -39,12 +38,12 @@
 		AND m.content LIKE CONCAT( '%', IFNULL(#{searchValue2}, ''), '%' )
 		AND m.tags LIKE CONCAT( '%', IFNULL(#{tag}, ''), '%' )
 		ORDER BY (m.page_no + 0)
-		LIMIT #{limit}, #{pageSize}
+		limit #{startNum}, #{pageSize}
 				
 	</select>
 	
 	<!-- 매뉴얼 검색 카운트 -->
-	<select id="findSearchCount" parameterType="map" resultMap="manual">
+	<select id="findSearchCount" parameterType="map" resultType="int">
 		SELECT COUNT(*) as total_count
 		FROM manual m
 		LEFT OUTER JOIN manual_favorite f ON m.id = f.manual_id AND f.member_id = #{loginId}
@@ -79,7 +78,7 @@
 	<!-- 매뉴얼 즐겨찾기 추가 -->
 	<insert id="createFavorite" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		INSERT INTO manual_favorite(company_id, manual_id, member_id)
-		VALUES(:companyId, :manualId, :loginId)
+		VALUES(#{companyId}, #{id}, #{loginId})
 	</insert>
 	
 	<!-- 사용자가 즐겨찾기한 매뉴얼 삭제 -->

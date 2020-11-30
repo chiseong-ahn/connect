@@ -43,12 +43,12 @@ public class ManualController {
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="매뉴얼 검색", description = "매뉴얼 목록을 검색합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
-		@Parameter(name = "manualIndex", description = "매뉴얼 id", required = true, in = ParameterIn.QUERY, example = "1"),
-		@Parameter(name = "checkFavorite", description = "즐겨찾기여부", required = true, in = ParameterIn.QUERY, example = "1"),
-		@Parameter(name = "tag", description = "태그", required = true, in = ParameterIn.QUERY, example = "요금"),
-		@Parameter(name = "searchValue", description = "검색어", required = true, in = ParameterIn.QUERY, example = "안녕"),
-		@Parameter(name = "page", description = "페이지번호", required = true, in = ParameterIn.QUERY, example = "1"),
-		@Parameter(name = "pageSize", description = "페이지당 노출 수", required = true, in = ParameterIn.QUERY, example = "10"),
+		@Parameter(name = "manualIndex", description = "매뉴얼 id", required = false, in = ParameterIn.QUERY, example = "1"),
+		@Parameter(name = "checkFavorite", description = "즐겨찾기여부", required = false, in = ParameterIn.QUERY, example = "1"),
+		@Parameter(name = "tag", description = "태그", required = false, in = ParameterIn.QUERY, example = "요금"),
+		@Parameter(name = "searchValue", description = "검색어", required = false, in = ParameterIn.QUERY, example = "안녕"),
+		@Parameter(name = "page", description = "페이지번호", required = false, in = ParameterIn.QUERY, example = "1"),
+		@Parameter(name = "pageSize", description = "페이지당 노출 수", required = false, in = ParameterIn.QUERY, example = "10"),
 	})
 	public Map<String, Object> manuals(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.manualService.manuals(params, request, response);

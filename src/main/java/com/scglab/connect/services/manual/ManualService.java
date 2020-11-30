@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.service.MessageHandler;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -20,11 +22,9 @@ import com.scglab.connect.utils.DataUtils;
 public class ManualService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private ManualDao manualDao;
+	@Autowired private MessageHandler messageService;
+	@Autowired private LoginService loginService;
+	@Autowired private ManualDao manualDao;
 	
 	/**
 	 * 
@@ -40,7 +40,25 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> manuals(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
+		
+		// 페이지 번호.
+		int page = Integer.parseInt(DataUtils.getString(params, "page", "1"));
+		page = page < 1 ? 1 : page;
+		
+		// 페이지당 노출할 게시물 수.
+		int pageSize = Integer.parseInt(DataUtils.getString(params, "pageSize", "10"));
+		pageSize = pageSize < 1 ? 10 : pageSize;
+		
+		// 조회 시작 번호.
+		int startNum = (page - 1) * pageSize + 1;
+		
+		params.put("startNum", startNum);
+		params.put("pageSize", pageSize);
 		
 		// 전체 카운트 조회
 		int totalCount = this.manualDao.findManualCount(params);
@@ -72,6 +90,10 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Manual manual(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		// 매뉴얼 조회
 		return this.manualDao.findManual(params);
 	}
@@ -90,6 +112,10 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public List<String> tags(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		// 태그목록 조회
 		return this.manualDao.findTags(params);
 	}
@@ -108,7 +134,20 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> favorite(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		String value = DataUtils.getString(params, "value", "false");
+		
+		int result = 0;
+		if(value.equals("true")) {
+			result = this.manualDao.createFavorite(params);
+		}else {
+			result = this.manualDao.deleteFavoriteToMember(params);
+		}
+
 		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("success", result > 0 ? true : false);
 		
 		return data;
 	}
@@ -127,6 +166,10 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Manual regist(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Manual manual = null;
 		
 		int result = this.manualDao.insertManual(params);
@@ -154,6 +197,10 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Manual update(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Manual manual = null;
 		
 		int result = this.manualDao.updateManual(params);
@@ -178,6 +225,10 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		int result = this.manualDao.deleteManual(params);
