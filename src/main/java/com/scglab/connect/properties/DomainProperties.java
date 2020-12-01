@@ -14,7 +14,6 @@ import lombok.ToString;
 @ToString
 public class DomainProperties {
 	private String sdtalk;
-	private String mobileapi;
-	private String relay;
-	private String mscrelay;
+	private String relayScg;
+	private String relayInc;
 }

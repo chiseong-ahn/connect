@@ -66,14 +66,14 @@ public class HttpUtils {
 	
 	public String postApiForString(String url, Map<String, Object> params, HttpHeaders headers) {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setConnectTimeout(5000); // 타임아웃 설정 5초
-		factory.setReadTimeout(5000);// 타임아웃 설정 5초
+		factory.setConnectTimeout(500000); // 타임아웃 설정 5초
+		factory.setReadTimeout(500000);// 타임아웃 설정 5초
 		RestTemplate restTemplate = new RestTemplate(factory);
 
 		HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(params, headers);
 		return restTemplate.postForObject(url, httpEntity, String.class);
 	}
-	
+
 	public Map<String, Object> postApiForMap(String url, Map<String, Object> params, HttpHeaders headers) {
 		String value = postApiForString(url, params, headers);
 		try {

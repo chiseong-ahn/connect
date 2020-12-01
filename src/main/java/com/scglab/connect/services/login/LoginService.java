@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.member.Member;
-import com.scglab.connect.utils.CompanyUtils;
 import com.scglab.connect.utils.DataUtils;
 
 
@@ -29,6 +29,7 @@ public class LoginService {
 	@Autowired private MessageHandler messageService;
 	@Autowired private LoginDao loginDao;
 	@Autowired private JwtService jwtService;
+	@Autowired private CommonService commonService;
 	
 	public Map<String, Object> login(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -47,24 +48,17 @@ public class LoginService {
 			data.put("reason", this.messageService.getMessage("auth.login.fail.reason1"));
 			return data;
 		}
+		
+		this.logger.debug("companyId : " + companyId);
 			
 		// 각 회사별 기간망 클래스 가져오기.
-		ICompany company = CompanyUtils.getCompany(companyId);
+		ICompany company = this.commonService.getCompany(companyId);
 
 		// 기간계 로그인
-		if(company.login(loginName, password)) {
-			//
+		if(!company.login(loginName, password)) {
+			return null;
 		}
 		
-		// 기간계 로그인.
-//		Member member = company.getMemberInfo(params);
-//		if(member == null) {
-//			// 기간계에 로그인 정보가 맞지않을경우.
-//			data.put("token", null);
-//			data.put("member", null);
-//			data.put("reason", this.messageService.getMessage("auth.login.fail.reason2"));
-//			return data;
-//		}
 		
 		// 상담톡에 계정정보가 존재하는지 체크.
 		int count = this.loginDao.findCount(params);

@@ -87,8 +87,8 @@ spring:
 
 domain:
   sdtalk: localhost.gasapp.co.kr
-  mobileapi: app-dev.gasapp.co.kr
-  relay: http://msc-dev-relay:12081
+  relay-scg: relay-scg.dev.gasapp.co.kr
+  relay-inc: relay-inc.dev.gasapp.co.kr
   
 path:
   upload: /Volumes/Data/_upload
@@ -130,9 +130,9 @@ spring:
     web-application-type: servlet
 
 domain:
-  sdtalk: localhost.gasapp.co.kr
-  mobileapi: app-dev.gasapp.co.kr
-  relay: http://msc-dev-relay:12081
+  sdtalk: cstalk-dev.gasapp.co.kr
+  relay-scg: relay-scg.dev.gasapp.co.kr
+  relay-inc: relay-inc.dev.gasapp.co.kr
   
 path:
   upload: /data/project/cstalk/apache/data/attach

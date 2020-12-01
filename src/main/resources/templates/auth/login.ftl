@@ -141,7 +141,7 @@
             	
             	// 상담톡 페이지로 이동
             	moveTalk: function(){
-            		document.location.href = "/socket";
+            		document.location.href = "/api/socket";
             	}
             }
         });

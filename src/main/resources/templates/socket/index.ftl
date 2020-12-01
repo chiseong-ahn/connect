@@ -216,7 +216,7 @@
 
 					if(this.token == ""){
 						// 인증정보가 존재하지 않을경우.
-						//document.location.href = '/';
+						//document.location.href = '/api/login';
 						console.log("error : " + this.token);
 						
 					}else{
@@ -231,14 +231,14 @@
 	            			}else{
 	            			
 	            				// 인증정보가 존재하지 않을 경우.
-	            				//document.location.href = '/';
+	            				//document.location.href = '/api/login';
 	            				console.log("error2");
 	            			}
 		                	
 			            }, function(e){
 			            	localStorage.removeItem("accessToken");
 			            	console.log("error3");
-			            	document.location.href = '/';
+			            	document.location.href = '/api/login';
 			            });
 			           }
             	},
@@ -248,7 +248,7 @@
                 **************************************************************/
             	logout: function(){
             		localStorage.removeItem("accessToken");
-            		document.location.href = "/";
+            		document.location.href = "/api/login";
             	},
                 
             

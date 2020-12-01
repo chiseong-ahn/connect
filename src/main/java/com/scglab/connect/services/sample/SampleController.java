@@ -1,5 +1,6 @@
 package com.scglab.connect.services.sample;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.scglab.connect.base.annotations.Auth;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,6 +68,16 @@ public class SampleController {
     })
 	public Map<String, Object> delete(@Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
 		return this.sampleService.delete(params);
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value = "login", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="로그인 테스트", description = "게시물을 삭제합니다.")
+	@Parameters({
+    	@Parameter(name = "id", description = "아이디", required = true, in = ParameterIn.QUERY, example = "csmaster1"),
+    	@Parameter(name = "password", description = "비밀번호", required = true, in = ParameterIn.QUERY, example = "1212"),
+    })
+	public void login(@Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
 	}
 	
 }

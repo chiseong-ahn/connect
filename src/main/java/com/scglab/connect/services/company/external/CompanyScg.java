@@ -1,6 +1,7 @@
 package com.scglab.connect.services.company.external;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,8 @@ public class CompanyScg implements ICompany {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired private DomainProperties domainProperty;
+	
+	private String protocol = "http://";
 	private HttpUtils httpUtils;
 	
 	public CompanyScg() {
@@ -31,20 +34,23 @@ public class CompanyScg implements ICompany {
 
 	@Override
 	public boolean login(String id, String password) {
+		String uri = "/api/employees/login";
 		
-		/*
-			{
-			  "value" : "BAD_PASSWORD"
-			}
-		 */
+		String host = this.protocol + this.domainProperty.getRelayScg();
+		//String apiUrl = host + uri;
+		String apiUrl = "http://localhost:8080/samples/login";
+		this.logger.debug("apiUrl : " + apiUrl);
 		
-//		String uri = "/api/safescg/authentication?id=" + id + "&password=" + password;
-//		String host = this.domainProperty.getRelay();
-//		this.logger.debug("host : " + host);
-//		String apiUrl = this.domainProperty.getRelay() + uri;
-//		
-//		Map<String, Object> resultData = this.httpUtils.postApiForMap(apiUrl, null, null);
-//		this.logger.debug("login result : " + resultData);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		params.put("password", password);
+		
+		Map<String, Object> resultData = null;
+		try {
+			this.httpUtils.postApiForMap(apiUrl, params, null);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 		return true;
 	}
@@ -97,7 +103,7 @@ public class CompanyScg implements ICompany {
 		 */
 		
 		String uri = "/api/safescg/employees?comIds=18";
-		String apiUrl = this.domainProperty.getRelay() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		List<Map<String, Object>> resultData = this.httpUtils.getApiForList(apiUrl);
@@ -142,7 +148,7 @@ public class CompanyScg implements ICompany {
 		 */
 		String id = DataUtils.getString(params, "id", "");
 		String uri = "/api/safescg/employees/" + id;
-		String apiUrl = this.domainProperty.getRelay() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
@@ -167,7 +173,7 @@ public class CompanyScg implements ICompany {
 			}
 		 */
 		String uri = "/api/chattalk/minwons";
-		String apiUrl = this.domainProperty.getRelay() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		
 		HttpHeaders headers = null;
 		
@@ -203,7 +209,7 @@ public class CompanyScg implements ICompany {
 		 */
 		String id = DataUtils.getString(params, "id", "");
 		String uri = "/api/matt/contracts?member=" + id;
-		String apiUrl = this.domainProperty.getMobileapi() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		List<Map<String, Object>> resultData = this.httpUtils.getApiForList(apiUrl);
@@ -230,7 +236,7 @@ public class CompanyScg implements ICompany {
 		
 		String id = DataUtils.getString(params, "id", "");
 		String uri = "/api/matt/profile?member=" + id;
-		String apiUrl = this.domainProperty.getMobileapi() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
@@ -509,7 +515,7 @@ public class CompanyScg implements ICompany {
 		
 		String contractNum = DataUtils.getString(params, "contractNum", "");
 		String uri = "/api/chattalk/contractInfo/" + contractNum + "/detail+lastbill";
-		String apiUrl = this.domainProperty.getRelay() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
@@ -668,7 +674,7 @@ public class CompanyScg implements ICompany {
 		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
 		
 		String uri = "/api/bill/" + contractNum + "/detail?requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
-		String apiUrl = this.domainProperty.getRelay() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
@@ -695,7 +701,7 @@ public class CompanyScg implements ICompany {
 		String cmd = DataUtils.getString(params, "cmd", "checkHoliday");
 		
 		String uri = "/api/safescg/calendar/" + day + "?cmd=" + cmd;
-		String apiUrl = this.domainProperty.getRelay() + uri;
+		String apiUrl = this.domainProperty.getRelayScg() + uri;
 		this.logger.debug("url : " + apiUrl);
 
 		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);

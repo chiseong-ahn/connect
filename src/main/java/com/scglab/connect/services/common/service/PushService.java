@@ -38,7 +38,7 @@ public class PushService {
 		
 		HttpUtils httpUtils = new HttpUtils();
 		
-		String url = "https://" + this.domainProperty.getMobileapi() + "/api/matt/push";
+		String url = "https://" + this.domainProperty.getRelayInc() + "/api/matt/push";
 		Map<String, Object> params = new HashMap<String, Object>();
 		
 		params.put("member", userno);

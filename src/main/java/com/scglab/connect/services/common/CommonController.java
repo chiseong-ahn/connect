@@ -1,5 +1,11 @@
 package com.scglab.connect.services.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +36,14 @@ public class CommonController {
 		this.logger.debug("Health check!");
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/server", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> server(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> res = new HashMap<String, Object>();
+		res.put("client", request.getRemoteAddr());
+		res.put("serverName", request.getServerName());
+		
+		return res;
+	}
 }
 
 
