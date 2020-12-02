@@ -8,8 +8,17 @@ import lombok.ToString;
 @Setter
 @ToString
 public class FileDto {
-	private String orignFilename;
-	private String saveFilename;
+	private String originFileName;
+	
+	private String fileName;
 	private String savePath;
 	private long fileSize;
+	private int width;
+	private int height;
+	
+	private String thumbFileName;
+	private String thumbSavePath;
+	private long thumbFileSize;
+	private int thumbWidth;
+	private int thumbHeight;
 }

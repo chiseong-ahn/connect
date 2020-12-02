@@ -46,8 +46,8 @@ public class FileController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private PathProperties pathProperty;
+	@Autowired private PathProperties pathProperty;
+	@Autowired private FileService fileService;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/download")
 	@Operation(summary = "파일 다운로드", description = "파일을 다운로드 한다.")
@@ -69,63 +69,13 @@ public class FileController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary = "파일 등록처리", description = "파일을 등록하고 등록정보를 리턴합니다.")
+	@Operation(summary = "파일 업로드", description = "파일을 업로드하고 업로드된 정보를 반환합니다.")
 	@Parameters({
 		@Parameter(name="div", description = "서비스명(저장되는 경로를 구분하는 값)", in = ParameterIn.QUERY, required = false, example = "service"),
 		@Parameter(name="file", description = "파일업로드명", in = ParameterIn.QUERY ,required = true, example = ""),
 	})
 	public FileDto upload(@Parameter(hidden = true) @RequestParam("file") MultipartFile file, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		String div = DataUtils.getString(params, "div", "");
-		//Map<String, Object> obj = new HashMap<String, Object>();
-		FileDto fileDto = new FileDto();
-		
-		try {
-			
-			// 원본 파일명.
-			String originFileName = file.getOriginalFilename();
-			String ext = originFileName.substring(originFileName.lastIndexOf(".") + 1);
-			long fileSize = file.getSize();
-			
-			Calendar cal = Calendar.getInstance();
-			int year = cal.get(Calendar.YEAR);
-			int month = cal.get(Calendar.MONTH) + 1;
-			
-			// 저장할 파일명.
-			// String saveFileName = md5Generator(originFileName + System.currentTimeMillis()).toString() + "." + ext;
-			String saveFileName = UUID.randomUUID() + "." + ext;
-			
-			// 실제 저장할 파일경로.
-			String savePath = !div.equals("") ? this.pathProperty.getUpload() + "/" + div : this.pathProperty.getUpload();
-			savePath += "/" + year + "/" + month;
-			this.logger.debug("savePath : " + savePath);
-			
-			// 저장할 디렉토리가 존재하지 않으면 생성.
-			if (!new File(savePath).exists()) {
-				try {
-					new File(savePath).mkdirs();
-				} catch (Exception e) {
-					//e.getStackTrace();
-					throw new Exception(e);
-				}
-			}
-			String filePath = savePath + "/" + saveFileName;
-			
-			// 최종파일 생성.
-			file.transferTo(new File(filePath));
-			
-			// 업로드 된 파일 정보.
-//			fileDto.setOrignFilename(originFileName);
-			fileDto.setSaveFilename(saveFileName);
-			fileDto.setSavePath(savePath);
-			fileDto.setFileSize(fileSize);
-			
-			this.logger.debug("file : " + fileDto.toString());
-			
-		} catch (Exception e) {
-			//e.printStackTrace();
-			throw new Exception(e);
-		}
-		return fileDto;
+		return this.fileService.uploadFile(file, params, request);	
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,16 +99,6 @@ public class FileController {
 		return result;
 	}
 	
-	private String md5Generator(String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest mdMD5 = MessageDigest.getInstance("MD5");
-        mdMD5.update(input.getBytes("UTF-8"));
-        byte[] md5Hash = mdMD5.digest();
-        StringBuilder hexMD5hash = new StringBuilder();
-        for(byte b : md5Hash) {
-            String hexString = String.format("%02x", b);
-            hexMD5hash.append(hexString);
-        }
-        return hexMD5hash.toString();
-    }
+	
 
 }

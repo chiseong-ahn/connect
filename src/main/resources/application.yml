@@ -87,7 +87,7 @@ spring:
 
 domain:
   sdtalk: localhost.gasapp.co.kr
-  relay-scg: relay-scg.dev.gasapp.co.kr
+  relay-scg: relay-scg-dev.gasapp.co.kr
   relay-inc: relay-inc.dev.gasapp.co.kr
   
 path:
@@ -131,7 +131,7 @@ spring:
 
 domain:
   sdtalk: cstalk-dev.gasapp.co.kr
-  relay-scg: relay-scg.dev.gasapp.co.kr
+  relay-scg: relay-api-dev.gasapp.co.kr
   relay-inc: relay-inc.dev.gasapp.co.kr
   
 path:
