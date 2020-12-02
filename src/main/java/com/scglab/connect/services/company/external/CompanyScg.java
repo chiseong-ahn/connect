@@ -1,5 +1,6 @@
 package com.scglab.connect.services.company.external;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -32,689 +33,261 @@ public class CompanyScg implements ICompany {
 		this.httpUtils = new HttpUtils();
 	}
 
+	// 1. 상담사 로그인
 	@Override
 	public boolean login(String id, String password) {
-		String uri = "/api/employees/login";
 		
-		String host = this.protocol + this.domainProperty.getRelayScg();
-		//String apiUrl = host + uri;
-		String apiUrl = "http://localhost:8080/samples/login";
-		this.logger.debug("apiUrl : " + apiUrl);
+		// /api/employees/login GET
 		
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", id);
-		params.put("password", password);
 		
-		Map<String, Object> resultData = null;
-		try {
-			this.httpUtils.postApiForMap(apiUrl, params, null);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
 		
 		return true;
 	}
 
+	// 2. 직원 목록 가져오기
 	@Override
-	public List<Map<String, Object>> getMembers() {
+	public List<Map<String, Object>> employees() {
 		// TODO Auto-generated method stub
-		/*
-		 *  응답예시.
-		 	[ {
-			  "id" : "170941501",			// 
-			  "comId" : "18",
-			  "comName" : "SCG솔루션즈(주)",		
-			  "nmKor" : "김은아",
-			  "nmEng" : "Kim Euna",
-			  "departDptCd" : "200553",
-			  "deprtNmKor" : "경기5직영",
-			  "posClsCd" : "J1 ",
-			  "posClsName" : "J1",
-			  "posSortOrder" : 65,
-			  "posRnkCd" : "500",
-			  "posRnkName" : "사원",
-			  "rnkSortOrder" : 10,
-			  "telephoneNum1" : null,
-			  "telephoneNum2" : null,
-			  "telephoneNum3" : null,
-			  "cellphoneNum1" : "010",
-			  "cellphoneNum2" : null,
-			  "cellphoneNum3" : "6928",
-			  "emailAddr1" : "kea6928@naver.com",
-			  "userStatus" : "Y",
-			  "branchYn" : "N",
-			  "branchCd" : "101500",
-			  "branchNm" : null,
-			  "branchFlag" : "40",
-			  "tabletUseYn" : null,
-			  "telephone" : {
-			    "num1" : null,
-			    "num2" : null,
-			    "num3" : null
-			  },
-			  "cellphone" : {
-			    "num1" : "010",
-			    "num2" : null,
-			    "num3" : "6928"
-			  },
-			  "insideTelNum" : null
-			}
-		]
-		 */
 		
-		String uri = "/api/safescg/employees?comIds=18";
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
-
-		List<Map<String, Object>> resultData = this.httpUtils.getApiForList(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
+		// /api/employees?comIds=18 GET
 		
-		return null;
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> obj = new HashMap<String, Object>();
+		obj.put("id", "csmaster1");
+		obj.put("companyName", "SCG솔루션즈(주)");
+		obj.put("name", "이세임");
+		obj.put("deptCode", "200552");
+		obj.put("deptName", "경기1직영");
+		obj.put("posName", "사원");
+		obj.put("userStatus", "Y");
+		
+		Map<String, Object> telephone = new HashMap<String, Object>();
+		telephone.put("num1", "02");
+		telephone.put("num2", "552");
+		telephone.put("num3", "7777");
+		obj.put("telephone", telephone);
+		
+		Map<String, Object> cellphone = new HashMap<String, Object>();
+		cellphone.put("num1", "010");
+		cellphone.put("num2", "1111");
+		cellphone.put("num3", "4062");	
+		obj.put("cellphone", cellphone);
+		
+		return list;
 	}
 
+	// 3. 도시가스 직원정보 가져오기.
 	@Override
-	public Member getMemberInfo(Map<String, Object> params) {
-		// TODO Auto-generated method stub
-		/*
-		 * 	결과 예시.
-			{
-			  "id" : "csmaster1",
-			  "name" : "서울도시가스",
-			  "deptCode" : "200273",
-			  "deptName" : "콜센터",
-			  "positionClassCode" : " ",
-			  "positionClassName" : null,
-			  "positionRankCode" : "   ",
-			  "positionRankName" : null,
-			  "cellphone" : {
-			    "num1" : " ",
-			    "num2" : null,
-			    "num3" : " "
-			  },
-			  "email" : "csmaster@seoulgas.co.kr",
-			  "userStatus" : "Y",
-			  "insideTelephone" : {
-			    "num1" : "02",
-			    "num2" : "323",
-			    "num3" : "9681"
-			  }
-			}
-		 */
-		String id = DataUtils.getString(params, "id", "");
-		String uri = "/api/safescg/employees/" + id;
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
-
-		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
+	public Map<String, Object> employee(String id) {
 		
+		// api/employees/:id GET
 		
-		return null;
+		Map<String, Object> obj = new HashMap<String, Object>();
+		obj.put("id", "csmaster1");
+		obj.put("companyName", "SCG솔루션즈(주)");
+		obj.put("name", "이세임");
+		obj.put("deptCode", "200552");
+		obj.put("deptName", "경기1직영");
+		obj.put("posName", "사원");
+		obj.put("userStatus", "Y");
+		
+		Map<String, Object> telephone = new HashMap<String, Object>();
+		telephone.put("num1", "02");
+		telephone.put("num2", "552");
+		telephone.put("num3", "7777");
+		obj.put("telephone", telephone);
+		
+		Map<String, Object> cellphone = new HashMap<String, Object>();
+		cellphone.put("num1", "010");
+		cellphone.put("num2", "1111");
+		cellphone.put("num3", "4062");	
+		obj.put("cellphone", cellphone);
+		
+		return obj;
 	}
 
+	// 4. 민원 등록
 	@Override
-	public int sendMinwon(Map<String, Object> params) {
+	public int minwons(Map<String, Object> params) {
 		// TODO Auto-generated method stub
 		/*
 			{
 			    "id":"20200922000691"
 			}
 		 */
-		String uri = "/api/chattalk/minwons";
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
+		// /api/chattalk/minwons POST
 		
-		HttpHeaders headers = null;
-		
-		this.logger.debug("url : " + apiUrl);
-		this.logger.debug("params : " + params.toString());
-		
-		Map<String, Object> resultData = this.httpUtils.postApiForMap(apiUrl, params, headers);
-		String id = DataUtils.getString(resultData, "id", "");
+		String id = "20200922000691";
 		
 		return Integer.parseInt(id);
 	}
-
+	
+	
+	// 5. 사용계약번호 상세 정보
 	@Override
-	public List<Map<String, Object>> getContractList(Map<String, Object> params) {
-		// TODO Auto-generated method stub
-		/*
-			[
-			   {
-			      "useContractNum":"6000000486",
-			      "main":0,
-			      "name":"우리집",
-			      "jinbunAddress":null,
-			      "newAddress":"서울특별시 마포구 ********,103호 (***)"
-			   },
-			   {
-			      "useContractNum":"6000000502",
-			      "main":0,
-			      "name":"장모님",
-			      "jinbunAddress":null,
-			      "newAddress":"서울특별시 마포구 ******, (****)"
-			   }
-			]
-		 */
-		String id = DataUtils.getString(params, "id", "");
-		String uri = "/api/matt/contracts?member=" + id;
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
-
-		List<Map<String, Object>> resultData = this.httpUtils.getApiForList(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
+	public Map<String, Object> contractInfo(String useContractNum){
 		
-		return null;
+		// api/contractInfo/:useContractNum GET
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		Map<String, Object> contractInfo = new HashMap<String, Object>();
+		contractInfo.put("useContractNum", "6000000486");
+		contractInfo.put("customerName", "김태수");
+		contractInfo.put("centerCode", "32");
+		contractInfo.put("centerName", "강북2고객센터");
+		contractInfo.put("centerPhone", "02-701-0337");
+		contractInfo.put("meterNum", "300000486");
+		contractInfo.put("gmtrBaseDay", "26");
+		contractInfo.put("billSendMethod", "모바일");
+		contractInfo.put("paymentType", "은행이체");
+		contractInfo.put("contractStatus", "정상");
+		contractInfo.put("productName", "업무난방용");
+		
+		Map<String, Object> telNumber = new HashMap<String, Object>();
+		telNumber.put("num1", "02");
+		telNumber.put("num2", "701");
+		telNumber.put("num3", "6654");
+		contractInfo.put("telNumber", telNumber);
+		
+		data.put("contractInfo", contractInfo);
+		
+		List<Map<String, Object>> history = new ArrayList<Map<String, Object>>();
+		
+		Map<String, Object> history1 = new HashMap<String, Object>();
+		history1.put("requestYm", "201912");
+		history1.put("deadlineFlag", "20");
+		history.add(history1);
+		
+		Map<String, Object> history2 = new HashMap<String, Object>();
+		history2.put("requestYm", "201911");
+		history2.put("deadlineFlag", "20");
+		history.add(history2);
+		
+		data.put("history", history);
+		
+		return data;
+	}
+
+	
+	// 6. 사용계약번호 결제 상세 정보
+	@Override
+	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag) {
+		//api/bill/:useContractNum/detail?requestYm=:requestYm&deadlineFlag=:deadlineFlag
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		data.put("useContractNum", "6000000486");
+		data.put("requestYm", "201911");
+		data.put("deadlineFlag", "20");
+		data.put("paymentDeadline", "20191120");
+		data.put("basicRate", "0.0");
+		data.put("useRate", "0.0");
+		data.put("discountAmt", "0.0");
+		data.put("replacementCost", "0.0");
+		data.put("vat", "0.0");
+		data.put("adjustmentAmt", "0.0");
+		data.put("cutAmt", "0.0");
+		data.put("chargeAmt", "0.0");
+		data.put("usageQty", "0.0");
+		data.put("unpayAmt", "0.0");
+		data.put("allUnpayAmounts", "0.0");
+		data.put("allPayAmounts", "0.0");
+		data.put("previousUnpayAmounts", "0.0");
+		data.put("payMethod", "자동이체(은행)");
+		
+		Map<String, Object> virtualAccount = new HashMap<String, Object>();
+			virtualAccount.put("accountName", "이원준");
+			List<Map<String, Object>> accounts = new ArrayList<Map<String, Object>>();
+				Map<String, Object> account1 = new HashMap<String, Object>();
+					account1.put("bankCode", "020");
+					account1.put("name", "우리은행(은행)");
+					account1.put("account", "29800105-218194");
+			
+				Map<String, Object> account2 = new HashMap<String, Object>();
+					account2.put("bankCode", "003");
+					account2.put("name", "기업은행(은행)");
+					account2.put("account", "59503752-997969");
+				
+				accounts.add(account1);
+				accounts.add(account2);
+			virtualAccount.put("accounts", accounts);
+		data.put("virtualAccount", virtualAccount);
+		
+		
+		List<Map<String, Object>> previousUnpayInfos = new ArrayList<Map<String, Object>>();
+			Map<String, Object> previousUnpayInfo1 = new HashMap<String, Object>();
+				previousUnpayInfo1.put("requestYm", "201709");
+				previousUnpayInfo1.put("unpayAmtAll", "2700");
+		
+				previousUnpayInfos.add(previousUnpayInfo1);
+		data.put("previousUnpayInfos", previousUnpayInfos);
+		
+		return data;
 	}
 	
+	// 7. 휴일 여부 체크
 	@Override
-	public Map<String, Object> getCustomerInfo(Map<String, Object> params) {
-		// TODO Auto-generated method stub
-		/*
-			{
-			   "name":"이유진",
-			   "handphone":"01044588856"
-			}
-		 */
+	public int getWorkCalendar() {
+		//day: 20201001
+		// api/workcalendar?day=:day GET
+	
+		String day = "20201001";
 		
-		String id = DataUtils.getString(params, "id", "");
-		String uri = "/api/matt/profile?member=" + id;
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("holidayFlag", "N");
+		data.put("workingDay", "Y");
+		
+		String isWorking = DataUtils.getString(data, "workingDay", "Y");
 
-		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
 		
-		
-		return null;
-	}
-
-	@Override
-	public Contract getContractDetail(Map<String, Object> params) {
-		
-		/*
-			{
-			   "contractInfo":{
-			      "useContractNum":"6000000486",
-			      "customerNum":"1004538395",
-			      "customerName":"김태수",
-			      "firmName":"..",
-			      "smsYn":"Y",
-			      "oldZipcode1":"121",
-			      "oldZipcode2":"809",
-			      "branchCode":"100664",
-			      "centerCode":"32",
-			      "centerName":"강북2고객센터",
-			      "centerPhone":"02-701-0337",
-			      "meterNum":"300000486",
-			      "meterIdNum":"118411000671",
-			      "meterValidYm":"202203",
-			      "meterLocationFlag":"10",
-			      "deadlineFlag":"20",
-			      "installPlaceNum":"200000486",
-			      "gmtrBaseDay":"26",
-			      "billSendMethodCode":"80",
-			      "billSendMethod":"모바일",
-			      "billSendMethodLastReqName":"김태수",
-			      "billEmail":"doolee00@gmail.com",
-			      "billCpNumber":{
-			         "num1":"010",
-			         "num2":"8324",
-			         "num3":"8360"
-			      },
-			      "paymentMethodCode":"20",
-			      "paymentType":"은행이체",
-			      "unpayAmt":0.0,
-			      "contractStatusCode":"10",
-			      "contractStatus":"정상",
-			      "useCode":"2",
-			      "productCode":"33",
-			      "productName":"업무난방용",
-			      "productContractSeq":"001",
-			      "takerEmployeeId":"200708016",
-			      "takerEmployeeName":"신현숙",
-			      "companyName":"서현ENG(주)",
-			      "compensNum":null,
-			      "cellPhoneNumber":{
-			         "num1":"010",
-			         "num2":"8324",
-			         "num3":"8360"
-			      },
-			      "telPhoneNumber":{
-			         "num1":"02",
-			         "num2":"701",
-			         "num3":"6654"
-			      },
-			      "selfReqFlag":"1",
-			      "udocCount":1,
-			      "jibunAddress":"서울 마포구 *** 18-30번지 103호",
-			      "newAddress":"서울특별시 마포구 ********,103호 (***)",
-			      "birthday":"920202",
-			      "sex":"M",
-			      "newAddressBase":"서울특별시 마포구 고산18길",
-			      "jibunAddressBase":"서울 마포구 대흥동",
-			      "newAddressDetail":"10,103호 (대흥동)",
-			      "jibunAddressDetail":"18-30번지 103호"
-			   },
-			   "billDetailWithHis":{
-			      "billDetailInfo":{
-			         "useContractNum":"6000000486",
-			         "requestYm":"202001",
-			         "deadlineFlag":"20",
-			         "paymentDeadline":"20200120",
-			         "basicRate":0.0,
-			         "useRate":232105.0,
-			         "discountAmt":0.0,
-			         "replacementCost":0.0,
-			         "cancelCharge":0.0,
-			         "vat":23210.0,
-			         "overdueAmt":0.0,
-			         "adjustmentAmt":0.0,
-			         "adjustmentAltAmt":0.0,
-			         "cutAmt":-5.0,
-			         "chargeAmt":255310.0,
-			         "paymentType":"자동이체(은행)",
-			         "paymentTypeCode":"20",
-			         "thisMonthIndicatorQty":2511,
-			         "lastMonthIndicatorQty":2180,
-			         "usageQty":331,
-			         "factor":0.9996,
-			         "factorQty":330.8676,
-			         "averageEnergyQty":42.605,
-			         "useEnergyQty":14096.6141,
-			         "meterNum":"300000486",
-			         "meterIdNum":"118411000671",
-			         "gmtrYmFlag":"10",
-			         "usePeriodStart":"20191126",
-			         "usePeriodEnd":"20191225",
-			         "lastMonthUsageQty":7.0,
-			         "annualMonthUsageQty":125.0,
-			         "payDate":"20200120",
-			         "unpayAmt":0.0,
-			         "bank":"우리은행",
-			         "accountNum":"08624996502001",
-			         "accountHolder":"이원준",
-			         "prePayDate":"20191220",
-			         "readDate":"26",
-			         "readCode":"정기검침(PDA)",
-			         "meterman":"신현숙",
-			         "productYmd":"20190708",
-			         "productCost1":0.0,
-			         "productCost2":16.4653,
-			         "productName1":" ",
-			         "productName2":"업무용난방",
-			         "virtualAccount":{
-			            "accountName":"이원준",
-			            "accounts":[
-			               {
-			                  "bankCode":"020",
-			                  "name":"우리은행(은행)",
-			                  "account":"29800105-218194"
-			               },
-			               {
-			                  "bankCode":"003",
-			                  "name":"기업은행(은행)",
-			                  "account":"59503752-997969"
-			               },
-			               {
-			                  "bankCode":"088",
-			                  "name":"신한은행(은행)",
-			                  "account":"27990102-779195"
-			               },
-			               {
-			                  "bankCode":"027",
-			                  "name":"한국씨티(은행)",
-			                  "account":"17608049-92131"
-			               },
-			               {
-			                  "bankCode":"081",
-			                  "name":"KEB하나(은행)",
-			                  "account":"25291057-176037"
-			               },
-			               {
-			                  "bankCode":"023",
-			                  "name":"SC은행",
-			                  "account":"43416000-479196"
-			               },
-			               {
-			                  "bankCode":"011",
-			                  "name":"농협은행",
-			                  "account":"79001576-804385"
-			               },
-			               {
-			                  "bankCode":"004",
-			                  "name":"국민은행(은행)",
-			                  "account":"80179078-206193"
-			               }
-			            ]
-			         },
-			         "reportingDate":"20200111",
-			         "regiNum":"8027100196",
-			         "supplyRegiNum":"1098131605",
-			         "supplyPrice":232105.0,
-			         "supplyPriceVat":23210.0,
-			         "useCode":"2",
-			         "paymentCodeCard":"2",
-			         "paymentCodeBank":"2",
-			         "paymentFlag":"완납",
-			         "paymentFlagCode":"1",
-			         "customerNum":"1004538395",
-			         "customerName":"김태수",
-			         "customerCellPhoneNumber":{
-			            "num1":"010",
-			            "num2":"8324",
-			            "num3":"8360"
-			         },
-			         "taxBillFlag":"10",
-			         "tranReqDateCard":"20200116",
-			         "tranReqDateBank":"20200116",
-			         "payMethodCode":"20",
-			         "payMethod":"자동이체(은행)",
-			         "stopHoldPlanDate":" ",
-			         "unpayInfos":[
-			            
-			         ],
-			         "previousUnpayInfos":[
-			            
-			         ],
-			         "jibunAddressType1":"서울 마포구 *** 18-30번지 103호 ",
-			         "newAddressType1":"서울특별시 마포구 ********,103호 (***)",
-			         "jibunAddressType2":"서울 마포구 대흥동 ****",
-			         "newAddressType2":"서울특별시 마포구 고산18길 ****",
-			         "allUnpayAmounts":0.0,
-			         "allPayAmounts":255310.0,
-			         "previousUnpayAmounts":0.0,
-			         "paymentCode":"2",
-			         "receiveAmt":255310.0,
-			         "payable":false,
-			         "stopHoldPlanYn":false,
-			         "socialWelfareDiscount":false
-			      },
-			      "history":[
-			         {
-			            "useContractNum":"6000000486",
-			            "requestYm":"201912",
-			            "usePeriodStart":"20191026",
-			            "usePeriodEnd":"20191125",
-			            "indicatorQty":2180,
-			            "usageQty":7,
-			            "factorQty":6.9972,
-			            "useEnergyQty":299.7531,
-			            "chargeAmt":5420.0,
-			            "receiveAmt":5420.0,
-			            "unpayAmt":0.0,
-			            "paymentType":"자동이체(은행)",
-			            "paymentFlag":"완납",
-			            "paymentFlagCode":"1",
-			            "useCode":"2",
-			            "paymentCodeCard":"2",
-			            "paymentCodeBank":"2",
-			            "payDate":"20191220",
-			            "deadlineFlag":"20",
-			            "jibunAddressType1":"서울 마포구 *** 18-30번지 103호 ",
-			            "newAddressType1":"서울특별시 마포구 ********,103호 (***)",
-			            "jibunAddressType2":"서울 마포구 대흥동 ****",
-			            "newAddressType2":"서울특별시 마포구 고산18길 ****",
-			            "paymentCode":"2",
-			            "payable":false
-			         },
-			         {
-			            "useContractNum":"6000000486",
-			            "requestYm":"202001",
-			            "usePeriodStart":"20191126",
-			            "usePeriodEnd":"20191225",
-			            "indicatorQty":2511,
-			            "usageQty":331,
-			            "factorQty":330.8676,
-			            "useEnergyQty":14096.6141,
-			            "chargeAmt":255310.0,
-			            "receiveAmt":255310.0,
-			            "unpayAmt":0.0,
-			            "paymentType":"자동이체(은행)",
-			            "paymentFlag":"완납",
-			            "paymentFlagCode":"1",
-			            "useCode":"2",
-			            "paymentCodeCard":"2",
-			            "paymentCodeBank":"2",
-			            "payDate":"20200120",
-			            "deadlineFlag":"20",
-			            "jibunAddressType1":"서울 마포구 *** 18-30번지 103호 ",
-			            "newAddressType1":"서울특별시 마포구 ********,103호 (***)",
-			            "jibunAddressType2":"서울 마포구 대흥동 ****",
-			            "newAddressType2":"서울특별시 마포구 고산18길 ****",
-			            "paymentCode":"2",
-			            "payable":false
-			         }
-			      ]
-			   }
-			}
-		 */
-		
-		String contractNum = DataUtils.getString(params, "contractNum", "");
-		String uri = "/api/chattalk/contractInfo/" + contractNum + "/detail+lastbill";
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
-
-		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
-		
-		return null;
+		return isWorking.equals("Y") ? 1 : 2;
 	}
 	
+	
+	// 8. 고객의 계약정보 목록
 	@Override
-	public Map<String, Object> getContractMonthlyDetail(Map<String, Object> params){
+	public List<Map<String, Object>> contracts(long useContractNum) {
+		// TODO Auto-generated method stub
+		// api/matt/contracts?member=:member GET
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> obj1 = new HashMap<String, Object>();
+		Map<String, Object> obj2 = new HashMap<String, Object>();
 		
-		/*
-			{
-			   "useContractNum":"6000000486",
-			   "requestYm":"201911",
-			   "deadlineFlag":"20",
-			   "paymentDeadline":"20191120",
-			   "basicRate":0.0,
-			   "useRate":0.0,
-			   "discountAmt":0.0,
-			   "replacementCost":0.0,
-			   "cancelCharge":0.0,
-			   "vat":0.0,
-			   "overdueAmt":0.0,
-			   "adjustmentAmt":0.0,
-			   "adjustmentAltAmt":0.0,
-			   "cutAmt":0.0,
-			   "chargeAmt":0.0,
-			   "paymentType":null,
-			   "paymentTypeCode":null,
-			   "thisMonthIndicatorQty":2173,
-			   "lastMonthIndicatorQty":2173,
-			   "usageQty":0,
-			   "factor":0.9996,
-			   "factorQty":0.0,
-			   "averageEnergyQty":42.902,
-			   "useEnergyQty":0.0,
-			   "meterNum":"300000486",
-			   "meterIdNum":"118411000671",
-			   "gmtrYmFlag":"10",
-			   "usePeriodStart":"20190926",
-			   "usePeriodEnd":"20191025",
-			   "lastMonthUsageQty":0.0,
-			   "annualMonthUsageQty":0.0,
-			   "payDate":" ",
-			   "unpayAmt":0.0,
-			   "bank":"우리은행",
-			   "accountNum":"08624996502001",
-			   "accountHolder":"이원준",
-			   "prePayDate":null,
-			   "readDate":"26",
-			   "readCode":"정기검침(PDA)",
-			   "meterman":"신현숙",
-			   "productYmd":"20190708",
-			   "productCost1":0.0,
-			   "productCost2":16.4653,
-			   "productName1":" ",
-			   "productName2":"업무용난방",
-			   "virtualAccount":{
-			      "accountName":"이원준",
-			      "accounts":[
-			         {
-			            "bankCode":"020",
-			            "name":"우리은행(은행)",
-			            "account":"29800105-218194"
-			         },
-			         {
-			            "bankCode":"003",
-			            "name":"기업은행(은행)",
-			            "account":"59503752-997969"
-			         },
-			         {
-			            "bankCode":"088",
-			            "name":"신한은행(은행)",
-			            "account":"27990102-779195"
-			         },
-			         {
-			            "bankCode":"027",
-			            "name":"한국씨티(은행)",
-			            "account":"17608049-92131"
-			         },
-			         {
-			            "bankCode":"081",
-			            "name":"KEB하나(은행)",
-			            "account":"25291057-176037"
-			         },
-			         {
-			            "bankCode":"023",
-			            "name":"SC은행",
-			            "account":"43416000-479196"
-			         },
-			         {
-			            "bankCode":"011",
-			            "name":"농협은행",
-			            "account":"79001576-804385"
-			         },
-			         {
-			            "bankCode":"004",
-			            "name":"국민은행(은행)",
-			            "account":"80179078-206193"
-			         }
-			      ]
-			   },
-			   "reportingDate":"20191111",
-			   "regiNum":"8027100196",
-			   "supplyRegiNum":"1098131605",
-			   "supplyPrice":0.0,
-			   "supplyPriceVat":0.0,
-			   "useCode":"2",
-			   "paymentCodeCard":"2",
-			   "paymentCodeBank":"2",
-			   "paymentFlag":"완납",
-			   "paymentFlagCode":"1",
-			   "customerNum":"1004538395",
-			   "customerName":"김태수",
-			   "customerCellPhoneNumber":{
-			      "num1":"010",
-			      "num2":"8324",
-			      "num3":"8360"
-			   },
-			   "taxBillFlag":"10",
-			   "tranReqDateCard":"20191118",
-			   "tranReqDateBank":"20191118",
-			   "payMethodCode":"20",
-			   "payMethod":"자동이체(은행)",
-			   "stopHoldPlanDate":" ",
-			   "unpayInfos":[
-			      
-			   ],
-			   "previousUnpayInfos":[
-			      
-			   ],
-			   "jibunAddressType1":"서울 마포구 *** 18-30번지 103호 ",
-			   "newAddressType1":"서울특별시 마포구 ********,103호 (***)",
-			   "jibunAddressType2":"서울 마포구 대흥동 ****",
-			   "newAddressType2":"서울특별시 마포구 고산18길 ****",
-			   "allUnpayAmounts":0.0,
-			   "allPayAmounts":0.0,
-			   "previousUnpayAmounts":0.0,
-			   "paymentCode":"2",
-			   "receiveAmt":0.0,
-			   "payable":false,
-			   "stopHoldPlanYn":false,
-			   "socialWelfareDiscount":false
-			}
-		 */
+		obj1.put("useContractNum", "6000000486");
+		obj1.put("main", 1);
+		obj1.put("alias", "우리집");
+		obj1.put("jinbunAddress", null);
+		obj1.put("newAddress", "서울특별시 마포구 ********,103호 (***)");
 		
-		String contractNum = DataUtils.getString(params, "contractNum", "");
-		String requestYm = DataUtils.getString(params, "requestYm", "");
-		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
+		obj2.put("useContractNum", "6000000502");
+		obj2.put("main", 0);
+		obj2.put("alias", "장모님");
+		obj2.put("jinbunAddress", null);
+		obj2.put("newAddress", "서울특별시 마포구 ******, (****)");
 		
-		String uri = "/api/bill/" + contractNum + "/detail?requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
-
-		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
+		list.add(obj1);
+		list.add(obj2);
 		
-		return null;
+		return list;
+	}
+	
+	
+	// 9. 고객 profile 정보.
+	@Override
+	public Map<String, Object> getProfile(long member) {
+		// TODO Auto-generated method stub
+		// api/matt/profile?member=:member GET
+		
+		Map<String, Object> profile = new HashMap<String, Object>();
+		profile.put("name", "이유진");
+		profile.put("handphone", "01044588856");
+		profile.put("cash", 5000);
+		
+		return profile;
 	}
 
-	@Override
-	public int isHoliday(Map<String, Object> params) {
-		/*
-			{
-			  "value" : false
-			}
-		 */
-		
-		String day = DataUtils.getString(params, "day", "");
-		String cmd = DataUtils.getString(params, "cmd", "checkHoliday");
-		
-		String uri = "/api/safescg/calendar/" + day + "?cmd=" + cmd;
-		String apiUrl = this.domainProperty.getRelayScg() + uri;
-		this.logger.debug("url : " + apiUrl);
-
-		Map<String, Object> resultData = this.httpUtils.getApiForMap(apiUrl);
-		if(resultData != null) {
-			this.logger.debug("resultData : " + resultData.toString());
-			
-		}else {
-			this.logger.debug("resultData is null");
-			
-		}
-		
-		return 0;
-	}
+	
 
 	@Override
 	public String getCompanyId() {
@@ -724,40 +297,5 @@ public class CompanyScg implements ICompany {
 	@Override
 	public String getCompanyName() {
 		return Constant.COMPANY_NAME_SEOUL;
-	}
-
-	@Override
-	public int isWorking() {
-		int iswork = 1;
-		
-		Calendar cal = Calendar.getInstance();
-		
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH) + 1;
-		int day = cal.get(Calendar.DAY_OF_MONTH);
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		int min = cal.get(Calendar.MINUTE);
-		int sec = cal.get(Calendar.SECOND);
-		System.out.println("현재 시각은 " + year + "년도 " + month + "월 " + day + "일 " + hour + "시 " + min + "분 " + sec + "초입니다.");
-		
-		if(hour < 9 || hour > 17 || (hour == 17 && min > 30)) {
-			// 근무 외 시간.(9시 이전, 17시 30분 이후)
-			iswork = 2;
-		
-		}else{
-			if(false) {	// 휴일 또는 근무 외 시 (MIS를 통해 확인)	
-				iswork = 2;
-				
-			}else {		// 근무일자일 경우
-				if(hour == 12) {
-					// 점심시간.
-					iswork = 3;
-				}else {
-					
-				}
-			}
-		}
-		
-		return iswork;
 	}
 }

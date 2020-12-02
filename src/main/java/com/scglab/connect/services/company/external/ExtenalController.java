@@ -1,5 +1,6 @@
 package com.scglab.connect.services.company.external;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,9 +58,9 @@ public class ExtenalController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{companyId}/members", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="직원목록 조회", description = "직원목록 조회")
-	public Object members(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<Map<String, Object>> members(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		return getCompany(companyId).getMembers();
+		return getCompany(companyId).employees();
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/push", produces = MediaType.APPLICATION_JSON_VALUE)

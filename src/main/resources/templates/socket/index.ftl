@@ -131,12 +131,26 @@
 		    </div>
 		    <div class="col-md-3">
 		    	<h4>계약정보 </h4>
+		    	<select v-model="useContractNum">
+		    		<template v-for="(obj, count) in contracts">
+			    		<option v-bind:value="obj.useContractNum">{{obj.newAddress}}</option>
+			    	</template>
+		    	</select>
 		    	<ul class="list-group">
-		            <li class="list-group-item" v-for="obj in contracts">
-		                {{obj.createdate}} - {{obj.workdate}}</a>
-		            </li>
+		            <li>사용계약번호 : {{selectedContract.contractInfo.useContractNum}}</li>
+		            <li>계약상태 : {{selectedContract.contractInfo.contractStatus}}</li>
+		            <li>계약자성명 : {{selectedContract.contractInfo.customerName}}</li>
+		            <li>휴대폰번호 : </li>
+		            <li>주소 : </li>
+		            <li>검침기준일 : {{selectedContract.contractInfo.gmtrBaseDay}}</li>
+		            <li>청구서 : {{selectedContract.contractInfo.billSendMethod}}</li>
+		            <li>납부방법 : {{selectedContract.contractInfo.paymentType}}</li>
+		            <li>최근 계량기 교체일 : </li>
+		            <li>최근 안전점검일자 : </li>
+		            <li>잔여캐시 : </li>
+		            <li>해당 고객센터 : {{selectedContract.contractInfo.centerName}} {{selectedContract.contractInfo.centerPhone}}</li>
 		       	</ul>
-		    	<h4>이전 상담목록</h4>
+		       	<h4>상담목록</h4>
 		    	<ul class="list-group">
 		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="toggleHistory(index)">
 		                {{obj.create_date}} - {{obj.end_date}}
@@ -162,12 +176,12 @@
             el: '#app',
             data: {
             	socket: {
-            		host: "http://localhost",
+            		host: "//localhost",
             		port: 8080,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
-            		connectEndPoint: "/ws-stomp",			// 연결 end point
+            		connectEndPoint: "/ws",			// 연결 end point
 	            	sendEndPoint: '/pub/socket/message',	// 메세지 전송 end point
 	            	roomPrefix: '/sub/socket/room/',			// 조인(구독)룸 end point의 prefix
 	            	lobbyName: 'LOBBY1',					// 서울도시가스 조인(구독) 기본룸 Id (인천도시가스 - LOBBY2)
@@ -183,7 +197,38 @@
 				activeRooms: [],		// 진행상담목록
 				finishRooms: [],		// 종료상담목록
 				histories: [],			// 이전상담목록
-				contracts: [],			// 계약정보
+				contracts: [],			// 사용계약목록
+				selectedContract: {
+				  "contractInfo": {
+				    "gmtrBaseDay": "",
+				    "contractStatus": "",
+				    "telNumber": {
+				      "num1": "",
+				      "num3": "",
+				      "num2": ""
+				    },
+				    "meterNum": "",
+				    "centerCode": "",
+				    "centerPhone": "",
+				    "useContractNum": "",
+				    "billSendMethod": "",
+				    "customerName": "",
+				    "productName": "",
+				    "centerName": "",
+				    "paymentType": ""
+				  },
+				  "history": [
+				    {
+				      "deadlineFlag": "",
+				      "requestYm": ""
+				    },
+				    {
+				      "deadlineFlag": "",
+				      "requestYm": ""
+				    }
+				  ]
+				},	// 선택된 사용계약상세정보
+				useContractNum: "",		// 사용계약번호
 				messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
 				selectedRoom: {},	// 선택된 룸 정보
@@ -331,8 +376,15 @@
                 		headers = {'token': this.token}		// 구독 요청시 전달하는 헤더.
                 	);
                 	
-                	// 이전 상담목록 조회
-                	this.getHistory();
+                	
+                	// 대기룸이 아닐경우.
+                	if(this.socket.roomId != this.socket.lobbyName){
+	                	// 이전 상담목록 조회
+	                	this.getHistory();
+	                	
+	                	// 계약정보 조회
+	                	this.getContracts();
+	                }
                 },
                 
 
@@ -542,26 +594,23 @@
 				
 				// 이전 상담목록 조회.
 				getHistory: function(){
-					if(this.socket.roomId != this.socket.lobbyName){	// 대기룸이 아닐경우.
-					
-						var uri = '/api/room/' + this.socket.roomId + '/findSearchJoinHistory';
-	                    axios.get(uri, this.header).then(response => {
-	                        // prevent html, allow json array
-							if(Object.prototype.toString.call(response.data) === "[object Array]"){
-								//this.histories = response.data;
-								histories = response.data;
-								for(var i=0; i<histories.length; i++){
-									histories[i].toggle = false;
-								}
-								this.histories = histories;
-								
-								console.log(">> 이전상담 목록");
-								console.log(this.histories);
+					var uri = '/api/room/' + this.socket.roomId + '/findSearchJoinHistory';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							//this.histories = response.data;
+							histories = response.data;
+							for(var i=0; i<histories.length; i++){
+								histories[i].toggle = false;
 							}
-	                    }, function(e){
-	                    	console.log("error : " + e.message);
-	                    });
-					}
+							this.histories = histories;
+							
+							console.log(">> 이전상담 목록");
+							console.log(this.histories);
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
 				},
 				
 				// 이전 상담 대화내용 조회
@@ -569,6 +618,42 @@
 					console.log('history index : ' + index);
 					this.histories[index].toggle = !this.histories[index].toggle;
 				},
+				
+				// 사용계약정보 목록 조회
+				getContracts: function(){
+				
+					console.log(this.selectedRoom);
+					var gasappMemberNumber = this.selectedRoom.gasappMemberNumber;
+					console.log('gasappMemberNumber : ' + gasappMemberNumber);
+					
+					var uri = '/api/customer/' + gasappMemberNumber + '/contracts';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							this.contracts = response.data;
+							this.useContractNum = this.contracts[0].useContractNum;  
+							
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+				},
+				
+				// 사용계약 상세정보 조회
+				getContractDetail: function(){
+				
+					var gasappMemberNumber = this.selectedRoom.gasappMemberNumber;
+					console.log('gasappMemberNumber : ' + gasappMemberNumber);
+					
+					var uri = '/api/customer/' + gasappMemberNumber + '/contracts/' + this.useContractNum;
+                    axios.get(uri, this.header).then(response => {
+                    	this.selectedContract = response.data;
+						console.log(this.selectedContract);
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+				},
+				
 				
 				// 대기상담 가져오기
 				matchRoom: function(roomId){
@@ -622,7 +707,12 @@
 					}
 				},
                 
-            }
+            }, watch: {
+				useContractNum: function (val) {
+					this.useContractNum = val;
+					this.getContractDetail();
+			    }
+			}
         });
     </script>
   </body>

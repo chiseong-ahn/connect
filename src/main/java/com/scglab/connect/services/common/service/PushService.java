@@ -32,16 +32,16 @@ public class PushService {
 	 * @param message
 	 * @throws JsonProcessingException 
 	 */
-	public void sendPush(int userno, String message) {
-		this.logger.debug("[Send push] userno - " + userno);
+	public void sendPush(long member, String message) {
+		this.logger.debug("[Send push] member - " + member);
 		this.logger.debug("[Send push] message - " + message);
 		
 		HttpUtils httpUtils = new HttpUtils();
 		
-		String url = "https://" + this.domainProperty.getRelayInc() + "/api/matt/push";
+		String url = "https://" + this.domainProperty.getRelayScg() + "/api/matt/push";
 		Map<String, Object> params = new HashMap<String, Object>();
 		
-		params.put("member", userno);
+		params.put("member", member);
 		params.put("message", message);
 		
 		HttpHeaders headers = new HttpHeaders();

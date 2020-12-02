@@ -1,6 +1,9 @@
 package com.scglab.connect.services.customer;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,5 +123,21 @@ public class CustomerController {
 		return this.customerService.update(params);
 	}
 	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/{userno}/contracts", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="고객의 사용계약목록 조회", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+    public List<Map<String, Object>> contracts(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "userno", description = "가스앱 회원번호", required = true, in = ParameterIn.PATH, example = "3825") @PathVariable int userno, HttpServletRequest request) throws Exception {
+		params.put("userno", userno);
+		return this.customerService.contracts(params, request);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/{userno}/contracts/{useContractNum}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="사용계약번호 상세 정보", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+    public Map<String, Object> contractInfo(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "userno", description = "가스앱 회원번호", required = true, in = ParameterIn.PATH, example = "3825") @PathVariable int userno, @Parameter(name = "useContractNum", description = "사용계약번호", required = true, in = ParameterIn.PATH, example = "6000000502") @PathVariable String useContractNum, HttpServletRequest request) throws Exception {
+		params.put("userno", userno);
+		params.put("useContractNum", useContractNum);
+		return this.customerService.contractInfo(params, request);
+	}
 }
 	

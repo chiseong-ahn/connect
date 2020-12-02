@@ -383,7 +383,7 @@ public class SocketService {
 				int messageType = 0;
 				
 				// 회사별 근무상태 조회. (1-근무 중, 2-근무 외 시간, 3-점심시간.)
-				int isWorkType = company.isWorking();
+				int isWorkType = company.getWorkCalendar();
 				
 				if(isWorkType == 1) {	// 근무중일 경우.(1)
 					
@@ -406,10 +406,26 @@ public class SocketService {
 				}
 				this.logger.debug("messageType : " + messageType);
 				
-				// [Socket] 시작메세지 조회 및 전송.
-				String startMessage = this.messageHandler.getMessage("socket.startmessage.type" + messageType);				
+				// 시작메세지 조회
+				String startMessage = this.messageHandler.getMessage("socket.startmessage.type" + messageType);
+				
+				// [DB] 신규 메세지 생성.
+				params = new HashMap<String, Object>();
+				params.put("companyId", payload.getCompanyId());
+				params.put("roomId", payload.getRoomId());
+				params.put("speakerId", profile.getSpeakerId());
+				params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+				params.put("isSystemMessage", 1);
+				params.put("message", startMessage);
+				params.put("messageAdminType", 0);	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
+				params.put("isEmployee", 1);
+				params.put("messageDetail", "");
+				params.put("templateId", "");
+				Message newMessage = this.messageDao.create(params);
+				
+				// [Socket] 시작메시지 전송.
 				sendData = new HashMap<String, Object>();
-				sendData.put("message", startMessage);
+				sendData.put("message", newMessage);
 				sendMessage(EventName.START_MESSAGE, payload.getCompanyId(), payload.getRoomId(), Target.CUSTOMER, sendData);
 				
 			}

@@ -10,11 +10,11 @@ public interface ICompany {
 	
 	/**
 	 * 
-	 * @Method Name : getUser
+	 * @Method Name : login
 	 * @작성일 : 2020. 10. 20.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 로그인
+	 * @Method 설명 : 1. 상담사 로그인
 	 * @param id - 로그인 Id
 	 * @param password - 비밀번호.
 	 * @return
@@ -23,97 +23,104 @@ public interface ICompany {
 	
 	/**
 	 * 
-	 * @Method Name : getMembers
+	 * @Method Name : employees
 	 * @작성일 : 2020. 11. 19.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 직원 목록 가져오기
+	 * @Method 설명 : 2. 직원 목록 가져오기
 	 * @return
 	 */
-	public List<Map<String, Object>> getMembers();
+	public List<Map<String, Object>> employees();
 	
 	/**
 	 * 
-	 * @Method Name : getMemberInfo
+	 * @Method Name : employee
 	 * @작성일 : 2020. 10. 20.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 도시가스 직원정보 가져오기.
+	 * @Method 설명 : 3. 도시가스 직원정보 가져오기.
 	 * @param userno
 	 * @return
 	 */
-	public Member getMemberInfo(Map<String, Object> params);
+	public Map<String, Object> employee(String id);
 	
 	/**
 	 * 
-	 * @Method Name : sendMinwon
+	 * @Method Name : minwons
 	 * @작성일 : 2020. 10. 23.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 민원 등록(전송)
+	 * @Method 설명 : 4. 민원 등록
 	 * @return
 	 */
-	public int sendMinwon(Map<String, Object> params);
+	public int minwons(Map<String, Object> params);
 	
 	/**
 	 * 
-	 * @Method Name : getContractList
+	 * @Method Name : contractInfo
 	 * @작성일 : 2020. 11. 19.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 고객의 계약정보 목록 가져오기.
-	 * @return
+	 * @Method 설명 : 5. 사용계약번호 상세 정보
+	 * @Param useContractNum 사용계약번호 (6000000486)
+	 * @return 
 	 */
-	public List<Map<String, Object>> getContractList(Map<String, Object> params);
-	
-	/**
-	 * 
-	 * @Method Name : getCustomerInfo
-	 * @작성일 : 2020. 11. 19.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 고객 profile 정보.
-	 * @param id
-	 * @return
-	 */
-	public Map<String, Object> getCustomerInfo(Map<String, Object> params);
+	public Map<String, Object> contractInfo(String useContractNum);
 	
 	
 	
 	/**
 	 * 
-	 * @Method Name : getContractDetail
+	 * @Method Name : contractBilDetail
 	 * @작성일 : 2020. 10. 20.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 사용계약번호 상세 정보.
-	 * @param contractNo
+	 * @Method 설명 : 6. 사용계약번호 결제 상세 정보
+	 * @param useContractNum 사용계약번호. (6000000486)
+	 * 			requestYm - 요청월. (202001)
+	 * 			deadlineFlag - 납기구분. (20)
 	 * @return
 	 */
-	public Contract getContractDetail(Map<String, Object> params);
+	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag);
+	
 	
 	/**
 	 * 
-	 * @Method Name : getContractMonthlyDetail
-	 * @작성일 : 2020. 11. 19.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 사용계약번호 월별 결제 상세정보.
-	 * @param params
-	 * @return
-	 */
-	public Map<String, Object> getContractMonthlyDetail(Map<String, Object> params);
-	
-	/**
-	 * 
-	 * @Method Name : isHoliday
+	 * @Method Name : getWorkCalendar
 	 * @작성일 : 2020. 10. 26.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 휴일여부 체크
+	 * @Method 설명 : 7. 휴일 여부 체크
 	 * @return
 	 */
-	public int isHoliday(Map<String, Object> params);
+	public int getWorkCalendar();
+	
+	
+	/**
+	 * 
+	 * @Method Name : contracts
+	 * @작성일 : 2020. 12. 2.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 8. 고객의 계약정보 목록
+	 * @param member
+	 * @return
+	 */
+	public List<Map<String, Object>> contracts(long member);
+	
+	
+	/**
+	 * 
+	 * @Method Name : getProfile
+	 * @작성일 : 2020. 11. 19.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 9. 고객 profile 정보.
+	 * @param member : 가스앱 회원번호
+	 * @return
+	 */
+	public Map<String, Object> getProfile(long member);
+	
 	
 	/**
 	 * 
@@ -136,25 +143,6 @@ public interface ICompany {
 	 * @return
 	 */
 	public String getCompanyName();
-	
-	/**
-	 * 
-	 * @Method Name : isWorking
-	 * @작성일 : 2020. 10. 20.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 상담업무 근무상태 조회(
-	 * @return
-	 */
-	public int isWorking();
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

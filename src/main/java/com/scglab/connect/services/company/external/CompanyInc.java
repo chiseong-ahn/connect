@@ -13,55 +13,55 @@ public class CompanyInc implements ICompany {
 	@Override
 	public boolean login(String id, String password) {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override
-	public List<Map<String, Object>> getMembers() {
+	public List<Map<String, Object>> employees() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Member getMemberInfo(Map<String, Object> params) {
+	public Map<String, Object> employee(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int sendMinwon(Map<String, Object> params) {
+	public int minwons(Map<String, Object> params) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public List<Map<String, Object>> getContractList(Map<String, Object> params) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public Map<String, Object> getCustomerInfo(Map<String, Object> params) {
+	public Map<String, Object> contractInfo(String useContractNum) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Contract getContractDetail(Map<String, Object> params) {
+	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public Map<String, Object> getContractMonthlyDetail(Map<String, Object> params){
-		
 		return null;
 	}
 
 	@Override
-	public int isHoliday(Map<String, Object> params) {
+	public int getWorkCalendar() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<Map<String, Object>> contracts(long member) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> getProfile(long member) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -76,12 +76,6 @@ public class CompanyInc implements ICompany {
 		return null;
 	}
 
-	@Override
-	public int isWorking() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
 	
 
 

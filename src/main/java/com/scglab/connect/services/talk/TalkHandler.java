@@ -193,7 +193,7 @@ public class TalkHandler {
 			    	ICompany company = this.commonService.getCompany(profile.getCompanyId());
 			    	
 					// 근무상태 (1-근무 중, 2-근무 외 시간, 3-점심시간.
-			    	int isWorkType = company.isWorking();
+			    	int isWorkType = company.getWorkCalendar();
 			    	if(isWorkType == 1) {
 			    		// 로비에 상담가능 상담사 존재확인.
 			    		isWorkType = this.chatRoomRepository.getUserCount(getLobbySpace(profile.getCompanyId())) > 0 ? 0 : 1;

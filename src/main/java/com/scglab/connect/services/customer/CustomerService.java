@@ -1,8 +1,11 @@
 package com.scglab.connect.services.customer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,22 +13,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
+import com.scglab.connect.services.company.external.ICompany;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class CustomerService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private CustomerDao customerDao;
-	
-	@Autowired
-	private JwtService jwtService;
+	@Autowired private MessageHandler messageService;
+	@Autowired private CustomerDao customerDao;
+	@Autowired private JwtService jwtService;
+	@Autowired private LoginService loginService;
+	@Autowired private CommonService commonService;
 	
 	/**
 	 * 
@@ -145,5 +149,56 @@ public class CustomerService {
 		data.put("isSuccess", count > 0 ? true : false);
 		
 		return data;
+	}
+	
+	/**
+	 * 
+	 * @Method Name : contrancts
+	 * @작성일 : 2020. 12. 2.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객 사용계약 목록 조회.
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Map<String, Object>> contracts(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		ICompany company = this.commonService.getCompany(member.getCompanyId()); 
+		
+		int userno = DataUtils.getInt(params, "userno", 0);
+		List<Map<String, Object>> list = company.contracts(userno);
+		
+		for(Map<String, Object> obj : list) {
+			String useContractNum = DataUtils.getString(obj, "useContractNum", "");
+			if(!useContractNum.equals("")) {
+				Map<String, Object> contractInfo = company.contractInfo(useContractNum);
+				obj.put("contract", contractInfo);
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @Method Name : contractInfo
+	 * @작성일 : 2020. 12. 2.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 사용계약번호 상세 정보
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> contractInfo(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		ICompany company = this.commonService.getCompany(member.getCompanyId());
+		String useContractNum = DataUtils.getString(params, "useContractNum", "");
+		if(!useContractNum.equals("")) {
+			return company.contractInfo(useContractNum);
+		}
+		return null;
 	}
 }
