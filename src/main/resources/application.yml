@@ -1,0 +1,164 @@
+# 서버 설정.
+server:
+  port: 8080
+  servlet:
+    context-path: '/'
+    session:
+      timeout: 600
+      cookie:
+        domain: localhost
+        path: '/'
+  error:
+    include-exception: true
+    include-stacktrace: never
+    path: /error/error
+    whitelabel:
+      enabled: false
+
+
+
+# 스프링부트 기본 설정.
+spring:
+  application:
+    name: 상담톡 v2.0 
+  banner:
+    charset: UTF-8
+    location: 'classpath:config/banner.txt'
+  profiles:
+    active: local
+  main:
+    web-application-type: none
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  messages:
+    basename: messages/message
+    encoding: UTF-8
+  freemarker:
+    cache: false
+  datasource:
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbc-url: 'jdbc:log4jdbc:mysql://183.102.12.111:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      jdbc-url: 'jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      username: cstalk
+      password: cstalk12#$
+      idle-timeout: 10000
+      connection-timeout: 300000
+      maximumPoolSize: 10
+      minimum-idle: 5
+      max-lifetime: 60000
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+        
+        
+
+# Prometheus 설정.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  metrics:
+    tags:
+      application: ${spring.application.name}  
+
+
+
+---
+# 로컬환경 
+spring:
+  profiles: local
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  redis:
+    host: localhost
+    port: 6379
+  freemarker:
+    template-loader-path: 'classpath:/templates'
+    suffix: .ftl
+  main:
+    web-application-type: servlet
+
+domain:
+  sdtalk: localhost.gasapp.co.kr
+  relay-scg: relay-scg-dev.gasapp.co.kr
+  relay-inc: relay-inc.dev.gasapp.co.kr
+  
+path:
+  upload: /Volumes/Data/_upload
+
+# Logging 설정.
+logging:
+  config: 'classpath:config/logback-local.xml'
+
+# Swagger 설정.
+springdoc:
+  cache:
+    disabled: true
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    displayRequestDuration: true
+    groups-order: ASC
+
+
+
+---
+# 개발환경 
+spring:
+  profiles: dev
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  freemarker:
+    template-loader-path: 'classpath:/templates'
+    suffix: .ftl
+  main:
+    web-application-type: servlet
+
+domain:
+  sdtalk: cstalk-dev.gasapp.co.kr
+  relay-scg: relay-api-dev.gasapp.co.kr
+  relay-inc: relay-inc.dev.gasapp.co.kr
+  
+path:
+  upload: /data/project/cstalk/apache/data/attach
+
+# Logging 설정.
+logging:
+  config: 'classpath:config/logback-dev.xml'
+
+# Swagger 설정.
+springdoc:
+  cache:
+    disabled: true
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    displayRequestDuration: true
+    groups-order: ASC
+
+
+
+---
+# 운영환경 
+spring:
+  profiles: live
+  
+logging:
+  config: 'classpath:config/logback-live.xml'

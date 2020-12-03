@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="link">
+
+	<parameterMap type="com.scglab.connect.services.link.Link" id="link"></parameterMap>
+	<resultMap type="com.scglab.connect.services.link.LinkDetail" id="linkDetail"></resultMap>
+	<resultMap type="com.scglab.connect.services.link.LinkMenu" id="linkMenu"></resultMap>
+
+	<!-- 링크메뉴 전체 조회 -->
+	<select id="findMenuAll" parameterType="map" resultMap="linkDetail">
+		SELECT *
+		FROM link_detail
+		WHERE company_id = #{companyId}
+		AND menu_id = #{menuId}
+		AND enable = 1
+		ORDER BY link_text ASC
+	</select>
+	
+	<!-- 활성화되어있는 메뉴에 속한 링크 상세 조회 -->
+	<select id="findDetailByMenuIdAndEnableStatus" parameterType="map" resultMap="linkMenu">
+		SELECT *
+		FROM link_menu
+		WHERE company_id = #{companyId}
+		ORDER BY name ASC
+	</select>
+	
+	<!-- 링크상세 전체 조회 -->
+	<select id="findDetailAll" parameterType="map" resultMap="linkDetail">
+		SELECT *
+		FROM link_detail
+		WHERE company_id = #{companyId}
+	</select>
+</mapper>

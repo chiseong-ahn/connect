@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="stats">
+	
+	<!-- 통계 : 회원 전체 기준 -->
+	<select id="member" parameterType="map" resultType="map">
+		
+	</select>
+	
+	<!-- 통계 : 오늘의 나의 통계정보 -->
+	<select id="myToday" parameterType="map" resultType="map">
+		
+	</select>
+	
+	<!-- 통계 : 기간 검색 -->
+	<select id="search" parameterType="map" resultType="map">
+		
+	</select>
+	
+	<!-- 통계 : 상담사별 분석 -->
+	<select id="customerAnalysis" parameterType="map" resultType="map">
+		
+	</select>
+	
+	<!-- 통계 : 상담 사용 추이 -->
+	<select id="useHistory" parameterType="map" resultType="map">
+		
+	</select>
+	
+	<!-- 통계 : 문의 유형별 통계 -->
+	<select id="hashtag" parameterType="map" resultType="map">
+		
+	</select>
+	
+</mapper>
+
+

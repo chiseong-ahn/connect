@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="keyword">
+
+	<parameterMap type="com.scglab.connect.services.keyword.Keyword" id="keyword"></parameterMap>
+	<resultMap type="com.scglab.connect.services.keyword.Keyword" id="keyword"></resultMap>
+
+	<!-- 키워드 카운트 조회 -->
+	<select id="findCount" parameterType="map" resultType="int">
+		SELECT count(*) as cnt
+		FROM keyword2 
+		WHERE company_id = #{companyId}
+	</select>
+	
+	<!-- 키워드 목록 -->
+	<select id="findAll" parameterType="map" resultMap="keyword">
+		SELECT * 
+		FROM keyword2 
+		WHERE company_id = #{companyId}
+	</select>
+	
+	<!-- 키워드 상세 조회 -->
+	<select id="getDetail" parameterType="map" resultMap="keyword">
+		SELECT * 
+		FROM keyword2 
+		WHERE id = #{id}
+	</select>
+	
+	<!-- 키워드 등록 -->
+	<insert id="create" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO keyword(company_id, name, update_member_id) 
+		VALUES (#{companyId}, #{name}, #{loginId})
+	</insert>
+	
+	<!-- 이름으로 키워드 검색 -->
+	<select id="getByName" parameterType="map" resultMap="keyword">
+		SELECT *
+		FROM keyword2
+		WHERE  company_id = #{companyId}
+		AND name = #{name}
+	</select>
+	
+	<!-- 템플릿에 속한 키워드 조회 -->
+	<select id="getByTemplateId" parameterType="map" resultMap="keyword">
+		SELECT *
+		FROM keyword2
+		WHERE id IN (
+			SELECT keyword_id
+			FROM template_keyword
+			WHERE template_id = #{templateId}
+		)
+	</select>
+</mapper>

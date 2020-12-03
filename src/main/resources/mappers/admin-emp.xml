@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sdtalk.admin.emp">
+
+	<parameterMap type="com.scglab.connect.services.adminmenu.emp.Emp" id="emp"></parameterMap>
+	<resultMap type="com.scglab.connect.services.adminmenu.emp.Emp" id="emp"></resultMap>
+	
+
+	<!-- 계정 카운트 조회 -->
+	<select id="selectCount" parameterType="map" resultType="int">
+		select count(*) as cnt 
+		from Emp e 
+			inner join Speaker s on e.speaker = s.id 
+		where e.cid = #{cid} 
+		and e.auth > 1
+		<if test='keyfield != null and keyfield != "" and keyword != null and keyword != ""'>
+			<choose>
+				<when test='keyfield == "name"'>
+					and s.name like concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "empno"'>
+					and e.empno = concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "name"'>
+					and e.auth = #{keyword} 				
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+	<!-- 계정목록 조회 -->
+	<select id="selectAll" parameterType="map" resultMap="emp">
+		select s.name, e.id, e.cid, e.speaker, e.auth, e.empno as empno, e.createdate, e.workdate, e.profileimg, e.state
+		from Emp e 
+			inner join Speaker s on e.speaker = s.id
+		where e.cid = #{cid} 
+		and e.auth > 1
+		<if test='keyfield != null and keyfield != "" and keyword != null and keyword != ""'>
+			<choose>
+				<when test='keyfield == "name"'>
+					and s.name like concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "empno"'>
+					and e.empno = concat('%', #{keyword}, '%')
+				</when>
+				<when test='keyfield == "name"'>
+					and e.auth = #{keyword} 				
+				</when>
+			</choose>
+		</if>
+		order by e.id desc
+	</select>
+	
+	<!-- 계정정보 조회 -->
+	<select id="selectOne" parameterType="map" resultMap="emp">
+		<![CDATA[
+			select e.id, e.cid, e.speaker, e.auth, e.empno as empno, e.createdate, e.workdate, e.profileimg, e.state
+			from Emp e
+			where e.id = #{id} 
+			limit 1
+		]]>
+	</select>
+	
+	<!-- 아이디를 통한 계정정보 조회 -->
+	<select id="selectOneForEmpno" parameterType="map" resultMap="emp">
+		<![CDATA[
+			select e.id, e.cid, e.speaker, e.auth, e.empno as empno, e.createdate, e.workdate, e.profileimg, e.state
+			from Emp e
+			where e.empno = #{empno} 
+			limit 1
+		]]>
+	</select>
+	
+	<!-- 계정정보 등록 -->
+	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		Call reg_emp(#{cid}, #{empno}, #{name}, #{auth})
+	</insert>
+	
+	<!-- 계정정보 수정 -->
+	<update id="update" parameterType="map">
+		update Emp 
+		set cid = #{cid}
+			<if test='empno != "" and empno != null'>
+				,empno = #{empno}
+			</if>
+			<if test='auth != "" and auth != null'>
+				,auth = #{auth}
+			</if>
+			<if test='state != "" and state != null'>
+               	,state = #{state}
+               </if>
+               <if test='profileimg != "" and profileimg != null'>
+               	,profileimg = #{profileimg}
+               </if>
+ 			where id = #{id}
+	</update>
+	
+	<!-- 계정정보 삭제 -->
+	<delete id="delete">
+		<![CDATA[
+			delete from Emp
+			where id = #{id}
+		]]>
+	</delete>
+</mapper>

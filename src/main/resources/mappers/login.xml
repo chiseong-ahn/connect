@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="login">
+
+	<parameterMap type="com.scglab.connect.services.member.Member" id="member"></parameterMap>
+	<resultMap type="com.scglab.connect.services.member.Member" id="member"></resultMap>
+	
+	<select id="profileCount" parameterType="map" resultType="int">
+		SELECT count(*) as cnt
+		FROM member as a
+		WHERE 1=1
+		AND a.company_id = #{companyId}
+		AND a.login_name = #{loginName}
+	</select>
+	
+	<select id="findProfile" parameterType="map" resultMap="member">
+		SELECT *
+		FROM member As a
+		WHERE 1=1
+		AND a.company_id = #{companyId} 
+		AND a.login_name = #{loginName}
+	</select>
+	
+	<insert id="saveProfile" parameterMap="member"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		CALL regist_member(#{companyId}, #{loginName}, #{name}, #{authLevel})
+	</insert>
+</mapper>

@@ -1,0 +1,19 @@
+[ {
+   "id":"csmaster1",
+   "companyName":"SCG솔루션즈(주)",
+   "name":"이세임",
+   "deptCode":"200552",
+   "deptName":"경기1직영",
+   "posName":"사원",
+   "userStatus":"Y",
+   "telephone":{
+      "num1":"02",
+      "num2":"552",
+      "num3":"7777"
+   },
+   "cellphone":{
+      "num1":"010",
+      "num2": "1111",
+      "num3":"4062"
+   }
+ }]

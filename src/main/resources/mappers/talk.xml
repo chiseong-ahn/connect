@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="talk">
+	<resultMap type="com.scglab.connect.services.talk.Speak" id="speak"></resultMap>
+
+	<!-- 오늘의 상담현황 조회 -->
+	<select id="today" parameterType="map" resultType="map">
+		<![CDATA[
+			select 1 as id,
+					count(*) ingcnt,
+					sum(ready) readycnt,
+					sum(case when ymd(startdate) = ymd(now()) then 1 else 0 end) newcnt,
+					(
+						select count(distinct space)
+						from SpaceHist
+						where cid = #{cid}
+						and ymd(createdate) = ymd(now())
+					) as endcnt,
+					(
+						select count(distinct space)
+						from SpaceHist
+						where cid = #{cid}
+						and ymd(createdate) = ymd(now())
+						and (emp is null or emp = 0)
+					) as outcnt
+			from (
+				select s.id,
+						(
+							case
+								when s.emp > 0 then 0
+								else 1
+							end
+						) ready
+						, ifnull((
+							select createdate
+							from Speak
+							where space = s.id
+							and id = s.startid), s.createdate
+						) startdate
+				from Space s
+				where cid = #{cid}
+				and state < 2
+			) sub
+		]]>
+	</select>
+	
+	<!-- 진행중인 상담 조회 -->
+	<select id="spaces" parameterType="map" resultType="map">
+		select (
+					select createdate
+					from Speak
+					where id = sub.startid
+				) as startdate,
+				sub.*,
+				spk.createdate as maxdt,
+				spk.id as lastspeak,
+				spk.msg as lastmsg
+		from(
+				select s.*, 
+						(
+							select max(id)
+							from Speak
+							where space = s.id
+						) as maxid, 
+						(
+							select
+								count(id)
+							from
+								Speak
+							where space = s.id
+							and id > ifnull((
+								select min(lastid)
+								from SpaceSpeaker
+								where space = s.id
+								and spacename is null), 0)
+							and id > (
+								select max(id)
+								from Speak
+								where space = s.id
+								and (isemp = 1 or onlyadm = 1)
+							)
+							and sysmsg = 0
+							and onlyadm = 0
+							and isemp = 0
+						) as notreadcnt, 
+						(
+							select max(createdate)
+							from Speak
+							where space = s.id
+							and id >= ifnull((
+								select min(lastid)
+								from SpaceSpeaker
+								where space = s.id
+								and spacename is null), 0)
+							and id > (
+								select max(id)
+								from Speak
+								where space = s.id
+								and (isemp = 1 or onlyadm = 1))		
+							and onlyadm = 0
+							and isemp = 0
+						) as oldcustdt, 
+						cu.id as cust,
+						cu.blocktype
+				from v_space s
+					 left outer join Customer cu on (cu.speaker  = s.speaker )
+				where s.cid = #{cid}
+				<choose>
+					<when test='state == "2"'>
+						and s.state = 2
+					</when>
+					<otherwise>
+						and s.state <![CDATA[<]]> 2	
+					</otherwise>
+				</choose>
+				and s.iscustomer = 1
+				and s.emp > 0
+				<if test = 'startDate != "" and endDate != ""'>
+					and date_format(s.workdate, '%Y-%m-%d') between #{startDate} and #{endDate}
+				</if>
+				<if test ='keyfield != "" and keyword != ""'>
+					<choose>
+						<when test='keyfield == "customer"'>
+							and s.spacename like concat('%', #{keyword}, '%')
+						</when>
+						<when test='keyfield == "msg"'>
+							and s.id in (select space from Speak where space = s.id and sysmsg=0 and msg like concat('%', #{keyword}, '%'))
+						</when>
+						<when test='keyfield == "emp"'>
+							and s.emp = #{keyword}
+						</when>
+					</choose>
+				</if>
+		) sub
+		inner join Speak spk on sub.maxid = spk.id
+		order by sub.state, spk.createdate desc
+	</select>
+	
+	
+	<!-- 종료된 상담 조회. -->
+	<select id="spaces-end" parameterType="map" resultType="map">
+		<![CDATA[
+			select (select createdate from Speak where id=sub.startid) as startdate, sub.*, spk.createdate as maxdt, spk.id as lastspeak, spk.msg as lastmsg from (
+		        select s.*, (select max(id) from Speak where space=s.id) as maxid,
+		                    (select count(id) from Speak 
+		                       where space=s.id
+		                           and id > ifnull((select min(lastid) from SpaceSpeaker where space=s.id and spacename is null),0)
+		                           and id > (select max(id) from Speak where space=s.id and (isemp=1 or onlyadm=1))
+		                           and sysmsg = 0 and onlyadm = 0 and isemp=0) as notreadcnt,
+		                    (select max(createdate) from Speak 
+		                       where space=s.id
+		                           and id >= ifnull((select min(lastid) from SpaceSpeaker where space=s.id and spacename is null),0)
+		                           and id > (select max(id) from Speak where space=s.id and (isemp=1 or onlyadm=1))
+		                           and onlyadm = 0 and isemp=0) as oldcustdt,
+		                    (select id from Customer where speaker = s.speaker) as cust
+		           from v_space s
+		          where s.cid=#{cid} and s.state < 2 and s.iscustomer=1
+		              and (case when ifnull('-1',-1) < 0 then emp > 0 else emp = '-1' end)
+			) sub inner join Speak spk on sub.maxid = spk.id
+			  order by sub.state, spk.createdate desc
+			  limit 15  
+		]]>
+	</select>
+	
+	<!-- Speaker 정보 조회 -->
+	<select id="speaker" parameterType="map" resultType="map">
+		select * 
+		from Customer 
+		where speaker = #{speaker}
+	</select>
+	
+	<!-- 채팅방 대화내용 조회. -->
+	<select id="speaks" parameterType="map" resultMap="speak">
+		<![CDATA[
+			select *
+				  ,s.msg message
+			      , (
+			          select 1 
+			          from Customer 
+			          where speaker = s.speaker
+			      ) iscustomer 
+			from (
+			   select spc.startid, spk.*
+			   from Space spc 
+			        inner join Speak spk on spc.id = spk.space  
+			        and (spk.createdate > date_sub(now(), interval 7 day) or spk.id > (select lastid from SpaceSpeaker where space=spc.id and spacename is not null))
+			   where spc.id = #{spaceId}
+			   and (case when ifnull(#{fromId},-1) <= 0 then spk.id > 0 else spk.id < ifnull(#{fromId}, 0) end)
+			   and spk.onlyadm <= ifnull(#{onlyadm}, 0)
+			   and spc.cid = #{cid}
+			   and spk.cid = #{cid}
+			   and spk.id >= spc.startid
+			   order by spk.id desc
+			) s
+			order by s.id
+		]]>
+	</select>
+	
+	<!-- 채팅메세지 생성 -->
+	<select id="makeMessage" parameterType="map" resultMap="speak">
+		CALL make_speak(#{cid}, #{spaceId}, #{speaker}, #{mtype}, #{sysmsg}, #{message}, #{morp}, #{onlyadm}, #{isemp}, #{msgname})
+	</select>
+	
+	<!-- // 이전 상담목록 조회 -->
+	<select id="history" parameterType="map" resultType="map">
+		<![CDATA[
+			select sh.createdate as startdate, 
+					timestampdiff(MINUTE, sh.createdate, sh.enddt) diffmin, 
+					sh.*, 
+					sp.name as empName,
+			        (
+			        	case 
+			        		when ifnull(#{str}, '') <> '' then (
+			        			select group_concat(id) 
+			        			from Speak
+				        		where space = sh.space 
+				        		and id between sh.startid 
+				        		and sh.endid 
+				        		and sysmsg = 0 
+				        		and onlyadm = 0 
+				        		and msg like concat('%', #{str}, '%')
+				        	)
+				 		end
+				 	) as spks
+			 from SpaceHist sh inner join Speak s on sh.startid = s.id left join Emp em on em.id = sh.emp left join Speaker sp on em.speaker = sp.id
+			 where sh.space=ifnull(#{spaceId}, 0) and sh.enddt is not null 
+			 and sh.cid = #{cid}
+			 order by sh.id desc
+		]]>
+	</select>
+	
+	<!-- // 이전 상담 상세조회 -->
+	<select id="historySpeaks" parameterType="map" resultType="map">
+		<![CDATA[
+			select * from Speak
+			where space=#{spaceId} and id between #{startId} and #{endId}
+		]]>
+	</select>
+	
+	<!-- 스페이스에 조인처리. -->
+	<update id="join" parameterType="map" >
+		CALL join_space(#{spaceId}, #{speaker})
+	</update>
+	
+	
+	<!-- 스페이스 정보 조회 -->
+	<select id="space" parameterType="map" resultType="map">
+		select (
+					select createdate
+					from Speak
+					where id = sub.startid
+				) as startdate,
+				sub.*,
+				spk.createdate as maxdt,
+				datediff(now(), spk.createdate) enddays,
+				spk.id as lastspeak,
+				spk.msg as lastmsg
+		from (
+				select s.*, 
+					(
+						select max(id)
+						from Speak
+						where space = s.id
+					) as maxid, 
+					(
+						select count(id)
+						from Speak
+						where space = s.id
+						and id > ifnull((
+							select min(lastid)
+							from SpaceSpeaker
+							where space = s.id
+							and spacename is null), 0
+						)
+						and id > (
+							select max(id)
+							from Speak
+							where space = s.id
+							and (isemp = 1 or onlyadm = 1)
+						)
+						and sysmsg = 0
+						and onlyadm = 0
+						and isemp = 0
+					) as notreadcnt,
+					ifnull(
+						(
+							select max(createdate)
+							from Speak
+							where space = s.id
+							and id > (
+								select max(id)
+								from Speak
+								where space = s.id
+								and id >= s.startid
+								and isemp = 1
+							)
+							and id > (
+								select max(id)
+								from Speak
+								where space = s.id
+								and (isemp = 1 or onlyadm = 1)
+							)
+							and onlyadm = 0
+							and isemp = 0
+							and sysmsg = 0
+						), 
+						(
+							select max(createdate)
+							from Speak
+							where id = s.startid
+						)
+					) as oldcustdt, 
+				(
+					select id
+					from Customer
+					where speaker = s.speaker
+				) as cust
+			from v_space s
+			where id = ifnull(#{spaceId}, '1')
+			and (
+				case
+					when ifnull(#{speaker}, '') = '' then iscustomer = 1
+					else speaker = #{speaker}
+				end
+			) 
+		) sub
+		left outer join Speak spk on sub.maxid = spk.id
+	</select>
+	
+	<!-- 스페이스 온/오프라인 상태 변경. -->
+	<update id="updateOnline" parameterType="map">
+		update Space 
+		set isonline = #{isonline} 
+		where id = #{space}
+	</update>
+	
+	<!-- 메세지 읽음처리. -->
+	<update id="minus-notread" parameterType="map">
+		update Speak
+		set	notread = (
+			case
+				when notread = 0 then 0
+				else notread - 1
+			end
+		)
+		where space = #{space}
+		and (
+			case
+				when #{startid} = #{lastid} then id = #{startid}
+				else id > #{startid} and id <![CDATA[<=]]> #{lastid}
+			end
+		)
+	</update>
+	
+	<!-- 스페이스 대화자 상태변경. -->
+	<update id="updateSpaceSpeaker" parameterType="map">
+		update SpaceSpeaker
+		set oldid = lastid,
+			lastid = #{lastid}
+		where space = #{space}
+		and speaker = #{speaker}
+	</update>
+	
+	<!-- 대기중임 상담 카운트 조회 -->
+	<select id="selectReadySpaceCount" parameterType="map" resultType="int">
+		select count(*) as count
+		from Space as a
+		where 1=1
+		and a.state = 0
+		and a.emp is null
+	</select>
+	
+	<!-- 대기중임 상담 목록 조회 -->
+	<select id="selectReadySpace" parameterType="map" resultType="map">
+		select a.id as space, a.cid, a.emp, a.state, a.startid, a.prehistory, a.isonline, a.customer, a.chatid
+		from Space as a
+		where 1=1
+		and a.state = 0
+		and a.emp is null
+		order by workdate asc
+	</select>
+	
+	<!-- 스페이스 상태변경.(acting 1-상담진행중 , 2-상담종료, 11-대기 또는 이관, 기타-당겨오기 -->
+	<update id="updateSpace" parameterType="map">
+		CALL update_space(#{acting}, #{space}, #{emp}, #{empname})
+	</update>
+	
+	
+</mapper>

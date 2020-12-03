@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="template">
+
+	<parameterMap type="com.scglab.connect.services.template.Template" id="template"></parameterMap>
+	<resultMap type="com.scglab.connect.services.template.Template" id="template"></resultMap>
+	
+	<!-- 템플릿 카운트 조회 -->
+	<select id="findAllCount" parameterType="map" resultType="int">
+		SELECT count(*) as total_count
+	      FROM 
+	        template2 t 
+	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
+	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
+	      WHERE t.company_id = #{companyId}
+	      	<if test='categoryLargeId != null'>
+	      		AND vc.category_large_id = #{categoryLargeId}
+	      	</if>
+	        <if test='categoryMiddleId != null'>
+	        	AND vc.category_middle_id = #{categoryMiddleId}
+	        </if>
+	        <if test='categorySmallId != null'>
+	        	AND vc.id = #{categorySmallId}
+	        </if>
+	        <if test='checkFavorite == "1"'>
+	        	AND f.member_id = #{loginId}
+	        </if>
+	        <if test='checkMyAdd == "1"'>
+	        	AND t.member_id = #{loginId}
+	        </if>
+	        <if test='searchType != null and searchValue != null'>
+	        	<choose>
+		        	<when test='searchType == "memberName"'>
+		        		AND vc.member_name like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "ask"'>
+		        		AND t.ask like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "reply"'>
+		        		AND t.reply like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "keyword"'>
+		        		AND t.id in (
+		        			select distinct(tk.template_id)
+							from template_keyword tk 
+								 inner join keyword2 k on (k.id  = tk.keyword_id)
+							where 1=1
+							and k.name like concat('%', searchValue, '%')
+		        		)
+		        	</when>
+		        </choose>
+	        </if>
+	</select>
+	
+	<!-- 템플릿 전체 조회 -->
+	<select id="findAll" parameterType="map" resultType="map">
+		SELECT 
+	        vc.name AS category_small_name, 
+	        vc.category_large_id, 
+	        vc.category_large_name, 
+	        vc.category_middle_id, 
+	        vc.category_middle_name, 
+	        (
+	          SELECT 
+	            GROUP_CONCAT(k.id) 
+	          FROM 
+	            template_keyword tk 
+	            INNER JOIN keyword2 k ON tk.keyword_id = k.id 
+	          WHERE 
+	            tk.template_id = t.id
+	        ) AS keyword_ids, 
+	        t.*, 
+	        (
+	          CASE WHEN f.member_id = #{loginId} THEN 1 ELSE 0 END
+	        ) AS is_favortie 
+	      FROM 
+	        template2 t 
+	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
+	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
+	      WHERE t.company_id = #{companyId}
+	      	<if test='categoryLargeId != null'>
+	      		AND vc.category_large_id = #{categoryLargeId}
+	      	</if>
+	        <if test='categoryMiddleId != null'>
+	        	AND vc.category_middle_id = #{categoryMiddleId}
+	        </if>
+	        <if test='categorySmallId != null'>
+	        	AND vc.id = #{categorySmallId}
+	        </if>
+	        <if test='checkFavorite == "1"'>
+	        	AND f.member_id = #{loginId}
+	        </if>
+	        <if test='checkMyAdd == "1"'>
+	        	AND t.member_id = #{loginId}
+	        </if>
+	        <if test='searchType != null and searchValue != null'>
+	        	<choose>
+		        	<when test='searchType == "memberName"'>
+		        		AND vc.member_name like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "ask"'>
+		        		AND t.ask like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "reply"'>
+		        		AND t.reply like concat('%', searchValue, '%')
+		        	</when>
+		        	<when test='searchType == "keyword"'>
+		        		AND t.id in (
+		        			select distinct(tk.template_id)
+							from template_keyword tk 
+								 inner join keyword2 k on (k.id  = tk.keyword_id)
+							where 1=1
+							and k.name like concat('%', searchValue, '%')
+		        		)
+		        	</when>
+		        </choose>
+	        </if>
+	      ORDER BY t.id DESC
+	      limit #{startNum}, #{pageSize}
+	</select>
+	
+	<!-- 템플릿 조회 -->
+	<select id="getDetail" parameterType="map" resultMap="template">
+		SELECT  vc.name AS category_small_name,
+				vc.category_large_id AS category_large_id,
+				vc.category_middle_id AS category_middle_id,
+				vc.category_large_name AS category_large_name,
+				vc.category_middle_name AS category_middle_name,
+				t.*,
+				(
+					SELECT GROUP_CONCAT(keyword_id)
+					FROM template_keyword
+					WHERE template_id = 1 
+				) AS keywordIds,
+				(
+					SELECT COUNT(1)
+					FROM template_favorite
+					WHERE template_id = t.id
+					AND member_id = #{memberId}
+				) AS is_favorite
+		FROM template2 t
+		LEFT OUTER JOIN v_category vc ON t.category_small_id = vc.id
+		WHERE t.id = #{id}
+	</select>
+	
+	<!-- 템플릿 등록 -->
+	<insert id="create" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+ 		INSERT INTO template2 (company_id, category_small_id, ask, reply, link, link_protocol, image_path, image_name, member_id, update_member_id)
+		VALUES (#{companyId}, #{categorySmallId}, #{ask}, #{reply}, #{link}, #{linkProtocol}, #{imagePath}, #{imageName}, #{loginId}, #{loginId})
+	</insert>
+	
+	<!-- 템플릿 키워드 등록 -->
+	<insert id="insertTemplateKeyword" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO template_keyword(company_id, keyword_id, template_id, update_member_id)
+        VALUES (#{companyId}, #{keywordId}, #{templateId}, #{loginId})
+	</insert>
+	
+	<!-- 템플릿 수정 -->
+	<update id="update" parameterType="map">
+		UPDATE template2 
+		SET category_small_id = #{categorySmallId}, 
+			member_id = #{loginId}, 
+			ask = #{ask}, 
+			reply = #{reply}, 
+			link = #{link}, 
+			image_path = #{imagePath}, 
+			image_name = #{imageName},
+			update_member_id = #{loginId}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 템플릿 삭제 -->
+	<delete id="delete" parameterType="map">
+		DELETE 
+		FROM template2
+		WHERE id = #{id}
+	</delete>
+	
+	<!-- 즐겨찾기 등록 -->
+	<insert id="saveFavorite" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO template_favorite(company_id, template_id, member_id)
+		VALUES (#{companyId}, #{templateId}, #{loginId})
+	</insert>
+	
+	<!-- 즐겨찾기 삭제 -->
+	<delete id="deleteFavorite" parameterType="map">
+		DELETE 
+		FROM template_favorite
+		WHERE template_id = #{templateId}
+		AND member_id = #{loginId}
+	</delete>
+	
+	<!-- 키워드 카운트 조회 -->
+	<select id="selectCountKeyword" parameterType="map" resultType="int">
+		select count(*) as cnt
+		from Keyword k
+		where 1=1
+		and k.cid = #{cid}
+		and k.name = #{name}
+	</select>
+	
+	<!-- 템플릿 키워드 조회 -->
+	<select id="selectKeyword" parameterType="map" resultType="map">
+		SELECT *
+		FROM  template_keyword
+		WHERE id = #{id}
+	</select>
+	
+	
+	
+	<!-- 템플릿 키워드 삭제 -->
+	<delete id="deleteTemplateKeywords" parameterType="map">
+		DELETE 
+		FROM template_keywword
+		WHERE template_id = #{id}
+	</delete>
+</mapper>
