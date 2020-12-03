@@ -1,0 +1,41 @@
+{
+   "useContractNum":"6000000486",
+   "requestYm":"201911",
+   "deadlineFlag":"20",
+   "paymentDeadline":"20191120",
+   "basicRate":0.0,
+   "useRate":0.0,
+   "discountAmt":0.0,
+   "replacementCost":0.0,
+   "vat":0.0,
+   "adjustmentAmt":0.0,
+   "cutAmt":0.0,
+   "chargeAmt":0.0,
+   "usageQty":0,
+   "unpayAmt":0.0,
+   "allUnpayAmounts":0.0,
+   "allPayAmounts":0.0,
+   "previousUnpayAmounts":0.0,
+   "payMethod":"자동이체(은행)",
+   "virtualAccount":{
+      "accountName":"이원준",
+      "accounts":[
+         {
+            "bankCode":"020",
+            "name":"우리은행(은행)",
+            "account":"29800105-218194"
+         },
+         {
+            "bankCode":"003",
+            "name":"기업은행(은행)",
+            "account":"59503752-997969"
+         }
+      ]
+   },
+   "previousUnpayInfos":[
+      {
+          "requestYm": "201709",
+          "unpayAmtAll": 2700
+      }
+   ]
+}

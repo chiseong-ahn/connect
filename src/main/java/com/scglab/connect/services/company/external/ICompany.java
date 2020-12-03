@@ -53,7 +53,7 @@ public interface ICompany {
 	 * @Method 설명 : 4. 민원 등록
 	 * @return
 	 */
-	public int minwons(Map<String, Object> params);
+	public int minwons(Map<String, String> params);
 	
 	/**
 	 * 

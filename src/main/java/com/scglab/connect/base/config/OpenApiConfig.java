@@ -121,7 +121,7 @@ public class OpenApiConfig {
 	
 	@Bean
 	public GroupedOpenApi extenal() {
-		String[] paths = { "/api/extenal/**" };
+		String[] paths = { "/api/external/**" };
 		return GroupedOpenApi.builder().setGroup("외부 연동 API").pathsToMatch(paths).build();
 	}
 	

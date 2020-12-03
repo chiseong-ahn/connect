@@ -1,0 +1,16 @@
+[
+   {
+      "useContractNum":"6000000486",
+      "main": 1,
+      "alias":"우리집",
+      "jinbunAddress":null,
+      "newAddress":"서울특별시 마포구 ********,103호 (***)"
+   },
+   {
+      "useContractNum":"6000000502",
+      "main": 0,
+      "alias":"장모님",
+      "jinbunAddress":null,
+      "newAddress":"서울특별시 마포구 ******, (****)"
+   }
+]

@@ -39,13 +39,13 @@ public class PushService {
 		HttpUtils httpUtils = new HttpUtils();
 		
 		String url = "https://" + this.domainProperty.getRelayScg() + "/api/matt/push";
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, String> params = new HashMap<String, String>();
 		
-		params.put("member", member);
+		params.put("member", member + "");
 		params.put("message", message);
 		
 		HttpHeaders headers = new HttpHeaders();
-		httpUtils.postApiForString(url, params, headers);
+		httpUtils.postForString(url, params);
 	}
 	
 	/**
