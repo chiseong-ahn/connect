@@ -1,0 +1,33 @@
+# 코드 작성규칙
+## 클래스
+
+## 메소드
+
+## 변수
+
+### 주석
+> Class
+- Eclipse > Preference > Java > Code Style > Code Template > Comments > Types
+```
+/**
+ * @FileName : ${file_name}
+ * @Project : ${project_name}
+ * @Date : ${date} 
+ * @작성자 : ${user}
+ * @변경이력 :
+ * @프로그램 설명 :
+ */
+```
+
+> Method
+- Eclipse > Preference > Java > Code Style > Code Template > Comments > Methods
+```
+ /**
+ * @Method Name : ${enclosing_method}
+ * @작성일 : ${date}
+ * @작성자 : ${user}
+ * @변경이력 : 
+ * @Method 설명 :
+ * ${tags}
+ */
+```
