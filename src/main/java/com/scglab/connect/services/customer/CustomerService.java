@@ -201,4 +201,29 @@ public class CustomerService {
 		}
 		return null;
 	}
+	
+	/**
+	 * 
+	 * @Method Name : contractBilDetail
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 사용계약번호 결제 상세 정보
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> contractBilDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		ICompany company = this.commonService.getCompany(member.getCompanyId());
+		String useContractNum = DataUtils.getString(params, "useContractNum", "");
+		String requestYm = DataUtils.getString(params, "requestYm", "");
+		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
+		
+		if(!useContractNum.equals("")) {
+			return company.contractBilDetail(useContractNum, requestYm, deadlineFlag);
+		}
+		return null;
+	}
 }

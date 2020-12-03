@@ -139,5 +139,14 @@ public class CustomerController {
 		params.put("useContractNum", useContractNum);
 		return this.customerService.contractInfo(params, request);
 	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/{userno}/contracts/{useContractNum}/bil", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="사용계약번호 결제 상세 정보", description = "", security = {@SecurityRequirement(name = "bearer-key")})
+    public Map<String, Object> contractBilDetail(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "userno", description = "가스앱 회원번호", required = true, in = ParameterIn.PATH, example = "3825") @PathVariable int userno, @Parameter(name = "useContractNum", description = "사용계약번호", required = true, in = ParameterIn.PATH, example = "6000000502") @PathVariable String useContractNum, HttpServletRequest request) throws Exception {
+		params.put("userno", userno);
+		params.put("useContractNum", useContractNum);
+		return this.customerService.contractBilDetail(params, request);
+	}
 }
 	

@@ -150,6 +150,44 @@
 		            <li>잔여캐시 : </li>
 		            <li>해당 고객센터 : {{selectedContract.contractInfo.centerName}} {{selectedContract.contractInfo.centerPhone}}</li>
 		       	</ul>
+		       	<select v-model="requestYm">
+		    		<template v-for="(sub, count) in selectedContract.history">
+			    		<option v-bind:value="sub.requestYm">{{sub.requestYm}}</option>
+			    	</template>
+		    	</select>
+		    	<ul>
+		    		<li>납기일 : {{contractBil.paymentDeadline}}</li>
+		    		<li>총 청구요금 : {{contractBil.allPayAmounts}}</li>
+		    		<li>당월소계 : {{contractBil.chargeAmt}}</li>
+		    		<li>- 기본요금 : {{contractBil.basicRate}}</li>
+		    		<li>- 사용요금 : {{contractBil.useRate}}</li>
+		    		<li>- 감면금액 : {{contractBil.discountAmt}}</li>
+		    		<li>- 계량기 교체비용 : {{contractBil.replacementCost}}</li>
+		    		<li>- 부가세 : {{contractBil.vat}}</li>
+		    		<li>- 정산금액 : {{contractBil.adjustmentAmt}}</li>
+		    		<li>- 절사금액 : {{contractBil.cutAmt}}</li>
+		    		<li>미납소계 : {{contractBil.previousUnpayAmounts}}</li>
+		    		<template v-for="(prev, idx) in contractBil.previousUnpayInfos">
+		    			<li >{{prev.requestYm}} : {{prev.unpayAmtAll}}</li>
+		    		</template>
+		    		<li>납부상태 : {{contractBil.payMethod}}</li>
+		    		<li>입금전용계좌 : </li>
+		    		<li>
+		    			<ul>
+		    				<li>
+		    					<select v-model="selectedAccount">
+		    						<template v-for="(acc, idx2) in contractBil.virtualAccount.accounts">
+						    			<option v-bind:value="acc.account">{{acc.name}}</option>
+						    		</template>
+						    	</select>
+		    				</li>
+		    				<li>계좌번호 : {{selectedAccount}}</li>
+		    			</ul>
+		    		</li>
+		    	</ul>
+		    	
+		    	
+		    	
 		       	<h4>상담목록</h4>
 		    	<ul class="list-group">
 		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="toggleHistory(index)">
@@ -198,6 +236,12 @@
 				finishRooms: [],		// 종료상담목록
 				histories: [],			// 이전상담목록
 				contracts: [],			// 사용계약목록
+				contractBil: {
+					virtualAccount:{
+						accounts: []
+					}
+				},		// 사용계약 결제상세
+				selectedAccount: '',	// 선택된 전용계좌
 				selectedContract: {
 				  "contractInfo": {
 				    "gmtrBaseDay": "",
@@ -229,6 +273,7 @@
 				  ]
 				},	// 선택된 사용계약상세정보
 				useContractNum: "",		// 사용계약번호
+				requestYm: '',			// 결제연월
 				messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
 				selectedRoom: {},	// 선택된 룸 정보
@@ -630,7 +675,11 @@
                     axios.get(uri, this.header).then(response => {
                         // prevent html, allow json array
 						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+						
+							// 사용계약 목록 설정.
 							this.contracts = response.data;
+							
+							// 사용계약 상세정보 초기화.
 							this.useContractNum = this.contracts[0].useContractNum;  
 							
 						}
@@ -647,8 +696,35 @@
 					
 					var uri = '/api/customer/' + gasappMemberNumber + '/contracts/' + this.useContractNum;
                     axios.get(uri, this.header).then(response => {
+                    
+                    	// 사용계약 상세정보 설정.
                     	this.selectedContract = response.data;
 						console.log(this.selectedContract);
+						
+						// 월별 선택 초기화.
+						if(this.selectedContract.history.length > 0){
+							this.requestYm = this.selectedContract.history[0].requestYm;
+						}
+						
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+				},
+				
+				// 사용계약 결제상세정보 조회.
+				getContractBilDetail: function(){
+					var gasappMemberNumber = this.selectedRoom.gasappMemberNumber;
+					console.log('gasappMemberNumber : ' + gasappMemberNumber);
+					
+					var uri = '/api/customer/' + gasappMemberNumber + '/contracts/' + this.useContractNum + '/bil?requestYm=' + this.requestYm + '&deadlineFlag=';
+                    axios.get(uri, this.header).then(response => {
+                    	this.contractBil = response.data;
+                    	
+                    	// 전용계좌 초기화
+                    	if(this.contractBil.virtualAccount.accounts.length > 0){
+                    		this.selectedAccount = this.contractBil.virtualAccount.accounts[0].account;
+                    	}
+                    	console.log(this.contractBil);
                     }, function(e){
                     	console.log("error : " + e.message);
                     });
@@ -711,7 +787,11 @@
 				useContractNum: function (val) {
 					this.useContractNum = val;
 					this.getContractDetail();
-			    }
+			    },
+			    requestYm: function(val) {
+			    	this.requestYm = val;
+			    	this.getContractBilDetail();
+			    },
 			}
         });
     </script>
