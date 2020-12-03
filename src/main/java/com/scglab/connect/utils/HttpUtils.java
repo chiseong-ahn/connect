@@ -4,19 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.connector.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fcibook.quick.http.QuickHttp;
+import com.fcibook.quick.http.ResponseBody;
+
 
 public class HttpUtils {
 	
@@ -24,74 +23,365 @@ public class HttpUtils {
 	
 	public static void main(String[] args) throws JSONException, JsonMappingException, JsonProcessingException {
 		HttpUtils httpUtils = new HttpUtils();
-		String url = "http://localhost:8080/api/stats/customer-analysis";
 		
-		Map<String, Object> params = new HashMap<String, Object>();
-		HttpHeaders headers = new HttpHeaders(); 
 		
-		List<Map<String, Object>> result = httpUtils.postApiForList(url, params, headers);
-		System.out.println("result : " + result.toString());
 	}
 	
-	public String getApiForString(String url) {
-		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setConnectTimeout(5000); // 타임아웃 설정 5초
-		factory.setReadTimeout(5000);// 타임아웃 설정 5초
-		RestTemplate restTemplate = new RestTemplate(factory);
-
-		ResponseEntity<String> res = restTemplate.getForEntity(url, String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.convertValue(res.getBody(), String.class);
+	/**
+	 * 
+	 * @Method Name : getForResponseBody
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 결과를 ResponseBody 객체를 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static ResponseBody getForResponseBody(String url) {
+		return getForResponseBody(url, null);
 	}
 	
-	public List<Map<String, Object>> getApiForList(String url) {
-		String value = getApiForString(url);
-		try {
-			return new ObjectMapper().readValue(value, new TypeReference<List<Map<String, Object>>>(){});
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	
+	/**
+	 * 
+	 * @Method Name : getForResponseBody
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 결과를 ResponseBody 객체를 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static ResponseBody getForResponseBody(String url, Map<String, String> params) {
+		return requestForGet(url, params);
 	}
 	
-	public Map<String, Object> getApiForMap(String url) {
-		String value = getApiForString(url);
-		try {
-			return new ObjectMapper().readValue(value, new TypeReference<Map<String, Object>>(){});	
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	
+	/**
+	 * 
+	 * @Method Name : getForString
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 결과를 String 문자열로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static String getForString(String url) {
+		return getForString(url, null);
 	}
 	
-	public String postApiForString(String url, Map<String, Object> params, HttpHeaders headers) {
-		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setConnectTimeout(500000); // 타임아웃 설정 5초
-		factory.setReadTimeout(500000);// 타임아웃 설정 5초
-		RestTemplate restTemplate = new RestTemplate(factory);
-
-		HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(params, headers);
-		return restTemplate.postForObject(url, httpEntity, String.class);
-	}
-
-	public Map<String, Object> postApiForMap(String url, Map<String, Object> params, HttpHeaders headers) {
-		String value = postApiForString(url, params, headers);
-		try {
-			return new ObjectMapper().readValue(value, new TypeReference<Map<String, Object>>(){});	
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
+	
+	/**
+	 * 
+	 * @Method Name : getForString
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 결과를 String 문자열로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static String getForString(String url, Map<String, String> params) {
+		ResponseBody body = requestForGet(url, params);
+		
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			return text;
 		}
+		
+		return null;
 	}
-
-	public List<Map<String, Object>> postApiForList(String url, Map<String, Object> params, HttpHeaders headers) {
-		String value = postApiForString(url, params, headers);
-		try {
-			return new ObjectMapper().readValue(value, new TypeReference<List<Map<String, Object>>>(){});	
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
+	
+	
+	/**
+	 * 
+	 * @Method Name : getForMap
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 Json 결과를 Map<String, Object> 객체로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static Map<String, Object> getForMap(String url){
+		return getForMap(url, null);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : getForMap
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 Json 결과를 Map<String, Object> 객체로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static Map<String, Object> getForMap(String url, Map<String, String> params) {
+		Map<String, Object> obj = null;
+		
+		ResponseBody body = requestForGet(url, params);
+		
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			
+			try {
+				// String을 Map<String, Object> 객체로 변환.
+				obj = new ObjectMapper().readValue(text, new TypeReference<Map<String, Object>>(){});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+			}
 		}
+		
+		return obj;
 	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : getForList
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 Json 결과를 List<Map<String, Object>> 객체로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static List<Map<String, Object>> getForList(String url){
+		return getForList(url, null);
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : getForList
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 Json 결과를 List<Map<String, Object>> 객체로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static List<Map<String, Object>> getForList(String url, Map<String, String> params) {
+		List<Map<String, Object>> list = null;
+		
+		ResponseBody body = requestForGet(url, params);
+		
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			
+			try {
+				// String을 List<Map<String, Object>> 객체로 변환.
+				list = new ObjectMapper().readValue(text, new TypeReference<List<Map<String, Object>>>(){});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return list;
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : postForResponseBody
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Post 방식으로 요청하고 결과를 ResponseBodoy 객체로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static ResponseBody postForResponseBody(String url) {
+		return postForResponseBody(url, null);
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : postForResponseBody
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Post 방식으로 요청하고 결과를 ResponseBodoy 객체로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static ResponseBody postForResponseBody(String url, Map<String, String> params) {
+		return requestForPost(url, params);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : postForString
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Post 방식으로 요청하고 결과를 String 문자열로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static String postForString(String url) {
+		return postForString(url, null);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : postForString
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Post 방식으로 요청하고 결과를 String 문자열로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static String postForString(String url, Map<String, String> params) {
+		ResponseBody body = requestForPost(url, params);
+		
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			return text;
+		}
+		
+		return null;
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : postForList
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Post 방식으로 요청하고 Json 결과를 Map<String, Object> 객체로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static List<Map<String, Object>> postForList(String url){
+		return postForList(url, null);
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : postForList
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Post 방식으로 요청하고 Json 결과를 Map<String, Object> 객체로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static List<Map<String, Object>> postForList(String url, Map<String, String> params) {
+		List<Map<String, Object>> list = null;
+		
+		ResponseBody body = requestForPost(url, params);
+		
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			
+			try {
+				// String을 List<Map<String, Object>> 객체로 변환.
+				list = new ObjectMapper().readValue(text, new TypeReference<List<Map<String, Object>>>(){});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @Method Name : postForMap
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 Json 결과를 List<Map<String, Object>> 객체로 반환한다.
+	 * @param url
+	 * @return
+	 */
+	public static Map<String, Object> postForMap(String url) {
+		return postForMap(url, null);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : postForMap
+	 * @작성일 : 2020. 12. 3.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : Get 방식으로 요청하고 Json 결과를 List<Map<String, Object>> 객체로 반환한다.
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static Map<String, Object> postForMap(String url, Map<String, String> params) {
+		Map<String, Object> obj = null;
+		
+		ResponseBody body = requestForPost(url, params);
+		
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			
+			try {
+				// String을 Map<String, Object> 객체로 변환.
+				obj = new ObjectMapper().readValue(text, new TypeReference<Map<String, Object>>(){});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return obj;
+	}
+	
+	
+	private static ResponseBody requestForGet(String url, Map<String, String> parames) {
+		parames = parames == null ? new HashMap<String, String>() : parames;
+		ResponseBody body = new QuickHttp()
+	               .url(url)
+	               .get()
+	               .addParames(parames)
+	               .body();
+		
+		return body;
+	}
+	
+	
+	private static ResponseBody requestForPost(String url, Map<String, String> parames) {
+		parames = parames == null ? new HashMap<String, String>() : parames;
+		ResponseBody body = (ResponseBody) new QuickHttp()
+	               .url(url)
+	               .post()
+	               .addParames(parames)
+	               .body();
+		
+		return body;
+	}
+	
+	
+	
 	
 }
