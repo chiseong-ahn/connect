@@ -8,7 +8,7 @@
 ### 주석
 > Class
 - Eclipse > Preference > Java > Code Style > Code Template > Comments > Types
-```
+```java
 /**
  * @FileName : ${file_name}
  * @Project : ${project_name}
@@ -21,7 +21,7 @@
 
 > Method
 - Eclipse > Preference > Java > Code Style > Code Template > Comments > Methods
-```
+```java
  /**
  * @Method Name : ${enclosing_method}
  * @작성일 : ${date}

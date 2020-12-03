@@ -6,7 +6,7 @@
 |       | test  |   |   | | 테스트용 개발 디렉토리 |
 |       |       | java.com.scglab.connect  |  | | 자바 패키지 |
 |       |       |   | base   |   | 서비스 기본 설정 관리 |
-|       |       |   |   | annotaions  | 사용자정의 어노테이션 설정 |
+|       |       |   |   | annotations  | 사용자정의 어노테이션 설정 |
 |       |       |   |   | aop  | 스프링 AOP 설정 |
 |       |       |   |   | config  | 스프링 MVC 설정 |
 |       |       |   |   | database  | 데이터베이스 설정 |

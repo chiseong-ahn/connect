@@ -3,7 +3,7 @@
 - 참고 https://stomp.github.io
 
 ### 연결 | Connect
-```
+```java
 // SockJs 객체 초기화.
 var connectUrl = "http://[도메인]:[포트]/[엔드포인트]";
 var sock = new SockJS(connectUrl);
@@ -20,7 +20,7 @@ socket.connect(
 ```
 
 ### 구독 | Subscribe
-```
+```java
 socket.subscribe(
     "sub/socket/1",        // 구독채널명
     fnReceiveMessage,      // 메세지 수신함수
@@ -29,7 +29,7 @@ socket.subscribe(
 ```
 
 ### 메세지 전송 | Send
-```
+```java
 socket.send(
     "pub/socket/message",   // 메시지 발송URI
     headers,                // 전송할 헤더
@@ -38,18 +38,18 @@ socket.send(
 ```
 
 ### 메세지 수신 | Receive
-```
+```java
 fnReceiveMessage(recvData){
     console.log(recvData);      // 수신된 메시지 객체.
 }
 ```
 
 ### 구독해제 | Unsubscribe
-```
+```java
 socket.subscribe.unsubscribe();
 ```
 
 ### 연결해제 | Disconnect
-```
+```java
 socket.disconnect();
 ```

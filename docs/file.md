@@ -4,7 +4,7 @@
 - http://localhost:8080/api/upload 접속.
 - 파일 선택 및 업로드.
 - 업로드 응답결과
-```
+```java
 {
   "originFileName" : "20200805_133154.jpg",     // 원본 파일명
   "fileName" : "c9307b6e-d718-447e-b736-35581f10aed4.jpg",  // 저장된 파일명
