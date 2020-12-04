@@ -3,9 +3,6 @@ package com.scglab.connect.services.company.external;
 import java.util.List;
 import java.util.Map;
 
-import com.scglab.connect.services.common.auth.Contract;
-import com.scglab.connect.services.member.Member;
-
 public interface ICompany {
 	
 	/**
