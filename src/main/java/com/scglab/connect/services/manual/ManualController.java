@@ -59,7 +59,9 @@ public class ManualController {
 	@Operation(summary="매뉴얼 상세", description = "매뉴얼 상세정보를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Manual manual(@Parameter(description = "매뉴얼 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
-		return this.manualService.manual(params, request, response);
+		Manual manual = this.manualService.manual(params, request, response);
+		manual = manual == null ? new Manual() : manual;
+		return manual;
 	}
 	
 	@Auth

@@ -55,7 +55,8 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage getDetail(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
-		return this.autoMessageDao.getAutoMessage(params);
+		AutoMessage autoMessage = this.autoMessageDao.getAutoMessage(params);
+		return autoMessage == null ? new AutoMessage() : autoMessage;
 	}
 	
 	/**

@@ -86,6 +86,7 @@ public class RoomController {
 	@Operation(summary="방 이관", description = "방 이관", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Room transferRoom(@Parameter(description = "방 id") @PathVariable Long id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
+		params.put("roomId", id);
 		return this.roomService.transferRoom(params, request, response);
 	}
 	

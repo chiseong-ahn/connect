@@ -117,15 +117,13 @@
 				            <div class="input-group-append">
 				                <button disabled class="btn btn-primary" type="button" @click="sendDialog()">보내기</button>
 				            </div>
+				            <div>
+								<button type="button" class="btn btn-info" @click="transferRoom()">내 상담으로 가져오기</button>
+							</div>
 				       	</div>
 						<div v-if="socket.roomId != socket.lobbyName">
 							<button type="button" class="btn btn-info" @click="warnSwear">욕설/비속어 경고메세지</button>
 							<button type="button" class="btn btn-info" @click="warnInsult">부적절한 대화 경고메세지</button>
-						</div>
-					</div>
-					<div v-else>
-				       	<div>
-							<button type="button" class="btn btn-info" @click="assignToMe()">내 상담으로 가져오기</button>
 						</div>
 					</div>
 				</div>
@@ -398,9 +396,14 @@
                 * 타 상담사는 조인하지 않고 대화내용만 노출(구독하지 않음).
                 **************************************************************/
                 showRoom: function(roomId){
+                
+                	// 기본룸 조인.
+                	this.join(this.socket.lobbyName);
+                
                 	console.log("내 상담이 아니기에 조인하지 않고 관련정보만 조회.");
                 	// 대기룸이 아닐경우.
                 	if(roomId != this.socket.lobbyName){
+                	
                 		// 이전 대화목록 조회.
                 		this.getMessages(roomId);
                 			
@@ -778,10 +781,9 @@
 						axios.post(uri, {}, this.header).then(response => {
 							// prevent html, allow json array
 							room = response.data;
-							console.log(room);
 							
 							this.showRooms = 1;
-							this.findRooms(roomId);
+							this.findRooms(room.id);
 							
 						}, function(e){
 							console.log("error : " + e.message);
@@ -791,8 +793,22 @@
 				},
 				
 				// 내 상담으로 이관하기
-				assignToMe: function(){
-				
+				transferRoom: function(){
+					if(confirm('내 상담으로 이관하시겠겠습니까?')){
+						var uri = '/api/room/' + this.selectedRoom.id + '/transferRoom?memberId=' + this.profile.id + '&transferType=toMember';
+						axios.post(uri, {}, this.header).then(response => {
+							// prevent html, allow json array
+							room = response.data;
+							
+							this.showRooms = 1;
+							this.findRooms(room.id);
+							
+							alert('내 상담으로 이관되었습니다.');
+							
+						}, function(e){
+							console.log("error : " + e.message);
+						});
+					}
 				},
 				
 				// 상담목록 노출.

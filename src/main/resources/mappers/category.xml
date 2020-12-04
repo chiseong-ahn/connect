@@ -8,12 +8,12 @@
 	
 	<!-- 카테고리 전체 조회 -->
 	<select id="findAllCategory" parameterType="map" resultType="map">
-		select a.id as category_large_id
-				,a.name as category_large_name
-				,b.id as category_middle_id
-				,b.name as category_middle_name
-				,c.id as category_small_id
-				,c.name as category_small_name
+		select a.id as categoryLargeId
+				,a.name as categoryLargeName
+				,b.id as categoryMiddleId
+				,b.name as categoryMiddleName
+				,c.id as categorySmallId
+				,c.name as categorySmallName
 		from category_large a
 			 inner join category_middle b on (b.category_large_id = a.id and b.name is not null)
 			 inner join category_small c on (c.category_middle_id  = b.id and c.name is not null)
@@ -25,16 +25,32 @@
 
 	<!-- 카테고리 대분류 목록 -->
 	<select id="findCategoryLarge" parameterType="map" resultType="map">
-		SELECT *
-		FROM category_large
-		WHERE company_id = #{companyId}
-		ORDER BY name ASC
+		SELECT a.id,
+				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
+				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
+				a.update_member_id as updateMemberId,
+				a.company_id as companyId,
+				a.name,
+				a.minwon_code as minwonCode,
+				a.minwon_name as minwonName,
+				a.sort_index as sortIndex
+		FROM   category_large as a
+		WHERE a.company_id = #{companyId}
+		ORDER BY a.name ASC
 	</select>
 	
 	<!-- 카테고리 대분류 상세 -->
 	<select id="getCategoryLarge" parameterType="map" resultType="map">
-		SELECT *
-		FROM   category_large
+		SELECT a.id,
+				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
+				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
+				a.update_member_id as updateMemberId,
+				a.company_id as companyId,
+				a.name,
+				a.minwon_code as minwonCode,
+				a.minwon_name as minwonName,
+				a.sort_index as sortIndex
+		FROM   category_large as a
 		WHERE  id = #{id}
 	</select>
 	
@@ -62,16 +78,34 @@
 	
 	<!-- 카테고리 중분류 목록 -->
 	<select id="findCategoryMiddle" parameterType="map" resultType="map">
-		SELECT *
-		FROM category_middle
+		SELECT a.id,
+				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
+				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
+				a.update_member_id as updateMemberId,
+				a.company_id as companyId,
+				a.name,
+				a.minwon_code as minwonCode,
+				a.minwon_name as minwonName,
+				a.sort_index as sortIndex,
+				a.category_large_id as categoryLargeId
+		FROM   category_middle as a
 		WHERE company_id = #{companyId}
 		ORDER BY name ASC
 	</select>
 	
 	<!-- 카테고리 중분류 상세 -->
 	<select id="getCategoryMiddle" parameterType="map" resultType="map">
-		SELECT *
-		FROM  category_middle
+		SELECT a.id,
+				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
+				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
+				a.update_member_id as updateMemberId,
+				a.company_id as companyId,
+				a.name,
+				a.minwon_code as minwonCode,
+				a.minwon_name as minwonName,
+				a.sort_index as sortIndex,
+				a.category_large_id as categoryLargeId
+		FROM   category_middle as a
 		WHERE id = #{id}
 	</select>
 	
@@ -100,16 +134,40 @@
 	
 	<!-- 카테고리 소분류 목록 -->
 	<select id="findCategorySmall" parameterType="map" resultType="map">
-		SELECT *
-		FROM v_category
+		SELECT a.id,
+				a.name,
+				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
+				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
+				a.company_id as company_id,
+				a.category_large_id as categoryLargeId,
+				a.category_large_name as categoryLargeName,
+				a.category_middle_id as categoryMiddleId,
+				a.category_middle_name as categoryMiddleName,
+				a.member_id as memberId,
+				a.minwon_code as minwonCode,
+				a.minwon_name as minwonName,
+				a.sort_index as sortIndex
+		FROM v_category a
 		WHERE company_id = #{companyId}
 		ORDER BY name ASC
 	</select>
 	
 	<!-- 카테고리 소분류 상세 -->
 	<select id="getCategorySmall" parameterType="map" resultType="map">
-		SELECT *
-		FROM   category_small
+		SELECT a.id,
+				a.name,
+				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
+				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
+				a.company_id as company_id,
+				a.category_large_id as categoryLargeId,
+				a.category_large_name as categoryLargeName,
+				a.category_middle_id as categoryMiddleId,
+				a.category_middle_name as categoryMiddleName,
+				a.member_id as memberId,
+				a.minwon_code as minwonCode,
+				a.minwon_name as minwonName,
+				a.sort_index as sortIndex
+		FROM v_category a
 		WHERE  id = #{id}
 	</select>
 	

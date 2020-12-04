@@ -65,7 +65,7 @@ public class ManualDao extends CommonDao {
 	 * @return
 	 */
 	public Manual findManual(Map<String, Object> params){
-		return this.sqlSession.selectOne(namespace + "findSearch", params);
+		return this.sqlSession.selectOne(namespace + "findManual", params);
 	}
 	
 	/**

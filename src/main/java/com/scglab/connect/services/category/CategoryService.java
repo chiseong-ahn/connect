@@ -103,8 +103,9 @@ public class CategoryService {
 			
 		}else if(type.equals("small")) {	// 소분류
 			data = this.categoryDao.getCategorySmall(params);
-			
 		}
+		
+		data = data == null ? new HashMap<String, Object>() : data;
 		
 		return data;
 	}
@@ -126,30 +127,32 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
-		
 		String type = DataUtils.getString(params, "type", "");
-		if(type.equals("large")) {			// 대분류
+		
+		Map<String, Object> category = null;
+		
+		switch(type) {
+		case "large":
 			if(this.categoryDao.createCategoryLarge(params) > 0) {
-				data = this.categoryDao.getCategoryLarge(params);
+				category = this.categoryDao.getCategoryLarge(params);
 			}
-			data = this.categoryDao.getCategoryLarge(params);
+			break;
 			
-		}else if(type.equals("middle")) {	// 중분류
-			data = this.categoryDao.getCategoryMiddle(params);
+		case "middle" :
+			if(this.categoryDao.createCategoryMiddle(params) > 0) {
+				category = this.categoryDao.getCategoryMiddle(params);
+			}
+			break;
 			
-		}else if(type.equals("small")) {	// 소분류
-			data = this.categoryDao.getCategorySmall(params);
+		case "small" :
+			if(this.categoryDao.createCategorySmall(params) > 0) {
+				category = this.categoryDao.getCategorySmall(params);
+			}
+			break;
 			
 		}
 		
-		int result = this.categoryDao.insert(params);
-		if(result > 0) {
-			Map<String, Object> category = this.categoryDao.selectOne(params);
-			data.put("category", category);
-		}
-		data.put("isSuccess", result > 0 ? true : false);
-		return data;
+		return category == null ? new HashMap<String, Object>() : category;
 	}
 	
 	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -157,14 +160,32 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.categoryDao.update(params);
-		if(result > 0) {
-			Map<String, Object> category = this.categoryDao.selectOne(params);
-			data.put("category", category);
+		String type = DataUtils.getString(params, "type", "");
+		
+		Map<String, Object> category = null;
+		
+		switch(type) {
+		case "large":
+			if(this.categoryDao.updateCategoryLarge(params) > 0) {
+				category = this.categoryDao.getCategoryLarge(params);
+			}
+			break;
+			
+		case "middle" :
+			if(this.categoryDao.updateCategoryMiddle(params) > 0){
+				category = this.categoryDao.getCategoryMiddle(params);
+			}
+			break;
+			
+		case "small" :
+			if(this.categoryDao.updateCategorySmall(params) > 0) {
+				category = this.categoryDao.getCategorySmall(params);
+			}
+			break;
+			
 		}
-		data.put("isSuccess", result > 0 ? true : false);
-		return data;
+		
+		return category == null ? new HashMap<String, Object>() : category;
 	}
 	
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -172,8 +193,26 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String type = DataUtils.getString(params, "type", "");
+		
+		int result = 0;
+		switch(type) {
+		case "large":
+			result = this.categoryDao.deleteCategoryLarge(params);
+			break;
+			
+		case "middle" :
+			result = this.categoryDao.deleteCategoryMiddle(params);
+			break;
+			
+		case "small" :
+			result = this.categoryDao.deleteCategorySmall(params);
+			break;
+			
+		}
+		
 		Map<String, Object> data = new HashMap<String, Object>();
-		int result = this.categoryDao.delete(params);
+		
 		data.put("isSuccess", result > 0 ? true : false);
 		return data;
 	}

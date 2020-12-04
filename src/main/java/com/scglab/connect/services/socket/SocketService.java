@@ -337,15 +337,6 @@ public class SocketService {
 		Room room = this.roomDao.getDetail(params);
 		this.logger.debug("room : " + room);
 		
-		if(profile.getIsCustomer() == 0) {
-			// 고객이 아닐경우(관리자 또는 상담사, 조회자 등)
-			if(room.getMemberId() != profile.getId()) {
-				// 해당 상담의 담당상담사가 아닐경우 조인만 시키고 아무일도 없음.
-				this.logger.debug("조인한 담당자가 할당된 상담자가 아님 - 조인만 시키고 별도 처리는 하지 않음.");
-				return;
-			}
-		}
-		
 		// [DB] 채팅방에 조인 처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());

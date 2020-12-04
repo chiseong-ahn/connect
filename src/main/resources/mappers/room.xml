@@ -8,19 +8,18 @@
 	<!-- 현재 시간 방 통계 정보 -->
 	<select id="getCurrentTimeStats" parameterType="map" resultType="map">
 		SELECT 
-		  COUNT(*) AS ing_count, 
+		  COUNT(*) AS ingCount, 
 		  SUM(
 		    CASE WHEN r.member_id IS NULL THEN 1 ELSE 0 end
-		  ) AS ready_count, 
+		  ) AS readyCount, 
 		  (
 		    SELECT 
 		      COUNT(id) AS cnt 
 		    FROM 
 		      chat_message 
-		    WHERE 
-		      id = r.join_message_id 
+		    WHERE 1=1 
 		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
-		  ) AS new_count, 
+		  ) AS newCount, 
 		  (
 		    SELECT 
 		      COUNT(DISTINCT room_id) 
@@ -29,7 +28,7 @@
 		    WHERE 
 		      company_id = #{companyId} 
 		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
-		  ) AS end_count, 
+		  ) AS endCount, 
 		  (
 		    SELECT 
 		      COUNT(DISTINCT room_id) 
@@ -39,7 +38,7 @@
 		      company_id = #{companyId}
 		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d') 
 		      AND (member_id IS NULL)
-		  ) AS out_count, 
+		  ) AS outCount, 
 		  (
 		    select 
 		      IFNULL(
@@ -53,7 +52,7 @@
 		    where 
 		      end_date is not null 
 		      AND DATE_FORMAT(end_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
-		  ) as speak_avg_time 
+		  ) as speakAvgTime 
 		FROM 
 		  room r 
 		WHERE 
@@ -439,9 +438,9 @@
 	</select>
 	
 	<!-- 방 이관시키기 -->
-	<select id="transferRoom" parameterType="map" resultMap="room" statementType="CALLABLE">
+	<update id="transferRoom" parameterType="map" statementType="CALLABLE">
 		CALL transfer_room(#{transferType}, #{roomId}, #{memberId}, #{loginId})
-	</select>
+	</update>
 	
 	<!-- 방 상담사 매칭시키기 -->
 	<update id="matchRoom" parameterType="map" statementType="CALLABLE">

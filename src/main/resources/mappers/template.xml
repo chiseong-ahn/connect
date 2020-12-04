@@ -8,7 +8,7 @@
 	
 	<!-- 템플릿 카운트 조회 -->
 	<select id="findAllCount" parameterType="map" resultType="int">
-		SELECT count(*) as total_count
+		SELECT count(*) as totalCount
 	      FROM 
 	        template2 t 
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
@@ -56,11 +56,11 @@
 	<!-- 템플릿 전체 조회 -->
 	<select id="findAll" parameterType="map" resultType="map">
 		SELECT 
-	        vc.name AS category_small_name, 
-	        vc.category_large_id, 
-	        vc.category_large_name, 
-	        vc.category_middle_id, 
-	        vc.category_middle_name, 
+	        vc.name AS categorySmallName, 
+	        vc.category_large_id as categoryLargeId, 
+	        vc.category_large_name as categoryLargeName, 
+	        vc.category_middle_id as categoryMiddleId, 
+	        vc.category_middle_name as categoryMiddleName, 
 	        (
 	          SELECT 
 	            GROUP_CONCAT(k.id) 
@@ -69,11 +69,23 @@
 	            INNER JOIN keyword2 k ON tk.keyword_id = k.id 
 	          WHERE 
 	            tk.template_id = t.id
-	        ) AS keyword_ids, 
-	        t.*, 
+	        ) AS keywordIds, 
+	        t.id,
+			date_format(t.create_date ,'%Y-%m-%d') as createDate,
+			date_format(t.update_date ,'%Y-%m-%d') as updateDate,
+			t.update_member_id as updateMemberId,
+			t.member_id as memberId,
+			t.company_id as companyId,
+			t.category_small_id as categorySmallId,
+			t.ask,
+			t.reply,
+			t.link,
+			t.link_protocol as linkProtocol,
+			t.image_path as imagePath,
+			t.image_name as imageName,
 	        (
 	          CASE WHEN f.member_id = #{loginId} THEN 1 ELSE 0 END
-	        ) AS is_favortie 
+	        ) AS isFavortie 
 	      FROM 
 	        template2 t 
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
@@ -121,13 +133,25 @@
 	</select>
 	
 	<!-- 템플릿 조회 -->
-	<select id="getDetail" parameterType="map" resultMap="template">
-		SELECT  vc.name AS category_small_name,
-				vc.category_large_id AS category_large_id,
-				vc.category_middle_id AS category_middle_id,
-				vc.category_large_name AS category_large_name,
-				vc.category_middle_name AS category_middle_name,
-				t.*,
+	<select id="getDetail" parameterType="map" resultType="map">
+		SELECT  vc.name AS categorySmallName,
+				vc.category_large_id AS categoryLargeId,
+				vc.category_middle_id AS categoryMiddleId,
+				vc.category_large_name AS categoryLargeName,
+				vc.category_middle_name AS categoryMiddleName,
+				t.id,
+				date_format(t.create_date ,'%Y-%m-%d') as createDate,
+				date_format(t.update_date ,'%Y-%m-%d') as updateDate,
+				t.update_member_id as updateMemberId,
+				t.member_id as memberId,
+				t.company_id as companyId,
+				t.category_small_id as categorySmallId,
+				t.ask,
+				t.reply,
+				t.link,
+				t.link_protocol as linkProtocol,
+				t.image_path as imagePath,
+				t.image_name as imageName,
 				(
 					SELECT GROUP_CONCAT(keyword_id)
 					FROM template_keyword
@@ -138,7 +162,7 @@
 					FROM template_favorite
 					WHERE template_id = t.id
 					AND member_id = #{memberId}
-				) AS is_favorite
+				) AS isFavorite
 		FROM template2 t
 		LEFT OUTER JOIN v_category vc ON t.category_small_id = vc.id
 		WHERE t.id = #{id}

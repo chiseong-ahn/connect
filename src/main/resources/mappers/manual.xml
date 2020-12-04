@@ -42,6 +42,14 @@
 				
 	</select>
 	
+	<!-- 매뉴얼 상세 -->
+	<select id="findManual" parameterType="map" resultMap="manual">
+		SELECT m.*
+		FROM manual m
+		WHERE m.company_id = #{companyId}
+		AND m.id = #{id}
+	</select>
+	
 	<!-- 매뉴얼 검색 카운트 -->
 	<select id="findSearchCount" parameterType="map" resultType="int">
 		SELECT COUNT(*) as total_count

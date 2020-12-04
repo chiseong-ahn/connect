@@ -125,7 +125,7 @@ public class RoomDao extends CommonDao {
 	 * @return
 	 */
 	public int transferRoom(Map<String, Object> params) {
-		return this.sqlSession.selectOne(this.namespace + "transferRoom", params);
+		return this.sqlSession.update(this.namespace + "transferRoom", params);
 	}
 	
 	/**

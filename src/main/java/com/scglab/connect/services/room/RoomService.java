@@ -200,6 +200,16 @@ public class RoomService {
 	 * @return
 	 */
 	public Room transferRoom(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		Member member = this.loginService.getMember(request);
+		params.put("loginId", member.getId());
+		
+		String transferType = DataUtils.getString(params, "transferType", "");
+		String memberId = DataUtils.getString(params, "memberId", "");
+		if(transferType.equals("") || memberId.equals("")) {
+			this.logger.error("transferType : " + transferType);
+			this.logger.error("memberId : " + memberId);
+			throw new RuntimeException("error.params.type0");
+		}
 		Room room = null;
 		int result = this.roomDao.transferRoom(params);
 		if(result > 0) {

@@ -37,7 +37,7 @@ public class CategoryController {
 	CategoryService categoryService;
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "tree", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류, 중분류, 소분류 카테고리 조회(목록)", description = "대분류, 중분류, 소분류 카테고리를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Map<String, Object> category(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.categoryService.total(params, request);
