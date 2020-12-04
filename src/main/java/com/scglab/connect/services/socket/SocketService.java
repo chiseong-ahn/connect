@@ -331,6 +331,21 @@ public class SocketService {
 			return;
 		}
 		
+		// [DB] 채팅방 정보 조회
+		params = new HashMap<String, Object>();
+		params.put("id", payload.getRoomId());
+		Room room = this.roomDao.getDetail(params);
+		this.logger.debug("room : " + room);
+		
+		if(profile.getIsCustomer() == 0) {
+			// 고객이 아닐경우(관리자 또는 상담사, 조회자 등)
+			if(room.getMemberId() != profile.getId()) {
+				// 해당 상담의 담당상담사가 아닐경우 조인만 시키고 아무일도 없음.
+				this.logger.debug("조인한 담당자가 할당된 상담자가 아님 - 조인만 시키고 별도 처리는 하지 않음.");
+				return;
+			}
+		}
+		
 		// [DB] 채팅방에 조인 처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
@@ -357,11 +372,7 @@ public class SocketService {
 		sendData.put("member", profile);
 		sendMessage(EventName.JOINED, payload.getCompanyId(), payload.getRoomId(), Target.ALL, sendData);
 		
-		// [DB] 채팅방 정보 조회
-		params = new HashMap<String, Object>();
-		params.put("id", payload.getRoomId());
-		Room room = this.roomDao.getDetail(params);
-		this.logger.debug("room : " + room);
+		
 		
 		// 고객여부 판단.
 		if(profile.getIsCustomer() == 1) {

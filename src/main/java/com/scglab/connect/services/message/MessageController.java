@@ -42,6 +42,7 @@ public class MessageController {
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="메세지 조회", description = "메세지 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
+		@Parameter(name = "roomId", description = "룸id", in = ParameterIn.QUERY, required = true, example = "147"),
 		@Parameter(name = "queryId", description = "조회유형 구분<br/>findByRoomIdAll-메세지 전체 조회,<br/>findByRoomIdToSpeaker-메세지 조회(조인한 사용자),<br/>findByRoomIdToAdmin-메세지 조회(관리자, 조회자),<br/> findRangeById-메세지 조회(id 범위)", in = ParameterIn.QUERY, required = true, example = "findByRoomIdAll")
 	})
 	public List<Message> search(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {

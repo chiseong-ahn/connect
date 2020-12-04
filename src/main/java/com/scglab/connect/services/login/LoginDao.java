@@ -34,6 +34,6 @@ public class LoginDao extends CommonDao {
 	}
 	
 	public int saveProfile(Map<String, Object> params) {
-		return this.sqlSession.selectOne(this.namespace + "saveProfile", params);
+		return this.sqlSession.insert(this.namespace + "saveProfile", params);
 	}
 }

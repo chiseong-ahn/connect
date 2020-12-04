@@ -20,7 +20,8 @@
         <div class="row">
             <div class="col-md-6">
             	<span>로그인 : {{profile.loginName}} </span><br />
-            	<span>선택된 스페이스 : {{socket.roomId}}</span>
+            	<span>조인룸 : {{socket.roomId}}</span><br />
+            	<span>선택룸 : {{selectedRoom.id}}</span>
             </div>
             <div class="col-md-6 text-right">
                 <a class="btn btn-primary btn-sm" @click="logout">로그아웃</a>
@@ -96,14 +97,14 @@
 		    </div>
 		    <div class="col-md-3">
 		    	<h4>상담채팅 - </h4>
-		    	<span v-if="socket.roomId != socket.lobbyName"><button type="button" @click="leave()">채팅나가기</button></span>
-		    	<ul  v-if="socket.roomId != socket.lobbyName" class="list-group">
+		    	<span v-if="selectedRoom.id != socket.lobbyName"><button type="button" @click="leave()">채팅나가기</button></span>
+		    	<ul  v-if="selectedRoom.id != socket.lobbyName" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
 		            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
 		                <br />&gt;&gt; {{obj.message}} {{obj.createDate}}</a>
 		            </li>
 		       	</ul>
-		       	<div v-if="socket.roomId != socket.lobbyName">
+		       	<div v-if="selectedRoom.id != socket.lobbyName">
 			       	<div>
 				       	<div v-if="profile.id == selectedRoom.memberId">
 				            <textarea class="form-control" v-model="message" placeholder="내용을 입력하세요."></textarea>
@@ -393,18 +394,43 @@
                 	console.log('Error : ' + errorMessage);
                 },
                 
+                /**************************************************************
+                * 타 상담사는 조인하지 않고 대화내용만 노출(구독하지 않음).
+                **************************************************************/
+                showRoom: function(roomId){
+                	console.log("내 상담이 아니기에 조인하지 않고 관련정보만 조회.");
+                	// 대기룸이 아닐경우.
+                	if(roomId != this.socket.lobbyName){
+                		// 이전 대화목록 조회.
+                		this.getMessages(roomId);
+                			
+	                	// 이전 상담목록 조회
+	                	this.getHistory(roomId);
+	                	
+	                	// 계약정보 조회
+	                	this.getContracts();
+	                }
+                },
                 
                 /**************************************************************
                 * 조인(구독).
                 **************************************************************/
                 join: function(roomId){
-                	this.socket.roomId = roomId;
+                	
                 	rooms = this.activeRooms.filter(room => room.id == roomId);
                 	if(rooms.length == 1){
+                	
                 		this.selectedRoom = rooms[0];
                 		console.log("selectedRoom : " + JSON.stringify(this.selectedRoom));
-                	}
                 	
+                		// 나의 상담인지 확인.
+                		if(rooms[0].memberId != this.profile.id){
+                			// 내 상담이 아닐경우 조인하지 않음.
+                			this.showRoom(roomId);
+                			return;
+                		}
+                	
+                	}
                 	// 조인방 이름 생성.(예, /sub/chat/room/93)
                 	var uri = this.socket.roomPrefix + roomId;
                 	
@@ -414,18 +440,19 @@
                 		this.unjoin();
                 	}
                 	
+                	this.socket.roomId = roomId;
+                	
                 	// 구독
                 	this.socket.subscribe = this.socket.ws.subscribe(
                 		uri, 								// 구독 URI
                 		this.receiveMessage, 				// 구독 성공시 호출되는 함수.	 
                 		headers = {'token': this.token}		// 구독 요청시 전달하는 헤더.
                 	);
-                	
-                	
+
                 	// 대기룸이 아닐경우.
                 	if(this.socket.roomId != this.socket.lobbyName){
 	                	// 이전 상담목록 조회
-	                	this.getHistory();
+	                	this.getHistory(this.socket.roomId);
 	                	
 	                	// 계약정보 조회
 	                	this.getContracts();
@@ -637,9 +664,22 @@
 				
 				},
 				
+				// 이전 상담대화 목록 조회.
+				getMessages: function(roomId){
+					var uri = '/api/message?roomId=' + roomId + '&queryId=findByRoomIdAll';
+                    axios.get(uri, this.header).then(response => {
+                        // prevent html, allow json array
+						if(Object.prototype.toString.call(response.data) === "[object Array]"){
+							this.messages = response.data;
+						}
+                    }, function(e){
+                    	console.log("error : " + e.message);
+                    });
+				},
+				
 				// 이전 상담목록 조회.
-				getHistory: function(){
-					var uri = '/api/room/' + this.socket.roomId + '/findSearchJoinHistory';
+				getHistory: function(roomId){
+					var uri = '/api/room/' + roomId + '/findSearchJoinHistory';
                     axios.get(uri, this.header).then(response => {
                         // prevent html, allow json array
 						if(Object.prototype.toString.call(response.data) === "[object Array]"){
