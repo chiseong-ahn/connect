@@ -10,10 +10,14 @@ import lombok.ToString;
 @Setter
 @ToString
 public class LinkDetail {
-	private int id;
+	private long id;
 	private int companyId;
 	private String createDate;
 	private String updateDate;
-	private int updateMemberId;
-	private String name;
+	private long updateMemberId;
+	private String linkProtocol;
+	private String linkText;
+	private String linkUrl;
+	private int enable;
+	private long menuId;
 }

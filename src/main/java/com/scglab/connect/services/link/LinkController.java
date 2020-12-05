@@ -45,7 +45,7 @@ public class LinkController {
 	}
 	
 	
-	@Auth
+	@Auth //findDetilByMenuIdAndEnableStatus
 	@RequestMapping(method = RequestMethod.GET, value = "findDetailByMenuIdAndEnableStatus", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="활성화되어있는 메뉴에 속한 링크 상세조회", description = "활성화되어있는 메뉴에 속한 링크 상세조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
@@ -62,7 +62,7 @@ public class LinkController {
 	@Parameters({
 		@Parameter(name = "menuId", description = "속해있는 메뉴 id", required = true, in = ParameterIn.QUERY, example = "")
 	})
-	public List<Link> tree(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<LinkMenu> tree(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.linkService.findTree(params, request);
 	}
 }

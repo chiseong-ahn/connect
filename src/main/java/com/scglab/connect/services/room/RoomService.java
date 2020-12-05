@@ -101,7 +101,7 @@ public class RoomService {
 			object = this.roomDao.findIngState(params);
 			break;
 			
-		case "findCloseState" :			// 종료된 방 목록 조회.
+		case "findSearchCloseState" :			// 종료된 방 목록 조회.
 			object = this.roomDao.findCloseState(params);
 			break;
 		}
@@ -144,21 +144,22 @@ public class RoomService {
 		
 		// 대상 방 정보조회.
 		Room room = this.roomDao.getDetail(params);
-		if(room.getMemberId() > 0) {
-			// "이미 상담사가 배정되어 있는 경우" Exception 발생시킴.
-			throw new RuntimeException(this.messageHandler.getMessage("error.room.assigned"));
+		if(room != null) {
+			if(room.getMemberId() > 0) {
+				// "이미 상담사가 배정되어 있는 경우" Exception 발생시킴.
+				throw new RuntimeException(this.messageHandler.getMessage("error.room.assigned"));
+			}
+			
+			// 매칭처리.
+			this.roomDao.matchRoom(params);
+			
+			// 매칭된 방 정보조회.
+			room = this.roomDao.getDetail(params);
+			Map<String, Object> sendData = new HashMap<String, Object>();
+			sendData.put("room", room);
+			
+			this.socketService.sendMessage(EventName.ASSIGNED, member.getCompanyId(), room.getId() + "", Target.ALL, sendData);
 		}
-		
-		// 매칭처리.
-		this.roomDao.matchRoom(params);
-		
-		// 매칭된 방 정보조회.
-		room = this.roomDao.getDetail(params);
-		Map<String, Object> sendData = new HashMap<String, Object>();
-		sendData.put("room", room);
-		
-		this.socketService.sendMessage(EventName.ASSIGNED, member.getCompanyId(), room.getId() + "", Target.ALL, sendData);
-		
 		return room;
 	}
 	

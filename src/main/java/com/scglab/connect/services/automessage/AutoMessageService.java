@@ -39,6 +39,8 @@ public class AutoMessageService {
 	public List<AutoMessage> findAll(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.autoMessageDao.findAutoMessageAll(params); 
 	}
 	
@@ -55,6 +57,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage getDetail(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		AutoMessage autoMessage = this.autoMessageDao.getAutoMessage(params);
 		return autoMessage == null ? new AutoMessage() : autoMessage;
 	}
@@ -72,6 +78,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage getAutoMessageWelcome(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.autoMessageDao.getAutoMessageWelcome(params);
 	}
 	
@@ -88,6 +98,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage getAutoMessageByMatchWait(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.autoMessageDao.getAutoMessageByMatchWait(params);
 	}
 	
@@ -104,6 +118,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage getAutoMessageByReplyWait(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.autoMessageDao.getAutoMessageByReplyWait(params);
 	}
 	
@@ -121,6 +139,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage regist(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		AutoMessage autoMessage = null;
 		int result = this.autoMessageDao.createAutoMessage(params);
 		if(result > 0) {
@@ -142,6 +164,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public AutoMessage update(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		AutoMessage autoMessage = null;
 		int result = this.autoMessageDao.updateAutoMessage(params);
 		if(result > 0) {
@@ -163,6 +189,10 @@ public class AutoMessageService {
 	 * @return
 	 */
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.autoMessageDao.deleteAutoMessage(params);
 		data.put("success", result > 0 ? true : false);

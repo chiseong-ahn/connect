@@ -41,6 +41,20 @@ public class LinkDao extends CommonDao {
 	
 	/**
 	 * 
+	 * @Method Name : findDetailAll
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 링크상세 전체 조회.
+	 * @param params
+	 * @return
+	 */
+	public List<LinkDetail> findDetailAll(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findDetailAll", params);
+	}
+	
+	/**
+	 * 
 	 * @Method Name : findByMenuIdAndEnableStatus
 	 * @작성일 : 2020. 11. 13.
 	 * @작성자 : anchiseong
@@ -50,20 +64,6 @@ public class LinkDao extends CommonDao {
 	 * @return
 	 */
 	public List<LinkMenu> findByMenuIdAndEnableStatus(Map<String, Object> params) {
-		return this.sqlSession.selectList(this.namespace + "findByMenuIdAndEnableStatus", params);
-	}
-	
-	/**
-	 * 
-	 * @Method Name : findTree
-	 * @작성일 : 2020. 11. 13.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 링크 전체 목록 : 트리
-	 * @param params
-	 * @return
-	 */
-	public List<Link> findTree(Map<String, Object> params){
-		return this.sqlSession.selectList(this.namespace + "findTree", params);
+		return this.sqlSession.selectList(this.namespace + "findDetailByMenuIdAndEnableStatus", params);
 	}
 }

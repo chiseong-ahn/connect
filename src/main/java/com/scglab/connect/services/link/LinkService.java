@@ -3,6 +3,7 @@ package com.scglab.connect.services.link;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,13 +49,21 @@ public class LinkService {
 		return this.linkDao.findByMenuIdAndEnableStatus(params);
 	}
 	
-	public List<Link> findTree(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<LinkMenu> findTree(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		this.logger.debug("params : " + params.toString());
-		return this.linkDao.findTree(params);
+		List<LinkMenu> linkMenuList = this.linkDao.findMenuAll(params);
+		List<LinkDetail> linkDetailList = this.linkDao.findDetailAll(params);
+		
+		for(LinkMenu linkMenu : linkMenuList) {
+			linkMenu.setChilds(
+				linkDetailList.stream().filter(obj -> obj.getMenuId() == linkMenu.getId()).collect(Collectors.toList())
+			);
+		}
+		
+		return linkMenuList;
 	}
 	
 	

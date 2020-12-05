@@ -120,7 +120,7 @@
 	<!-- 매뉴얼 삭제 -->
 	<delete id="delete" parameterType="map">
 		DELETE 
-		FORM manual
+		FROM manual
 		WHERE id = #{id}
 	</delete>
 	
@@ -130,6 +130,13 @@
 		FROM manual_favorite
 		WHERE manual_id = #{id}
 	</delete>	
+	
+	<select id="getNextPageNumber" parameterType="map" resultType="int">
+		SELECT IFNULL(MAX(page_number), 0)  + 1 AS max_page_number 
+		FROM   manual 
+		WHERE  company_id = #{companyId} 
+		AND manual_index = #{manualIndex} 
+	</select>
 	
 </mapper>
 

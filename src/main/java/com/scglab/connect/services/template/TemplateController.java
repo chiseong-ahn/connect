@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.category.CategoryMiddle;
+import com.scglab.connect.services.category.CategorySmall;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -110,12 +112,13 @@ public class TemplateController {
 	@Operation(summary="답변템플릿 삭제", description = "답변템플릿를 삭제합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@ApiResponse(responseCode = "200", description = "success:true, success:result:false")
 	public Map<String, Object> delete(@Parameter(description = "답변템플릿 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		params.put("id", id);
 		return this.templateService.delete(params, request);
 	}
 	
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 전체 조회", description = "답변템플릿 전체 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
 		@Parameter(name = "checkFavorite", description = "즐겨찾기한 템플릿만 조회", required = false, in = ParameterIn.QUERY, example = "1"),
@@ -126,45 +129,34 @@ public class TemplateController {
 	
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/findByCategoryLargeId", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 : 카테고리 대분류", description = "답변템플릿 : 카테고리 대분류", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@RequestMapping(method = RequestMethod.POST, value = "/findByCategoryLargeId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="답변템플릿 : 카테고리 중분류(대분류 기준)", description = "답변템플릿 : 카테고리 중분류(대분류 기준)", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
 		@Parameter(name = "checkFavorite", description = "즐겨찾기한 템플릿만 조회", required = false, in = ParameterIn.QUERY, example = "1"),
 		@Parameter(name = "categoryLargeId", description = "대분류 id", required = false, in = ParameterIn.QUERY, example = "13"),
 	})
-	public Map<String, Object> findByCategoryLargeId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.templateService.findTemplate(params, request);
+	public List<CategoryMiddle> findByCategoryLargeId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.templateService.findByCategoryLargeId(params, request);
 	}
 	
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/findByCategoryMiddleId", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 : 카테고리 중분류", description = "답변템플릿 : 카테고리 중분류", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@RequestMapping(method = RequestMethod.POST, value = "/findByCategoryMiddleId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="답변템플릿 : 카테고리 소분류(중분류 기준)", description = "답변템플릿 : 카테고리 소분류(중분류 기준)", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
 		@Parameter(name = "checkFavorite", description = "즐겨찾기한 템플릿만 조회", required = false, in = ParameterIn.QUERY, example = "1"),
 		@Parameter(name = "categoryMiddleId", description = "중분류 id", required = false, in = ParameterIn.QUERY, example = "13"),
 	})
-	public Map<String, Object> findByCategoryMiddleId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.templateService.findTemplate(params, request);
+	public List<CategorySmall> findByCategoryMiddleId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.templateService.findByCategoryMiddleId(params, request);
 	}
 	
 	
-	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/findByCategorySmallId", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변템플릿 : 카테고리 소분류", description = "답변템플릿 : 카테고리 소분류", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	@Parameters({
-		@Parameter(name = "checkFavorite", description = "즐겨찾기한 템플릿만 조회", required = false, in = ParameterIn.QUERY, example = "1"),
-		@Parameter(name = "categorySmallId", description = "소분류 id", required = false, in = ParameterIn.QUERY, example = "9"),
-	})
-	public Map<String, Object> findByCategorySmallId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.templateService.findTemplate(params, request);
-	}
-	
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/findBtyFavoriteLoginMemberId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/findByFavoriteLoginMemberId", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="템플릿 조회 : 내가 즐겨찾기한 템플릿 목록", description = "템플릿 조회 : 내가 즐겨찾기한 템플릿 목록", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> findBtyFavoriteLoginMemberId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> findByFavoriteLoginMemberId(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("checkFavorite", 1);
 		return this.templateService.findAll(params, request);
 	}

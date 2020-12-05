@@ -44,6 +44,21 @@ public class CustomerService {
 	 */
 	public Map<String, Object> findAll(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
+		
+		//페이지 번호.
+		int page = Integer.parseInt(DataUtils.getObjectValue(params, "page", "1"));
+		page = page < 1 ? 1 : page;
+		
+		// 페이지당 노출할 게시물 수.
+		int pageSize = Integer.parseInt(DataUtils.getObjectValue(params, "pageSize", "10"));
+		pageSize = pageSize < 1 ? 10 : pageSize;
+		
+		// 조회 시작 번호.
+		int startNum = (page - 1) * pageSize + 1;
+		
+		params.put("startNum", startNum);
+		params.put("pageSize", pageSize);
+				
 		int totalCount = this.customerDao.findAllCount(params);
 		List<Map<String, Object>> list = null;
 		if(totalCount > 0) {
@@ -54,6 +69,7 @@ public class CustomerService {
 		data.put("data", list);
 		return data;
 	}
+	
 	
 	/**
 	 * 
@@ -88,7 +104,13 @@ public class CustomerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> unBlock(Map<String, Object> params) throws Exception {
+	public Map<String, Object> unBlock(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		this.logger.debug("request : " + request);
+		
+		Member member = this.loginService.getMember(request);
+		this.logger.debug("member : " + member);
+		params.put("companyId", member.getCompanyId());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		int result = this.customerDao.disbleBlackStatus(params);

@@ -51,7 +51,7 @@
 		INNER JOIN chat_message m ON r.id = m.room_id
 		LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE  r.id = #{roomId}
-		AND m.id BETWEEN #{startMessageId} AND #{endMessageId}
+		AND m.id BETWEEN #{startId} AND #{endId}
 	</select>
 
 	
@@ -102,7 +102,7 @@
 	</select>
 	
 	<!-- 담당자가 아닌 관리자 또는 조회자 권한이 있는 사용자가 조회시 -->
-	<select id="findByRoomIdToAdmin">
+	<select id="findByRoomIdToAdmin" parameterType="map" resultMap="message">
 		SELECT 
 		  r.join_message_id, 
 		  m.*,

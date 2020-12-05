@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.category.CategoryDao;
+import com.scglab.connect.services.category.CategoryMiddle;
+import com.scglab.connect.services.category.CategorySmall;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
@@ -21,8 +24,8 @@ public class TemplateService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private TemplateDao templateDao;
+	@Autowired private TemplateDao templateDao;
+	@Autowired private CategoryDao categoryDao;
 	
 	@Autowired
 	private MessageHandler messageService;
@@ -251,7 +254,7 @@ public class TemplateService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = 0;
 		
-		Map<String, Object> template = this.templateDao.selectOne(params);
+		Map<String, Object> template = this.templateDao.getDetail(params);
 		if(template == null) {
 			Object[] messageParams = new String[1];
 			messageParams[0] = "id = " + DataUtils.getString(params, "id", "");
@@ -295,4 +298,21 @@ public class TemplateService {
 		data.put("success", result > 0 ? true : false);
 		return data;
 	}
+	public List<CategoryMiddle> findByCategoryLargeId(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		return this.categoryDao.findCategoryMiddleByLargeId(params);
+	}
+	
+	public List<CategorySmall> findByCategoryMiddleId(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		return this.categoryDao.findCategorySmallByMiddleId(params);
+	}
+	
+	
 }

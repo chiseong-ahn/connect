@@ -37,27 +37,34 @@ public class CategoryController {
 	CategoryService categoryService;
 	
 	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="카테고리 전체 조회", description = "카테고리 전체를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public Map<String, Object> total(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.categoryService.total(params, request);
+	}
+	
+	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "tree", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류, 중분류, 소분류 카테고리 조회(목록)", description = "대분류, 중분류, 소분류 카테고리를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> category(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.categoryService.total(params, request);
+	public List<CategoryLarge> tree(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.categoryService.tree(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/large", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류 카테고리 조회(목록)", description = "조건에 맞는 대분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public List<Map<String, Object>> categoriesLarge(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<CategoryLarge> categoriesLarge(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "large");
-		return this.categoryService.categories(params, request);
+		return this.categoryService.categoryLargeList(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/large/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류 카테고리 상세조회", description = "조건에 맞는 대분류 카테고리 상세정보를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> categoryLarge(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public CategoryLarge categoryLarge(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "large");
 		params.put("id", id);
-		return this.categoryService.category(params, request);
+		return this.categoryService.categoryLarge(params, request);
 	}
 	
 	@Auth
@@ -67,9 +74,8 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Map<String, Object> saveLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "large");
-		return this.categoryService.save(params, request);
+	public CategoryLarge saveLg(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.categoryService.saveCategoryLarge(params, request);
 	}
 	
 	@Auth
@@ -80,10 +86,10 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public  Map<String, Object> updateLg(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public  CategoryLarge updateLg(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "large");
 		params.put("id", id);
-		return this.categoryService.update(params, request);
+		return this.categoryService.updateCategoryLarge(params, request);
 	}
 	
 	@Auth
@@ -102,18 +108,17 @@ public class CategoryController {
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/middle", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="중분류 카테고리 조회(목록)", description = "조건에 맞는 중분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public List<Map<String, Object>> categoriesMiddle(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<CategoryMiddle> categoriesMiddle(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "middle");
-		return this.categoryService.categories(params, request);
+		return this.categoryService.categoryMiddleList(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/middle/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="중분류 카테고리 조회(목록)", description = "조건에 맞는 중분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> categoryMiddle(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "middle");
+	public CategoryMiddle categoryMiddle(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
-		return this.categoryService.category(params, request);
+		return this.categoryService.categoryMiddle(params, request);
 	}
 	
 	@Auth
@@ -124,9 +129,8 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Map<String, Object> saveMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "middle");
-		return this.categoryService.save(params, request);
+	public CategoryMiddle saveMd(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.categoryService.saveCategoryMiddle(params, request);
 	}
 	
 	@Auth
@@ -136,10 +140,9 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public  Map<String, Object> updateMd(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "middle");
+	public  CategoryMiddle updateMd(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
-		return this.categoryService.update(params, request);
+		return this.categoryService.updateCategoryMiddle(params, request);
 	}
 	
 	@Auth
@@ -152,22 +155,20 @@ public class CategoryController {
 		return this.categoryService.delete(params, request);
 	}
 	
-	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/small", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="소분류 카테고리 조회(목록)", description = "조건에 맞는 소분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public List<Map<String, Object>> categoriesSmall(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<CategorySmall> categoriesSmall(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "small");
-		return this.categoryService.categories(params, request);
+		return this.categoryService.categorySmallList(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/small/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="소분류 카테고리 조회(목록)", description = "조건에 맞는 소분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Map<String, Object> categorySmall(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "small");
+	public CategorySmall categorySmall(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
-		return this.categoryService.category(params, request);
+		return this.categoryService.categorySmall(params, request);
 	}
 	
 	@Auth
@@ -178,9 +179,8 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Map<String, Object> saveSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "small");
-		return this.categoryService.save(params, request);
+	public CategorySmall saveSm(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.categoryService.saveCategorySmall(params, request);
 	}
 	
 	@Auth
@@ -190,10 +190,9 @@ public class CategoryController {
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public  Map<String, Object> updateSm(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "small");
+	public  CategorySmall updateSm(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
-		return this.categoryService.update(params, request);
+		return this.categoryService.updateCategorySmall(params, request);
 	}
 	
 	@Auth
@@ -204,6 +203,40 @@ public class CategoryController {
 		params.put("type", "small");
 		params.put("id", id);
 		return this.categoryService.delete(params, request);
+	}
+	
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.PUT, value = "/large/{id}/sort-index", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="대분류 카테고리 정렬 정보 수정.", description = "대분류 카테고리 정렬 정보 수정합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
+	})
+	public CategoryLarge sortIndexLg(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		params.put("id", id);
+		return this.categoryService.updateSortIndexCategoryLarge(params, request);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.PUT, value = "/middle/{id}/sort-index", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="중분류 카테고리 정렬 정보 수정.", description = "중분류 카테고리 정렬 정보 수정합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
+	})
+	public CategoryMiddle sortIndexMd(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		params.put("id", id);
+		return this.categoryService.updateSortIndexCategoryMiddle(params, request);
+	}
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.PUT, value = "/small/{id}/sort-index", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="소분류 카테고리 정렬 정보 수정.", description = "소분류 카테고리 정렬 정보 수정합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Parameters({
+		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
+	})
+	public CategorySmall sortIndexSm(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		params.put("id", id);
+		return this.categoryService.updateSortIndexCategorySmall(params, request);
 	}
 }
 

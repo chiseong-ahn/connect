@@ -37,6 +37,7 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 	
+	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="고객 검색", description = "고객정보를 검색합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
@@ -45,32 +46,32 @@ public class CustomerController {
     	@Parameter(name = "page", description = "페이지 번호", required = true, in = ParameterIn.QUERY, example = "1"),
     	@Parameter(name = "pageSize", description = "한 페이지에 보여줄 목록 갯수", required = true, in = ParameterIn.QUERY, example = "10"),
     })
-	public Map<String, Object> findAll( @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+	public Map<String, Object> findAll( @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.customerService.findAll(params);
 	}
 	
-	
+	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="관심고객 지정 / 해제", description = "관심고객을 지정/해제합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
     	@Parameter(name = "blockType", description = "관심고객 지정 사유", required = true, in = ParameterIn.QUERY, example = ""),
     	@Parameter(name = "remark", description = "메모", required = false, in = ParameterIn.QUERY, example = ""),
     })
-	public Map<String, Object> block(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+	public Map<String, Object> block(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		return this.customerService.block(params);
 	}
 	
-	
+	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="관심고객 지정 / 해제", description = "관심고객을 지정/해제합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	@Parameters({
     	@Parameter(name = "blockType", description = "관심고객 지정 사유", required = true, in = ParameterIn.QUERY, example = ""),
     	@Parameter(name = "remark", description = "메모", required = false, in = ParameterIn.QUERY, example = ""),
     })
-	public Map<String, Object> unBlock(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+	public Map<String, Object> unBlock(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
-		return this.customerService.unBlock(params);
+		return this.customerService.unBlock(params, request);
 	}
 	
 	
@@ -82,7 +83,7 @@ public class CustomerController {
     	@Parameter(name = "name", description = "이름", required = true, in = ParameterIn.QUERY, example = "안치성"),
     	@Parameter(name = "telNumber", description = "휴대폰번호", required = true, in = ParameterIn.QUERY, example = "01022820317"),
     })
-	public Map<String, Object> token( @Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+	public Map<String, Object> token( @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.customerService.token(params);
 	}
 	
@@ -98,7 +99,7 @@ public class CustomerController {
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="고객 회원정보 수정", description = "", security = {@SecurityRequirement(name = "bearer-key")})
-    public Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id) throws Exception {
+    public Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		return this.customerService.update(params);
 	}

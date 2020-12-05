@@ -3,6 +3,7 @@ package com.scglab.connect.services.category;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,9 +32,9 @@ public class CategoryService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		List<Map<String, Object>> large = this.categoryDao.findCategoryLarge(params);
-		List<Map<String, Object>> middle = this.categoryDao.findCategoryMiddle(params);
-		List<Map<String, Object>> small = this.categoryDao.findCategorySmall(params);
+		List<CategoryLarge> large = this.categoryDao.findCategoryLarge(params);
+		List<CategoryMiddle> middle = this.categoryDao.findCategoryMiddle(params);
+		List<CategorySmall> small = this.categoryDao.findCategorySmall(params);
 		
 		data.put("large", large);
 		data.put("middle", middle);
@@ -41,38 +42,97 @@ public class CategoryService {
 		
 		return data;
 	}
+	
+	public List<CategoryLarge> tree(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		List<CategoryLarge> largeList = this.categoryDao.findCategoryLarge(params);
+		List<CategoryMiddle> middleList = this.categoryDao.findCategoryMiddle(params);
+		List<CategorySmall> smallList = this.categoryDao.findCategorySmall(params);
+		
+		for(CategorySmall small : smallList) {
+			small.setKey("c" + small.getId());
+			small.setTitle(small.getName());
+			small.setLevel(3);
+		}
+		
+		for(CategoryMiddle middle : middleList) {
+			middle.setKey("b" + middle.getId());
+			middle.setTitle(middle.getName());
+			middle.setLevel(2);
+			
+			middle.setChildren(smallList.stream().filter(small -> small.getCategoryMiddleId() == middle.getId()).collect(Collectors.toList()));
+		}
+		
+		for(CategoryLarge large : largeList) {
+			large.setKey("a" + large.getId());
+			large.setTitle(large.getName());
+			large.setLevel(1);
+			large.setChildren(middleList.stream().filter(middle -> middle.getCategoryLargeId() == large.getId()).collect(Collectors.toList()));
+		}
+		
+		return largeList;
+	}
+	
 	/**
 	 * 
 	 * @Method Name : categories
 	 * @작성일 : 2020. 11. 12.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 카테고리 검색.
+	 * @Method 설명 : 카테고리 대분류 조회.
 	 * @param params
 	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Map<String, Object>> categories(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<CategoryLarge> categoryLargeList(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		return this.categoryDao.findCategoryLarge(params);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : categoryMiddleList
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 카테고리 중분류 조회.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CategoryMiddle> categoryMiddleList(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
-		List<Map<String, Object>> list = null;
+		return this.categoryDao.findCategoryMiddle(params);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : categorySmallList
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 카테고리 소분류 조회.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CategorySmall> categorySmallList(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		String type = DataUtils.getString(params, "type", "");
-		if(type.equals("large")) {			// 대분류
-			list = this.categoryDao.findCategoryLarge(params);
-			
-		}else if(type.equals("middle")) {	// 중분류
-			list = this.categoryDao.findCategoryMiddle(params);
-			
-		}else if(type.equals("small")) {	// 소분류
-			list = this.categoryDao.findCategorySmall(params);
-			
-		}
-		return list;
+		return this.categoryDao.findCategorySmall(params);
 	}
 	
 	/**
@@ -87,105 +147,182 @@ public class CategoryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> category(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public CategoryLarge categoryLarge(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = null;
+		CategoryLarge categoryLarge = this.categoryDao.getCategoryLarge(params);
+		return categoryLarge == null ? new CategoryLarge() : categoryLarge;
+	}
+	
+	public CategoryMiddle categoryMiddle(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		String type = DataUtils.getString(params, "type", "");
-		if(type.equals("large")) {			// 대분류
-			data = this.categoryDao.getCategoryLarge(params);
-			
-		}else if(type.equals("middle")) {	// 중분류
-			data = this.categoryDao.getCategoryMiddle(params);
-			
-		}else if(type.equals("small")) {	// 소분류
-			data = this.categoryDao.getCategorySmall(params);
-		}
+		CategoryMiddle categoryMiddle = this.categoryDao.getCategoryMiddle(params);
+		return categoryMiddle == null ? new CategoryMiddle() : categoryMiddle;
+	}
+	
+	public CategorySmall categorySmall(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		data = data == null ? new HashMap<String, Object>() : data;
-		
-		return data;
+		CategorySmall categorySmall = this.categoryDao.getCategorySmall(params);
+		return categorySmall == null ? new CategorySmall() : categorySmall;
 	}
 	
 	/**
 	 * 
-	 * @Method Name : save
+	 * @Method Name : saveCategoryLarge
 	 * @작성일 : 2020. 11. 26.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
-	 * @Method 설명 : 카테고리 등록
+	 * @Method 설명 : 대분류 카테고리 등록
 	 * @param params
 	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> save(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public CategoryLarge saveCategoryLarge(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		String type = DataUtils.getString(params, "type", "");
-		
-		Map<String, Object> category = null;
-		
-		switch(type) {
-		case "large":
-			if(this.categoryDao.createCategoryLarge(params) > 0) {
-				category = this.categoryDao.getCategoryLarge(params);
-			}
-			break;
-			
-		case "middle" :
-			if(this.categoryDao.createCategoryMiddle(params) > 0) {
-				category = this.categoryDao.getCategoryMiddle(params);
-			}
-			break;
-			
-		case "small" :
-			if(this.categoryDao.createCategorySmall(params) > 0) {
-				category = this.categoryDao.getCategorySmall(params);
-			}
-			break;
-			
+		CategoryLarge category = null;
+		if(this.categoryDao.createCategoryLarge(params) > 0) {
+			category = this.categoryDao.getCategoryLarge(params);
 		}
-		
-		return category == null ? new HashMap<String, Object>() : category;
+		return category == null ? new CategoryLarge() : category;
 	}
 	
-	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	/**
+	 * 
+	 * @Method Name : saveCategoryMiddle
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 중분류 카테고리 등록.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public CategoryMiddle saveCategoryMiddle(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		String type = DataUtils.getString(params, "type", "");
+		CategoryMiddle category = null;
+		if(this.categoryDao.createCategoryLarge(params) > 0) {
+			category = this.categoryDao.getCategoryMiddle(params);
+		}
+		return category == null ? new CategoryMiddle() : category;
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : saveCategorySmall
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 소분류 카테고리 등록.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public CategorySmall saveCategorySmall(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		Map<String, Object> category = null;
+		CategorySmall category = null;
+		if(this.categoryDao.createCategoryLarge(params) > 0) {
+			category = this.categoryDao.getCategorySmall(params);
+		}
+		return category == null ? new CategorySmall() : category;
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : updateCategoryLarge
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 대분류 카테고리 수정.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public CategoryLarge updateCategoryLarge(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
-		switch(type) {
-		case "large":
-			if(this.categoryDao.updateCategoryLarge(params) > 0) {
-				category = this.categoryDao.getCategoryLarge(params);
-			}
-			break;
-			
-		case "middle" :
-			if(this.categoryDao.updateCategoryMiddle(params) > 0){
-				category = this.categoryDao.getCategoryMiddle(params);
-			}
-			break;
-			
-		case "small" :
-			if(this.categoryDao.updateCategorySmall(params) > 0) {
-				category = this.categoryDao.getCategorySmall(params);
-			}
-			break;
-			
+		CategoryLarge category = null;
+		if(this.categoryDao.updateCategoryLarge(params) > 0) {
+			category = this.categoryDao.getCategoryLarge(params);
 		}
 		
-		return category == null ? new HashMap<String, Object>() : category;
+		return category == null ? new CategoryLarge() : category;
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : updateCategoryMiddle
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 중분류 카테고리 수정.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public CategoryMiddle updateCategoryMiddle(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		CategoryMiddle category = null;
+		if(this.categoryDao.updateCategoryMiddle(params) > 0) {
+			category = this.categoryDao.getCategoryMiddle(params);
+		}
+		
+		return category == null ? new CategoryMiddle() : category;
+	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : updateCategorySmall
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 소분류 카테고리 수정.
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public CategorySmall updateCategorySmall(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		CategorySmall category = null;
+		if(this.categoryDao.updateCategorySmall(params) > 0) {
+			category = this.categoryDao.getCategorySmall(params);
+		}
+		
+		return category == null ? new CategorySmall() : category;
 	}
 	
 	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -215,5 +352,45 @@ public class CategoryService {
 		
 		data.put("isSuccess", result > 0 ? true : false);
 		return data;
+	}
+	
+	public CategoryLarge updateSortIndexCategoryLarge(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("updateMemberId", member.getId());
+		
+		CategoryLarge category = null;
+		if(this.categoryDao.updateLargeSortIndexToAfter(params) > 0) {
+			category = this.categoryDao.getCategoryLarge(params);
+		}
+		
+		return category == null ? new CategoryLarge() : category;
+	}
+	
+	public CategoryMiddle updateSortIndexCategoryMiddle(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("updateMemberId", member.getId());
+		
+		CategoryMiddle category = null;
+		if(this.categoryDao.updateMiddleSortIndexToAfter(params) > 0) {
+			category = this.categoryDao.getCategoryMiddle(params);
+		}
+		
+		return category == null ? new CategoryMiddle() : category;
+	}
+	
+	public CategorySmall updateSortIndexCategorySmall(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("updateMemberId", member.getId());
+		params.put("categoryMiddleId", DataUtils.getLong(params, "category_middle_id", 0));
+		
+		CategorySmall category = null;
+		if(this.categoryDao.updateSmallSortIndexToAfter(params) > 0) {
+			category = this.categoryDao.getCategorySmall(params);
+		}
+		
+		return category == null ? new CategorySmall() : category;
 	}
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,8 +38,8 @@ public class ManualController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private ManualService manualService;
+	@Autowired private ManualService manualService;
+	@Autowired private LoginService loginService;
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,6 +53,9 @@ public class ManualController {
 		@Parameter(name = "pageSize", description = "페이지당 노출 수", required = false, in = ParameterIn.QUERY, example = "10"),
 	})
 	public Map<String, Object> manuals(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		return this.manualService.manuals(params, request, response);
 	}
 	
@@ -58,6 +63,10 @@ public class ManualController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="매뉴얼 상세", description = "매뉴얼 상세정보를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Manual manual(@Parameter(description = "매뉴얼 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		params.put("id", id);
 		Manual manual = this.manualService.manual(params, request, response);
 		manual = manual == null ? new Manual() : manual;
@@ -71,6 +80,10 @@ public class ManualController {
 		@Parameter(name = "manualIndex", description = "매뉴얼 id", required = true, in = ParameterIn.QUERY, example = "1"),
 	})
 	public List<String> tags(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.manualService.tags(params, request, response);
 	}
 	
@@ -81,6 +94,10 @@ public class ManualController {
 		@Parameter(name = "value", description = "즐겨찾기 추가/삭제", required = true, in = ParameterIn.QUERY, example = "true"),
 	})
 	public Map<String, Object> favorite(@Parameter(description = "매뉴얼 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		params.put("id", id);
 		return this.manualService.favorite(params, request, response);
 	}
@@ -97,6 +114,10 @@ public class ManualController {
 		@Parameter(name = "pdfImagePath", description = "이미지경로", required = true, in = ParameterIn.QUERY, example = "경로.jpg"),
 	})
 	public Manual regist(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.manualService.regist(params, request, response);
 	}
 	
@@ -111,6 +132,10 @@ public class ManualController {
 		@Parameter(name = "pdfImagePath", description = "이미지경로", required = true, in = ParameterIn.QUERY, example = "경로.jpg"),
 	})
 	public Manual update(@Parameter(description = "매뉴얼 index", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		params.put("id", id);
 		return this.manualService.update(params, request, response);
 	}
@@ -119,6 +144,10 @@ public class ManualController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="매뉴얼 삭제", description = "매뉴얼을 삭제합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Map<String, Object> delete(@Parameter(description = "매뉴얼 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		params.put("id", id);
 		return this.manualService.delete(params, request, response);
 	}
@@ -127,6 +156,10 @@ public class ManualController {
 	@RequestMapping(method = RequestMethod.POST, value = "/getNextPageNumber", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="매뉴얼 채번", description = "매뉴얼 채번을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Map<String, Object> nextPageNumber(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		return this.manualService.nextPageNumber(params, request, response);
 	}
 	

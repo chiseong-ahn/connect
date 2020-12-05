@@ -172,12 +172,8 @@ public class ManualService {
 		
 		Manual manual = null;
 		
-		int result = this.manualDao.insertManual(params);
-		if(result > 0) {
-			Long id = DataUtils.getLong(params, "id", 0);
-			if(id > 0) {
+		if(this.manualDao.insertManual(params) > 0) {
 				manual = this.manualDao.findManual(params);
-			}
 		}
 		
 		return manual;
@@ -251,7 +247,10 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> nextPageNumber(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.manualDao.findNextPageNumber(params);
+		Map<String, Object> data = new HashMap<String, Object>(); 
+		int nextPageNumber = this.manualDao.getNextPageNumber(params);
+		data.put("nextPageNumber", nextPageNumber);
+		return data;
 	}
 	
 }

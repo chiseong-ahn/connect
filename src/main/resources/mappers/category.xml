@@ -3,8 +3,13 @@
 
 <mapper namespace="category">
 
-	<parameterMap type="com.scglab.connect.services.category.Category" id="category"></parameterMap>
-	<resultMap type="com.scglab.connect.services.category.Category" id="category"></resultMap>
+	<parameterMap type="com.scglab.connect.services.category.CategoryLarge" id="categoryLarge"></parameterMap>
+	<parameterMap type="com.scglab.connect.services.category.CategoryMiddle" id="categoryMiddle"></parameterMap>
+	<parameterMap type="com.scglab.connect.services.category.CategorySmall" id="categorySmall"></parameterMap>
+	
+	<resultMap type="com.scglab.connect.services.category.CategoryLarge" id="categoryLarge"></resultMap>
+	<resultMap type="com.scglab.connect.services.category.CategoryMiddle" id="categoryMiddle"></resultMap>
+	<resultMap type="com.scglab.connect.services.category.CategorySmall" id="categorySmall"></resultMap>
 	
 	<!-- 카테고리 전체 조회 -->
 	<select id="findAllCategory" parameterType="map" resultType="map">
@@ -24,7 +29,7 @@
 	</select>
 
 	<!-- 카테고리 대분류 목록 -->
-	<select id="findCategoryLarge" parameterType="map" resultType="map">
+	<select id="findCategoryLarge" parameterType="map" resultMap="categoryLarge">
 		SELECT a.id,
 				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
 				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
@@ -36,11 +41,11 @@
 				a.sort_index as sortIndex
 		FROM   category_large as a
 		WHERE a.company_id = #{companyId}
-		ORDER BY a.name ASC
+		ORDER BY a.sort_index
 	</select>
 	
 	<!-- 카테고리 대분류 상세 -->
-	<select id="getCategoryLarge" parameterType="map" resultType="map">
+	<select id="getCategoryLarge" parameterType="map" resultMap="categoryLarge">
 		SELECT a.id,
 				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
 				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
@@ -56,7 +61,7 @@
 	
 	<!-- 카테고리 대분류 등록 -->
 	<insert id="createCategoryLarge" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO (company_id, name, minwon_code, minwon_name, update_member_id)
+		INSERT INTO category_large(company_id, name, minwon_code, minwon_name, update_member_id)
 		VALUES(#{companyId}, #{name}, #{minwonCode}, #{minwonName}, #{loginId})
 	</insert>
 	
@@ -77,7 +82,7 @@
 	</delete>
 	
 	<!-- 카테고리 중분류 목록 -->
-	<select id="findCategoryMiddle" parameterType="map" resultType="map">
+	<select id="findCategoryMiddle" parameterType="map" resultMap="categoryMiddle">
 		SELECT a.id,
 				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
 				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
@@ -90,11 +95,11 @@
 				a.category_large_id as categoryLargeId
 		FROM   category_middle as a
 		WHERE company_id = #{companyId}
-		ORDER BY name ASC
+		ORDER BY a.sort_index
 	</select>
 	
 	<!-- 카테고리 중분류 상세 -->
-	<select id="getCategoryMiddle" parameterType="map" resultType="map">
+	<select id="getCategoryMiddle" parameterType="map" resultMap="categoryMiddle">
 		SELECT a.id,
 				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
 				DATE_FORMAT(a.update_date, '%Y-%m-%d') as updateDate,
@@ -133,7 +138,7 @@
 	</delete>
 	
 	<!-- 카테고리 소분류 목록 -->
-	<select id="findCategorySmall" parameterType="map" resultType="map">
+	<select id="findCategorySmall" parameterType="map" resultMap="categorySmall">
 		SELECT a.id,
 				a.name,
 				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
@@ -149,11 +154,11 @@
 				a.sort_index as sortIndex
 		FROM v_category a
 		WHERE company_id = #{companyId}
-		ORDER BY name ASC
+		ORDER BY a.sort_index
 	</select>
 	
 	<!-- 카테고리 소분류 상세 -->
-	<select id="getCategorySmall" parameterType="map" resultType="map">
+	<select id="getCategorySmall" parameterType="map" resultMap="categorySmall">
 		SELECT a.id,
 				a.name,
 				DATE_FORMAT(a.create_date, '%Y-%m-%d') as createDate,
@@ -194,6 +199,61 @@
 		WHERE  id = #{id}
 	</delete>
 	
+	
+	<select id="getLastLargeSortIndex" parameterType="map" resultType="int">
+		SELECT IFNULL(MAX(sort_index), 0) + 1 as sort_index
+		FROM   category_large 
+		WHERE  company_id = #{companyId} 
+	</select>
+	
+	<select id="getLastMiddleSortIndex" parameterType="map" resultType="int">
+		SELECT IFNULL(MAX(sort_index), 0) + 1 as sort_index
+		FROM   category_middle 
+		WHERE  category_large_id = #{categoryLargeId} 
+	</select>
+	
+	<select id="getLastSmallSortIndex" parameterType="map" resultType="int">
+		SELECT IFNULL(MAX(sort_index), 0) + 1 as sort_index
+		FROM   category_small 
+		WHERE  category_middle_id = #{categoryMiddleId}
+	</select>
+	
+	<update id="updateLargeSortIndexToAfter" parameterType="map">
+		UPDATE category_large 
+		SET    sort_index = sort_index + 1
+		WHERE  company_id = #{companyId} 
+		AND sort_index >= #{sortIndex}
+	</update>
+	
+	<update id="updateMiddleSortIndexToAfter" parameterType="map">
+		UPDATE category_middle 
+		SET    sort_index = sort_index + 1
+		WHERE  category_large_id = #{categoryLargeId} 
+		AND sort_index >= #{sortIndex}  
+	</update>
+	
+	<update id="updateSmallSortIndexToAfter" parameterType="map">
+		UPDATE category_small 
+		SET    sort_index = sort_index + 1 
+		WHERE  category_middle_id = #{categoryMiddleId}
+		AND sort_index >= #{sortIndex}
+	</update>
+	
+	<!-- 카테고리 중분류(대분류 기준) -->
+	<select id="findCategoryMiddleByLargeId" parameterType="map" resultMap="categoryMiddle">
+		SELECT *
+		FROM category_middle
+		WHERE category_large_id = #{categoryLargeId}
+		ORDER BY name ASC
+	</select>
+	
+	<!-- 카테고리 소분류(소분류 기준) -->
+	<select id="findCategorySmallByMiddleId" parameterType="map" resultMap="categorySmall">
+		SELECT *
+		FROM category_small
+		WHERE category_middle_id = #{categoryMiddleId}
+		ORDER BY name ASC
+	</select>
 	
 	
 </mapper>

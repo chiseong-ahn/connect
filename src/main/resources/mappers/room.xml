@@ -425,7 +425,7 @@
 		                                 AND is_system_message = 0 
 		                                 AND message_admin_type = 0 
 		                                 <if test='message != null'>
-		                                 	AND message LIKE CONCAT('%', #{message}, '%'))
+		                                 	AND message LIKE CONCAT('%', #{message}, '%')
 		                                 </if>
 								)         
 		ORDER  BY rjh.id DESC 

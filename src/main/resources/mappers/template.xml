@@ -14,13 +14,13 @@
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
 	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
 	      WHERE t.company_id = #{companyId}
-	      	<if test='categoryLargeId != null'>
+	      	<if test='categoryLargeId != null and categoryLargeId != ""'>
 	      		AND vc.category_large_id = #{categoryLargeId}
 	      	</if>
-	        <if test='categoryMiddleId != null'>
+	        <if test='categoryMiddleId != null and categoryMiddleId != ""'>
 	        	AND vc.category_middle_id = #{categoryMiddleId}
 	        </if>
-	        <if test='categorySmallId != null'>
+	        <if test='categorySmallId != null and categorySmallId != ""'>
 	        	AND vc.id = #{categorySmallId}
 	        </if>
 	        <if test='checkFavorite == "1"'>
@@ -29,7 +29,7 @@
 	        <if test='checkMyAdd == "1"'>
 	        	AND t.member_id = #{loginId}
 	        </if>
-	        <if test='searchType != null and searchValue != null'>
+	        <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 	        	<choose>
 		        	<when test='searchType == "memberName"'>
 		        		AND vc.member_name like concat('%', searchValue, '%')
@@ -91,13 +91,13 @@
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
 	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
 	      WHERE t.company_id = #{companyId}
-	      	<if test='categoryLargeId != null'>
+	      	<if test='categoryLargeId != null and categoryLargeId != ""'>
 	      		AND vc.category_large_id = #{categoryLargeId}
 	      	</if>
-	        <if test='categoryMiddleId != null'>
+	        <if test='categoryMiddleId != null and categoryMiddleId != ""'>
 	        	AND vc.category_middle_id = #{categoryMiddleId}
 	        </if>
-	        <if test='categorySmallId != null'>
+	        <if test='categorySmallId != null and categorySmallId != ""'>
 	        	AND vc.id = #{categorySmallId}
 	        </if>
 	        <if test='checkFavorite == "1"'>
@@ -106,7 +106,7 @@
 	        <if test='checkMyAdd == "1"'>
 	        	AND t.member_id = #{loginId}
 	        </if>
-	        <if test='searchType != null and searchValue != null'>
+	        <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 	        	<choose>
 		        	<when test='searchType == "memberName"'>
 		        		AND vc.member_name like concat('%', searchValue, '%')
@@ -239,4 +239,7 @@
 		FROM template_keywword
 		WHERE template_id = #{id}
 	</delete>
+	
+	
+		
 </mapper>

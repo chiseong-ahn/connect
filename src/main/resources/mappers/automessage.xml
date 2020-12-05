@@ -41,7 +41,7 @@
 	<!-- 자동메세지 삭제 -->
 	<delete id="deleteAutoMessage" parameterType="map">
 		DELETE
-		FORM auto_message
+		FROM auto_message
 		WHERE  id = #{id}
 	</delete>
 	

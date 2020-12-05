@@ -93,7 +93,7 @@ public class ManualDao extends CommonDao {
 	 * @return
 	 */
 	public int insertManual(Map<String, Object> params) {
-		return this.sqlSession.insert(namespace + "insert", params);
+		return this.sqlSession.insert(namespace + "create", params);
 	}
 	
 	/**
@@ -126,20 +126,6 @@ public class ManualDao extends CommonDao {
 	
 	/**
 	 * 
-	 * @Method Name : findNextPageNumber
-	 * @작성일 : 2020. 11. 12.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 매뉴얼 채번(다음페이지 번호) 조회.
-	 * @param params
-	 * @return
-	 */
-	public Map<String, Object> findNextPageNumber(Map<String, Object> params){
-		return this.sqlSession.selectOne(namespace + "findNextPageNumber", params);
-	}
-	
-	/**
-	 * 
 	 * @Method Name : createFavorite
 	 * @작성일 : 2020. 11. 30.
 	 * @작성자 : anchiseong
@@ -166,7 +152,19 @@ public class ManualDao extends CommonDao {
 		return this.sqlSession.delete(this.namespace + "deleteFavoriteToMember", params);
 	}
 	
-	
+	/**
+	 * 
+	 * @Method Name : getNextPageNumber
+	 * @작성일 : 2020. 12. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 채번 조회.
+	 * @param params
+	 * @return
+	 */
+	public int getNextPageNumber(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "getNextPageNumber", params);
+	}
 	
 	
 }

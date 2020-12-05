@@ -10,7 +10,14 @@
 		SELECT count(*) totalCount
 		FROM   v_customer
 		WHERE  1=1
-		AND name like concat('%', #{searchValue}, '%')
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "name"'>
+					AND name like concat('%', #{searchValue}, '%')
+				</when>
+			</choose>
+		</if>
+		
 	</select>
 	
 	<!-- 고객 검색 -->
@@ -18,9 +25,15 @@
 		SELECT *
 		FROM   v_customer
 		WHERE  1=1
-		AND name like concat('%', #{searchValue}, '%')
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "name"'>
+					AND name like concat('%', #{searchValue}, '%')
+				</when>
+			</choose>
+		</if>
 		ORDER BY id DESC
-		Limit 1, 10
+		Limit #{startNum}, #{pageSize}
 	</select>
 	
 	<!-- 고객 상세 -->

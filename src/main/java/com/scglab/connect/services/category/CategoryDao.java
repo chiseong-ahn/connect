@@ -49,7 +49,7 @@ public class CategoryDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public List<Map<String, Object>> findCategoryLarge(Map<String, Object> params){
+	public List<CategoryLarge> findCategoryLarge(Map<String, Object> params){
 		return this.sqlSession.selectList(namespace + "findCategoryLarge", params);
 	}
 	
@@ -63,7 +63,7 @@ public class CategoryDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> getCategoryLarge(Map<String, Object> params){
+	public CategoryLarge getCategoryLarge(Map<String, Object> params){
 		return this.sqlSession.selectOne(namespace + "getCategoryLarge", params);
 	}
 	
@@ -119,7 +119,7 @@ public class CategoryDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public List<Map<String, Object>> findCategoryMiddle(Map<String, Object> params){
+	public List<CategoryMiddle> findCategoryMiddle(Map<String, Object> params){
 		return this.sqlSession.selectList(namespace + "findCategoryMiddle", params);
 	}
 	
@@ -133,7 +133,7 @@ public class CategoryDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> getCategoryMiddle(Map<String, Object> params){
+	public CategoryMiddle getCategoryMiddle(Map<String, Object> params){
 		return this.sqlSession.selectOne(namespace + "getCategoryMiddle", params);
 	}
 	
@@ -189,7 +189,7 @@ public class CategoryDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public List<Map<String, Object>> findCategorySmall(Map<String, Object> params){
+	public List<CategorySmall> findCategorySmall(Map<String, Object> params){
 		return this.sqlSession.selectList(namespace + "findCategorySmall", params);
 	}
 	
@@ -203,7 +203,7 @@ public class CategoryDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> getCategorySmall(Map<String, Object> params){
+	public CategorySmall getCategorySmall(Map<String, Object> params){
 		return this.sqlSession.selectOne(namespace + "getCategorySmall", params);
 	}
 	
@@ -235,6 +235,8 @@ public class CategoryDao extends CommonDao {
 		return this.sqlSession.update(namespace + "updateCategorySmall", params);
 	}
 	
+	
+	
 	/**
 	 * 
 	 * @Method Name : deleteCategorySmall
@@ -247,6 +249,38 @@ public class CategoryDao extends CommonDao {
 	 */
 	public int deleteCategorySmall(Map<String, Object> params){
 		return this.sqlSession.delete(namespace + "deleteCategorySmall", params);
+	}
+	
+	public int getLastLargeSortIndex(Map<String, Object> params){
+		return this.sqlSession.selectOne(namespace + "getLastLargeSortIndex", params);
+	}
+	
+	public int getLastMiddleSortIndex(Map<String, Object> params){
+		return this.sqlSession.selectOne(namespace + "getLastMiddleSortIndex", params);
+	}
+	
+	public int getLastSmallSortIndex(Map<String, Object> params){
+		return this.sqlSession.selectOne(namespace + "getLastSmallSortIndex", params);
+	}
+	
+	public int updateLargeSortIndexToAfter(Map<String, Object> params){
+		return this.sqlSession.update(namespace + "updateLargeSortIndexToAfter", params);
+	}
+	
+	public int updateMiddleSortIndexToAfter(Map<String, Object> params){
+		return this.sqlSession.update(namespace + "updateMiddleSortIndexToAfter", params);
+	}
+	
+	public int updateSmallSortIndexToAfter(Map<String, Object> params){
+		return this.sqlSession.update(namespace + "updateSmallSortIndexToAfter", params);
+	}
+	
+	public List<CategoryMiddle> findCategoryMiddleByLargeId(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findCategoryMiddleByLargeId", params);
+	}
+	
+	public List<CategorySmall> findCategorySmallByMiddleId(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findCategorySmallByMiddleId", params);
 	}
 	
 }

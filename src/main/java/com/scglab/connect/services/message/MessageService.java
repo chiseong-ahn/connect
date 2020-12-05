@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -40,16 +41,25 @@ public class MessageService {
 		String queryId = DataUtils.getString(params, "queryId", "");
 		this.logger.debug("queryId : " + queryId);
 		
+		params.put("startId", DataUtils.getString(params, "startId", ""));
+		params.put("endId", DataUtils.getString(params, "endId", ""));
+		params.put("intervalDay", DataUtils.getInt(params, "intervalDay", Constant.DEFAULT_MESSAGE_INTERVAL_DAY));
+		params.put("pageSize", DataUtils.getInt(params, "pageSize", Constant.DEFAULT_MESSAGE_MORE_PAGE_SIZE));
+		params.put("messageAdminType", DataUtils.getString(params, "messageAdminType", ""));
+		
 		switch(queryId) {
 			case "findByRoomIdAll" :		// 메세지 전체 조회.
 				messages = this.messageDao.findByRoomIdAll(params);
 				break;
+				
 			case "findByRoomIdToSpeaker":	// 메세지 조회(조인한 사용자)
 				messages = this.messageDao.findByRoomIdToSpeaker(params);
 				break;
+				
 			case "findByRoomIdToAdmin":		// 메세지 조회(관리자, 조회자)
 				messages = this.messageDao.findByRoomIdToAdmin(params);
 				break;
+				
 			case "findRangeById":			// 메세지 조회(id 범위)
 				messages = this.messageDao.findRangeById(params);
 				break;
