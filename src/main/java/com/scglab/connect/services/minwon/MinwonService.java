@@ -1,7 +1,6 @@
 package com.scglab.connect.services.minwon;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,17 +11,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.MessageHandler;
+import com.scglab.connect.services.company.external.ICompany;
+import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.member.Member;
+import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class MinwonService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private MinwonDao minwonDao;
+	@Autowired private MessageHandler messageService;
+	@Autowired private MinwonDao minwonDao;
+	@Autowired private LoginService loginService;
+	@Autowired private CommonService commonService;
 	
 	/**
 	 * 
@@ -38,11 +41,41 @@ public class MinwonService {
 	 * @throws Exception
 	 */
 	public Minwon regist(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());		
 		Minwon minwon = null;
 		
-		int result = this.minwonDao.insertMinwon(params);
-		if(result > 0) {
+		if(this.minwonDao.insertMinwon(params) > 0) {
 			minwon = this.minwonDao.findMinwon(params);
+			
+			// 각 회사별 기간망 클래스 가져오기.
+			ICompany company = this.commonService.getCompany(member.getCompanyId());
+			
+			/*
+			 	customerMobileId: 가스앱 회원 id
+				useContractNum: 계약번호
+				reqName: 요청자명
+				classCode: 민원코드
+				transfer: 민원이관여부
+				S handphone: 핸드폰번호
+				memo: 메모
+				employeeId: 민원등록 직원 사번
+				chatId: 채팅 id
+			 */
+			Map<String, String> obj = new HashMap<String, String>();
+			obj.put("customerMobileId", DataUtils.getString(params, "gasappMemberNumber", ""));
+			obj.put("useContractNum", DataUtils.getString(params, "useContractNum", ""));
+			obj.put("reqName", member.getName());
+			obj.put("classCode", DataUtils.getString(params, "minwonCode", ""));
+			obj.put("transfer", false + "");
+			obj.put("handphone", DataUtils.getString(params, "telNumber", ""));
+			obj.put("memo", DataUtils.getString(params, "memo", ""));
+			obj.put("employeeId", member.getId() + "");
+			obj.put("chatId", DataUtils.getString(params, "chatId", ""));
+			this.logger.info("Minwon > " + obj.toString());
+			
+			company.minwons(obj);
 		}
 		return minwon;
 	}

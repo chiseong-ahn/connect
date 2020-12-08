@@ -61,7 +61,7 @@ public class TemplateService {
 		pageSize = pageSize < 1 ? 10 : pageSize;
 		
 		// 조회 시작 번호.
-		int startNum = (page - 1) * pageSize + 1;
+		int startNum = (page - 1) * pageSize;
 		
 		params.put("startNum", startNum);
 		params.put("pageSize", pageSize);
@@ -194,12 +194,12 @@ public class TemplateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Template update(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> update(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Template template = null;
+		Map<String, Object> data = null;
 		int result = 0;
 		
 		// 템플릿 정보 수정.
@@ -226,12 +226,12 @@ public class TemplateService {
 				this.logger.debug("keywords is nothing!");
 			}
 			
-			template = this.templateDao.selectOne(params);
+			data = this.templateDao.getDetail(params);
 		}else {
 			throw new RuntimeException("error.template.update");
 		}
 		
-		return template;
+		return data;
 	}
 	
 	/**
@@ -261,6 +261,9 @@ public class TemplateService {
 			data.put("reason", this.messageService.getMessage("error.template.notexist", messageParams));
 		}else {
 			
+			// 이전에 연결된 키워드정보 삭제.
+			this.templateDao.deleteTemplateKeywords(params);
+			
 			// 템플릿 삭제.
 			result = this.templateDao.delete(params);
 		}
@@ -287,11 +290,11 @@ public class TemplateService {
 		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		boolean isFavorite = (boolean)params.get("isFavorite");
+		String value = DataUtils.getString(params, "value", "");
 		int result = 0;
-		if(isFavorite == true) {
+		if(value.equals("true")) {
 			result = this.templateDao.insertFavorite(params);
-		}else {
+		}else if(value.equals("false")) {
 			result = this.templateDao.deleteFavorite(params);
 		}
 		

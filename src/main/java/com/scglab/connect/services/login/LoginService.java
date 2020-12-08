@@ -18,6 +18,7 @@ import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.customer.Customer;
+import com.scglab.connect.services.customer.CustomerDao;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 
@@ -30,6 +31,7 @@ public class LoginService {
 	@Autowired private LoginDao loginDao;
 	@Autowired private JwtService jwtService;
 	@Autowired private CommonService commonService;
+	@Autowired private CustomerDao customerDao;
 	
 	public Map<String, Object> login(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -85,6 +87,23 @@ public class LoginService {
 		
 		return data;
 	}
+	
+	public Map<String, Object> loginCustomer(Map<String, Object> params) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		this.customerDao.regist(params);
+		Customer customer = this.customerDao.findByGassappMemberNumber(params);
+		this.logger.debug("customer : " + customer);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> customerMap = objectMapper.convertValue(customer, Map.class);
+		String token = this.jwtService.generateToken(customerMap);
+		data.put("token", token);
+		data.put("customer", customer);
+		
+		return data;
+	}
+	
 	
 	public Member profile(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return getMember(request);

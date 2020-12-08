@@ -55,6 +55,7 @@
 		select *
 		from v_customer
 		where gasapp_member_number = #{gasappMemberNumber}
+		and company_id = #{companyId}
 	</select>
 	
 	<!-- 고객 등록 -->

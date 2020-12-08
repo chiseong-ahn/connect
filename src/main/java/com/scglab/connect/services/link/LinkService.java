@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
-import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class LinkService {
@@ -38,6 +37,34 @@ public class LinkService {
 		
 		this.logger.debug("params : " + params.toString());
 		return this.linkDao.findMenuAll(params);
+	}
+	
+	public LinkMenu linkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		this.logger.debug("params : " + params.toString());
+		LinkMenu linkMenu = this.linkDao.findLinkMenu(params);
+		params.put("menuId", linkMenu.getId());
+		
+		List<LinkDetail> linkDetails = this.linkDao.findLinkDetailByMenuId(params);
+		linkMenu.setChilds(linkDetails);
+		
+		return linkMenu;
+		
+	}
+	
+	public LinkDetail linkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		this.logger.debug("params : " + params.toString());
+		LinkDetail linkDetail = this.linkDao.findLinkDetail(params);
+		
+		return linkDetail;
+		
 	}
 	
 	public List<LinkMenu> findDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
@@ -64,6 +91,106 @@ public class LinkService {
 		}
 		
 		return linkMenuList;
+	}
+	
+	public LinkMenu createLinkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		LinkMenu linkMenu = null;
+		if(this.linkDao.createLinkMenu(params) > 0) {
+			linkMenu = this.linkDao.findLinkMenu(params);
+		}
+		
+		return linkMenu;
+	}
+	
+	public LinkMenu updateLinkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		LinkMenu linkMenu = null;
+		if(this.linkDao.updateLinkMenu(params) > 0) {
+			linkMenu = this.linkDao.findLinkMenu(params);
+		}
+		
+		return linkMenu;
+	}
+	
+	public Map<String, Object> deleteLinkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		// 링크메뉴에 속한 링크서브 삭제.
+		this.linkDao.deleteLinkDetailByMenuId(params);
+		
+		if(this.linkDao.deleteLinkMenu(params) > 0) {
+			data.put("success", true);
+		}else {
+			data.put("success", false);
+		}
+		
+		return data;
+	}
+	
+	public LinkDetail createLinkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		LinkDetail linkDetail = null;
+		if(this.linkDao.createLinkDetail(params) > 0) {
+			linkDetail = this.linkDao.findLinkDetail(params);
+		}
+		
+		return linkDetail;
+	}
+	
+	public LinkDetail updateLinkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		LinkDetail linkDetail = null;
+		if(this.linkDao.updateLinkDetail(params) > 0) {
+			linkDetail = this.linkDao.findLinkDetail(params);
+		}
+		
+		return linkDetail;
+	}
+	
+	public LinkDetail updateLinkDetailEnable(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		LinkDetail linkDetail = null;
+		if(this.linkDao.updateLinkDetailEnable(params) > 0) {
+			linkDetail = this.linkDao.findLinkDetail(params);
+		}
+		
+		return linkDetail;
+	}
+	
+	public Map<String, Object> deleteLinkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		if(this.linkDao.deleteLinkDetail(params) > 0) {
+			data.put("success", true);
+		}else {
+			data.put("success", false);
+		}
+		
+		return data;
 	}
 	
 	

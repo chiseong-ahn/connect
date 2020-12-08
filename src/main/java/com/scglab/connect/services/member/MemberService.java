@@ -49,7 +49,7 @@ public class MemberService {
 		pageSize = pageSize < 1 ? 10 : pageSize;
 		
 		// 조회 시작 번호.
-		int startNum = (page - 1) * pageSize + 1;
+		int startNum = (page - 1) * pageSize;
 		
 		params.put("startNum", startNum);
 		params.put("pageSize", pageSize);

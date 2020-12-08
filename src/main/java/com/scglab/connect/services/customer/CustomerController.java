@@ -59,16 +59,12 @@ public class CustomerController {
     })
 	public Map<String, Object> block(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
-		return this.customerService.block(params);
+		return this.customerService.block(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="관심고객 지정 / 해제", description = "관심고객을 지정/해제합니다.", security = {@SecurityRequirement(name = "bearer-key")})
-	@Parameters({
-    	@Parameter(name = "blockType", description = "관심고객 지정 사유", required = true, in = ParameterIn.QUERY, example = ""),
-    	@Parameter(name = "remark", description = "메모", required = false, in = ParameterIn.QUERY, example = ""),
-    })
+	@Operation(summary="관심고객 해제", description = "관심고객을 해제합니다.", security = {@SecurityRequirement(name = "bearer-key")})
 	public Map<String, Object> unBlock(@Parameter(description = "고객id") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		return this.customerService.unBlock(params, request);
@@ -97,31 +93,22 @@ public class CustomerController {
 	
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="고객 회원정보 수정", description = "", security = {@SecurityRequirement(name = "bearer-key")})
-    public Map<String, Object> update(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id, HttpServletRequest request) throws Exception {
-		params.put("id", id);
-		return this.customerService.update(params);
-	}
-	
-	
-	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/swear", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="욕설/비속어 사용 카운트 증가", description = "", security = {@SecurityRequirement(name = "bearer-key")})
-    public Map<String, Object> swear(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id) throws Exception {
+    public Map<String, Object> swear(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		params.put("swear",  "Y");
-		return this.customerService.update(params);
+		return this.customerService.plusSwearCount(params, request);
 	}
 	
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/insult", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="부적절한 대화 시도 카운트 증가", description = "", security = {@SecurityRequirement(name = "bearer-key")})
-    public Map<String, Object> insult(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id) throws Exception {
+    public Map<String, Object> insult(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @Parameter(name = "id", description = "고객관리번호", required = true, in = ParameterIn.PATH, example = "") @PathVariable int id, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		params.put("insult",  "Y");
-		return this.customerService.update(params);
+		return this.customerService.plusInsultCount(params, request);
 	}
 	
 	@Auth

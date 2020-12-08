@@ -214,7 +214,10 @@
             data: {
             	socket: {
             		host: "//localhost",
+            		//host: "//cstalk-dev.gasapp.co.kr",
+            		
             		port: 8080,
+            		//port: 80,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
@@ -347,7 +350,14 @@
                 connect: function(){
                 
                 	// SockJs 객체 초기화.
-                	var connectUrl = this.socket.host + ":" + this.socket.port + this.socket.connectEndPoint;
+                	
+                	var connectUrl = "";
+                	if(this.socket.port == 80){
+                		connectUrl = this.socket.host + this.socket.connectEndPoint;
+                	}else{
+                		connectUrl = this.socket.host + ":" + this.socket.port + this.socket.connectEndPoint;
+                	}
+                	
                 	var sock = new SockJS(connectUrl);
                 	
                 	// Stomp 객체 초기화.

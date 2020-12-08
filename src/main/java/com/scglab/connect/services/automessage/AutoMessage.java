@@ -16,5 +16,5 @@ public class AutoMessage {
 	private String message;
 	private String createDate;
 	private String updateDate;
-	private String updateMemberId;
+	private long updateMemberId;
 }

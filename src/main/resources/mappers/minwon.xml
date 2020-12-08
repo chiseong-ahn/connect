@@ -9,13 +9,15 @@
 	
 	<!-- 민원 상세 조회 -->
 	<select id="findMinwon" parameterType="map" resultMap="minwon">
-		
+		select *
+		from minwon_history
+		where id = #{id}
 	</select>
 	
 	<!-- 민원 등록 -->
 	<insert id="insertMinwon" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO (company_id, update_member_id, category_small_id, minwon_code, gasapp_member_number, use_contract_num, tel_number, memo, chatid)
-		VALUES(#{companyId}, #{loginId}, #{categorySmallId}, #{minwonCode}, #{gasappMemberNumber}, #{useContractNum}, #{telNumber}, #{memo}, #{chatid})
+		INSERT INTO minwon_history(company_id, update_member_id, category_small_id, minwon_code, gasapp_member_number, use_contract_num, tel_number, memo, chatid, room_id)
+		VALUES(#{companyId}, #{loginId}, #{categorySmallId}, #{minwonCode}, #{gasappMemberNumber}, #{useContractNum}, #{telNumber}, #{memo}, #{chatid}, #{roomId})
 	</insert>
 	
 	

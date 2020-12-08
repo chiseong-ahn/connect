@@ -96,7 +96,7 @@ public class ExtenalController {
 		@Parameter(name = "employeeId", description = "민원등록 직원 사번", required = true, in = ParameterIn.QUERY, example = "csmaster1"),
 		@Parameter(name = "chatId", description = "채팅 id", required = true, in = ParameterIn.QUERY, example = "116"),
 	})
-	public int minwons(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(hidden = true) @RequestParam Map<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String minwons(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(hidden = true) @RequestParam Map<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return getCompany(companyId).minwons(params);
 	}
 	

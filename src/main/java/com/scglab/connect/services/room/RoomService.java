@@ -58,7 +58,7 @@ public class RoomService {
 		if(queryId.indexOf("State") > -1) {		// 그 외 조회
 			String checkSelf = DataUtils.getString(params, "checkSelf", Constant.NO); 
 			if(checkSelf.equals(Constant.YES)) {
-				params.put("memberId", member.getLoginName());
+				params.put("memberId", member.getId());
 				
 			}else if(member.getAuthLevel() < 4){
 				params.put("memberId", null);
@@ -66,7 +66,7 @@ public class RoomService {
 			}
 			
 			if(searchType.equals("message")) {					// 메세지 조건으로 검색.
-				params.put("message", member.getLoginName());
+				params.put("message", searchValue);
 				params.put("customerName", "");
 				params.put("memberName", "");
 				
@@ -206,17 +206,18 @@ public class RoomService {
 		
 		String transferType = DataUtils.getString(params, "transferType", "");
 		String memberId = DataUtils.getString(params, "memberId", "");
-		if(transferType.equals("") || memberId.equals("")) {
+		if(transferType.equals("")) {
 			this.logger.error("transferType : " + transferType);
-			this.logger.error("memberId : " + memberId);
 			throw new RuntimeException("error.params.type0");
+		}else if(transferType.equals("toMember")) {
+			if(memberId.equals("")) {
+				this.logger.error("memberId : " + memberId);
+				throw new RuntimeException("error.params.type0");
+			}
 		}
-		Room room = null;
-		int result = this.roomDao.transferRoom(params);
-		if(result > 0) {
-			room = this.roomDao.getDetail(params);
-		}
-		return room;
+		
+		this.roomDao.transferRoom(params);
+		return this.roomDao.getDetail(params);
 	}
 	
 	/**

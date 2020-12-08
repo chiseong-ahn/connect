@@ -384,8 +384,11 @@
 		      AND r.state = 8
 		      AND (
 		        CASE WHEN #{memberId} IS NULL THEN 1 = 1 ELSE last_member_id = #{memberId} END
-		      ) 
-		      AND date_format(end_date, '%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
+		      )
+		      <if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
+		      	AND date_format(end_date, '%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
+		      </if>
+		      
 		  ) AS sub_room 
 		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
 		  INNER JOIN v_customer ON sub_room.customer_speaker_id = v_customer.speaker_id 

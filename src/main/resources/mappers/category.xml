@@ -61,8 +61,8 @@
 	
 	<!-- 카테고리 대분류 등록 -->
 	<insert id="createCategoryLarge" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO category_large(company_id, name, minwon_code, minwon_name, update_member_id)
-		VALUES(#{companyId}, #{name}, #{minwonCode}, #{minwonName}, #{loginId})
+		INSERT INTO category_large(company_id, name, minwon_code, minwon_name, update_member_id, sort_index)
+		VALUES(#{companyId}, #{name}, #{minwonCode}, #{minwonName}, #{loginId}, #{sortIndex})
 	</insert>
 	
 	<!-- 카테고리 대분류 수정 -->
@@ -95,6 +95,9 @@
 				a.category_large_id as categoryLargeId
 		FROM   category_middle as a
 		WHERE company_id = #{companyId}
+		<if test='categoryLargeId != null and categoryLargeId != ""'>
+			AND a.category_large_id = #{categoryLargeId}
+		</if>
 		ORDER BY a.sort_index
 	</select>
 	
@@ -116,8 +119,8 @@
 	
 	<!-- 카테고리 중분류 등록 -->
 	<insert id="createCategoryMiddle" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO category_middle(company_id, name, category_large_id, minwon_code, minwon_name, update_member_id)
-		VALUES(#{companyId}, #{name}, #{categoryLargeId}, #{minwonCode}, #{minwonName}, #{loginId})
+		INSERT INTO category_middle(company_id, name, category_large_id, minwon_code, minwon_name, update_member_id, sort_index)
+		VALUES(#{companyId}, #{name}, #{categoryLargeId}, #{minwonCode}, #{minwonName}, #{loginId}, #{sortIndex})
 	</insert>
 	
 	<!-- 카테고리 중분류 수정 -->
@@ -154,6 +157,9 @@
 				a.sort_index as sortIndex
 		FROM v_category a
 		WHERE company_id = #{companyId}
+		<if test='categoryMiddleId != null and categoryMiddleId != ""'>
+			AND a.category_middle_id = #{categoryMiddleId}
+		</if>
 		ORDER BY a.sort_index
 	</select>
 	
@@ -178,13 +184,13 @@
 	
 	<!-- 카테고리 소분류 등록 -->
 	<insert id="createCategorySmall" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO category_small(company_id, name, category_middle_id, minwon_code, minwon_name, update_member_id)
-		VALUES(#{companyId}, #{name}, #{categoryMiddleId}, #{minwonCode}, #{minwonName}, #{loginId})
+		INSERT INTO category_small(company_id, name, category_middle_id, minwon_code, minwon_name, update_member_id, sort_index)
+		VALUES(#{companyId}, #{name}, #{categoryMiddleId}, #{minwonCode}, #{minwonName}, #{loginId}, #{sortIndex})
 	</insert>
 	
 	<!-- 카테고리 소분류 수정 -->
 	<update id="updateCategorySmall" parameterType="map">
-		UPDATE category_middle 
+		UPDATE category_small
 		SET    name = #{name}, 
 		       category_middle_id = #{categoryMiddleId},
 		       minwon_code = #{minwonCode}, 
@@ -218,6 +224,12 @@
 		WHERE  category_middle_id = #{categoryMiddleId}
 	</select>
 	
+	<update id="updateLargeSortIndex" parameterType="map">
+		UPDATE category_large
+		SET    sort_index = #{sort_index}
+		WHERE  id = #{id}
+	</update>
+	
 	<update id="updateLargeSortIndexToAfter" parameterType="map">
 		UPDATE category_large 
 		SET    sort_index = sort_index + 1
@@ -225,11 +237,23 @@
 		AND sort_index >= #{sortIndex}
 	</update>
 	
+	<update id="updateMiddleSortIndex" parameterType="map">
+		UPDATE category_middle
+		SET    sort_index = #{sort_index}
+		WHERE  id = #{id}
+	</update>
+	
 	<update id="updateMiddleSortIndexToAfter" parameterType="map">
 		UPDATE category_middle 
 		SET    sort_index = sort_index + 1
 		WHERE  category_large_id = #{categoryLargeId} 
 		AND sort_index >= #{sortIndex}  
+	</update>
+	
+	<update id="updateSmallSortIndex" parameterType="map">
+		UPDATE category_small
+		SET    sort_index = #{sort_index}
+		WHERE  id = #{id}
 	</update>
 	
 	<update id="updateSmallSortIndexToAfter" parameterType="map">
@@ -254,6 +278,5 @@
 		WHERE category_middle_id = #{categoryMiddleId}
 		ORDER BY name ASC
 	</select>
-	
 	
 </mapper>

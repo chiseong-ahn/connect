@@ -7,7 +7,7 @@
 	<resultMap type="com.scglab.connect.services.message.Message" id="message"></resultMap>
 	
 	<!-- 채팅메세지 목록 -->
-	<select id="findByRoomIdAll" parameterType="map" resultType="map">
+	<select id="findByRoomIdAll" parameterType="map" resultMap="message">
 		SELECT
 		  r.join_message_id,
 		  m.*,
@@ -92,7 +92,7 @@
 		WHERE 
 		  r.id = #{roomId} 
 		  AND (
-		    CASE WHEN #{startId} IS NULL THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
+		    CASE WHEN #{startId} = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
 		  ) 
 		  AND m.message_admin_type <![CDATA[<=]]> IFNULL(#{messageAdminType}, 0) 
 		ORDER BY 

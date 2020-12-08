@@ -340,6 +340,7 @@ public class HttpUtils {
 		
 		ResponseBody body = requestForPost(url, params);
 		
+		System.out.println("body.getStateCode() : " + body.getStateCode());
 		// 요청 성공시(200)
 		if(body.getStateCode() == Response.SC_OK) {
 			String text = body.text();

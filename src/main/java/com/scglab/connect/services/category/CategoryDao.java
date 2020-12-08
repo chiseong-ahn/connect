@@ -263,6 +263,18 @@ public class CategoryDao extends CommonDao {
 		return this.sqlSession.selectOne(namespace + "getLastSmallSortIndex", params);
 	}
 	
+	public int updateLargeSortIndex(Map<String, Object> params){
+		return this.sqlSession.update(namespace + "updateLargeSortIndex", params);
+	}
+	
+	public int updateMiddleSortIndex(Map<String, Object> params){
+		return this.sqlSession.update(namespace + "updateMiddleSortIndex", params);
+	}
+	
+	public int updateSmallSortIndex(Map<String, Object> params){
+		return this.sqlSession.update(namespace + "updateSmallSortIndex", params);
+	}
+	
 	public int updateLargeSortIndexToAfter(Map<String, Object> params){
 		return this.sqlSession.update(namespace + "updateLargeSortIndexToAfter", params);
 	}

@@ -39,6 +39,29 @@ public class LinkDao extends CommonDao {
 		return this.sqlSession.selectList(this.namespace + "findMenuAll", params);
 	}
 	
+	
+	/**
+	 * 
+	 * @Method Name : findMenu
+	 * @작성일 : 2020. 12. 7.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 링크상세
+	 * @param params
+	 * @return
+	 */
+	public LinkMenu findLinkMenu(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "findLinkMenu", params);
+	}
+	
+	public LinkDetail findLinkDetail(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "findLinkDetail", params);
+	}
+	
+	public List<LinkDetail> findLinkDetailByMenuId(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findLinkDetailByMenuId", params);
+	}
+	
 	/**
 	 * 
 	 * @Method Name : findDetailAll
@@ -65,5 +88,37 @@ public class LinkDao extends CommonDao {
 	 */
 	public List<LinkMenu> findByMenuIdAndEnableStatus(Map<String, Object> params) {
 		return this.sqlSession.selectList(this.namespace + "findDetailByMenuIdAndEnableStatus", params);
+	}
+	
+	public int createLinkMenu(Map<String, Object> params) {
+		return this.sqlSession.insert(this.namespace + "createLinkMenu", params);
+	}
+	
+	public int updateLinkMenu(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "updateLinkMenu", params);
+	}
+	
+	public int deleteLinkMenu(Map<String, Object> params) {
+		return this.sqlSession.delete(this.namespace + "deleteLinkMenu", params);
+	}
+	
+	public int createLinkDetail(Map<String, Object> params) {
+		return this.sqlSession.insert(this.namespace + "createLinkDetail", params);
+	}
+	
+	public int updateLinkDetail(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "updateLinkDetail", params);
+	}
+	
+	public int updateLinkDetailEnable(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "updateLinkDetailEnable", params);
+	}
+	
+	public int deleteLinkDetail(Map<String, Object> params) {
+		return this.sqlSession.delete(this.namespace + "deleteLinkDetail", params);
+	}
+	
+	public int deleteLinkDetailByMenuId(Map<String, Object> params) {
+		return this.sqlSession.delete(this.namespace + "deleteLinkDetailByMenuId", params);
 	}
 }

@@ -14,6 +14,27 @@
 		ORDER BY name ASC
 	</select>
 	
+	<!-- 링크메뉴 상세 조회 -->
+	<select id="findLinkMenu" parameterType="map" resultMap="linkMenu">
+		SELECT *
+		FROM link_menu
+		WHERE id = #{id}
+	</select>
+	
+	<!-- 링크상세 조회 -->
+	<select id="findLinkDetail" parameterType="map" resultMap="linkDetail">
+		SELECT *
+		FROM link_detail
+		WHERE id = #{id}
+	</select>
+	
+	<!-- 메뉴id에 포함된 링크상세 조회 -->
+	<select id="findLinkDetailByMenuId" parameterType="map" resultMap="linkDetail">
+		SELECT *
+		FROM link_detail
+		WHERE menu_id = #{menuId}
+	</select>
+	
 	<!-- 활성화되어있는 메뉴에 속한 링크 상세 조회 -->
 	<select id="findDetailByMenuIdAndEnableStatus" parameterType="map" resultMap="linkDetail">
 		SELECT *
@@ -30,6 +51,66 @@
 		FROM link_detail
 		WHERE company_id = #{companyId}
 	</select>
+	
+	<!-- 링크 등록 -->
+	<insert id="createLinkMenu" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO link_menu (company_id, name)
+		VALUES(#{companyId}, #{name})
+	</insert>
+	
+	<!-- 링크 수정 -->
+	<update id="updateLinkMenu" parameterType="map">
+		UPDATE link_menu
+		SET name = #{name}
+			,update_member_id = #{loginId}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 링크 삭제 -->
+	<delete id="deleteLinkMenu" parameterType="map">
+		DELETE
+		FROM link_menu
+		WHERE id = #{id}
+	</delete>
+	
+	<!-- 링크상세 등록 -->
+	<insert id="createLinkDetail" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO link_detail (company_id, link_protocol, link_text, link_url, enable, menu_id)
+		VALUES(#{companyId}, #{linkProtocol}, #{linkText}, #{linkUrl}, #{enable}, #{menuId})
+	</insert>
+	
+	<!-- 링크상세 수정 -->
+	<update id="updateLinkDetail" parameterType="map">
+		UPDATE link_detail
+		SET link_protocol = #{linkProtocol},
+			link_text = #{linkText},
+			link_url = #{linkUrl},
+			enable = #{enable},
+			update_member_id = #{loginId}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 활성화여부 변경. -->
+	<update id="updateLinkDetailEnable" parameterType="map">
+		UPDATE link_detail
+		SET enable = #{enable},
+			update_member_id = #{loginId}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 링크상세 삭제 -->
+	<delete id="deleteLinkDetail" parameterType="map">
+		DELETE
+		FROM link_detail
+		where id = #{id}
+	</delete>
+	
+	<!-- 메뉴id를 통한 메뉴서브 삭제 -->
+	<delete id="deleteLinkDetailByMenuId" parameterType="map">
+		DELETE
+		FROM link_detail
+		WHERE menu_id = #{id}
+	</delete>
 	
 	
 </mapper>

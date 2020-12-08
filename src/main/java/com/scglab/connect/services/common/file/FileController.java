@@ -68,7 +68,7 @@ public class FileController {
 		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "파일 업로드", description = "파일을 업로드하고 업로드된 정보를 반환합니다.")
 	@Parameters({
 		@Parameter(name="div", description = "서비스명(저장되는 경로를 구분하는 값)", in = ParameterIn.QUERY, required = false, example = "service"),
@@ -78,7 +78,7 @@ public class FileController {
 		return this.fileService.uploadFile(file, params, request);	
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.DELETE, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "파일 삭제처리", description = "파일 삭제")
 	@Parameters({
 		@Parameter(name="fileFullname", description = "파일명(경로 포함)", in = ParameterIn.QUERY ,required = true, example = ""),

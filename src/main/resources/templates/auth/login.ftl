@@ -128,7 +128,7 @@
             			data.append("name", this.name);
             		
             		localStorage.removeItem("accessToken");
-            		axios.post('/auth/login', data, header).then(response => {
+            		axios.post('/auth/loginMember', data, header).then(response => {
 	                	console.log(response.data);
 	                	if(response.data.token != ''){
 	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.

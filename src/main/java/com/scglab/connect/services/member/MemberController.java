@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/member")
-@Tag(name = "회원관리", description = "회원관리")
+@Tag(name = "멤버관리", description = "멤버관리")
 public class MemberController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -39,7 +39,7 @@ public class MemberController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원 검색", description = "회원 검색 : 이름, 사번", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="멤버 검색", description = "멤버 검색 : 이름, 사번", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
     	@Parameter(name = "searchType", description = "검색 타입", required = true, in = ParameterIn.QUERY, example = "name"),
     	@Parameter(name = "searchValue", description = "검색 값", required = true, in = ParameterIn.QUERY, example = "서울"),
@@ -52,7 +52,7 @@ public class MemberController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원 수정 : 권한, 상태", description = "회원 수정 : 권한, 상태", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="멤버 수정 : 권한, 상태", description = "멤버 수정 : 권한, 상태", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
     	@Parameter(name = "authLevel", description = "권한레벨", required = true, in = ParameterIn.QUERY, example = "2"),
     	@Parameter(name = "state", description = "상태", required = true, in = ParameterIn.QUERY, example = "0"),
@@ -64,11 +64,12 @@ public class MemberController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="회원 수정 : 상태", description = "회원 수정 : 상태", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="멤버 수정 : 상태", description = "멤버 수정 : 상태", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
     	@Parameter(name = "state", description = "상태", required = true, in = ParameterIn.QUERY, example = "0"),
     })
 	public Map<String, Object> updateState(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		params.put("id", id);
 		return this.memberService.state(params, id, request, response);
 	}
 	

@@ -50,7 +50,7 @@ public class TemplateDao extends CommonDao {
 	}
 	
 	public int insertFavorite(Map<String, Object> params) {
-		return this.sqlSession.insert(this.getNamespace() + "insertFavorite", params);
+		return this.sqlSession.insert(this.getNamespace() + "createFavorite", params);
 	}
 	
 	public int deleteFavorite(Map<String, Object> params) {

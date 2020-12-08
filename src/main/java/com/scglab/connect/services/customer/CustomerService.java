@@ -54,7 +54,7 @@ public class CustomerService {
 		pageSize = pageSize < 1 ? 10 : pageSize;
 		
 		// 조회 시작 번호.
-		int startNum = (page - 1) * pageSize + 1;
+		int startNum = (page - 1) * pageSize;
 		
 		params.put("startNum", startNum);
 		params.put("pageSize", pageSize);
@@ -82,7 +82,10 @@ public class CustomerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> block(Map<String, Object> params) throws Exception {
+	public Map<String, Object> block(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		int result = this.customerDao.enableBlackStatus(params);
@@ -105,11 +108,9 @@ public class CustomerService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> unBlock(Map<String, Object> params, HttpServletRequest request) throws Exception {
-		this.logger.debug("request : " + request);
-		
 		Member member = this.loginService.getMember(request);
-		this.logger.debug("member : " + member);
 		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -149,7 +150,7 @@ public class CustomerService {
 	
 	/**
 	 * 
-	 * @Method Name : update
+	 * @Method Name : plusSwearCount
 	 * @작성일 : 2020. 11. 13.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
@@ -158,20 +159,32 @@ public class CustomerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> update(Map<String, Object> params) throws Exception {
+	public Map<String, Object> plusSwearCount(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		int id = DataUtils.getInt(params, "id", 0);
-		if(id == 0) {
-			Object[] args = new String[1];
-			args[0] = "id";
-			throw new RuntimeException(this.messageService.getMessage("error.parameter1", args));
-		}
-		int count = this.customerDao.update(params);
+		int count = this.customerDao.plusSwearCount(params);
 		data.put("isSuccess", count > 0 ? true : false);
 		
 		return data;
 	}
+	
+	public Map<String, Object> plusInsultCount(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		int count = this.customerDao.plusInsultCount(params);
+		data.put("isSuccess", count > 0 ? true : false);
+		
+		return data;
+	}
+	
 	
 	/**
 	 * 

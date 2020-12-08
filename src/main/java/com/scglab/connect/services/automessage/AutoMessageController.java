@@ -83,28 +83,6 @@ public class AutoMessageController {
 		params.put("id", id);
 		return this.autoMessageService.delete(params, request, response);
 	}
-	
-	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/getAutoMessageWelcome", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="신규대화 시작시 인사메세지 랜덤 조회", description = "신규대화 시작시 인사메세지 랜덤 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public AutoMessage getAutoMessageWelcome(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.autoMessageService.getAutoMessageWelcome(params, request, response);
-	}
-	
-	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/getAutoMessageByMatchWait", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="상담사 배정지연 안내 메세지 랜덤 조회.", description = "상담사 배정지연 안내 메세지 랜덤 조회.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public AutoMessage getAutoMessageByMatchWait(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.autoMessageService.getAutoMessageByMatchWait(params, request, response);
-	}
-	
-	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/getAutoMessageByReplyWait", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="답변 지연 안내 메세지 랜덤 조회.", description = "답변 지연 안내 메세지 랜덤 조회.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public AutoMessage getAutoMessageByReplyWait(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.autoMessageService.getAutoMessageByReplyWait(params, request, response);
-	}
-	
-	
+
 }
 	

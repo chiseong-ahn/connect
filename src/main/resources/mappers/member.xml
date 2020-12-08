@@ -41,6 +41,7 @@
 			</choose>
 		</if>
 		ORDER BY id desc
+		LIMIT #{startNum}, #{pageSize}
 	</select>
 
 	<!-- 회원 목록(관리자가 아닌 회원) -->
@@ -99,7 +100,7 @@
 	<!-- 회원 수정(상담상태, 레벨) -->
 	<update id="updateState" parameterType="map">
 		UPDATE member 
-		SET state = #{state}
+		SET state = #{state},
 			update_member_id = #{loginId}
 		WHERE id = #{id} 
 	</update>

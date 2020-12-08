@@ -201,20 +201,6 @@
 		WHERE id = #{id}
 	</delete>
 	
-	<!-- 즐겨찾기 등록 -->
-	<insert id="saveFavorite" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO template_favorite(company_id, template_id, member_id)
-		VALUES (#{companyId}, #{templateId}, #{loginId})
-	</insert>
-	
-	<!-- 즐겨찾기 삭제 -->
-	<delete id="deleteFavorite" parameterType="map">
-		DELETE 
-		FROM template_favorite
-		WHERE template_id = #{templateId}
-		AND member_id = #{loginId}
-	</delete>
-	
 	<!-- 키워드 카운트 조회 -->
 	<select id="selectCountKeyword" parameterType="map" resultType="int">
 		select count(*) as cnt
@@ -236,9 +222,23 @@
 	<!-- 템플릿 키워드 삭제 -->
 	<delete id="deleteTemplateKeywords" parameterType="map">
 		DELETE 
-		FROM template_keywword
+		FROM template_keyword
 		WHERE template_id = #{id}
 	</delete>
+	
+	<!-- 즐겨찾기 등록 -->
+	<insert id="createFavorite" parameterType="map">
+		INSERT INTO template_favorite(company_id, template_id, member_id)
+  		VALUES (#{companyId}, #{templateId}, #{loginId})
+	</insert>
+	
+	<!-- 즐겨찾기 해제 -->
+	<delete id="deleteFavorite" parameterType="map">
+		DELETE
+		FROM template_keyword
+		WHERE template_id = #{templateId} 
+	</delete>
+	
 	
 	
 		

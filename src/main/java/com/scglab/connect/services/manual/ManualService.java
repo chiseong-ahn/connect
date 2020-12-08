@@ -55,7 +55,7 @@ public class ManualService {
 		pageSize = pageSize < 1 ? 10 : pageSize;
 		
 		// 조회 시작 번호.
-		int startNum = (page - 1) * pageSize + 1;
+		int startNum = (page - 1) * pageSize;
 		
 		params.put("startNum", startNum);
 		params.put("pageSize", pageSize);
@@ -95,7 +95,8 @@ public class ManualService {
 		params.put("loginId", member.getId());
 		
 		// 매뉴얼 조회
-		return this.manualDao.findManual(params);
+		Manual manual = this.manualDao.findManual(params);
+		return manual == null ? new Manual() : manual;
 	}
 	
 	/**
@@ -172,8 +173,12 @@ public class ManualService {
 		
 		Manual manual = null;
 		
-		if(this.manualDao.insertManual(params) > 0) {
+		int pageNumber = this.manualDao.getNextPageNumber(params);
+		if(pageNumber > 0) {
+			params.put("pageNumber", pageNumber);
+			if(this.manualDao.insertManual(params) > 0) {
 				manual = this.manualDao.findManual(params);
+			}
 		}
 		
 		return manual;
@@ -199,8 +204,7 @@ public class ManualService {
 		
 		Manual manual = null;
 		
-		int result = this.manualDao.updateManual(params);
-		if(result > 0) {
+		if(this.manualDao.updateManual(params) > 0) {
 			manual = this.manualDao.findManual(params);
 		}
 		

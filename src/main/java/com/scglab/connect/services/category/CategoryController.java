@@ -125,7 +125,7 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.POST, value = "/middle", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="중분류 카테고리 생성(등록)", description = "중분류 카테고리를 등록(생성)합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
-		@Parameter(name = "catelg", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "categoryLargeId", description = "대분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
@@ -175,7 +175,7 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.POST, value = "/small", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="소분류 카테고리 생성(등록)", description = "소분류 카테고리를 등록(생성)합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
-		@Parameter(name = "catemd", description = "중분류번호", required = true, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "categoryMiddleId", description = "중분류번호", required = true, in = ParameterIn.QUERY, example = ""),
 		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
@@ -210,7 +210,7 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/large/{id}/sort-index", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류 카테고리 정렬 정보 수정.", description = "대분류 카테고리 정렬 정보 수정합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
-		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "sortIndex", description = "정렬순번", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	public CategoryLarge sortIndexLg(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
@@ -221,7 +221,7 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/middle/{id}/sort-index", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="중분류 카테고리 정렬 정보 수정.", description = "중분류 카테고리 정렬 정보 수정합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
-		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "sortIndex", description = "정렬순번", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	public CategoryMiddle sortIndexMd(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
@@ -232,7 +232,7 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/small/{id}/sort-index", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="소분류 카테고리 정렬 정보 수정.", description = "소분류 카테고리 정렬 정보 수정합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
-		@Parameter(name = "name", description = "분류명", required = true, in = ParameterIn.QUERY, example = ""),
+		@Parameter(name = "sortIndex", description = "정렬순번", required = true, in = ParameterIn.QUERY, example = ""),
 	})
 	public CategorySmall sortIndexSm(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);

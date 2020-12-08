@@ -1,6 +1,9 @@
 # API 문서 작성
 ### OpenAPI 사용방법
-- https://swagger.io/
+- 참고자료 : https://swagger.io/
+
+### 문서 확인
+- http://cstalk-dev.gasapp.co.kr/api/document
 
 > Model
 - @Schema : 모델 설명

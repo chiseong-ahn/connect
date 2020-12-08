@@ -29,7 +29,7 @@
 	
 	<!-- 키워드 등록 -->
 	<insert id="create" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO keyword(company_id, name, update_member_id) 
+		INSERT INTO keyword2(company_id, name, update_member_id) 
 		VALUES (#{companyId}, #{name}, #{loginId})
 	</insert>
 	
@@ -38,7 +38,7 @@
 		SELECT *
 		FROM keyword2
 		WHERE  company_id = #{companyId}
-		AND name = #{name}
+		AND name like concat('%', #{name}, '%')
 	</select>
 	
 	<!-- 템플릿에 속한 키워드 조회 -->

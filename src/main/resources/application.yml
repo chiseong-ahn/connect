@@ -15,8 +15,6 @@ server:
     whitelabel:
       enabled: false
 
-
-
 # 스프링부트 기본 설정.
 spring:
   application:
@@ -52,8 +50,7 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 200MB
-        
-        
+     
 
 # Prometheus 설정.
 management:
@@ -65,6 +62,21 @@ management:
     tags:
       application: ${spring.application.name}  
 
+
+# Swagger 설정.
+springdoc:
+  cache:
+    disabled: true
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /api/document
+    displayRequestDuration: true
+    groups-order: ASC
+
+relay:
+  use-example: false
 
 
 ---
@@ -86,9 +98,9 @@ spring:
     web-application-type: servlet
 
 domain:
-  sdtalk: localhost.gasapp.co.kr
+  sdtalk: localhost
   relay-scg: relay-scg-dev.gasapp.co.kr
-  relay-inc: relay-inc.dev.gasapp.co.kr
+  relay-inc: relay-inc-dev.gasapp.co.kr
   
 path:
   upload: /Volumes/Data/_upload
@@ -97,22 +109,14 @@ path:
 logging:
   config: 'classpath:config/logback-local.xml'
 
-# Swagger 설정.
-springdoc:
-  cache:
-    disabled: true
-  api-docs:
-    groups:
-      enabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    displayRequestDuration: true
-    groups-order: ASC
-
-
+relay:
+  use-example: true
 
 ---
 # 개발환경 
+server:
+  port: 8115
+  
 spring:
   profiles: dev
   devtools:
@@ -131,8 +135,42 @@ spring:
 
 domain:
   sdtalk: cstalk-dev.gasapp.co.kr
-  relay-scg: relay-api-dev.gasapp.co.kr
-  relay-inc: relay-inc.dev.gasapp.co.kr
+  relay-scg: relay-scg-dev.gasapp.co.kr
+  relay-inc: relay-inc-dev.gasapp.co.kr
+  
+path:
+  upload: /data/project/cstalk/apache/data/attach
+
+logging:
+  config: 'classpath:config/logback-dev.xml'
+
+relay:
+  use-example: true
+---
+# 운영환경 
+server:
+  port: 8080
+
+spring:
+  profiles: live
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  freemarker:
+    template-loader-path: 'classpath:/templates'
+    suffix: .ftl
+  main:
+    web-application-type: servlet
+
+domain:
+  sdtalk: cstalk.gasapp.co.kr
+  relay-scg: relay-scg.gasapp.co.kr
+  relay-inc: relay-inc.gasapp.co.kr
   
 path:
   upload: /data/project/cstalk/apache/data/attach
@@ -140,25 +178,6 @@ path:
 # Logging 설정.
 logging:
   config: 'classpath:config/logback-dev.xml'
-
-# Swagger 설정.
-springdoc:
-  cache:
-    disabled: true
-  api-docs:
-    groups:
-      enabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    displayRequestDuration: true
-    groups-order: ASC
-
-
-
----
-# 운영환경 
-spring:
-  profiles: live
   
-logging:
-  config: 'classpath:config/logback-live.xml'
+relay:
+  use-example: false

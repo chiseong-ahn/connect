@@ -11,7 +11,6 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
-@Profile({"local", "dev"})
 @OpenAPIDefinition(
 		info = @Info(
 				title = "상담톡 API Document", 
@@ -31,13 +30,13 @@ public class OpenApiConfig {
 	
 	@Bean
 	public GroupedOpenApi sample() {
-		String[] paths = { "/samples/**" };
+		String[] paths = { "/api/example/**" };
 		return GroupedOpenApi.builder().setGroup("샘플 API").pathsToMatch(paths).build();
 	}
 	
 	@Bean
 	public GroupedOpenApi auth() {
-		String[] paths = { "/auth/**" };
+		String[] paths = { "/api/auth/**" };
 		return GroupedOpenApi.builder().setGroup("로그인 API").pathsToMatch(paths).build();
 	}
 	

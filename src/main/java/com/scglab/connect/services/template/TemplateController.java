@@ -57,6 +57,7 @@ public class TemplateController {
 		return this.templateService.findAll(params, request);
 	}
 	
+	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="답변템플릿 상세정보 조회", description = "답변템플릿 상세정보 조회.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
@@ -101,7 +102,7 @@ public class TemplateController {
 		@Parameter(name = "keywordIds", description = "키워드 id 목록", required = false, in = ParameterIn.QUERY, example = "[598,599]")
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
-	public Template update(@Parameter(description = "답변템플릿 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> update(@Parameter(description = "답변템플릿 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		return this.templateService.update(params, request);
 	}
@@ -171,6 +172,7 @@ public class TemplateController {
 	@ApiResponse(responseCode = "200", description = "success:true-성공, success:false-실패")
 	public Map<String, Object> saveFavorite(@Parameter(description = "답변템플릿 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
+		params.put("templateId", id);
 		return this.templateService.favorite(params, request);
 	}
 	

@@ -191,6 +191,9 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		int lastSortIndex = this.categoryDao.getLastLargeSortIndex(params);
+		params.put("sortIndex", lastSortIndex);
+		
 		CategoryLarge category = null;
 		if(this.categoryDao.createCategoryLarge(params) > 0) {
 			category = this.categoryDao.getCategoryLarge(params);
@@ -214,6 +217,9 @@ public class CategoryService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		int lastSortIndex = this.categoryDao.getLastMiddleSortIndex(params);
+		params.put("sortIndex", lastSortIndex);
 		
 		CategoryMiddle category = null;
 		if(this.categoryDao.createCategoryLarge(params) > 0) {
@@ -239,6 +245,9 @@ public class CategoryService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		int lastSortIndex = this.categoryDao.getLastSmallSortIndex(params);
+		params.put("sortIndex", lastSortIndex);
 		
 		CategorySmall category = null;
 		if(this.categoryDao.createCategoryLarge(params) > 0) {
@@ -360,7 +369,8 @@ public class CategoryService {
 		params.put("updateMemberId", member.getId());
 		
 		CategoryLarge category = null;
-		if(this.categoryDao.updateLargeSortIndexToAfter(params) > 0) {
+		if(this.categoryDao.updateLargeSortIndex(params) > 0) {
+			this.categoryDao.updateLargeSortIndexToAfter(params);
 			category = this.categoryDao.getCategoryLarge(params);
 		}
 		
@@ -373,7 +383,8 @@ public class CategoryService {
 		params.put("updateMemberId", member.getId());
 		
 		CategoryMiddle category = null;
-		if(this.categoryDao.updateMiddleSortIndexToAfter(params) > 0) {
+		if(this.categoryDao.updateMiddleSortIndex(params) > 0) {
+			this.categoryDao.updateMiddleSortIndexToAfter(params);
 			category = this.categoryDao.getCategoryMiddle(params);
 		}
 		
@@ -387,7 +398,8 @@ public class CategoryService {
 		params.put("categoryMiddleId", DataUtils.getLong(params, "category_middle_id", 0));
 		
 		CategorySmall category = null;
-		if(this.categoryDao.updateSmallSortIndexToAfter(params) > 0) {
+		if(this.categoryDao.updateSmallSortIndex(params) > 0) {
+			this.categoryDao.updateSmallSortIndexToAfter(params);
 			category = this.categoryDao.getCategorySmall(params);
 		}
 		

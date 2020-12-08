@@ -36,9 +36,7 @@ public class SampleService {
 	}
 	
 	public Map<String, Object> selectOne(Map<String, Object> params, String id) throws Exception {
-		params.put("id", id);
-		Map<String, Object> object = this.sampleDao.selectOne(params);
-		return object;
+		return this.sampleDao.selectOne(params);
 	}
 	
 	@Operation(summary = "게시물 등록처리.", description = "파라미터(name)을 입력받아 게시물을 등록한다.")
@@ -52,7 +50,7 @@ public class SampleService {
 			errorParams[0] = "name";		// 오류를 유발한 파라미터 명.
 			
 			// 오류 사유
-			String reason = messageService.getMessage("error.parameter1", errorParams);
+			String reason = messageService.getMessage("error.params.type1", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -70,39 +68,28 @@ public class SampleService {
 			throw new RuntimeException(reason);
 		}
 		
-		// 게시물 등록.
-		int result = this.sampleDao.insert(params);
-		
 		// 등록이 성공한 경우에 게시물정보 조회.
-		if(result > 0) {
-			
-			// 등록된 게시물 id(PK) 조회.
-			BigInteger id = DataUtils.getBigInteger(params, "id", BigInteger.ZERO);
-			params.put("id", id);
+		if(this.sampleDao.insert(params) > 0) {
 			
 			// 등록된 게시물 정보 조회.
-			Map<String, Object> sample = this.sampleDao.selectOne(params);
-			resultData.put("data", sample);
+			return this.sampleDao.selectOne(params);
 		}
 		
-		// 성공여부(true-성공, false-실패)
-		resultData.put("isSuccess", result > 0 ? true : false);
-		
-		return resultData;
+		return null;
 	}
 	
 	public Map<String, Object> update(Map<String, Object> params) throws Exception {
 		Map<String, Object> resultData = new HashMap<String, Object>();
-		String id = DataUtils.getString(params, "id", "");
+		long id = DataUtils.getLong(params, "id", 0);
 		String name = DataUtils.getString(params, "name", "");
 		
 		// 파라미터(name)이 없을 경우.
-		if(id.equals("") || name.equals("")) {
+		if(id == 0 || name.equals("")) {
 			Object[] errorParams = new String[1];
-			errorParams[0] = id.equals("") ? "id" : "name";		// 오류를 유발한 파라미터 명.
+			errorParams[0] = id == 0 ? "id" : "name";		// 오류를 유발한 파라미터 명.
 			
 			// 오류 사유
-			String reason = messageService.getMessage("error.parameter1", errorParams);
+			String reason = messageService.getMessage("error.params.type1", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
@@ -120,62 +107,34 @@ public class SampleService {
 			throw new RuntimeException(reason);
 		}
 		
-		int result = this.sampleDao.update(params);
-		
-		// 수정이 되지 않은 경우 오류 유발.
-		if(result == 0) {
-			Object[] errorParams = new String[1];
-			errorParams[0] = id;
-			
-			// 오류 사유.
-			String reason = messageService.getMessage("error.update1");
-			
-			// 오류 유발.
-			throw new RuntimeException(reason);
+		if(this.sampleDao.update(params) > 0) {
+			return this.sampleDao.selectOne(params);
 		}
-			
-		// 수정된 게시물 정보 조회.
-		Map<String, Object> sample = this.sampleDao.selectOne(params);
-		resultData.put("data", sample);
 		
-		// 성공여부(true-성공, false-실패)
-		resultData.put("isSuccess", result > 0 ? true : false);
-		
-		return resultData;
+		return null;
 	}
 	
 	public Map<String, Object> delete(Map<String, Object> params) throws Exception {
 		Map<String, Object> resultData = new HashMap<String, Object>();
-		String id = DataUtils.getString(params, "id", "");
+		long id = DataUtils.getLong(params, "id", 0);
 		
 		// 파라미터(name)이 없을 경우.
-		if(id.equals("")) {
+		if(id == 0) {
 			Object[] errorParams = new String[1];
 			errorParams[0] = "id";		// 오류를 유발한 파라미터 명.
 			
 			// 오류 사유
-			String reason = messageService.getMessage("error.parameter1", errorParams);
+			String reason = messageService.getMessage("error.params.type1", errorParams);
 			
 			// 오류 유발.
 			throw new RuntimeException(reason);
 		}
 		
-		int result = this.sampleDao.delete(params);
-		
-		// 삭제가 되지 않은 경우 오류 유발.
-		if(result == 0) {
-			Object[] errorParams = new String[1];
-			errorParams[0] = id;
-			
-			// 오류 사유.
-			String reason = messageService.getMessage("error.update1");
-			
-			// 오류 유발.
-			throw new RuntimeException(reason);
+		if(this.sampleDao.delete(params) > 0) {
+			resultData.put("isSuccess", true);
+		}else {
+			resultData.put("isSuccess", false);
 		}
-		
-		// 성공여부(true-성공, false-실패)
-		resultData.put("isSuccess", result > 0 ? true : false);
 		
 		return resultData;
 	}

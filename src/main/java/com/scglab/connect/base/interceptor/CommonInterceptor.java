@@ -54,31 +54,33 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 			auth = null;
 		}
 		
-		// 인증이 필요한 경우.
-		if(auth != null) {
-			
-			// Header에서 인증토큰을 받아온다.
-			String accessToken = getAccessToken(request);
-			
-			if(accessToken.equals("")) {
-				// 인증토큰이 존재하지 않을경우.
+		// Header에서 인증토큰을 받아온다.
+		String accessToken = getAccessToken(request);
+		
+		if(accessToken.equals("")) {
+			if(auth != null) {
+				// 인증되지 않은경우.
 				throw new UnauthorizedException("auth.valid.fail.reason1");
 			}
-			
+		}else {
 			if(!this.jwtService.validateToken(accessToken)) {
 				// 토큰이 유효하지 않거나 만료된 경우.
-				throw new UnauthorizedException("auth.valid.fail.reason2");
+				
+				if(auth != null) {
+					throw new UnauthorizedException("auth.valid.fail.reason2");
+				}
+			}else {
+				// 토큰이 유효한 경우.
+				
+				Map<String, Object> claims = this.jwtService.getJwtData(accessToken);
+				request.setAttribute("accessToken", accessToken);
+				
+				Member profile = new Member();
+				profile = (Member) DataUtils.convertMapToObject(claims, profile);
+				
+				// token에서 추출한 Profile 정보를 request객체에 저장.
+				request.setAttribute(Constant.AUTH_MEMBER, profile);
 			}
-			
-			Map<String, Object> claims = this.jwtService.getJwtData(accessToken);
-			request.setAttribute("accessToken", accessToken);
-			
-			Member profile = new Member();
-			profile = (Member) DataUtils.convertMapToObject(claims, profile);
-			
-			// token에서 추출한 Profile 정보를 request객체에 저장.
-			//setProfile(profile, request);
-			request.setAttribute(Constant.AUTH_MEMBER, profile);
 		}
 		
 		return true;

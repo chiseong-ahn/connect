@@ -29,9 +29,9 @@ public class CompanyInc implements ICompany {
 	}
 
 	@Override
-	public int minwons(Map<String, String> params) {
+	public String minwons(Map<String, String> params) {
 		// TODO Auto-generated method stub
-		return 0;
+		return "";
 	}
 
 	@Override
