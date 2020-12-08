@@ -1,7 +1,7 @@
 # 파일 업로드
 
 ## 예제.
-- http://localhost:8080/api/upload 접속.
+- post http://localhost:8080/api/file
 - 파일 선택 및 업로드.
 - 업로드 응답결과
 ```java

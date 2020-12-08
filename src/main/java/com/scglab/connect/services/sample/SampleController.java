@@ -1,6 +1,5 @@
 package com.scglab.connect.services.sample;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.scglab.connect.base.annotations.Auth;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,8 +27,7 @@ public class SampleController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	SampleService sampleService;
+	@Autowired private SampleService sampleService;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="목록 조회", description = "조건에 맞는 게시물 목록을 조회합니다.")
@@ -82,6 +82,12 @@ public class SampleController {
 	public void login(@Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
 	}
 	
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/api/needLogin", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String needLogin(@Parameter(hidden = true) @RequestParam Map<String, Object> params) throws Exception {
+	    return "인증이 유효합니다."; 
+	}
 }
 
 
