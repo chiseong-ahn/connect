@@ -79,7 +79,7 @@
 	            			headers: {'Authorization' : 'Bearer ' + this.accessToken}
 	            		}
 	            		
-	            		axios.get('/auth/profile', this.header).then(response => {
+	            		axios.get('/api/auth/profile', this.header).then(response => {
 	            			
 	            			if(response.data){
 		                		this.moveTalk();
@@ -105,7 +105,7 @@
             		var data = new FormData();
             			data.append("refreshToken", this.refreshToken);
             			
-            		axios.post('/auth/refresh', data, header).then(response => {
+            		axios.post('/api/auth/refresh', data, header).then(response => {
 	                	console.log(response.data);
 	                	if(response.data.result == true){
 	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.
@@ -128,7 +128,7 @@
             			data.append("name", this.name);
             		
             		localStorage.removeItem("accessToken");
-            		axios.post('/auth/loginMember', data, header).then(response => {
+            		axios.post('/api/auth/loginMember', data, header).then(response => {
 	                	console.log(response.data);
 	                	if(response.data.token != ''){
 	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.

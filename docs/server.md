@@ -59,3 +59,4 @@ httpd (pid 12302) already running
 
 
 ## 6. Scouter
+[< 목록으로 돌아가기](manual.md)

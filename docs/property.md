@@ -30,3 +30,4 @@ public class DomainProperties {
 String sdtalk = this.domainProperty.getSdtalk();
 ```
 
+[< 목록으로 돌아가기](manual.md)
