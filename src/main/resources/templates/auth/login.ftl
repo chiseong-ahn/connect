@@ -81,7 +81,7 @@
 	            		
 	            		axios.get('/api/auth/profile', this.header).then(response => {
 	            			
-	            			if(response.data){
+	            			if(response.data.id > 0){
 		                		this.moveTalk();
 		                	}
 			            },function(e){

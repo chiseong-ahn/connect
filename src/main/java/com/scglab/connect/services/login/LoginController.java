@@ -55,14 +55,14 @@ public class LoginController {
 		return this.loginService.login(params, request, response);
 	}
 	
-	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="멤버 정보 조회", description = "멤버 인증 정보를 조회한다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@ApiResponse(responseCode = "200", description = "OK", content = {
 		@Content(schema = @Schema(oneOf = Member.class)),
 	})
 	public Member profile(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.loginService.profile(params, request, response);
+		Member member = this.loginService.profile(params, request, response);
+		return member == null ? new Member() : member;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/loginCustomer", produces = MediaType.APPLICATION_JSON_VALUE)

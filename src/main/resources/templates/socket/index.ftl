@@ -213,11 +213,11 @@
             el: '#app',
             data: {
             	socket: {
-            		//host: "//localhost",
-            		host: "//cstalk-dev.gasapp.co.kr",
+            		host: "//localhost",
+            		//host: "//cstalk-dev.gasapp.co.kr",
             		
-            		//port: 8080,
-            		port: 80,
+            		port: 8080,
+            		//port: 80,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
