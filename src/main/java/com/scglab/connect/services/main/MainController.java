@@ -20,6 +20,11 @@ public class MainController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	@RequestMapping(method = RequestMethod.GET, name = "main", value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String index(HttpServletRequest request, HttpServletResponse response) {
+		return "redirect:/api/document";
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, name = "main", value = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String main(HttpServletRequest request, HttpServletResponse response) {
 		return "auth/login";
