@@ -212,21 +212,26 @@ public class SocketService {
 		this.logger.info("roomId : " + roomId);
 		this.logger.info("sessionId : " + sessionId);
 		
-		if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
-			// [Redis] 채팅방의 인원수 -1.
-			this.chatRoomRepository.minusUserCount(roomId);
+		if (roomId != null) {
+			
+			if(this.chatRoomRepository.getUserCount(roomId) > 0) {
+				// [Redis] 채팅방의 인원수 -1.
+				this.chatRoomRepository.minusUserCount(roomId);
+			}
 			
 			// [Redis] 채팅에 참여중인 인원 확인.
-			long joinCount = this.chatRoomRepository.getUserCount(roomId);
-
-			if (joinCount <= 0) {
+			this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(roomId));
+			if(this.chatRoomRepository.getUserCount(roomId) <= 0) {
+				
 				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
 				this.chatRoomRepository.deleteChatRoom(roomId);
+				this.chatRoomRepository.deleteUserCount(roomId);
 			}
+				
+			// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
+			this.chatRoomRepository.removeUserJoinInfo(sessionId);
 		}
 		
-		// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
-		this.chatRoomRepository.removeUserJoinInfo(sessionId);
 	}
 	
 	
@@ -740,25 +745,26 @@ public class SocketService {
 				sendReloadMessage(profile.getCompanyId());
 			}
 			
-			// [Redis] 채팅방의 인원수 -1.
-			this.chatRoomRepository.minusUserCount(roomId);
+			if(this.chatRoomRepository.getUserCount(roomId) > 0) {
 			
+				// [Redis] 채팅방의 인원수 -1.
+				this.chatRoomRepository.minusUserCount(roomId);
+			}
+				
 			// [Redis] 채팅에 참여중인 인원 확인.
-			long joinCount = this.chatRoomRepository.getUserCount(roomId);
-
-			this.logger.debug("[ROOM_" + roomId + "] Join count : " + joinCount);
-			if (joinCount <= 0) {
+			if(this.chatRoomRepository.getUserCount(roomId) <= 0) {
+				
 				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
 				this.chatRoomRepository.deleteChatRoom(roomId);
 				this.chatRoomRepository.deleteUserCount(roomId);
 			}
+			
+			// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
+			this.chatRoomRepository.removeUserJoinInfo(sessionId);
+			
+			// [Redis] 커네션한 유저 토큰 삭제.
+			this.chatRoomRepository.dropUserToken(sessionId);
 		}
-		
-		// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
-		this.chatRoomRepository.removeUserJoinInfo(sessionId);
-		
-		// [Redis] 커네션한 유저 토큰 삭제.
-		this.chatRoomRepository.dropUserToken(sessionId);
 	}
 	
 	

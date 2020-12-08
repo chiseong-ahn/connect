@@ -20,10 +20,10 @@ public class ChatRoomRepository {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	// Redis CacheKeys
-    private static final String CHAT_ROOMS = "CHATROOM"; // 채팅룸 저장
-    public static final String USER_COUNT = "USERCOUNT"; // 채팅룸에 입장한 클라이언트 수 저장
-    public static final String JOIN_INFO = "JOIN_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-    public static final String SESSION_TOKEN = "SESSION_TOKEN"; // 채팅룸에 입장한 클라이언트의 sessionId와 Token를 맵핑한 정보 저장
+    private static final String CHAT_ROOMS = "CSTALK_CHATROOM"; // 채팅룸 저장
+    public static final String USER_COUNT = "CSTALK_USERCOUNT"; // 채팅룸에 입장한 클라이언트 수 저장
+    public static final String JOIN_INFO = "CSTALK_JOIN_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
+    public static final String SESSION_TOKEN = "CSTALK_SESSION_TOKEN"; // 채팅룸에 입장한 클라이언트의 sessionId와 Token를 맵핑한 정보 저장
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
