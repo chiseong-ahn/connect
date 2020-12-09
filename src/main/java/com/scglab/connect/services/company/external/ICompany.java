@@ -100,10 +100,10 @@ public interface ICompany {
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
 	 * @Method 설명 : 8. 고객의 계약정보 목록
-	 * @param member
+	 * @param gasappMemberNumber
 	 * @return
 	 */
-	public List<Map<String, Object>> contracts(long member);
+	public List<Map<String, Object>> contracts(long gasappMemberNumber);
 	
 	
 	/**
@@ -116,7 +116,7 @@ public interface ICompany {
 	 * @param member : 가스앱 회원번호
 	 * @return
 	 */
-	public Map<String, Object> getProfile(long member);
+	public Map<String, Object> getProfile(long gasappMemberNumber);
 	
 	
 	/**
