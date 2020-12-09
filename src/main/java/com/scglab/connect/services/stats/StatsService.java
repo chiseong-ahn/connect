@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class StatsService {
@@ -40,7 +41,8 @@ public class StatsService {
 	 */
 	public Map<String, Object> member(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		Map<String, Object> data = null;
 		data = this.statsDao.member(params);
@@ -72,8 +74,9 @@ public class StatsService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> myToday(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		Member member = this.loginService.getMember(request);
-//		params.put("companyId", member.getCompanyId());
+		Member member = this.loginService.getMember(request);
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		Map<String, Object> data = null;
 		//data = this.statsDao.myToday(params);
@@ -124,7 +127,8 @@ public class StatsService {
 	 */
 	public Map<String, Object> search(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		Map<String, Object> data = null;
 		//data = this.statsDao.search(params);
@@ -175,8 +179,9 @@ public class StatsService {
 	 * @throws Exception
 	 */
 	public List<Map<String, Object>> customerAnalysis(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		Member member = this.loginService.getMember(request);
-//		params.put("companyId", member.getCompanyId());
+		Member member = this.loginService.getMember(request);
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		List<Map<String, Object>> list = null;
 		//data = this.statsDao.customerAnalysis(params);
@@ -250,7 +255,8 @@ public class StatsService {
 	 */
 	public List<Map<String, Object>> useHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		List<Map<String, Object>> list = null;
 		//list = this.statsDao.useHistory(params);
@@ -312,7 +318,8 @@ public class StatsService {
 	 */
 	public List<Map<String, Object>> hashtag(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		List<Map<String, Object>> list = null;
 		//list = this.statsDao.hashtag(params);

@@ -14,6 +14,7 @@
 | XSS Filter | lucy xss servlet filter | |
 | template engine | freemarker | 프로토타입 작성을 위해사용(서비스용 아님) |
 | 테스팅 | Junit | |
-| 문서 | Open API 3.0 (구 Swagger) | |
+| 문서 | Postman + OpenApi 3.0(구 Swagger) | 서비스하는 API 정의|
+
 
 [< 목록으로 돌아가기](manual.md)

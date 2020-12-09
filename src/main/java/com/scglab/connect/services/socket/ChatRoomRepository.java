@@ -1,4 +1,4 @@
-package com.scglab.connect.services.talk;
+package com.scglab.connect.services.socket;
 
 import java.util.List;
 import java.util.Optional;

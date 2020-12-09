@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class LinkService {
@@ -32,8 +33,10 @@ public class LinkService {
 	
 	public List<LinkMenu> findMenuAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		this.logger.debug("params : " + params.toString());
 		return this.linkDao.findMenuAll(params);
@@ -41,8 +44,10 @@ public class LinkService {
 	
 	public LinkMenu linkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		this.logger.debug("params : " + params.toString());
 		LinkMenu linkMenu = this.linkDao.findLinkMenu(params);
@@ -69,8 +74,10 @@ public class LinkService {
 	
 	public List<LinkMenu> findDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		this.logger.debug("params : " + params.toString());
 		return this.linkDao.findByMenuIdAndEnableStatus(params);
@@ -78,8 +85,10 @@ public class LinkService {
 	
 	public List<LinkMenu> findTree(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		List<LinkMenu> linkMenuList = this.linkDao.findMenuAll(params);
 		List<LinkDetail> linkDetailList = this.linkDao.findDetailAll(params);
@@ -95,8 +104,10 @@ public class LinkService {
 	
 	public LinkMenu createLinkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		LinkMenu linkMenu = null;
 		if(this.linkDao.createLinkMenu(params) > 0) {
@@ -108,8 +119,10 @@ public class LinkService {
 	
 	public LinkMenu updateLinkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		LinkMenu linkMenu = null;
 		if(this.linkDao.updateLinkMenu(params) > 0) {
@@ -121,8 +134,10 @@ public class LinkService {
 	
 	public Map<String, Object> deleteLinkMenu(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -140,8 +155,10 @@ public class LinkService {
 	
 	public LinkDetail createLinkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		LinkDetail linkDetail = null;
 		if(this.linkDao.createLinkDetail(params) > 0) {
@@ -153,8 +170,10 @@ public class LinkService {
 	
 	public LinkDetail updateLinkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		LinkDetail linkDetail = null;
 		if(this.linkDao.updateLinkDetail(params) > 0) {
@@ -166,8 +185,10 @@ public class LinkService {
 	
 	public LinkDetail updateLinkDetailEnable(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		LinkDetail linkDetail = null;
 		if(this.linkDao.updateLinkDetailEnable(params) > 0) {
@@ -179,8 +200,10 @@ public class LinkService {
 	
 	public Map<String, Object> deleteLinkDetail(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		

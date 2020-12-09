@@ -13,5 +13,5 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ServerProperties {
-	private String port;
+	private int port;
 }

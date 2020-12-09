@@ -24,4 +24,6 @@
 
 1. [서버 설정](server.md)
 
+1. [배포 프로세스](deploy.md)
+
 1. [문서](document.md)

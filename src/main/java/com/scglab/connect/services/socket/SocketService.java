@@ -37,8 +37,6 @@ import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.Room;
 import com.scglab.connect.services.room.RoomDao;
-import com.scglab.connect.services.talk.ChatRoom;
-import com.scglab.connect.services.talk.ChatRoomRepository;
 import com.scglab.connect.utils.DataUtils;
 
 import lombok.RequiredArgsConstructor;

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.socket.SocketService.EventName;
-import com.scglab.connect.services.talk.ChatRoom;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

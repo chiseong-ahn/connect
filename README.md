@@ -24,6 +24,5 @@
 
 ### 서비스 확인
 - 서비스 : http://localhost:8080
-- API 문서 : http://localhost:8080/swagger-ui.html
 
 [링크-개발 메뉴얼](/docs/manual.md "개발 메뉴얼 페이지로 이동합니다.")

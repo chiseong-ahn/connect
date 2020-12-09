@@ -53,7 +53,7 @@ public class StatsController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "search", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="통계 : 기간 검색", description = "통계 : 회원 기간 검색", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	@Operation(summary="통계 : 기간 검색", description = "통계 : 기간 검색", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@Parameters({
 		@Parameter(name = "startDate", description = "종료일 검색 시작일(YYYY-MM-DD)", required = true, in = ParameterIn.QUERY, example = "2020-11-01"),
 		@Parameter(name = "endDate", description = "종료일 검색 종료일(YYYY-MM-DD)", required = true, in = ParameterIn.QUERY, example = "2020-11-01"),
