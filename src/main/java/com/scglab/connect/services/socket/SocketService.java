@@ -449,7 +449,7 @@ public class SocketService {
 			sendData = new HashMap<String, Object>();
 			sendData.put("autoMessage1", autoMessage1);
 			sendData.put("autoMessage2", autoMessage2);
-			sendMessage(EventName.AUTO_MESSAGE, payload.getCompanyId(), payload.getRoomId(), Target.CUSTOMER, sendData);
+			sendMessage(EventName.WELCOME_MESSAGE, payload.getCompanyId(), payload.getRoomId(), Target.CUSTOMER, sendData);
 		}
 		
 		// [DB] 대화내용 조회
