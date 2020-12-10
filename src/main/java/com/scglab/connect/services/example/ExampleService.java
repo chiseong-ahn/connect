@@ -1,4 +1,4 @@
-package com.scglab.connect.services.sample;
+package com.scglab.connect.services.example;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -16,19 +16,19 @@ import com.scglab.connect.utils.DataUtils;
 import io.swagger.v3.oas.annotations.Operation;
 
 @Service
-public class SampleService {
+public class ExampleService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private SampleDao sampleDao;
+	private ExampleDao exampleDao;
 	
 	@Autowired
 	private MessageHandler messageService;
 	
 	public Map<String, Object> selectAll(Map<String, Object> params) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
-		List<Map<String, Object>> list = this.sampleDao.selectAll(params);
+		List<Map<String, Object>> list = this.exampleDao.selectAll(params);
 		data.put("total", 100);
 		data.put("list", list);
 		
@@ -36,7 +36,7 @@ public class SampleService {
 	}
 	
 	public Map<String, Object> selectOne(Map<String, Object> params, String id) throws Exception {
-		return this.sampleDao.selectOne(params);
+		return this.exampleDao.selectOne(params);
 	}
 	
 	@Operation(summary = "게시물 등록처리.", description = "파라미터(name)을 입력받아 게시물을 등록한다.")
@@ -69,10 +69,10 @@ public class SampleService {
 		}
 		
 		// 등록이 성공한 경우에 게시물정보 조회.
-		if(this.sampleDao.insert(params) > 0) {
+		if(this.exampleDao.insert(params) > 0) {
 			
 			// 등록된 게시물 정보 조회.
-			return this.sampleDao.selectOne(params);
+			return this.exampleDao.selectOne(params);
 		}
 		
 		return null;
@@ -107,8 +107,8 @@ public class SampleService {
 			throw new RuntimeException(reason);
 		}
 		
-		if(this.sampleDao.update(params) > 0) {
-			return this.sampleDao.selectOne(params);
+		if(this.exampleDao.update(params) > 0) {
+			return this.exampleDao.selectOne(params);
 		}
 		
 		return null;
@@ -130,7 +130,7 @@ public class SampleService {
 			throw new RuntimeException(reason);
 		}
 		
-		if(this.sampleDao.delete(params) > 0) {
+		if(this.exampleDao.delete(params) > 0) {
 			resultData.put("isSuccess", true);
 		}else {
 			resultData.put("isSuccess", false);

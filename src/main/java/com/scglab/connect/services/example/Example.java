@@ -1,4 +1,4 @@
-package com.scglab.connect.services.sample;
+package com.scglab.connect.services.example;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,8 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@RedisHash("sample")
-public class Sample implements Serializable {
+@RedisHash("example")
+public class Example implements Serializable {
 	
 	@Id
     private String id;
@@ -19,7 +19,7 @@ public class Sample implements Serializable {
     private LocalDateTime refreshTime;
 
     @Builder
-    public Sample(String id, Long amount, LocalDateTime refreshTime) {
+    public Example(String id, Long amount, LocalDateTime refreshTime) {
         this.id = id;
         this.amount = amount;
         this.refreshTime = refreshTime;

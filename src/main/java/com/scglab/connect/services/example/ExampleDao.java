@@ -1,4 +1,4 @@
-package com.scglab.connect.services.sample;
+package com.scglab.connect.services.example;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.scglab.connect.services.common.dao.CommonDao;
 
 @Repository
-public class SampleDao extends CommonDao {
+public class ExampleDao extends CommonDao {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
