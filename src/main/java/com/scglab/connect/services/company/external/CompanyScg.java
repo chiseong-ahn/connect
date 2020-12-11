@@ -120,7 +120,7 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> contractInfo(String useContractNum){
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contract/info.json";
+			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contractInfo.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
 		}
@@ -133,10 +133,10 @@ public class CompanyScg implements ICompany {
 	
 	// 6. 사용계약번호 결제 상세 정보
 	@Override
-	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag) {
+	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contract/bill.json";
+			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contractBill.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
 		}
@@ -194,6 +194,21 @@ public class CompanyScg implements ICompany {
 			
 		return profile;
 	}
+	
+	// 10. 민원 코드목록 조회.
+	@Override
+	public List<Map<String, Object>> getMinwonsCodes() {
+		String url = "";
+		if(this.relayUseExample) {
+			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/minwonCodes.json";
+		}else {
+			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/minwons/ClassCodes";
+		}
+		
+		List<Map<String, Object>> list = HttpUtils.getForList(url);
+		
+		return list;
+	}
 
 	@Override
 	public String getCompanyId() {
@@ -204,4 +219,6 @@ public class CompanyScg implements ICompany {
 	public String getCompanyName() {
 		return Constant.COMPANY_NAME_SEOUL;
 	}
+
+	
 }

@@ -68,7 +68,7 @@ public interface ICompany {
 	
 	/**
 	 * 
-	 * @Method Name : contractBilDetail
+	 * @Method Name : contractBil
 	 * @작성일 : 2020. 10. 20.
 	 * @작성자 : anchiseong
 	 * @변경이력 : 
@@ -78,7 +78,7 @@ public interface ICompany {
 	 * 			deadlineFlag - 납기구분. (20)
 	 * @return
 	 */
-	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag);
+	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag);
 	
 	
 	/**
@@ -117,6 +117,17 @@ public interface ICompany {
 	 * @return
 	 */
 	public Map<String, Object> getProfile(String gasappMemberNumber);
+	
+	/**
+	 * 
+	 * @Method Name : getMinwonsCodes
+	 * @작성일 : 2020. 12. 11.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 :
+	 * @return
+	 */
+	public List<Map<String, Object>> getMinwonsCodes();
 	
 	
 	/**

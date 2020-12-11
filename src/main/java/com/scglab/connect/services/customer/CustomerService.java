@@ -268,7 +268,7 @@ public class CustomerService {
 		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
 		
 		if(!useContractNum.equals("")) {
-			return company.contractBilDetail(useContractNum, requestYm, deadlineFlag);
+			return company.contractBill(useContractNum, requestYm, deadlineFlag);
 		}
 		return null;
 	}

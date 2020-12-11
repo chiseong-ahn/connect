@@ -118,7 +118,7 @@ public class ContractService {
 					String deadlineFlag = DataUtils.getString(history, "deadlineFlag", "");
 					
 					if(!requestYm.equals("") && !deadlineFlag.equals("")) {
-						Map<String, Object> bill = getCompany(companyId).contractBilDetail(useContractNum, requestYm, deadlineFlag);
+						Map<String, Object> bill = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
 						contractInfo.put("bill", bill);
 					}
 				}
@@ -169,7 +169,7 @@ public class ContractService {
 			this.errorService.throwParameterError();
 		}
 		
-		Map<String, Object> contractBil = getCompany(companyId).contractBilDetail(useContractNum, requestYm, deadlineFlag);
+		Map<String, Object> contractBil = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
 		return contractBil;
 	}
 	

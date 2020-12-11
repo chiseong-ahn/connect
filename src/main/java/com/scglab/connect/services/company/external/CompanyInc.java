@@ -31,7 +31,7 @@ public class CompanyInc implements ICompany {
 	@Override
 	public String minwons(Map<String, String> params) {
 		// TODO Auto-generated method stub
-		return "";
+		return null;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class CompanyInc implements ICompany {
 	}
 
 	@Override
-	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag) {
+	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -53,13 +53,19 @@ public class CompanyInc implements ICompany {
 	}
 
 	@Override
-	public List<Map<String, Object>> contracts(String member) {
+	public List<Map<String, Object>> contracts(String gasappMemberNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Map<String, Object> getProfile(String member) {
+	public Map<String, Object> getProfile(String gasappMemberNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMinwonsCodes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -77,6 +83,5 @@ public class CompanyInc implements ICompany {
 	}
 
 	
-
 
 }

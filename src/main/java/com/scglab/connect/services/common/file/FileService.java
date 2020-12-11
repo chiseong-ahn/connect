@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.properties.PathProperties;
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.utils.DataUtils;
 
@@ -32,6 +34,8 @@ public class FileService {
 	
 	@Autowired private PathProperties pathProperty;
 	@Autowired private MessageHandler messageHandler;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	public FileDto uploadFile(MultipartFile file, Map<String, Object> params, HttpServletRequest request) throws Exception {
 		String div = DataUtils.getString(params, "div", "");

@@ -124,7 +124,7 @@ public class ExtenalController {
 	public Map<String, Object> contractBil(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(description = "가스앱 회원번호", example = "3369") @PathVariable long member, @Parameter(description = "사용계약번호", example = "6000000486") @PathVariable String useContractNum, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestYm = DataUtils.getString(params, "requestYm", "");
 		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
-		return getCompany(companyId).contractBilDetail(useContractNum, requestYm, deadlineFlag);
+		return getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
 	}
 	
 	
