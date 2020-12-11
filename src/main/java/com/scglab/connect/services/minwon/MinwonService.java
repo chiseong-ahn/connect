@@ -1,6 +1,8 @@
 package com.scglab.connect.services.minwon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,19 @@ public class MinwonService {
 	@Autowired private LoginService loginService;
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
+	
+	public List<Map<String, Object>> codes(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		// 각 회사별 기간망 클래스 가져오기.
+		ICompany company = this.commonService.getCompany(member.getCompanyId());
+		
+		List<Map<String, Object>> codes = company.getMinwonsCodes();
+		
+		return codes == null ? new ArrayList<>() : codes;
+	}
 	
 	/**
 	 * 

@@ -1,5 +1,6 @@
 package com.scglab.connect.services.minwon;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,13 @@ public class MinwonController {
 	
 	@Autowired
 	private MinwonService minwonService;
+	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "/codes", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary="민원코드 조회", description = "민원코드 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
+	public List<Map<String, Object>> codes(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.minwonService.codes(params, request, response);
+	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
