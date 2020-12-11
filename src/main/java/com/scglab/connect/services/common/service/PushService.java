@@ -38,7 +38,7 @@ public class PushService {
 		
 		HttpUtils httpUtils = new HttpUtils();
 		
-		String url = "https://" + this.domainProperty.getRelayScg() + "/api/matt/push";
+		String url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/push";
 		Map<String, String> params = new HashMap<String, String>();
 		
 		params.put("member", member + "");

@@ -14,7 +14,7 @@
 	<version>1.0.0</version>
 	<name>connect</name>
 	<description>scglab chat service</description>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

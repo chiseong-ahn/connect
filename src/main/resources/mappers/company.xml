@@ -6,8 +6,15 @@
 	<parameterMap type="com.scglab.connect.services.company.Company" id="company"></parameterMap>
 	<resultMap type="com.scglab.connect.services.company.Company" id="company"></resultMap>
 	
-	<select id="findCompany" parameterType="map" resultMap="company">
-		
+	<select id="findAll" parameterType="map" resultMap="company">
+		SELECT *
+		FROM company
+	</select>
+	
+	<select id="getDetail" parameterType="map" resultMap="company">
+		SELECT *
+		FROM company
+		WHERE id = #{id}
 	</select>
 	
 </mapper>

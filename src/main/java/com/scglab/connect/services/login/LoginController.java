@@ -51,8 +51,8 @@ public class LoginController {
 	@ApiResponse(responseCode = "200", description = "OK", content = {
 		@Content(schema = @Schema(oneOf = Member.class)),
 	})
-	public Map<String, Object> login(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return this.loginService.login(params, request, response);
+	public Map<String, Object> loginMember(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.loginService.loginMember(params, request, response);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -16,6 +16,8 @@
 
 1. [프로퍼티 사용](property.md)
 
+1. [유효성 검증](validation.md)
+
 1. [로그 작성 및 출력](logger.md)
 
 1. [파일 업로드 및 다운로드](file.md)

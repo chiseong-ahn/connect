@@ -52,17 +52,19 @@ public class CompanyScg implements ICompany {
 	public boolean login(String id, String password) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/profile.json";
+			//url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/profile.json";
+			if(password.equals("1212")) {
+				return true;
+			}
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/employees/login";
+			this.logger.info("url : " + url);
+			ResponseBody body = HttpUtils.getForResponseBody(url);
+			if(body.getStateCode() == Response.SC_OK) {
+				return true;
+			}
 		}
-		this.logger.info("url : " + url);
 		
-		ResponseBody body = HttpUtils.getForResponseBody(url);
-		
-		if(body.getStateCode() == Response.SC_OK) {
-			return true;
-		}
 		return false;
 	}
 
@@ -105,7 +107,7 @@ public class CompanyScg implements ICompany {
 			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/minwons.json";
 			obj = HttpUtils.getForMap(url);
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "/api/chattalk/minwons";
+			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/minwons";
 			obj = HttpUtils.postForMap(url, params);
 		}
 		
@@ -118,9 +120,9 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> contractInfo(String useContractNum){
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contractInfo.json";
+			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contract/info.json";
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "/api/contractInfo/" + useContractNum;
+			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
 		}
 		
 		Map<String, Object> data = HttpUtils.getForMap(url);
@@ -134,9 +136,9 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> contractBilDetail(String useContractNum, String requestYm, String deadlineFlag) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contractBil.json";
+			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contract/bill.json";
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "/api/bill/" + useContractNum + "/detail?requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
+			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
 		}
 		
 		Map<String, Object> data = HttpUtils.getForMap(url);
@@ -152,7 +154,7 @@ public class CompanyScg implements ICompany {
 		if(this.relayUseExample) {
 			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/holiday.json";
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "api/workcalendar?day=" + day;
+			url = "https://" + this.domainProperty.getRelayScg() + "api/cstallk/workcalendar?day=" + day;
 		}
 		
 		Map<String, Object> data = HttpUtils.getForMap(url);
@@ -164,12 +166,12 @@ public class CompanyScg implements ICompany {
 	
 	// 8. 고객의 계약정보 목록
 	@Override
-	public List<Map<String, Object>> contracts(long member) {
+	public List<Map<String, Object>> contracts(String member) {
 		String url = "";
 		if(this.relayUseExample) {
 			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contracts.json";
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "api/matt/contracts?member=" + member;
+			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/contracts?member=" + member;
 		}
 		
 		List<Map<String, Object>> list = HttpUtils.getForList(url);
@@ -180,12 +182,12 @@ public class CompanyScg implements ICompany {
 	
 	// 9. 고객 profile 정보.
 	@Override
-	public Map<String, Object> getProfile(long member) {
+	public Map<String, Object> getProfile(String member) {
 		String url = "";
 		if(this.relayUseExample) {
 			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/profile.json";
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "/api/matt/profile?member=" + member;
+			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/profile?member=" + member;
 		}
 		
 		Map<String, Object> profile = HttpUtils.getForMap(url);	

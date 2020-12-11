@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.auth.User;
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
+import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
@@ -21,9 +23,12 @@ import com.scglab.connect.utils.DataUtils;
 public class CategoryService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
+	@Autowired private CommonService commonService;
 	@Autowired private CategoryDao categoryDao;
 	@Autowired private LoginService loginService;
+	@Autowired private ErrorService errorService;
+	@Autowired private MessageHandler messageHandler;
 	
 	public Map<String, Object> total(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
@@ -191,6 +196,22 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "대분류명-name");
+			
+		if(!this.commonService.validString(params, "minwonCode"))
+			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+			
+		if(!this.commonService.validString(params, "minwonName"))
+			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		int lastSortIndex = this.categoryDao.getLastLargeSortIndex(params);
 		params.put("sortIndex", lastSortIndex);
 		
@@ -217,6 +238,25 @@ public class CategoryService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "categoryLargeId"))
+			errorParams = this.commonService.appendText(errorParams, "대분류id-categoryLargeId");
+			
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "중분류명-name");
+		
+		if(!this.commonService.validString(params, "minwonCode"))
+			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+			
+		if(!this.commonService.validString(params, "minwonName"))
+			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
 		
 		int lastSortIndex = this.categoryDao.getLastMiddleSortIndex(params);
 		params.put("sortIndex", lastSortIndex);
@@ -246,6 +286,25 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "categoryMiddleId"))
+			errorParams = this.commonService.appendText(errorParams, "중분류id-categoryMiddleId");
+			
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "소분류명-name");
+		
+		if(!this.commonService.validString(params, "minwonCode"))
+			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+			
+		if(!this.commonService.validString(params, "minwonName"))
+			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		int lastSortIndex = this.categoryDao.getLastSmallSortIndex(params);
 		params.put("sortIndex", lastSortIndex);
 		
@@ -274,6 +333,22 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "대분류명-name");
+			
+		if(!this.commonService.validString(params, "minwonCode"))
+			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+			
+		if(!this.commonService.validString(params, "minwonName"))
+			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		CategoryLarge category = null;
 		if(this.categoryDao.updateCategoryLarge(params) > 0) {
 			category = this.categoryDao.getCategoryLarge(params);
@@ -299,6 +374,25 @@ public class CategoryService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "categoryLargeId"))
+			errorParams = this.commonService.appendText(errorParams, "대분류id-categoryLargeId");
+			
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "중분류명-name");
+		
+		if(!this.commonService.validString(params, "minwonCode"))
+			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+			
+		if(!this.commonService.validString(params, "minwonName"))
+			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
 		
 		CategoryMiddle category = null;
 		if(this.categoryDao.updateCategoryMiddle(params) > 0) {
@@ -326,6 +420,25 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "categoryMiddleId"))
+			errorParams = this.commonService.appendText(errorParams, "중분류id-categoryMiddleId");
+			
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "소분류명-name");
+		
+		if(!this.commonService.validString(params, "minwonCode"))
+			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+			
+		if(!this.commonService.validString(params, "minwonName"))
+			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		CategorySmall category = null;
 		if(this.categoryDao.updateCategorySmall(params) > 0) {
 			category = this.categoryDao.getCategorySmall(params);
@@ -334,28 +447,38 @@ public class CategoryService {
 		return category == null ? new CategorySmall() : category;
 	}
 	
-	public Map<String, Object> delete(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> deleteCategoryLarge(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		String type = DataUtils.getString(params, "type", "");
+		int result = this.categoryDao.deleteCategoryLarge(params);
+	
+		Map<String, Object> data = new HashMap<String, Object>();
 		
-		int result = 0;
-		switch(type) {
-		case "large":
-			result = this.categoryDao.deleteCategoryLarge(params);
-			break;
-			
-		case "middle" :
-			result = this.categoryDao.deleteCategoryMiddle(params);
-			break;
-			
-		case "small" :
-			result = this.categoryDao.deleteCategorySmall(params);
-			break;
-			
-		}
+		data.put("isSuccess", result > 0 ? true : false);
+		return data;
+	}
+	
+	public Map<String, Object> deleteCategoryMiddle(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		int result = this.categoryDao.deleteCategoryMiddle(params);
+	
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		data.put("isSuccess", result > 0 ? true : false);
+		return data;
+	}
+	
+	public Map<String, Object> deleteCategorySmall(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		int result = this.categoryDao.deleteCategorySmall(params);
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.login.LoginService;
@@ -26,6 +27,7 @@ public class MinwonService {
 	@Autowired private MinwonDao minwonDao;
 	@Autowired private LoginService loginService;
 	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -44,8 +46,30 @@ public class MinwonService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());		
-		Minwon minwon = null;
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "gasappMemberNumber"))
+	        errorParams = this.commonService.appendText(errorParams, "가스앱 회원번호-gasappMemberNumber");
+	    if(!this.commonService.validString(params, "useContractNum"))
+	        errorParams = this.commonService.appendText(errorParams, "사용계약번호-useContractNum");
+	    if(!this.commonService.validString(params, "categorySmallId"))
+	        errorParams = this.commonService.appendText(errorParams, "소분류 카테고리id-categorySmallId");
+	    if(!this.commonService.validString(params, "minwonCode"))
+	        errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
+	    if(!this.commonService.validString(params, "telNumber"))
+	        errorParams = this.commonService.appendText(errorParams, "휴대폰번호-telNumber");
+	    if(!this.commonService.validString(params, "chatId"))
+	        errorParams = this.commonService.appendText(errorParams, "룸에 대한 chatId-chatId");
+	    if(!this.commonService.validString(params, "roomId"))
+	        errorParams = this.commonService.appendText(errorParams, "방id-roomId");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
+		Minwon minwon = null;
 		if(this.minwonDao.insertMinwon(params) > 0) {
 			minwon = this.minwonDao.findMinwon(params);
 			

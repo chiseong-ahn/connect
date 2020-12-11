@@ -1,5 +1,6 @@
 package com.scglab.connect.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,7 +173,7 @@ public class HttpUtils {
 	 * @return
 	 */
 	public static List<Map<String, Object>> getForList(String url, Map<String, String> params) {
-		List<Map<String, Object>> list = null;
+		List<Map<String, Object>> list = new ArrayList();
 		
 		ResponseBody body = requestForGet(url, params);
 		
@@ -360,6 +361,7 @@ public class HttpUtils {
 	
 	
 	private static ResponseBody requestForGet(String url, Map<String, String> parames) {
+		System.out.println("url : " + url);
 		parames = parames == null ? new HashMap<String, String>() : parames;
 		ResponseBody body = new QuickHttp()
 	               .url(url)
@@ -381,8 +383,4 @@ public class HttpUtils {
 		
 		return body;
 	}
-	
-	
-	
-	
 }

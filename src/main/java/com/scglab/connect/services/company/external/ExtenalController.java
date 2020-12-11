@@ -103,7 +103,7 @@ public class ExtenalController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{companyId}/contracts/{member}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="고객의 계약정보 목록", description = "고객의 계약정보 목록")
-	public List<Map<String, Object>> contracts(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(description = "가스앱 회원번호", example = "3369") @PathVariable long member, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<Map<String, Object>> contracts(@Parameter(description = "회사id", example = "1") @PathVariable String companyId, @Parameter(description = "가스앱 회원번호", example = "3369") @PathVariable String member, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return getCompany(companyId).contracts(member);
 	}
 	

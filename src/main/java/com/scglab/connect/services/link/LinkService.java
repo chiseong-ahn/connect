@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
@@ -22,14 +24,11 @@ public class LinkService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private LinkDao linkDao;
-	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private LoginService loginService;
+	@Autowired private LinkDao linkDao;
+	@Autowired private MessageHandler messageService;
+	@Autowired private LoginService loginService;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	public List<LinkMenu> findMenuAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
@@ -109,6 +108,16 @@ public class LinkService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "name"))
+	        errorParams = this.commonService.appendText(errorParams, "메뉴명-name");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		LinkMenu linkMenu = null;
 		if(this.linkDao.createLinkMenu(params) > 0) {
 			linkMenu = this.linkDao.findLinkMenu(params);
@@ -123,6 +132,17 @@ public class LinkService {
 		
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "name"))
+	        errorParams = this.commonService.appendText(errorParams, "이름-name");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+	    
 		
 		LinkMenu linkMenu = null;
 		if(this.linkDao.updateLinkMenu(params) > 0) {
@@ -160,6 +180,29 @@ public class LinkService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "menuId"))
+	        errorParams = this.commonService.appendText(errorParams, "메뉴id-menuId");
+	    
+	    if(!this.commonService.validString(params, "linkProtocol"))
+	        errorParams = this.commonService.appendText(errorParams, "링크프로토콜-linkProtocol");
+	    
+	    if(!this.commonService.validString(params, "linkText"))
+	        errorParams = this.commonService.appendText(errorParams, "링크명-linkText");
+	    
+	    if(!this.commonService.validString(params, "linkUrl"))
+	        errorParams = this.commonService.appendText(errorParams, "링크주소-linkUrl");
+	    
+	    if(!this.commonService.validString(params, "enable"))
+	        errorParams = this.commonService.appendText(errorParams, "활성화여부(1-활성,0-비활성)-enable");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+	    
+		
 		LinkDetail linkDetail = null;
 		if(this.linkDao.createLinkDetail(params) > 0) {
 			linkDetail = this.linkDao.findLinkDetail(params);
@@ -175,6 +218,26 @@ public class LinkService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
+		String errorParams = "";
+	    
+	    if(!this.commonService.validString(params, "linkProtocol"))
+	        errorParams = this.commonService.appendText(errorParams, "링크프로토콜-linkProtocol");
+	    
+	    if(!this.commonService.validString(params, "linkText"))
+	        errorParams = this.commonService.appendText(errorParams, "링크명-linkText");
+	    
+	    if(!this.commonService.validString(params, "linkUrl"))
+	        errorParams = this.commonService.appendText(errorParams, "링크주소-linkUrl");
+	    
+	    if(!this.commonService.validString(params, "enable"))
+	        errorParams = this.commonService.appendText(errorParams, "활성화여부(1-활성,0-비활성)-enable");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		LinkDetail linkDetail = null;
 		if(this.linkDao.updateLinkDetail(params) > 0) {
 			linkDetail = this.linkDao.findLinkDetail(params);
@@ -189,6 +252,16 @@ public class LinkService {
 		
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "enable"))
+	        errorParams = this.commonService.appendText(errorParams, "활성화여부(1-활성,0-비활성)-enable");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
 		
 		LinkDetail linkDetail = null;
 		if(this.linkDao.updateLinkDetailEnable(params) > 0) {

@@ -1,6 +1,5 @@
 package com.scglab.connect.services.keyword;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,24 +10,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
-import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class KeywordService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private KeywordDao keywordDao;
-	
-	@Autowired
-	private MessageHandler messageService;
-	
-	@Autowired
-	private LoginService loginService;
+	@Autowired private KeywordDao keywordDao;
+	@Autowired private MessageHandler messageService;
+	@Autowired private LoginService loginService;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -70,6 +67,17 @@ public class KeywordService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "name"))
+	        // 파라미터가 존재하지 않는 파라미터 등록.
+	        errorParams = this.commonService.appendText(errorParams, "키워드명-name");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		this.logger.debug("params : " + params.toString());
 		Keyword keyword = this.keywordDao.getByName(params);
 		
@@ -92,6 +100,17 @@ public class KeywordService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "templateId"))
+	        // 파라미터가 존재하지 않는 파라미터 등록.
+	        errorParams = this.commonService.appendText(errorParams, "템플릿id-templateId");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
 		
 		this.logger.debug("params : " + params.toString());
 		List<Keyword> list = this.keywordDao.getByTemplateId(params);
@@ -116,13 +135,23 @@ public class KeywordService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Keyword keyword = null;
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "name"))
+	        // 파라미터가 존재하지 않는 파라미터 등록.
+	        errorParams = this.commonService.appendText(errorParams, "키워드명-name");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
 		
-		this.logger.debug("params : " + params.toString());
-		int result = this.keywordDao.insertKeyword(params);
-		
-		if(result > 0) {
-			keyword = this.keywordDao.getDetail(params);
+		Keyword keyword = this.keywordDao.getByName(params);
+		if(keyword == null) {
+			int result = this.keywordDao.insertKeyword(params);
+			if(result > 0) {
+				keyword = this.keywordDao.getDetail(params);
+			}
 		}
 		
 		return keyword;

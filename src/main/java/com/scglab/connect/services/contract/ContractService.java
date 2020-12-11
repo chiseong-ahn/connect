@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.service.MessageHandler;
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.company.external.CompanyInc;
 import com.scglab.connect.services.company.external.CompanyScg;
 import com.scglab.connect.services.company.external.ICompany;
@@ -24,10 +25,12 @@ import com.scglab.connect.utils.DataUtils;
 public class ContractService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired private MessageHandler messageHandler;
+	//@Autowired private MessageHandler messageHandler;
 	@Autowired private LoginService loginService;
 	@Autowired private CompanyScg companyScg;
 	@Autowired private CompanyInc companyInc;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	private ICompany getCompany(String companyId) {
 		ICompany company = companyId.equals("1") ? this.companyScg : this.companyInc;
@@ -53,22 +56,22 @@ public class ContractService {
 		Member member = this.loginService.getMember(request);
 		String companyId = member.getCompanyId();
 		
-		String gasappMemberNumber = DataUtils.getString(params, "gasappMemberNumber", "");
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "gasappMemberNumber"))
+	        errorParams = this.commonService.appendText(errorParams, "사용계약번호-gasappMemberNumber");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
 		
-		if(gasappMemberNumber.equals("")) {
-			// 필수 파라미터 누락에 따른 오류유발.
-			String[] errorParams = new String[1];
-			errorParams[0] = "gasappMemberNumber";
-			
-			String reason = this.messageHandler.getMessage("error.params.type1", errorParams);
-			throw new RuntimeException(reason);
-		}
-		
-		Map<String, Object> profile = getCompany(companyId).getProfile(Long.parseLong(gasappMemberNumber));
+	    String gasappMemberNumber = DataUtils.getString(params, "gasappMemberNumber", "");
+		Map<String, Object> profile = getCompany(companyId).getProfile(gasappMemberNumber);
 		int cash = DataUtils.getInt(profile, "cash", 0);
 		data.put("cash", cash);
 		
-		List<Map<String, Object>> list = getCompany(companyId).contracts(Long.parseLong(gasappMemberNumber));
+		List<Map<String, Object>> list = getCompany(companyId).contracts(gasappMemberNumber);
 		data.put("contracts", list);
 		
 		return data;
@@ -93,26 +96,34 @@ public class ContractService {
 		String companyId = member.getCompanyId();
 		
 		String useContractNum = DataUtils.getString(params, "useContractNum", "");
+		
+		// 사용계약번호 파라미터 유효성 검증.
+		if(useContractNum.equals("")) {
+			// 필수 파라미터 누락에 따른 오류유발.
+			this.errorService.throwParameterErrorWithNames("useContractNum");
+		}
+		
+		// 사용계약 상세정보 조회.
 		Map<String, Object> contractInfo = getCompany(companyId).contractInfo(useContractNum);
 		
-		/*
+		// 결재 히스토리 존재여부.
 		if(contractInfo.containsKey("history")) {
 			List<Map<String, Object>> histories = (List<Map<String, Object>>) contractInfo.get("history");
 			if(histories != null) {
 				if(histories.size() > 0) {
-					for(Map<String, Object> history : histories) {
-						String requestYm = DataUtils.getString(history, "requestYm", "");
-						String deadlineFlag = DataUtils.getString(history, "deadlineFlag", "");
-						
-						if(!requestYm.equals("") && deadlineFlag.equals("")) {
-							Map<String, Object> bil = getCompany(companyId).contractBilDetail(useContractNum, requestYm, deadlineFlag);
-						}
+					
+					// 최신 1건의 히스토리에 대해 결제정보 조회.
+					Map<String, Object> history = histories.get(0);
+					String requestYm = DataUtils.getString(history, "requestYm", "");
+					String deadlineFlag = DataUtils.getString(history, "deadlineFlag", "");
+					
+					if(!requestYm.equals("") && !deadlineFlag.equals("")) {
+						Map<String, Object> bill = getCompany(companyId).contractBilDetail(useContractNum, requestYm, deadlineFlag);
+						contractInfo.put("bill", bill);
 					}
 				}
 			}
-			
 		}
-		*/
 		
 		return contractInfo;
 	}
@@ -135,14 +146,27 @@ public class ContractService {
 		Member member = this.loginService.getMember(request);
 		String companyId = member.getCompanyId();
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "requestYm"))
+	        errorParams = this.commonService.appendText(errorParams, "청구연월-requestYm");
+	    
+	    if(!this.commonService.validString(params, "deadlineFlag"))
+	        errorParams = this.commonService.appendText(errorParams, "납기구분-deadlineFlag");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		String useContractNum = DataUtils.getString(params, "useContractNum", "");
 		String requestYm = DataUtils.getString(params, "requestYm", "");
 		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
 		
 		if(requestYm.equals("") || deadlineFlag.equals("")) {
+			
 			// 필수 파라미터 누락에 따른 오류유발.
-			String reason = this.messageHandler.getMessage("error.params.type0");
-			throw new RuntimeException(reason);
+			this.errorService.throwParameterError();
 		}
 		
 		Map<String, Object> contractBil = getCompany(companyId).contractBilDetail(useContractNum, requestYm, deadlineFlag);

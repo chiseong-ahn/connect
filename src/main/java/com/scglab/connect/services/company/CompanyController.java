@@ -46,6 +46,6 @@ public class CompanyController {
 	@Operation(summary="회사 상세 조회", description = "회사 정보를 조회한다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public Company company(@Parameter(description = "회사 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
-		return this.companyService.getCompany(params, id, request, response);
+		return this.companyService.getCompany(params, request, response);
 	}
 }

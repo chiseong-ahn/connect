@@ -103,7 +103,7 @@ public interface ICompany {
 	 * @param gasappMemberNumber
 	 * @return
 	 */
-	public List<Map<String, Object>> contracts(long gasappMemberNumber);
+	public List<Map<String, Object>> contracts(String gasappMemberNumber);
 	
 	
 	/**
@@ -116,7 +116,7 @@ public interface ICompany {
 	 * @param member : 가스앱 회원번호
 	 * @return
 	 */
-	public Map<String, Object> getProfile(long gasappMemberNumber);
+	public Map<String, Object> getProfile(String gasappMemberNumber);
 	
 	
 	/**

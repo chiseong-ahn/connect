@@ -1,5 +1,8 @@
 package com.scglab.connect.services.company;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -20,5 +23,13 @@ public class CompanyDao extends CommonDao {
 	@Override
 	protected String getNamespace() {
 		return namespace;
+	}
+	
+	public List<Company> getCompanies(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "findAll", params);
+	}
+	
+	public Company getCompany(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "getDetail", params);
 	}
 }

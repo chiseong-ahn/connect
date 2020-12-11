@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.service.MessageHandler;
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.utils.DataUtils;
 
@@ -22,6 +23,8 @@ public class MemberService {
 	
 	@Autowired private LoginService loginService;
 	@Autowired private MemberDao memberDao;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -109,6 +112,18 @@ public class MemberService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "authLevel"))
+			errorParams = this.commonService.appendText(errorParams, "권한레벨-authLevel");
+		if(!this.commonService.validString(params, "name"))
+			errorParams = this.commonService.appendText(errorParams, "이름-name");
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		int result = this.memberDao.insertMember(params);
@@ -138,6 +153,18 @@ public class MemberService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "authLevel"))
+			errorParams = this.commonService.appendText(errorParams, "권한레벨-authLevel");
+		if(!this.commonService.validString(params, "state"))
+			errorParams = this.commonService.appendText(errorParams, "상담상태-state");
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		Member memberInfo = null;
 		int result = this.memberDao.update("member.update", params);
 		if(result > 0) {
@@ -164,6 +191,16 @@ public class MemberService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "state"))
+			errorParams = this.commonService.appendText(errorParams, "상담상태-state");
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		int result = this.memberDao.updateMemberState(params);

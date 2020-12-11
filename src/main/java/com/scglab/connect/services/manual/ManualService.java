@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
@@ -25,6 +27,8 @@ public class ManualService {
 	@Autowired private MessageHandler messageService;
 	@Autowired private LoginService loginService;
 	@Autowired private ManualDao manualDao;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -43,6 +47,17 @@ public class ManualService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "manualIndex"))
+	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+	    
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
@@ -117,6 +132,16 @@ public class ManualService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "manualIndex"))
+	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		// 태그목록 조회
 		return this.manualDao.findTags(params);
 	}
@@ -138,6 +163,17 @@ public class ManualService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "value"))
+	        errorParams = this.commonService.appendText(errorParams, "즐겨찾기 구분(추가-true, 삭제-false)-value");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		String value = DataUtils.getString(params, "value", "false");
 		
 		int result = 0;
@@ -171,6 +207,31 @@ public class ManualService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "manualIndex"))
+	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
+		
+		if(!this.commonService.validString(params, "pageNo"))
+	        errorParams = this.commonService.appendText(errorParams, "페이지번호-pageNo");
+		
+		if(!this.commonService.validString(params, "pageCode"))
+	        errorParams = this.commonService.appendText(errorParams, "페이지코드-pageCode");
+		
+		if(!this.commonService.validString(params, "title"))
+	        errorParams = this.commonService.appendText(errorParams, "제목-title");
+		
+		if(!this.commonService.validString(params, "pdfImagePath"))
+	        errorParams = this.commonService.appendText(errorParams, "이미지경로-pdfImagePath");
+		
+		if(!this.commonService.validString(params, "content"))
+	        errorParams = this.commonService.appendText(errorParams, "내용-content");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		Manual manual = null;
 		
 		int pageNumber = this.manualDao.getNextPageNumber(params);
@@ -201,6 +262,31 @@ public class ManualService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "manualIndex"))
+	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
+		
+		if(!this.commonService.validString(params, "pageNo"))
+	        errorParams = this.commonService.appendText(errorParams, "페이지번호-pageNo");
+		
+		if(!this.commonService.validString(params, "pageCode"))
+	        errorParams = this.commonService.appendText(errorParams, "페이지코드-pageCode");
+		
+		if(!this.commonService.validString(params, "title"))
+	        errorParams = this.commonService.appendText(errorParams, "제목-title");
+		
+		if(!this.commonService.validString(params, "pdfImagePath"))
+	        errorParams = this.commonService.appendText(errorParams, "이미지경로-pdfImagePath");
+		
+		if(!this.commonService.validString(params, "content"))
+	        errorParams = this.commonService.appendText(errorParams, "내용-content");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
 		
 		Manual manual = null;
 		

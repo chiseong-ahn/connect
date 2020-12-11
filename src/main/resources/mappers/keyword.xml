@@ -38,7 +38,7 @@
 		SELECT *
 		FROM keyword2
 		WHERE  company_id = #{companyId}
-		AND name like concat('%', #{name}, '%')
+		AND name = #{name}
 	</select>
 	
 	<!-- 템플릿에 속한 키워드 조회 -->

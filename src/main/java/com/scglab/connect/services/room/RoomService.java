@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
@@ -32,6 +34,8 @@ public class RoomService {
 	@Autowired private MessageDao messageDao;
 	@Autowired private LoginService loginService;
 	@Autowired private SocketService socketService;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	@Autowired
 	private RoomDao roomDao;
@@ -40,9 +44,37 @@ public class RoomService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		
-		Object object = null;
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "queryId"))
+	        errorParams = this.commonService.appendText(errorParams, "조회항목구분-queryId");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+	    
+	    Object object = null;
 		
 		String queryId = DataUtils.getString(params, "queryId", "");
+		
+		if(queryId.equals("findSearchCloseState")){
+			errorParams = "";
+		    if(!this.commonService.validString(params, "startDate"))
+		        errorParams = this.commonService.appendText(errorParams, "검색시작일-startDate");
+		    
+		    if(!this.commonService.validString(params, "endDate"))
+		        errorParams = this.commonService.appendText(errorParams, "검색시작일-endDate");
+		    
+		    // 파라미터 유효성 검증.
+		    if(!errorParams.equals("")) {
+		        // 필수파라미터 누락에 따른 오류 유발처리.
+		        this.errorService.throwParameterErrorWithNames(errorParams);
+		    }
+		}
+		
+		
+		
 		String searchType = DataUtils.getString(params, "searchType", "");
 		String searchValue = DataUtils.getString(params, "searchValue", "");
 		
@@ -204,7 +236,31 @@ public class RoomService {
 		Member member = this.loginService.getMember(request);
 		params.put("loginId", member.getId());
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "transferType"))
+	        errorParams = this.commonService.appendText(errorParams, "이관유형-transferType");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		String transferType = DataUtils.getString(params, "transferType", "");
+		
+		if(transferType.equals("toMember")) {
+			errorParams = "";
+		    if(!this.commonService.validString(params, "memberId"))
+		        errorParams = this.commonService.appendText(errorParams, "이관할 멤버id-memberId");
+		    
+		    // 파라미터 유효성 검증.
+		    if(!errorParams.equals("")) {
+		        // 필수파라미터 누락에 따른 오류 유발처리.
+		        this.errorService.throwParameterErrorWithNames(errorParams);
+		    }
+		}
+		
+		
 		String memberId = DataUtils.getString(params, "memberId", "");
 		if(transferType.equals("")) {
 			this.logger.error("transferType : " + transferType);

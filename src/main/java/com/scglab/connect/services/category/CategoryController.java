@@ -54,7 +54,6 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.GET, value = "/large", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류 카테고리 조회(목록)", description = "조건에 맞는 대분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public List<CategoryLarge> categoriesLarge(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "large");
 		return this.categoryService.categoryLargeList(params, request);
 	}
 	
@@ -62,7 +61,6 @@ public class CategoryController {
 	@RequestMapping(method = RequestMethod.GET, value = "/large/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="대분류 카테고리 상세조회", description = "조건에 맞는 대분류 카테고리 상세정보를 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public CategoryLarge categoryLarge(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "large");
 		params.put("id", id);
 		return this.categoryService.categoryLarge(params, request);
 	}
@@ -87,7 +85,6 @@ public class CategoryController {
 	})
 	@ApiResponse(responseCode = "200", description = "result:true-성공, result:false-실패")
 	public  CategoryLarge updateLg(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "large");
 		params.put("id", id);
 		return this.categoryService.updateCategoryLarge(params, request);
 	}
@@ -102,14 +99,13 @@ public class CategoryController {
 	public  Map<String, Object> deleteLg(@Parameter(description = "대분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("type", "large");
 		params.put("id", id);
-		return this.categoryService.delete(params, request);
+		return this.categoryService.deleteCategoryLarge(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/middle", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="중분류 카테고리 조회(목록)", description = "조건에 맞는 중분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public List<CategoryMiddle> categoriesMiddle(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "middle");
 		return this.categoryService.categoryMiddleList(params, request);
 	}
 	
@@ -150,16 +146,14 @@ public class CategoryController {
 	@Operation(summary="중분류 카테고리 삭제", description = "중분류 카테고리를 삭제합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
 	public  Map<String, Object> deleteMd(@Parameter(description = "중분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "middle");
 		params.put("id", id);
-		return this.categoryService.delete(params, request);
+		return this.categoryService.deleteCategoryMiddle(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "/small", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary="소분류 카테고리 조회(목록)", description = "조건에 맞는 소분류 카테고리 목록을 조회합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	public List<CategorySmall> categoriesSmall(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "small");
 		return this.categoryService.categorySmallList(params, request);
 	}
 	
@@ -200,9 +194,8 @@ public class CategoryController {
 	@Operation(summary="소분류 카테고리 삭제", description = "소분류 카테고리를 삭제합니다.", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
 	@ApiResponse(responseCode = "200", description = "RESULT:true-성공, RESULT:false-실패")
 	public  Map<String, Object> deleteSm(@Parameter(description = "소분류 id", example = "1") @PathVariable int id, @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		params.put("type", "small");
 		params.put("id", id);
-		return this.categoryService.delete(params, request);
+		return this.categoryService.deleteCategorySmall(params, request);
 	}
 	
 	

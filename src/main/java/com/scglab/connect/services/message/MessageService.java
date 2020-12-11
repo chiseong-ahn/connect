@@ -13,14 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class MessageService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private MessageDao messageDao;
+	@Autowired private MessageDao messageDao;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -35,6 +38,20 @@ public class MessageService {
 	 * @return
 	 */
 	public List<Message> getMessages(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "queryId"))
+	        errorParams = this.commonService.appendText(errorParams, "조회구분-queryId");
+	    
+	    if(!this.commonService.validString(params, "roomId"))
+	        errorParams = this.commonService.appendText(errorParams, "방id-roomId");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		List<Message> messages = null;
 		
 		// 조회유형 구분자.
@@ -61,6 +78,20 @@ public class MessageService {
 				break;
 				
 			case "findRangeById":			// 메세지 조회(id 범위)
+				
+				errorParams = "";
+				if(!this.commonService.validString(params, "startId"))
+			        errorParams = this.commonService.appendText(errorParams, "시작 메시지id-startId");
+			    
+			    if(!this.commonService.validString(params, "endId"))
+			        errorParams = this.commonService.appendText(errorParams, "종료 메시지id-endId");
+			    
+			    // 파라미터 유효성 검증.
+			    if(!errorParams.equals("")) {
+			        // 필수파라미터 누락에 따른 오류 유발처리.
+			        this.errorService.throwParameterErrorWithNames(errorParams);
+			    }
+				
 				messages = this.messageDao.findRangeById(params);
 				break;
 		}

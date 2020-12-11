@@ -53,13 +53,13 @@ public class CompanyInc implements ICompany {
 	}
 
 	@Override
-	public List<Map<String, Object>> contracts(long member) {
+	public List<Map<String, Object>> contracts(String member) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Map<String, Object> getProfile(long member) {
+	public Map<String, Object> getProfile(String member) {
 		// TODO Auto-generated method stub
 		return null;
 	}

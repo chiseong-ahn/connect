@@ -1,6 +1,5 @@
 package com.scglab.connect.services.customer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
@@ -30,6 +30,7 @@ public class CustomerService {
 	@Autowired private JwtService jwtService;
 	@Autowired private LoginService loginService;
 	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -87,6 +88,16 @@ public class CustomerService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		Map<String, Object> data = new HashMap<String, Object>();
+		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "blockType"))
+			errorParams = this.commonService.appendText(errorParams, "지정/해제구분-blockType");
+			
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
 		
 		int result = this.customerDao.enableBlackStatus(params);
 		if(result > 0) {
@@ -201,7 +212,7 @@ public class CustomerService {
 		Member member = this.loginService.getMember(request);
 		ICompany company = this.commonService.getCompany(member.getCompanyId()); 
 		
-		int userno = DataUtils.getInt(params, "userno", 0);
+		String userno = DataUtils.getString(params, "userno", "");
 		List<Map<String, Object>> list = company.contracts(userno);
 		
 		for(Map<String, Object> obj : list) {

@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.common.CommonService;
+import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
@@ -25,6 +27,8 @@ public class StatsService {
 	@Autowired private MessageHandler messageService;
 	@Autowired private LoginService loginService;
 	@Autowired private StatsDao statsDao;
+	@Autowired private CommonService commonService;
+	@Autowired private ErrorService errorService;
 	
 	/**
 	 * 
@@ -129,6 +133,21 @@ public class StatsService {
 		Member member = this.loginService.getMember(request);
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "startDate"))
+	        errorParams = this.commonService.appendText(errorParams, "종료일 검색 시작일(YYYY-MM-DD)-startDate");
+	    
+	    if(!this.commonService.validString(params, "endDate"))
+	        errorParams = this.commonService.appendText(errorParams, "종료일 검색 종료일(YYYY-MM-DD)-endDate");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
+		
 		
 		Map<String, Object> data = null;
 		//data = this.statsDao.search(params);
@@ -258,6 +277,16 @@ public class StatsService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "type"))
+	        errorParams = this.commonService.appendText(errorParams, "검색유형-type");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
 		List<Map<String, Object>> list = null;
 		//list = this.statsDao.useHistory(params);
 		
@@ -320,6 +349,16 @@ public class StatsService {
 		Member member = this.loginService.getMember(request);
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
+		
+		String errorParams = "";
+	    if(!this.commonService.validString(params, "searchDate"))
+	        errorParams = this.commonService.appendText(errorParams, "검색일(YYYY-MM-DD)-searchDate");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
 		
 		List<Map<String, Object>> list = null;
 		//list = this.statsDao.hashtag(params);
