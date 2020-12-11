@@ -226,7 +226,7 @@
 	
 	<update id="updateLargeSortIndex" parameterType="map">
 		UPDATE category_large
-		SET    sort_index = #{sort_index}
+		SET    sort_index = #{sortIndex}
 		WHERE  id = #{id}
 	</update>
 	
@@ -239,7 +239,7 @@
 	
 	<update id="updateMiddleSortIndex" parameterType="map">
 		UPDATE category_middle
-		SET    sort_index = #{sort_index}
+		SET    sort_index = #{sortIndex}
 		WHERE  id = #{id}
 	</update>
 	
@@ -252,7 +252,7 @@
 	
 	<update id="updateSmallSortIndex" parameterType="map">
 		UPDATE category_small
-		SET    sort_index = #{sort_index}
+		SET    sort_index = #{sortIndex}
 		WHERE  id = #{id}
 	</update>
 	

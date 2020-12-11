@@ -491,9 +491,24 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("updateMemberId", member.getId());
 		
+		String errorParams = "";
+		if(!this.commonService.validString(params, "sortIndex"))
+			errorParams = this.commonService.appendText(errorParams, "정렬순번-sortIndex");
+		
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
 		CategoryLarge category = null;
-		if(this.categoryDao.updateLargeSortIndex(params) > 0) {
-			this.categoryDao.updateLargeSortIndexToAfter(params);
+		
+		// 카테고리 조회.
+		// 영향을 받는 다른카테고리의 순번 변경.
+		if(this.categoryDao.updateLargeSortIndexToAfter(params) > 0) {
+			this.categoryDao.updateLargeSortIndex(params);
+			
+			// 해당하는 카테고리의 순번 변경.
 			category = this.categoryDao.getCategoryLarge(params);
 		}
 		
@@ -505,9 +520,28 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("updateMemberId", member.getId());
 		
-		CategoryMiddle category = null;
-		if(this.categoryDao.updateMiddleSortIndex(params) > 0) {
-			this.categoryDao.updateMiddleSortIndexToAfter(params);
+		String errorParams = "";
+		if(!this.commonService.validString(params, "sortIndex"))
+			errorParams = this.commonService.appendText(errorParams, "정렬순번-sortIndex");
+		
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
+		// 카테고리 조회.
+		CategoryMiddle category = this.categoryDao.getCategoryMiddle(params);
+		if(category == null) {
+			return null;
+		}
+		params.put("categoryLargeId", category.getCategoryLargeId());
+		
+		// 영향을 받는 다른카테고리의 순번 변경.
+		if(this.categoryDao.updateMiddleSortIndexToAfter(params) > 0) {
+			this.categoryDao.updateMiddleSortIndex(params);
+			
+			// 해당하는 카테고리의 순번 변경.
 			category = this.categoryDao.getCategoryMiddle(params);
 		}
 		
@@ -518,11 +552,29 @@ public class CategoryService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("updateMemberId", member.getId());
-		params.put("categoryMiddleId", DataUtils.getLong(params, "category_middle_id", 0));
 		
-		CategorySmall category = null;
-		if(this.categoryDao.updateSmallSortIndex(params) > 0) {
-			this.categoryDao.updateSmallSortIndexToAfter(params);
+		String errorParams = "";
+		if(!this.commonService.validString(params, "sortIndex"))
+			errorParams = this.commonService.appendText(errorParams, "정렬순번-sortIndex");
+		
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
+		// 카테고리 조회.
+		CategorySmall category = this.categoryDao.getCategorySmall(params);
+		if(category == null) {
+			return null;
+		}
+		params.put("categoryMiddleId", category.getCategoryMiddleId());
+		
+		// 영향을 받는 다른카테고리의 순번 변경.
+		if(this.categoryDao.updateSmallSortIndexToAfter(params) > 0) {
+			this.categoryDao.updateSmallSortIndex(params);
+			
+			// 해당하는 카테고리의 순번 변경.
 			category = this.categoryDao.getCategorySmall(params);
 		}
 		
