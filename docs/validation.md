@@ -3,12 +3,13 @@
 ## 파라미터 유효성 검증.
 > 예제
 ```java
+@Autowired private CommonService commonService;
+@Autowired private ErrorService errorService;
+    
 public void example(Map<String, Object> params, HttpServletRequest request) throws Exception {
-    String errorParams = "";
 
-    // name 이라는 문자열 파라미터의 데이터가 존재하는지 확인.
+    String errorParams = "";
     if(!this.commonService.validString(params, "name"))
-        // 파라미터가 존재하지 않는 파라미터 등록.
         errorParams = this.commonService.appendText(errorParams, "이름-name");
     
     // 파라미터 유효성 검증.

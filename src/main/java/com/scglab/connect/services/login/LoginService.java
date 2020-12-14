@@ -84,21 +84,23 @@ public class LoginService {
 			return data;
 		}
 		
-		// 상담톡에 계정정보가 존재하는지 체크.
-		int count = this.loginDao.findCount(params);
-		if(count == 0) {
-			// 상담톡에 계정정보가 존재하지 않는다면 등록.
-			params.put("authLevel", 9);
-			this.loginDao.saveProfile(params);
-		}
+		// 기간계 계정정보 조회.
+		Map<String, Object> employee = company.employee(loginName);
+		params.put("authLevel", 9);
+		params.put("deptName", DataUtils.getString(employee, "deptName", ""));
+		params.put("positionName", DataUtils.getString(employee, "posName", ""));
+		params.put("useStatus", 1);
 		
-		// 계정정보 조회
+		// 계정 등록 또는 변경.
+		this.loginDao.saveProfile(params);
+		
+		// 멤버정보 조회
 		Member profile = this.loginDao.findProfile(params);
 		profile.setCompanyName(company.getCompanyName());
 		profile.setIsAdmin(1);
 		profile.setLoginName(profile.getLoginName());
 		this.logger.debug("member : " + profile.toString());
-			
+		
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> memberMap = objectMapper.convertValue(profile, Map.class);
 		

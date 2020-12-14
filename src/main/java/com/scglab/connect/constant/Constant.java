@@ -19,7 +19,8 @@ public class Constant {
 	public final static String	SOCKET_RECEIVE_URI = "/socket/message";		// 소켓 수신채널의 prefix
 	
 	public final static long	JSONTOKEN_EXPIRE = 60 * 60 * 24 * 1000 * 7;		// 토큰의 유효기간 
-	public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";	// 토큰의 비밀키
+	//public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";	// 토큰의 비밀키
+	public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACS";	// 토큰의 비밀키
 	
 	public final static String	ENCRYPT_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";		// 암호화 비밀키
 	

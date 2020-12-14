@@ -205,7 +205,7 @@
     <!-- JavaScript -->
     <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
     <script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
-    <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+    <script src="/webjars/sockjs-client/1.0.0/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
     
     <script>
@@ -214,7 +214,8 @@
             data: {
             	socket: {
             		//host: "//localhost",
-            		host: "//cstalk-local.gasapp.co.kr",
+            		//host: "//cstalk-local.gasapp.co.kr",
+            		host: "//cstalk-dev.gasapp.co.kr",
             		
             		//port: 8080,
             		port: 80,

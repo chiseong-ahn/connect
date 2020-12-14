@@ -23,6 +23,6 @@
 	</select>
 	
 	<insert id="saveProfile" parameterMap="member"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		CALL regist_member(#{companyId}, #{loginName}, #{name}, #{authLevel})
+		CALL regist_member(#{companyId}, #{loginName}, #{name}, #{authLevel}, #{deptName}, #{positionName}, #{useStatus})
 	</insert>
 </mapper>

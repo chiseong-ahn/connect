@@ -22,7 +22,8 @@ public class Template {
 	private String companyId;
 	private String ask;
 	private String reply;
-	private String link;
+	private String linkUrl;
+	private String linkText;
 	private String linkProtocol;
 	private String imagePath;
 	private String imageName;

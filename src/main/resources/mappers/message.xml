@@ -51,7 +51,7 @@
 		INNER JOIN chat_message m ON r.id = m.room_id
 		LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE  r.id = #{roomId}
-		AND m.id BETWEEN #{startId} AND #{endId}
+		AND m.id BETWEEN #{startMessageId} AND #{endMessageId}
 	</select>
 
 	
@@ -92,7 +92,7 @@
 		WHERE 
 		  r.id = #{roomId} 
 		  AND (
-		    CASE WHEN #{startId} = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
+		    CASE WHEN IFNULL(#{startId}, '') = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
 		  ) 
 		  AND m.message_admin_type <![CDATA[<=]]> IFNULL(#{messageAdminType}, 0) 
 		ORDER BY 

@@ -24,7 +24,7 @@ spring:
     location: 'classpath:config/banner.txt'
   profiles:
     active: local
-  main:
+    
     web-application-type: none
   jackson:
     serialization:
@@ -37,7 +37,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: 'jdbc:log4jdbc:mysql://183.102.12.111:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      #jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
       jdbc-url: 'jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC'
       username: cstalk
       password: cstalk12#$
@@ -50,6 +50,7 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 200MB
+
      
 
 # Prometheus 설정.
@@ -83,20 +84,21 @@ relay:
 # 로컬환경 
 spring:
   profiles: local
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
   redis:
     host: localhost
     port: 6379
   freemarker:
     template-loader-path: 'classpath:/templates'
     suffix: .ftl
+    cache: false
   main:
     web-application-type: servlet
-
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+      
 domain:
   sdtalk: localhost
   relay-scg: relay-scg-dev.gasapp.co.kr
@@ -191,11 +193,6 @@ server:
   
 spring:
   profiles: dev
-  devtools:
-    livereload:
-      enabled: false
-    restart:
-      enabled: false
   redis:
     host: 127.0.0.1
     port: 6379

@@ -79,7 +79,8 @@
 			t.category_small_id as categorySmallId,
 			t.ask,
 			t.reply,
-			t.link,
+			t.link_url as linkUrl,
+			t.link_text as linkText,
 			t.link_protocol as linkProtocol,
 			t.image_path as imagePath,
 			t.image_name as imageName,
@@ -148,7 +149,8 @@
 				t.category_small_id as categorySmallId,
 				t.ask,
 				t.reply,
-				t.link,
+				t.link_url as linkUrl,
+				t.link_text as linkText,
 				t.link_protocol as linkProtocol,
 				t.image_path as imagePath,
 				t.image_name as imageName,
@@ -170,8 +172,8 @@
 	
 	<!-- 템플릿 등록 -->
 	<insert id="create" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
- 		INSERT INTO template2 (company_id, category_small_id, ask, reply, link, link_protocol, image_path, image_name, member_id, update_member_id)
-		VALUES (#{companyId}, #{categorySmallId}, #{ask}, #{reply}, #{link}, #{linkProtocol}, #{imagePath}, #{imageName}, #{loginId}, #{loginId})
+ 		INSERT INTO template2 (company_id, category_small_id, ask, reply, link_url, link_text, link_protocol, image_path, image_name, member_id, update_member_id)
+		VALUES (#{companyId}, #{categorySmallId}, #{ask}, #{reply}, #{linkUrl}, #{linkText}, #{linkProtocol}, #{imagePath}, #{imageName}, #{loginId}, #{loginId})
 	</insert>
 	
 	<!-- 템플릿 키워드 등록 -->
@@ -187,7 +189,8 @@
 			member_id = #{loginId}, 
 			ask = #{ask}, 
 			reply = #{reply}, 
-			link = #{link}, 
+			link_url = #{linkUrl}, 
+			link_text = #{linkText},
 			image_path = #{imagePath}, 
 			image_name = #{imageName},
 			update_member_id = #{loginId}
