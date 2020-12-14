@@ -15,20 +15,20 @@ or
 
 ### Step2.
 > FTP를 통해 개발서버로 WAR 파일 전송.
-- /home/gasapp/cstalk/connect-1.0.0.war
+- /home/gasapp/cstalk/backend/webapps/connect-1.0.0.war
 
 ### Step3.
 > 배포용 쉘 파일 실행.
 ```
-$ cd /home/gasapp/cstalk
+$ cd /home/gasapp/cstalk/backend
 $ ./deploy.sh
 ```
 
 ### Step4. 로그 확인
 > 로그확인 쉘 파일 실행.
 ```
-$ cd /home/gasapp/cstalk
-$ ./tomcat_log.sh
+$ cd /home/gasapp/cstalk/backend
+$ ./log.sh
 ```
 
 ### Step5. 서비스 구동 확인.
