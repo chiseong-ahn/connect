@@ -70,8 +70,6 @@ public class LoginController {
 	@Parameters({
 		@Parameter(name = "companyId", description = "기관코드", required = true, in = ParameterIn.QUERY, example = "1"),
     	@Parameter(name = "gasappMemberNumber", description = "가스앱 회원번호", required = true, in = ParameterIn.QUERY, example = "3825"),
-    	@Parameter(name = "name", description = "이름", required = true, in = ParameterIn.QUERY, example = "안치성"),
-    	@Parameter(name = "telNumber", description = "휴대폰번호", required = true, in = ParameterIn.QUERY, example = "01022820317"),
 	})
 	@ApiResponse(responseCode = "200", description = "OK", content = {
 		@Content(schema = @Schema(oneOf = Member.class)),

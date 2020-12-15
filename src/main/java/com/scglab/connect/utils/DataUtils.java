@@ -45,6 +45,10 @@ public class DataUtils {
 			return defaultValue;
 		}
 		
+		if(object.get(key) == null){
+			return defaultValue;
+		}
+		
 		return (int)object.get(key);
 	}
 	

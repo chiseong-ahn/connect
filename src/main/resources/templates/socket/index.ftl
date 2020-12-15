@@ -48,7 +48,7 @@
 		            <li class="list-group-item list-group-item-action" v-for="obj in readyRooms" v-bind:key="obj.id">
 		            	<dt>[{{obj.id}}] 
 		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
-		            		<span v-else>{{obj.customerName}}님</span>
+		            		<span v-else>{{obj.name}}님</span>
 		            		<span class="badge badge-info badge-pill">{{obj.memberName}}</span>
 		            		<span v-if="obj.isOnline == 1" class="badge badge-primary badge-pill">Online</span>
 							<span v-if="obj.noReadCount > 0 " class="badge badge-info badge-pill">{{obj.noReadCount}}</span>
@@ -67,7 +67,7 @@
 		            <li class="list-group-item list-group-item-action" v-for="obj in activeRooms" v-bind:key="obj.id">
 		            	<dt>[{{obj.id}}] 
 		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
-		            		<span v-else>{{obj.customerName}}님</span>
+		            		<span v-else>{{obj.name}}님</span>
 		            		<span class="badge badge-info badge-pill">{{obj.memberName}}</span>
 		            		<span v-if="obj.isOnline == 1" class="badge badge-primary badge-pill">Online</span>
 							<span v-if="obj.noReadCount > 0 " class="badge badge-info badge-pill">{{obj.noReadCount}}</span>
@@ -86,7 +86,7 @@
 		            <li class="list-group-item list-group-item-action" v-for="obj in finishRooms" v-bind:key="obj.id" v-on:click="join(obj.id)">
 		            	<dt>[{{obj.id}}] 
 		            		<span v-if="obj.isBlockCustomer > 0" style="color:red">{{obj.customerName}}</span>
-		            		<span v-else>{{obj.customerName}}</span>
+		            		<span v-else>{{obj.name}}</span>
 		            		<span class="badge badge-info badge-pill">{{obj.memberName}}</span>
 		            		<span v-if="obj.isOnline == 1" class="badge badge-primary badge-pill">Online</span>
 							<span v-if="obj.noReadCount > 0 " class="badge badge-info badge-pill">{{obj.noReadCount}}</span>
@@ -101,7 +101,12 @@
 		    	<ul  v-if="selectedRoom.id != socket.lobbyName" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
 		            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
-		                <br />&gt;&gt; {{obj.message}} {{obj.createDate}}</a>
+		                <template v-if="obj.messageType == 1">
+		                	<a :href="getImageUrl(obj.messageDetail)" target="_blank"><img :src="getThumbnailUrl(obj.messageDetail)" /></a>
+		                </template>
+		                <template v-else>
+		                	<br />&gt;&gt; {{obj.message}} {{obj.createDate}}
+		                </template>
 		            </li>
 		       	</ul>
 		       	<div v-if="selectedRoom.id != socket.lobbyName">
@@ -214,11 +219,11 @@
             data: {
             	socket: {
             		//host: "//localhost",
-            		//host: "//cstalk-local.gasapp.co.kr",
-            		host: "//cstalk-dev.gasapp.co.kr",
+            		host: "//cstalk-local.gasapp.co.kr",
+            		//host: "//cstalk-dev.gasapp.co.kr",
             		
-            		//port: 8080,
-            		port: 80,
+            		port: 8080,
+            		//port: 80,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
@@ -280,6 +285,7 @@
 				messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
 				selectedRoom: {},	// 선택된 룸 정보
+				imgPrefix: 'https://cstalk-dev.gasapp.co.kr/attach/',
             },
             created() {
             },
@@ -439,10 +445,12 @@
                 	
                 		// 나의 상담인지 확인.
                 		if(rooms[0].memberId != this.profile.id){
+                			console.log('나의 상담이 아님!');
                 			// 내 상담이 아닐경우 조인하지 않음.
                 			this.showRoom(roomId);
                 			return;
                 		}
+                		console.log('나의상담에 join');
                 	
                 	}
                 	// 조인방 이름 생성.(예, /sub/chat/room/93)
@@ -525,10 +533,33 @@
 								// this.join(roomId);
 								
 								break;
+								
+							case "READ_MESSAGE" :	// 메시지 읽음.
+								console.log('READ_MESSAGE 처리')
+								console.log(this.activeRooms);
+								filteredRooms = this.activeRooms.filter(room => room.id == parseInt(roomId));
+								if(filteredRooms.length == 1){
+									console.log('roomId - ' + filteredRooms[0].id)
+									console.log('noReadCount - ' + filteredRooms[0].noReadCount)
+									
+									filteredRooms[0].noReadCount = 0;
+									
+									console.log('noReadCount - ' + filteredRooms[0].noReadCount)
+								}
+								
+								break;
 							
 							case "MESSAGE" : 		//	대화 메세지 수신.
 								// todo
+								
+								// 메시지 노출.
 								this.messages.push(data.message);
+								
+								// 읽음 알림.
+								data = {
+			                		speakerId: this.profile.speakerId
+			                	}
+			            		this.sendMessage("READ_MESSAGE", data);
 								
 								break;
 							
@@ -849,8 +880,28 @@
 	            		this.sendMessage("END", data);
 					}
 				},
+				
+				getImageUrl: function(url){
+            		return this.imgPrefix + url;
+            	},
+				
+				getThumbnailUrl: function(url){
+            		console.log(url);
+            		var thumbUrl = '';
+            		
+            		if(url){
+            			_div = url.lastIndexOf('/');
+            			_front = url.substring(0, _div);
+            			_rear = url.substring((_div+1), url.length);
+            			thumbUrl = this.imgPrefix + _front + '/thumb_' + _rear;
+            		}
+            		
+            		return thumbUrl;
+            	},
                 
-            }, watch: {
+            },
+            
+            watch: {
 				useContractNum: function (val) {
 					this.useContractNum = val;
 					this.getContractDetail();

@@ -139,8 +139,6 @@ public class LoginService {
 			this.errorService.throwParameterErrorWithNames(errorParams);
 		}
 		
-		
-		
 		String companyId = DataUtils.getString(params, "companyId", "1");					// 회사id
 		String gasappMemberNumber = DataUtils.getString(params, "gasappMemberNumber", "");	// 가스앱 고객번호.
 		

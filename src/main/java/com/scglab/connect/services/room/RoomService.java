@@ -291,6 +291,7 @@ public class RoomService {
 	public List<Map<String, Object>> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
 		List<Map<String, Object>> list = this.roomDao.findSearchJoinHistory(params);
 		
+		/*
 		for(Map<String, Object> obj : list) {
 			// 대화 메시지 조회
 			BigInteger roomId = (BigInteger) obj.get("room_id");
@@ -303,6 +304,7 @@ public class RoomService {
 			List<Message> messages = this.messageDao.findRangeById(obj);
 			obj.put("messages", messages);
 		}
+		*/
 		
 		return list;
 	}
