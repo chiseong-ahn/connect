@@ -99,7 +99,7 @@ public class FileService {
 				// 업로드 된 파일 정보.
 				fileDto.setOriginFileName(originFileName);
 				fileDto.setFileName(saveFileName);
-				fileDto.setSavePath(savePath);
+				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setFileSize(fileSize);
 				
 				this.logger.debug("file : " + fileDto.toString());
@@ -177,7 +177,7 @@ public class FileService {
 				// 업로드 된 파일 정보.
 				fileDto.setOriginFileName(originFileName);
 				fileDto.setFileName(saveFileName);
-				fileDto.setSavePath(savePath);
+				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setFileSize(fileSize);
 				
 				BufferedImage bi = ImageIO.read(saveFile);
@@ -221,7 +221,7 @@ public class FileService {
 				long thumbFileSize = thumbFile.length();
 				
 				fileDto.setThumbFileName(thumbFileName);
-				fileDto.setThumbSavePath(thumbSavePath);
+				fileDto.setThumbSavePath(thumbSavePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setThumbFileSize(thumbFileSize);
 				fileDto.setThumbWidth(thumbWidth);
 				fileDto.setThumbHeight(thumbHeight);
