@@ -8,7 +8,7 @@
 
 1. [배치(스케쥴) 설정](batch.md)
 
-1. [코드 컨벤션](convension.md)
+1. [코드 컨벤션](conventions.md)
 
 1. [다국어, 메세지 관리](message.md)
 
