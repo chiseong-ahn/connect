@@ -346,11 +346,14 @@ public class SocketService {
 		params.put("speakerId", profile.getSpeakerId());
 		Map<String, Object> joinResult = this.roomDao.joinRoom(params);
 		
-		Long maxMessageId = DataUtils.getLong(joinResult, "maxMessageId", 0);	// 마지막 메세지id
-		Long readLastMessageId = DataUtils.getLong(joinResult, "readLastMessageId", 0);	// 마지막 읽음메세지id
+		int readLastMessageId = DataUtils.getInt(params, "readLastMessageId", 0);	// 마지막 읽음메세지id
+		int maxMessageId = DataUtils.getInt(params, "maxMessageId", 0);	// 마지막 메세지id
 		
 		// 마지막 메세지가 존재하고, 마지막 메세지와 마지막 읽음메세지가 같지 않을경우 Read 메세지 전송.
-		if(maxMessageId > 0 && (maxMessageId != readLastMessageId)) {	
+		this.logger.debug("maxMessageId : " + maxMessageId);
+		this.logger.debug("readLastMessageId : " + readLastMessageId);
+		
+		if(maxMessageId > 0 && (maxMessageId != readLastMessageId)) {
 			
 			// [Socket] > 읽음 메세지 전송.
 			sendData = new HashMap<String, Object>();
@@ -436,11 +439,13 @@ public class SocketService {
 			// [DB] 상담사 배정지연 안내메세지 조회
 			params = new HashMap<String, Object>();
 			params.put("type", 1);
+			params.put("companyId", payload.getCompanyId());
 			AutoMessage autoMessage1 = this.autoMessageDao.getAutoMessageByMatchWait(params);
 			
 			// [DB] 답변지연 안내메세지 조회
 			params = new HashMap<String, Object>();
 			params.put("type", 2);
+			params.put("companyId", payload.getCompanyId());
 			AutoMessage autoMessage2 = this.autoMessageDao.getAutoMessageByMatchWait(params);
 			
 			// [Socket] 상담사 배정지연 및 답변지연 안내 메세지 전송. - 메세지를 미리 보내주고 알맞는 시기에 사용할 수 있도록 한다.
