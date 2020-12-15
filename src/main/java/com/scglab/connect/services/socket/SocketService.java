@@ -366,8 +366,6 @@ public class SocketService {
 		sendData.put("member", profile);
 		sendMessage(EventName.JOINED, payload.getCompanyId(), payload.getRoomId(), Target.ALL, sendData);
 		
-		
-		
 		// 고객여부 판단.
 		if(profile.getIsCustomer() == 1) {
 			// 고객일 경우.
