@@ -24,7 +24,6 @@ spring:
     location: 'classpath:config/banner.txt'
   profiles:
     active: local
-    
     web-application-type: none
   jackson:
     serialization:
@@ -48,8 +47,8 @@ spring:
       max-lifetime: 60000
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 200MB
+      max-file-size: 5MB
+      max-request-size: 5MB
 
      
 
@@ -208,7 +207,7 @@ domain:
   relay-inc: relay-inc-dev.gasapp.co.kr
   
 path:
-  upload: /data/project/cstalk/apache/data/attach
+  upload: /data/project/gasapp-cstalk/apache/data/attach
 
 logging:
   config: 'classpath:config/logback-dev.xml'

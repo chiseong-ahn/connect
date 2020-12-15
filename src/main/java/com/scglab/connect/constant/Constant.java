@@ -27,8 +27,6 @@ public class Constant {
 	public final static int		DEFAULT_MESSAGE_INTERVAL_DAY = 1500;		// 메세지 조회 기간(일)
 	public final static int		DEFAULT_MESSAGE_MORE_PAGE_SIZE = 30;		// 더보기 메세지 갯수
 	
-	public final static int		THUMBNAIL_WIDTH_SIZE = 300;
-	
 	public final static int		ROOM_STATE_READY = 0;						// 룸 상태 - 대기
 	public final static int		ROOM_STATE_ING = 1;							// 룸 상태 - 진행
 	public final static int		ROOM_STATE_CLOSE = 2;						// 룸 상태 - 종료
@@ -40,4 +38,7 @@ public class Constant {
 	public final static int		MESSAGE_TYPE_LINK = 4;						// 메시지유형 - 링크
 	public final static int		MESSAGE_TYPE_EMOTICON = 5;					// 메시지유형 - 이모티콘
 	public final static int		MESSAGE_TYPE_TEL = 6;						// 메시지유형 - 전화번호
+	
+	public final static String	UPLOAD_IMAGE_FORMAT = "jpg,jpeg,git,png";	// 업로드 허용 확장자.
+	public final static int		THUMBNAIL_WIDTH_SIZE = 300;
 }
