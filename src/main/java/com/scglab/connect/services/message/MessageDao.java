@@ -203,7 +203,7 @@ public class MessageDao extends CommonDao {
 	 * @param params
 	 */
 	public void readMessage(Map<String, Object> params) {
-		this.sqlSession.update(this.namespace + "readMessage");
+		this.sqlSession.update(this.namespace + "readMessage", params);
 	}
 	
 	

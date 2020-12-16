@@ -105,6 +105,7 @@
 		                	<a :href="getImageUrl(obj.messageDetail)" target="_blank"><img :src="getThumbnailUrl(obj.messageDetail)" /></a>
 		                </template>
 		                <template v-else>
+		                	[읽음카운트 : {{obj.noReadCount}}] <template v-if="obj.noReadCount > 0"><button type="button" @click="deleteMessage(obj.id)">[삭제]</button></template>
 		                	<br />&gt;&gt; {{obj.message}} {{obj.createDate}}
 		                </template>
 		            </li>
@@ -512,14 +513,10 @@
 							case "JOINED" :	// 조인완료 수신.
 								// todo
 								// 메세지 전송.
-			                	data = {
-			                		speakerId: '',
-			                		messageType: 0,
-			                		message: '상담사의 메시지입니다.',
-			                		messageDetail: '',
-			                		templateId: '',
-			                	}
-			            		//this.sendMessage("MESSAGE", data);
+			                	filteredRooms = this.activeRooms.filter(room => room.id == parseInt(roomId));
+								if(filteredRooms.length == 1){
+									filteredRooms[0].noReadCount = 0;
+								}
 	            		
 								break;
 								
@@ -536,16 +533,17 @@
 								
 							case "READ_MESSAGE" :	// 메시지 읽음.
 								console.log('READ_MESSAGE 처리')
-								console.log(this.activeRooms);
-								filteredRooms = this.activeRooms.filter(room => room.id == parseInt(roomId));
-								if(filteredRooms.length == 1){
-									console.log('roomId - ' + filteredRooms[0].id)
-									console.log('noReadCount - ' + filteredRooms[0].noReadCount)
+								
+								var startId = data.startId;
+								var endId = data.endId;
 									
-									filteredRooms[0].noReadCount = 0;
-									
-									console.log('noReadCount - ' + filteredRooms[0].noReadCount)
-								}
+								filteredMessages = this.messages.filter(message => message.id >= startId && message.id <= endId);
+								if(filteredMessages.length >= 1){
+									for(var i=0; i<filteredMessages.length; i++){
+										filteredMessages[i].noReadCount = 0;
+									}
+								}  
+								
 								
 								break;
 							
@@ -555,11 +553,16 @@
 								// 메시지 노출.
 								this.messages.push(data.message);
 								
-								// 읽음 알림.
-								data = {
-			                		speakerId: this.profile.speakerId
-			                	}
-			            		this.sendMessage("READ_MESSAGE", data);
+								// 고객의 메세지일 경우에 읽음 메시지 전송.
+								if(data.message.isCustomer == 1){
+									// 읽음 알림.
+									data = {
+				                		speakerId: this.profile.speakerId,
+				                		startId: data.message.id,
+				                		endId: data.message.id
+				                	}
+				            		this.sendMessage("READ_MESSAGE", data);
+								}
 								
 								break;
 							
@@ -569,7 +572,21 @@
 								messages.reverse()		// 배열 뒤집기.
 								this.messages = messages;
 								break;
-							
+								
+							case "DELETE_MESSAGE" :		// 메시지 삭제.
+								
+								if(data.success == true){
+									var id = data.id;
+									var index = this.messages.findIndex(function(message) {
+										return message.id === id
+									})
+									console.log('index : ' + index);
+									
+									if(index > -1){
+										this.messages.splice(index, 1);
+									}
+								}
+								
 							case "END" :			// 상담 종료 수신.
 								// todo
 								this.findRooms(); 
@@ -856,6 +873,17 @@
 				// 상담목록 노출.
 				swapList: function(num){
 					this.showRooms = num;
+				},
+				
+				// 메시지 삭제
+				deleteMessage: function(id){
+					if(confirm('메시지를 삭제하시겠습니까?')){
+						data = {
+	                		id: id
+	                	}
+	            		this.sendMessage("DELETE_MESSAGE", data);
+					}
+					
 				},
 				
 				// 상담종료.

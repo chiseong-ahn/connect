@@ -184,11 +184,11 @@
 	</select>
 	
 	<!-- 읽은 메세지 사용자 수 -->
-	<select id="getReadCountByMessageId" parameterType="map" resultType="map">
+	<select id="getReadCountByMessageId" parameterType="map" resultType="int">
 		SELECT COUNT(id) AS readCount 
 		FROM   message_read 
 		WHERE  message_id = #{id} 
-			   AND read_date IS NOT NULL 
+			   AND read_date IS NULL 
 	</select>
 	
 	<!-- 메세지 삭제 -->
@@ -232,9 +232,9 @@
 	</select>
 	
 	<!-- 메시지 읽음 처리-->
-	<select id="readMessage" parameterType="map" statementType="CALLABLE">
+	<update id="readMessage" parameterType="map" statementType="CALLABLE">
 		CALL read_message(#{roomId}, #{speakerId}, #{startId}, #{endId})
-	</select>
+	</update>
 	
 	
 </mapper>

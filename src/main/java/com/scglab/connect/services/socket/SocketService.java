@@ -346,6 +346,11 @@ public class SocketService {
 		params.put("speakerId", profile.getSpeakerId());
 		Map<String, Object> joinResult = this.roomDao.joinRoom(params);
 		
+		// [Socket] > 채팅방 참여자들에게 조인완료 메세지 전송.
+		sendData = new HashMap<String, Object>();
+		sendData.put("member", profile);
+		sendMessage(EventName.JOINED, payload.getCompanyId(), payload.getRoomId(), Target.ALL, sendData);
+		
 		int readLastMessageId = DataUtils.getInt(params, "readLastMessageId", 0);	// 마지막 읽음메세지id
 		int maxMessageId = DataUtils.getInt(params, "maxMessageId", 0);	// 마지막 메세지id
 		
@@ -361,13 +366,10 @@ public class SocketService {
 			sendData.put("speakerId", profile.getSpeakerId());
 			sendData.put("startId", readLastMessageId);
 			sendData.put("endId", maxMessageId);
-			sendMessage(EventName.READ_MESSAGE, payload.getCompanyId(), payload.getRoomId(), getProfileTarget(profile), sendData);
+			sendMessage(EventName.READ_MESSAGE, payload.getCompanyId(), payload.getRoomId(), Target.ALL, sendData);
 		}
 		
-		// [Socket] > 채팅방 참여자들에게 조인완료 메세지 전송.
-		sendData = new HashMap<String, Object>();
-		sendData.put("member", profile);
-		sendMessage(EventName.JOINED, payload.getCompanyId(), payload.getRoomId(), Target.ALL, sendData);
+		
 		
 		// 고객여부 판단.
 		if(profile.getIsCustomer() == 1) {
@@ -569,7 +571,7 @@ public class SocketService {
 		Map<String, Object> params = null;
 		
 		// 메시지 id
-		long id = DataUtils.getLong(data, "id", 0);
+		int id = DataUtils.getInt(data, "id", 0);
 		
 		if(id > 0) {
 			params = new HashMap<String, Object>();
@@ -614,19 +616,21 @@ public class SocketService {
 				
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
+		Map<String, Object> data = payload.getData();
 		
 		// [DB] 메세지 읽음 처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
 		params.put("speakerId", profile.getSpeakerId());
-		params.put("startId", DataUtils.getLong(params, "startId", 0));
-		params.put("endId", DataUtils.getLong(params, "endId", 0));
+		params.put("startId", DataUtils.getInt(data, "startId", 0));
+		params.put("endId", DataUtils.getInt(data, "endId", 0));
+		this.logger.info("payload : " + payload.toString());
+		this.logger.info("params : " + params.toString());
 		this.messageDao.readMessage(params);
 		
 		// [DB] 메세지 읽음처리 완료알림 메세지 전송.
-		sendData = new HashMap<String, Object>();
-		sendData.put("success", true);
-		sendMessage(EventName.READ_MESSAGE, payload.getCompanyId(), payload.getRoomId(), Target.ALL, sendData);
+		data.put("success", true);
+		sendMessage(EventName.READ_MESSAGE, payload.getCompanyId(), payload.getRoomId(), Target.ALL, data);
 	}
 	
 	

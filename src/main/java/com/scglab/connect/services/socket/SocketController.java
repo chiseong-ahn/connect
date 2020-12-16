@@ -55,6 +55,9 @@ public class SocketController {
     	}else if(eventName.equals(EventName.MESSAGE)) {			// 메세지 보내기 요청.
     		this.socketService.message(socketData);
     		
+    	}else if(eventName.equals(EventName.READ_MESSAGE)) {	// 메세지읽음 보내기 요청.
+    		this.socketService.readMessage(socketData);
+    		
     	}else if(eventName.equals(EventName.SAVE_HISTORY)) {	// 이력 저장.
     		this.socketService.saveHistory(socketData);
     		
