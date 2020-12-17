@@ -137,8 +137,8 @@ public class SocketService {
 		this.redisTemplate.convertAndSend(channelTopic.getTopic(), socketData);
 	}
 	
-	// 연결처리.
 	
+	// 연결처리.
 	public void connect(SessionConnectedEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		MessageHeaders headers = headerAccessor.getMessageHeaders();

@@ -56,8 +56,10 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /application
       exposure:
-        include: "prometheus"
+        #include: "prometheus"
+        include: "*"
   metrics:
     tags:
       application: ${spring.application.name}  
@@ -99,7 +101,7 @@ spring:
       enabled: true
       
 domain:
-  sdtalk: localhost
+  sdtalk: cstalk-local.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
   relay-inc: relay-inc-dev.gasapp.co.kr
   
@@ -120,11 +122,6 @@ server:
   
 spring:
   profiles: server1
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
   redis:
     host: localhost
     port: 6379
@@ -156,11 +153,6 @@ server:
   
 spring:
   profiles: server2
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
   redis:
     host: localhost
     port: 6379
@@ -221,11 +213,6 @@ server:
 
 spring:
   profiles: live
-  devtools:
-    livereload:
-      enabled: false
-    restart:
-      enabled: false
   redis:
     host: 127.0.0.1
     port: 6379
@@ -245,7 +232,7 @@ path:
 
 # Logging 설정.
 logging:
-  config: 'classpath:config/logback-dev.xml'
+  config: 'classpath:config/logback-live.xml'
   
 relay:
   use-example: false

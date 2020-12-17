@@ -50,13 +50,23 @@ httpd (pid 12302) already running
 
 
 ## 3. DB
+- 
 
 
 ## 4. Redis
+- /usr/local/redis
+- port : 6379
 
 
 ## 5. 인증서
-
+- /data/project/gasapp-cstalk/apache/conf/httpd-ssl.conf
+```
+SSLEngine on 
+SSLCertificateFile "/usr/local/apache2/conf/extra/ssl/STAR.gasapp.co.kr.crt" 
+SSLCertificateKeyFile "/usr/local/apache2/conf/extra/ssl/STAR.gasapp.co.kr.key" 
+SSLCertificateChainFile "/usr/local/apache2/conf/extra/ssl/chainca.crt" 
+```
 
 ## 6. Scouter
+
 [< 목록으로 돌아가기](manual.md)
