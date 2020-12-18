@@ -1,5 +1,7 @@
 package com.scglab.connect.services.member;
 
+import java.io.Serializable;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +11,9 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class Member {
+public class Member implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private int id;
 	private String companyId;
 	private Object companyUseConfigJson;

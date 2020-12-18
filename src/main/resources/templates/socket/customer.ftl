@@ -513,107 +513,109 @@
 					
 					var target = payload.target;
 					
-					var eventName = payload.eventName;		// 이벤트 구분.
-					var roomId = payload.roomId;			// 룸 아이디.
-					var data = payload.data;				// 각 메세지에 대한 기타 정보데이터.
-					
-					// 각 이벤트에 따른 처리.
-					switch(eventName){
-					
-						case "JOINED" :	// 조인완료 수신.
-							// todo
-							// 메세지 전송.
-		                	filteredRooms = this.activeRooms.filter(room => room.id == parseInt(roomId));
-							if(filteredRooms.length == 1){
-								filteredRooms[0].noReadCount = 0;
-							}
-            		
-							break;
-							
-						case "ROOM_DETAIL" : 	// 방 상세정보 수신.
-							// todo
-							break;
-							
-						case "ASSIGNED" :		// 상담사 배정완료 수신.
-							// todo
-							// this.findRooms();
-							// this.join(roomId);
-							
-							break;
-							
-						case "READ_MESSAGE" :	// 메시지 읽음.
-							console.log('READ_MESSAGE 처리')
-							
-							var startId = data.startId;
-							var endId = data.endId;
-								
-							filteredMessages = this.messages.filter(message => message.id >= startId && message.id <= endId);
-							if(filteredMessages.length >= 1){
-								for(var i=0; i<filteredMessages.length; i++){
-									filteredMessages[i].noReadCount = 0;
-								}
-							}  
-							
-							
-							break;
+					if(target == 'ALL' || target == 'MEMBER'){
+						var eventName = payload.eventName;		// 이벤트 구분.
+						var roomId = payload.roomId;			// 룸 아이디.
+						var data = payload.data;				// 각 메세지에 대한 기타 정보데이터.
 						
-						case "MESSAGE" : 		//	대화 메세지 수신.
-							// todo
-							
-							// 메시지 노출.
-							this.messages.push(data.message);
-							
-							// 고객의 메세지일 경우에 읽음 메시지 전송.
-							if(data.message.isCustomer == 1){
-								// 읽음 알림.
-								data = {
-			                		speakerId: this.profile.speakerId,
-			                		startId: data.message.id,
-			                		endId: data.message.id
-			                	}
-			            		this.sendMessage("READ_MESSAGE", data);
-							}
-							
-							break;
+						// 각 이벤트에 따른 처리.
+						switch(eventName){
 						
-						case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
-							// todo
-							messages = data.messages;
-							messages.reverse()		// 배열 뒤집기.
-							this.messages = messages;
-							break;
-							
-						case "DELETE_MESSAGE" :		// 메시지 삭제.
-							
-							if(data.success == true){
-								var id = data.id;
-								var index = this.messages.findIndex(function(message) {
-									return message.id === id
-								})
-								console.log('index : ' + index);
-								
-								if(index > -1){
-									this.messages.splice(index, 1);
+							case "JOINED" :	// 조인완료 수신.
+								// todo
+								// 메세지 전송.
+			                	filteredRooms = this.activeRooms.filter(room => room.id == parseInt(roomId));
+								if(filteredRooms.length == 1){
+									filteredRooms[0].noReadCount = 0;
 								}
-							}
+	            		
+								break;
+								
+							case "ROOM_DETAIL" : 	// 방 상세정보 수신.
+								// todo
+								break;
+								
+							case "ASSIGNED" :		// 상담사 배정완료 수신.
+								// todo
+								// this.findRooms();
+								// this.join(roomId);
+								
+								break;
+								
+							case "READ_MESSAGE" :	// 메시지 읽음.
+								console.log('READ_MESSAGE 처리')
+								
+								var startId = data.startId;
+								var endId = data.endId;
+									
+								filteredMessages = this.messages.filter(message => message.id >= startId && message.id <= endId);
+								if(filteredMessages.length >= 1){
+									for(var i=0; i<filteredMessages.length; i++){
+										filteredMessages[i].noReadCount = 0;
+									}
+								}  
+								
+								
+								break;
 							
-						case "END" :			// 상담 종료 수신.
-							// todo
-							this.findRooms(); 
-							this.join(this.socket.lobbyName);
+							case "MESSAGE" : 		//	대화 메세지 수신.
+								// todo
+								
+								// 메시지 노출.
+								this.messages.push(data.message);
+								
+								// 고객의 메세지일 경우에 읽음 메시지 전송.
+								if(data.message.isCustomer == 1){
+									// 읽음 알림.
+									data = {
+				                		speakerId: this.profile.speakerId,
+				                		startId: data.message.id,
+				                		endId: data.message.id
+				                	}
+				            		this.sendMessage("READ_MESSAGE", data);
+								}
+								
+								break;
 							
-							
-							break;
-					
-						case "RELOAD" :			// 상담목록 갱신요청 수신.
-							// todo
-							this.findRooms();
-							
-							break;
-							
-						case "ERROR" :			// 에러 발생정보 수신.
-							// todo
-							break;
+							case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
+								// todo
+								messages = data.messages;
+								messages.reverse()		// 배열 뒤집기.
+								this.messages = messages;
+								break;
+								
+							case "DELETE_MESSAGE" :		// 메시지 삭제.
+								
+								if(data.success == true){
+									var id = data.id;
+									var index = this.messages.findIndex(function(message) {
+										return message.id === id
+									})
+									console.log('index : ' + index);
+									
+									if(index > -1){
+										this.messages.splice(index, 1);
+									}
+								}
+								
+							case "END" :			// 상담 종료 수신.
+								// todo
+								this.findRooms(); 
+								this.join(this.socket.lobbyName);
+								
+								
+								break;
+						
+							case "RELOAD" :			// 상담목록 갱신요청 수신.
+								// todo
+								this.findRooms();
+								
+								break;
+								
+							case "ERROR" :			// 에러 발생정보 수신.
+								// todo
+								break;
+						}
 					}
                 },
                 

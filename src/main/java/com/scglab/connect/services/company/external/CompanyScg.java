@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fcibook.quick.http.ResponseBody;
@@ -21,7 +20,6 @@ import com.scglab.connect.utils.HttpUtils;
 @Service
 public class CompanyScg implements ICompany {
 	
-	@Autowired private Environment env;
 	@Autowired private DomainProperties domainProperty;
 	@Autowired private ServerProperties serverProperty;
 	
@@ -36,23 +34,11 @@ public class CompanyScg implements ICompany {
 		System.out.println("result : " + result);
 	}
 	
-	public String getActiveProfile() {
-		String[] profiles = this.env.getActiveProfiles();
-		if(profiles.length == 0) {
-			profiles = this.env.getDefaultProfiles();
-		}
-		return profiles[0];
-	}
-	
-	
-	
-
 	// 1. 상담사 로그인
 	@Override
 	public boolean login(String id, String password) {
 		String url = "";
 		if(this.relayUseExample) {
-			//url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/profile.json";
 			if(password.equals("1212")) {
 				return true;
 			}

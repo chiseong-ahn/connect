@@ -1,19 +1,27 @@
 package com.scglab.connect.services.login;
 
-public class Profile {
+import java.io.Serializable;
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+public class Profile implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private int id;
 	private String companyId;
-	private Object companyUseConfigJson;
-	private String companyName;
+	private String roomId;
 	private int isAdmin;
+	private int isMember;
 	private int isCustomer;
-	private int authLevel;
 	private String loginName;
-	private int state;
-	private int profileImageId;
 	private int speakerId;
 	private String name;
-	private String createDate;
-	private String updateDate;
-	private String updateMemberId;
+	private String sessionId;
+	private Map<String, Object> companyUseConfigJson;
 }

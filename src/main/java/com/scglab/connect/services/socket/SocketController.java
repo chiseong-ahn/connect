@@ -10,12 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.socket.SocketService.EventName;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +28,8 @@ public class SocketController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private SocketService socketService;
-
+	@Autowired private SocketService socketService;
+	
 	/**
 	 * 
 	 * @Method Name : receiveMessage
@@ -40,32 +40,40 @@ public class SocketController {
 	 * @param socketData
 	 */
     @MessageMapping(Constant.SOCKET_RECEIVE_URI)
-    public void receiveMessage(SocketData socketData) {
+    public void receiveMessage(SocketData socketData, SimpMessageHeaderAccessor accessor) {
+    	
     	EventName eventName = socketData.getEventName();
+    	Profile profile = this.socketService.getMemberWithSettings(accessor, socketData);
+    	
+    	this.logger.info("socketData : " + socketData);
+    	this.logger.info("profile : " + profile);
+    	
+    	socketData.setCompanyId(profile.getCompanyId());
+    	socketData.setRoomId(profile.getRoomId());
     	
     	if(eventName.equals(EventName.ASSIGN)) {
-    		this.socketService.assign(socketData);
+    		this.socketService.assign(profile, socketData);
     	}
     	else if(eventName.equals(EventName.ROOM_DETAIL)) {		// 방 정보 요청.
-    		this.socketService.roomDetail(socketData);
+    		this.socketService.roomDetail(profile, socketData);
     		
     	}else if(eventName.equals(EventName.MESSAGE_LIST)) {	// 이전 대화내용 요청.(더보기)
-    		this.socketService.messageList(socketData);
+    		this.socketService.messageList(profile, socketData);
     		
     	}else if(eventName.equals(EventName.MESSAGE)) {			// 메세지 보내기 요청.
-    		this.socketService.message(socketData);
+    		this.socketService.message(profile, socketData);
     		
     	}else if(eventName.equals(EventName.READ_MESSAGE)) {	// 메세지읽음 보내기 요청.
-    		this.socketService.readMessage(socketData);
+    		this.socketService.readMessage(profile, socketData);
     		
     	}else if(eventName.equals(EventName.SAVE_HISTORY)) {	// 이력 저장.
-    		this.socketService.saveHistory(socketData);
+    		this.socketService.saveHistory(profile, socketData);
     		
     	}else if(eventName.equals(EventName.DELETE_MESSAGE)) {	// 메세지 삭제 요청.
-    		this.socketService.deleteMessage(socketData);
+    		this.socketService.deleteMessage(profile, socketData);
     		
     	}else if(eventName.equals(EventName.END)) {			// 고객의 상담종료 요청.
-    		this.socketService.end(socketData);
+    		this.socketService.end(profile, socketData);
     		
     	}
     }

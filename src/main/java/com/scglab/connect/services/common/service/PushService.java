@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,8 +18,9 @@ public class PushService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private DomainProperties domainProperty;
+	@Autowired private DomainProperties domainProperty;
+	
+	@Value("${relay.use-example}") private boolean relayUseExample;
 	
 	/**
 	 * 
@@ -36,16 +37,19 @@ public class PushService {
 		this.logger.debug("[Send push] member - " + member);
 		this.logger.debug("[Send push] message - " + message);
 		
-		HttpUtils httpUtils = new HttpUtils();
-		
-		String url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/push";
-		Map<String, String> params = new HashMap<String, String>();
-		
-		params.put("member", member + "");
-		params.put("message", message);
-		
-		HttpHeaders headers = new HttpHeaders();
-		httpUtils.postForString(url, params);
+		if(this.relayUseExample) {
+			this.logger.info("테스트 모드이므로 푸시를 발송하지 않음.");
+		}else {
+			HttpUtils httpUtils = new HttpUtils();
+			
+			String url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/push";
+			Map<String, String> params = new HashMap<String, String>();
+			
+			params.put("member", member + "");
+			params.put("message", message);
+			
+			httpUtils.postForString(url, params);
+		}
 	}
 	
 	/**

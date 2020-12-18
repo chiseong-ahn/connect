@@ -1,6 +1,5 @@
 package com.scglab.connect.services.room;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +17,10 @@ import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
+import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.member.Member;
-import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
+import com.scglab.connect.services.socket.SocketMessageHandler;
 import com.scglab.connect.services.socket.SocketService;
 import com.scglab.connect.services.socket.SocketService.EventName;
 import com.scglab.connect.services.socket.SocketService.Target;
@@ -36,6 +36,7 @@ public class RoomService {
 	@Autowired private SocketService socketService;
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
+	@Autowired private SocketMessageHandler socketMessageHandler;
 	
 	@Autowired
 	private RoomDao roomDao;
@@ -190,7 +191,19 @@ public class RoomService {
 			Map<String, Object> sendData = new HashMap<String, Object>();
 			sendData.put("room", room);
 			
-			this.socketService.sendMessage(EventName.ASSIGNED, member.getCompanyId(), room.getId() + "", Target.ALL, sendData);
+			Profile profile = null;
+			if(member != null) {
+				profile = new Profile();
+				profile.setCompanyId(member.getCompanyId());
+				profile.setIsAdmin(0);
+				profile.setIsMember(1);
+				profile.setIsCustomer(0);
+				profile.setName(member.getName());
+				profile.setSpeakerId(member.getSpeakerId());
+			}
+			
+			this.socketMessageHandler.sendMessageToSelf(EventName.ASSIGNED, profile, sendData);
+			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
 		}
 		return room;
 	}
