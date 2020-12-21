@@ -222,11 +222,11 @@
             data: {
             	socket: {
             		//host: "//localhost",
-            		//host: "//cstalk-local.gasapp.co.kr",
-            		host: "//cstalk-dev.gasapp.co.kr",
+            		host: "//cstalk-local.gasapp.co.kr",
+            		//host: "//cstalk-dev.gasapp.co.kr",
             		
-            		//port: 8080,
-            		port: 80,
+            		port: 8080,
+            		//port: 80,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
@@ -235,7 +235,7 @@
             		connectEndPoint: "/ws",			// 연결 end point
 	            	sendEndPoint: '/pub/socket/message',	// 메세지 전송 end point
 	            	roomPrefix: '/sub/socket/room/',			// 조인(구독)룸 end point의 prefix
-	            	sessionEndPoint: '/user/session/message',	// 개인메세지를 받을 구독주소.
+	            	sessionEndPoint: '/user/socket/message',	// 개인메세지를 받을 구독주소.
 	            	lobbyName: 'LOBBY1',					// 서울도시가스 조인(구독) 기본룸 Id (인천도시가스 - LOBBY2)
 	            	roomId: '',								// 현재 조인(구독)중인 방
             	},
@@ -491,10 +491,10 @@
                 	);
                 	
             		// 이전 상담목록 조회
-                	this.getHistory(this.socket.roomId);
+                	// this.getHistory(this.socket.roomId);
                 	
                 	// 계약정보 조회
-                	this.getContracts();
+                	// this.getContracts();
                 },
                 
 

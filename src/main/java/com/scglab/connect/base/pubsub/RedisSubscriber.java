@@ -55,11 +55,15 @@ public class RedisSubscriber {
 				
 				if(target == Target.BROADCAST) {
 					// 룸 전체에 메시지 보내기.
-					destination = "/sub" + Constant.SOCKET_ROOM_PREFIX + "/" + roomId;
+					
+					// :: /sub/socket/room/[룸번호]
+					destination = Constant.SOCKET_SIMPLE_BROKER + Constant.SOCKET_ROOM_PREFIX + "/" + roomId;
 					
 				}else if(target == Target.LOBBY) {
 					// 대기실에 메시지 보내기.
-					destination = "/sub" + Constant.SOCKET_ROOM_PREFIX + "/" + Constant.SOCKET_LOBBY_ROOM + payload.getCompanyId();
+					
+					// :: /sub/socket/room/LOBBY[회사번호]
+					destination = Constant.SOCKET_SIMPLE_BROKER + Constant.SOCKET_ROOM_PREFIX + "/" + Constant.SOCKET_LOBBY_ROOM + payload.getCompanyId();
 				}
 				
 				this.logger.debug("broadcast[" + payload.getEventName() + "] : " + destination);
@@ -84,7 +88,8 @@ public class RedisSubscriber {
 					
 				}
 				
-				destination = "/session/message";
+				// :: /socket/message
+				destination = Constant.SOCKET_RECEIVE_URI;
 				this.logger.debug("send to " + sessionId + "[" + payload.getEventName() + "] : " + destination);
 				
 				// SessionId 기반으로 메시지 발송.

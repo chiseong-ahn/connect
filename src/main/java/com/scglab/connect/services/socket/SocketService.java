@@ -137,13 +137,14 @@ public class SocketService {
 		String destination = headerAccessor.getDestination();
 		
 		// 개인룸 및 대기룸 조인일 경우.
-		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) || destination.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1)
+		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) || destination.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1) {
 			// 별도 작업을 하지 않음.
 			return;
+		}
 		
 		//MessageHeaders headers = headerAccessor.getMessageHeaders();
 		//String destination = (String) headers.get("simpDestination");
-		String roomId = destination.replaceAll("/sub" + Constant.SOCKET_ROOM_PREFIX + "/", "");
+		String roomId = destination.replaceAll(Constant.SOCKET_SIMPLE_BROKER + Constant.SOCKET_ROOM_PREFIX + "/", "");
 		//String sessionId = (String) headers.get("simpSessionId");
 		String sessionId = headerAccessor.getSessionId(); 
 		this.logger.info("sessionId : " + sessionId);
@@ -264,10 +265,8 @@ public class SocketService {
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
-		String lobbyRoom = getLobbyRoom(payload.getCompanyId());
-		
 		// 로비에 조인일 경우 - 조인만 시키고 아무일도 없음.
-		if(lobbyRoom.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1) {
+		if(payload.getRoomId().indexOf(Constant.SOCKET_LOBBY_ROOM) > -1) {
 			this.logger.debug("Lobby join : " + payload.toString());
 			return;
 		}
@@ -419,10 +418,12 @@ public class SocketService {
 			
 			// 본인에게 메시지 발송.
 			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
+		}else {
+			this.logger.info("이전 대화 없음.");
 		}
 		
 		// [Socket] 상담목록 갱신요청 메세지 전송.
-		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+		// this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
 	}
 	
 	// 메세지 전송
