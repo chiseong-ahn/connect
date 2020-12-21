@@ -165,8 +165,6 @@ public class WebMvcConfig implements WebMvcConfigurer{
 class YamlMessageSource extends ResourceBundleMessageSource {
     @Override
     protected ResourceBundle doGetBundle(String basename, Locale locale) throws MissingResourceException {
-    	System.out.println("basename : " + basename);
-    	System.out.println("locale : " + locale);
         return ResourceBundle.getBundle(basename, locale, YamlResourceBundle.Control.INSTANCE);
     }
 }

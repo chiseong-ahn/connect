@@ -16,7 +16,7 @@ public class Constant {
 	
 	public final static String	SOCKET_ENDPOINT = "/ws";
 	public final static String	SOCKET_ROOM_PREFIX = "/socket/room";		// 소켓 채널의 prefix
-	public final static String	SOCKET_ROOM_LOBBY = "LOBBY";
+	public final static String	SOCKET_LOBBY_ROOM = "LOBBY";
 	public final static String	SOCKET_RECEIVE_URI = "/socket/message";		// 소켓 수신채널의 prefix
 	public final static String	SOCKET_PRIVATE_ROOM = "/user/session/message";
 	

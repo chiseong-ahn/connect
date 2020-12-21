@@ -136,7 +136,9 @@ public class SocketService {
 		this.logger.info("[Subscribe] headerAccessor : " + headerAccessor.toString());
 		String destination = headerAccessor.getDestination();
 		
-		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM))
+		// 개인룸 및 대기룸 조인일 경우.
+		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) || destination.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1)
+			// 별도 작업을 하지 않음.
 			return;
 		
 		//MessageHeaders headers = headerAccessor.getMessageHeaders();
@@ -265,7 +267,7 @@ public class SocketService {
 		String lobbyRoom = getLobbyRoom(payload.getCompanyId());
 		
 		// 로비에 조인일 경우 - 조인만 시키고 아무일도 없음.
-		if(lobbyRoom.equals(payload.getRoomId())) {
+		if(lobbyRoom.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1) {
 			this.logger.debug("Lobby join : " + payload.toString());
 			return;
 		}
@@ -368,7 +370,7 @@ public class SocketService {
 				params.put("messageAdminType", 0);	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
 				params.put("isEmployee", 1);
 				params.put("messageDetail", "");
-				params.put("templateId", "");
+				params.put("templateId", null);
 				Message newMessage = this.messageDao.create(params);
 				
 				// [Socket] 시작메시지 전송.
@@ -698,6 +700,7 @@ public class SocketService {
 			profile.setIsAdmin(0);
 			profile.setIsMember(0);
 			profile.setIsCustomer(1);
+			profile.setLoginName(customer.getGasappMemberNumber());
 			profile.setName(customer.getName());
 			profile.setSpeakerId(customer.getSpeakerId());
 		}
@@ -719,6 +722,7 @@ public class SocketService {
 			profile.setIsMember(1);
 			profile.setIsCustomer(0);
 			profile.setName(member.getName());
+			profile.setLoginName(member.getLoginName());
 			profile.setSpeakerId(member.getSpeakerId());
 		}
 		
@@ -827,7 +831,7 @@ public class SocketService {
 	
 	// 로비룸 조회
 	public String getLobbyRoom(String companyId) {
-		return Constant.SOCKET_ROOM_LOBBY + companyId;
+		return Constant.SOCKET_LOBBY_ROOM + companyId;
 	}
 	
 	// 운영중인 룸 정보 조회

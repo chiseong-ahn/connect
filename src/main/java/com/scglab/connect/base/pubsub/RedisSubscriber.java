@@ -59,7 +59,7 @@ public class RedisSubscriber {
 					
 				}else if(target == Target.LOBBY) {
 					// 대기실에 메시지 보내기.
-					destination = "/sub" + Constant.SOCKET_ROOM_PREFIX + "/" + Constant.SOCKET_ROOM_LOBBY + payload.getCompanyId();
+					destination = "/sub" + Constant.SOCKET_ROOM_PREFIX + "/" + Constant.SOCKET_LOBBY_ROOM + payload.getCompanyId();
 				}
 				
 				this.logger.debug("broadcast[" + payload.getEventName() + "] : " + destination);

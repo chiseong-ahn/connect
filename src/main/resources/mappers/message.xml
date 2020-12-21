@@ -71,7 +71,7 @@
 		    WHERE
 		      message_id = m.id
 		      AND read_date is null
-		  ) not_read_count,
+		  ) noReadCount,
 		  r.name as room_name,
 		  s.name as speaker_name
 		FROM 

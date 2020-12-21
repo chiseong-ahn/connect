@@ -20,8 +20,10 @@
         <div class="row">
             <div class="col-md-6">
             	<span>로그인 : {{profile.loginName}} </span><br />
-            	<span>조인룸 : {{socket.roomId}}</span><br />
-            	<span>선택룸 : {{selectedRoom.id}}</span>
+            	<span>기본룸 : {{socket.subscribeLobby}}</span><br />
+            	<span>개인룸 : {{socket.subscribePrivate}}</span><br />
+            	<span>조인룸 : {{socket.roomId}} - {{socket.subscribe}}</span><br />
+            	<!--<span>선택룸 : {{selectedRoom}}</span>-->
             </div>
             <div class="col-md-6 text-right">
                 <a class="btn btn-primary btn-sm" @click="logout">로그아웃</a>
@@ -97,8 +99,8 @@
 		    </div>
 		    <div class="col-md-3">
 		    	<h4>상담채팅 - </h4>
-		    	<span v-if="selectedRoom.id != socket.lobbyName"><button type="button" @click="leave()">채팅나가기</button></span>
-		    	<ul  v-if="selectedRoom.id != socket.lobbyName" class="list-group">
+		    	<span v-if="selectedRoom != undefined"><button type="button" @click="leave()">채팅나가기</button></span>
+		    	<ul  v-if="selectedRoom != undefined" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
 		            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
 		                <template v-if="obj.messageType == 1">
@@ -110,7 +112,7 @@
 		                </template>
 		            </li>
 		       	</ul>
-		       	<div v-if="selectedRoom.id != socket.lobbyName">
+		       	<div v-if="selectedRoom != undefined">
 			       	<div>
 				       	<div v-if="profile.id == selectedRoom.memberId">
 				            <textarea class="form-control" v-model="message" placeholder="내용을 입력하세요."></textarea>
@@ -134,7 +136,7 @@
 					</div>
 				</div>
 		    </div>
-		    <div class="col-md-3">
+		    <div class="col-md-3" v-if="selectedRoom != undefined">
 		    	<h4>계약정보 </h4>
 		    	<select v-model="useContractNum">
 		    		<template v-for="(obj, count) in contracts">
@@ -220,15 +222,16 @@
             data: {
             	socket: {
             		//host: "//localhost",
-            		host: "//cstalk-local.gasapp.co.kr",
-            		//host: "//cstalk-dev.gasapp.co.kr",
+            		//host: "//cstalk-local.gasapp.co.kr",
+            		host: "//cstalk-dev.gasapp.co.kr",
             		
-            		port: 8080,
-            		//port: 80,
+            		//port: 8080,
+            		port: 80,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
-					subscribePrivate: undefined,					// 조인(구독) 객체.
+            		subscribeLobby: undefined,				// 조인(기본 룸) 객체.
+					subscribePrivate: undefined,			// 조인(개인룸(sessionId) 객체.
             		connectEndPoint: "/ws",			// 연결 end point
 	            	sendEndPoint: '/pub/socket/message',	// 메세지 전송 end point
 	            	roomPrefix: '/sub/socket/room/',			// 조인(구독)룸 end point의 prefix
@@ -287,7 +290,7 @@
 				requestYm: '',			// 결제연월
 				messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
-				selectedRoom: {},	// 선택된 룸 정보
+				selectedRoom: undefined,	// 선택된 룸 정보
 				imgPrefix: 'https://cstalk-dev.gasapp.co.kr/attach/',
             },
             created() {
@@ -396,8 +399,23 @@
                 * 웹소켓 연결성공 처리.
                 **************************************************************/
                 connectSuccessCallback: function(){
+                
                 	// 기본룸 조인.
-                	this.join(this.socket.lobbyName);
+                	if(!this.socket.subscribeLobby){
+                		this.socket.subscribeLobby = this.socket.ws.subscribe(
+                			this.socket.roomPrefix + this.socket.lobbyName, 
+                			this.receiveMessage
+                		);
+                	}
+                	
+                	// 개인룸 조인.
+                	if(!this.socket.subscribePrivate){
+            			// 개인메시지를 받을 구독.
+                		this.socket.subscribePrivate = this.socket.ws.subscribe(
+                			this.socket.sessionEndPoint, 
+                			this.receiveMessage
+                		);
+					}
                 	
                 	// 상담목록 조회.
                 	this.findRooms();
@@ -416,9 +434,6 @@
                 * 타 상담사는 조인하지 않고 대화내용만 노출(구독하지 않음).
                 **************************************************************/
                 showRoom: function(roomId){
-                
-                	// 기본룸 조인.
-                	this.join(this.socket.lobbyName);
                 
                 	console.log("내 상담이 아니기에 조인하지 않고 관련정보만 조회.");
                 	// 대기룸이 아닐경우.
@@ -457,14 +472,6 @@
                 	
                 	}
                 	
-                	if(!this.socket.subscribePrivate){
-            			// 개인메시지를 받을 구독.
-                		this.socket.subscribePrivate = this.socket.ws.subscribe(
-                			this.socket.sessionEndPoint, 
-                			this.receiveMessage
-                		);
-					}
-                	
                 	// 조인방 이름 생성.(예, /sub/chat/room/93)
                 	var uri = this.socket.roomPrefix + roomId;
                 	
@@ -483,14 +490,11 @@
                 		//headers = {'token': this.token}		// 구독 요청시 전달하는 헤더.
                 	);
                 	
-                	// 대기룸이 아닐경우.
-                	if(this.socket.roomId != this.socket.lobbyName){
-	                	// 이전 상담목록 조회
-	                	this.getHistory(this.socket.roomId);
-	                	
-	                	// 계약정보 조회
-	                	this.getContracts();
-	                }
+            		// 이전 상담목록 조회
+                	this.getHistory(this.socket.roomId);
+                	
+                	// 계약정보 조회
+                	this.getContracts();
                 },
                 
 
@@ -500,7 +504,9 @@
                 unjoin: function(){
                 	if(this.socket.subscribe){
                 		this.socket.subscribe.unsubscribe(); // 구독 해제.
+                		this.socket.subscribe = undefined;
                 	}
+                	this.socket.roomId = ''
                 },
                 
                 
@@ -597,11 +603,14 @@
 								}
 							}
 							
+							break;
+							
 						case "END" :			// 상담 종료 수신.
 							// todo
 							this.findRooms(); 
-							this.join(this.socket.lobbyName);
 							
+							// 조인(구독) 해제.
+		                	this.unjoin();
 							
 							break;
 					
@@ -698,7 +707,9 @@
                 
                 // 채팅나가기
                 leave: function(){
-                	this.join(this.socket.lobbyName);
+                	// 조인(구독) 해제.
+                	this.unjoin();
+                	this.selectedRoom = undefined
                 },
                 
                 // 상담 종료하기
@@ -895,21 +906,6 @@
 				// 상담종료.
 				closeRoom: function(roomId){
 					if(confirm('상담을 종료하시겠습니까?')){
-						/*
-						var uri = '/api/room/' + roomId + '/closeRoom';
-						axios.post(uri, {}, this.header).then(response => {
-							// prevent html, allow json array
-							room = response.data;
-							console.log(room);
-							
-							this.findRooms();
-							
-							
-						}, function(e){
-							console.log("error : " + e.message);
-						});	
-						*/
-						
 						data = {roomId: roomId}
 	            		this.sendMessage("END", data);
 					}

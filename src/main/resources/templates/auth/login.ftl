@@ -129,13 +129,15 @@
             		
             		localStorage.removeItem("accessToken");
             		axios.post('/api/auth/loginMember', data, header).then(response => {
-	                	console.log(response.data);
-	                	if(response.data.token != ''){
-	                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.
-	                		localStorage.accessToken = response.data.token;
-	                		//localStorage.refreshToken = response.data.refreshToken;
-	                		this.moveTalk();
+	                	if(response.data.token == null){
+	                		alert(response.data.reason);
+	                		return;
 	                	}
+                		// 로그인 성공시 로컬스토리지에 인증토큰과 기관코드를 등록한다.
+                		localStorage.accessToken = response.data.token;
+                		//localStorage.refreshToken = response.data.refreshToken;
+                		this.moveTalk();
+	                	
 		            });
             	},
             	

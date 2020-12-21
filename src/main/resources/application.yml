@@ -50,8 +50,6 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
-     
-
 # Prometheus 설정.
 management:
   endpoints:
@@ -115,68 +113,6 @@ logging:
 relay:
   use-example: true
   
----
-# 서버1 
-server:
-  port: 8081
-  
-spring:
-  profiles: server1
-  redis:
-    host: localhost
-    port: 6379
-  freemarker:
-    template-loader-path: 'classpath:/templates'
-    suffix: .ftl
-  main:
-    web-application-type: servlet
-
-domain:
-  sdtalk: localhost
-  relay-scg: relay-scg-dev.gasapp.co.kr
-  relay-inc: relay-inc-dev.gasapp.co.kr
-  
-path:
-  upload: /Volumes/Data/_upload
-
-# Logging 설정.
-logging:
-  config: 'classpath:config/logback-server1.xml'
-
-relay:
-  use-example: true
-  
----
-# 서버2
-server:
-  port: 8082
-  
-spring:
-  profiles: server2
-  redis:
-    host: localhost
-    port: 6379
-  freemarker:
-    template-loader-path: 'classpath:/templates'
-    suffix: .ftl
-  main:
-    web-application-type: servlet
-
-domain:
-  sdtalk: localhost
-  relay-scg: relay-scg-dev.gasapp.co.kr
-  relay-inc: relay-inc-dev.gasapp.co.kr
-  
-path:
-  upload: /Volumes/Data/_upload
-
-# Logging 설정.
-logging:
-  config: 'classpath:config/logback-server2.xml'
-
-relay:
-  use-example: true
-
 ---
 # 개발환경 
 server:

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -28,11 +29,8 @@ public class MessageHandler {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	private MessageSource messageSource;
-	
-	@Autowired
-	private LocaleResolver localResolver;
+	@Autowired private MessageSource messageSource;
+	@Autowired private LocaleResolver localResolver;
 	
 	public String getMessage(String code) {
 		Locale locale;
@@ -66,8 +64,7 @@ public class MessageHandler {
 	}
 	
 	public String getMessage(String code, Object[] parameters, Locale locale) {
-		
-		this.logger.debug("Message [" + code + ", " + locale);
+		locale = Locale.KOREAN;
 		
 		// 파라미터 확인.
 		if(parameters != null) {
