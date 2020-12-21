@@ -36,15 +36,15 @@ public class ScheduleTask {
 	@Scheduled(cron = "0 10 14 * * *")
 	public void dailyStatistics() {
 		LocalTime startTime = LocalTime.now();
-		this.logger.info("일일집계처리 시작. : " + LocalDateTime.now());
-		// todo:
+		this.logger.info("일일집계처리 시작. : " + startTime);
+		
+		// TODO :   
 
-		
-		
-		this.logger.info("일일집계처리 종료. : " + LocalDateTime.now());
 		LocalTime endTime = LocalTime.now();
+		this.logger.info("일일집계처리 종료. : " + endTime);
 		
 		Duration duration = Duration.between(startTime, endTime);
+		
 		long diffSeconds = duration.getSeconds();
 		this.logger.info("일일집계처리 소요시간(초) : " + diffSeconds);
 	}

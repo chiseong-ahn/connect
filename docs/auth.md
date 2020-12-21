@@ -48,7 +48,7 @@ import com.scglab.connect.services.login.LoginService;
 // use in method
 Member member = this.loginService.getMember(request);
 String companyId = member.getCompanyId();
-long loginId = member.getId();
+int loginId = member.getId();
 
 ```
 [< 목록으로 돌아가기](manual.md)

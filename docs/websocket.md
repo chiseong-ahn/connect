@@ -10,14 +10,16 @@
 | 운영 | cstalk.gasapp.co.kr | 80 | /ws |
 
 ## Frontend
-### 연결 | Connect
+### 1. 연결 | Connect
 ```javascript
 // SockJs 객체 초기화.
 var connectUrl = "http://[도메인]:[포트]/[엔드포인트]";
 // var connectUrl = "http://cstalk-dev.gasapp.co.kr/ws"
+
+// sockJs 객체 생성.
 var sock = new SockJS(connectUrl);
 
-// Stomp 객체 초기화.
+// 웹소켓 객체 초기화.
 this.socket.ws = Stomp.over(sock);
 
 // 멤버(상담사) 연결.
@@ -38,25 +40,25 @@ this.socket.ws.connect(
 );
 ```
 
-### 구독 | Subscribe
+### 2. 구독 | Subscribe
 - 개인 채널은 1회 연결.(개인 메시지 수신을 위해 구독)
 - 대기룸과 채팅룸 채널은 구독이 교체 됨.(대기룸 <--> 채팅룸)
 ```javascript
-// 개인메시지 수신전용 채널(Session 기반)
+// 개인메시지 수신전용 구독(Session 기반)
 this.socket.subscribePrivate = this.socket.ws.subscribe(
     "user/session/message",     // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
 
-// 대기 룸 채널.
-this.socket.subscribe = this.socket.ws.subscribe(
+// 대기 룸 구독.
+this.socket.subscribeLobby = this.socket.ws.subscribe(
     "sub/socket/room/LOBBY[회사번호]",  // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
 
-// 채팅 룸 채널.
+// 채팅 룸 구독.(고객과의 대화방)
 this.socket.subscribe = this.socket.ws.subscribe(
     "sub/socket/room/[룸 번호]",  // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
@@ -64,7 +66,7 @@ this.socket.subscribe = this.socket.ws.subscribe(
 );
 ```
 
-### 메세지 전송 | Send
+### 3. 메세지 전송 | Send
 ```javascript
 this.socket.ws.send(
     "pub/socket/message",   // 메시지 발송URI
@@ -73,19 +75,19 @@ this.socket.ws.send(
 )
 ```
 
-### 메세지 수신 | Receive
+### 4. 메세지 수신 | Receive
 ```javascript
 fnReceiveMessage(recvData){
     console.log(recvData);      // 수신된 메시지 객체.
 }
 ```
 
-### 구독해제 | Unsubscribe
+### 5. 구독해제 | Unsubscribe
 ```javascript
 this.socket.subscribe.unsubscribe();
 ```
 
-### 연결해제 | Disconnect
+### 6. 연결해제 | Disconnect
 ```javascript
 this.socket.ws.disconnect();
 ```
