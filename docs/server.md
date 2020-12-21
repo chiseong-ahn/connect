@@ -10,11 +10,11 @@
 - /usr/local/apache2/conf/httpd.conf    // 기본 공통 설정.
 - /data/project/cstalk/apache/conf      // 프로젝트별 설정. 
 ```
-// todo.
+// TODO:.
 ```
 - /usr/local/apache2/conf/workers.properties
 ```
-// todo.
+// TODO:.
 ```
 
 > 설정파일 테스트

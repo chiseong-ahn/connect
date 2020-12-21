@@ -368,7 +368,7 @@ public class HttpUtils {
 	               .get()
 	               .addParames(parames)
 	               .body();
-		
+		System.out.println("body : " + body.toString());
 		return body;
 	}
 	

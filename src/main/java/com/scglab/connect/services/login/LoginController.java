@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.member.Member;
 

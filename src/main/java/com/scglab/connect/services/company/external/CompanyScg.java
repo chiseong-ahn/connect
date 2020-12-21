@@ -43,7 +43,7 @@ public class CompanyScg implements ICompany {
 				return true;
 			}
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "/api/employees/login";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/api/employees/login";
 			this.logger.info("url : " + url);
 			ResponseBody body = HttpUtils.getForResponseBody(url);
 			if(body.getStateCode() == Response.SC_OK) {
@@ -59,7 +59,7 @@ public class CompanyScg implements ICompany {
 	public List<Map<String, Object>> employees() {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/employees.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/employees.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/employees?comIds=18";
 		}
@@ -74,7 +74,7 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> employee(String id) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/employee.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/employee.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/employees/" + id;
 		}
@@ -90,7 +90,7 @@ public class CompanyScg implements ICompany {
 		String url = "";
 		Map<String, Object> obj = null;
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/minwons.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/minwons.json";
 			obj = HttpUtils.getForMap(url);
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/minwons";
@@ -106,7 +106,7 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> contractInfo(String useContractNum){
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contractInfo.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/contractInfo.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
 		}
@@ -122,7 +122,7 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contractBill.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/contractBill.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
 		}
@@ -138,7 +138,7 @@ public class CompanyScg implements ICompany {
 		String day = "20201001";
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/holiday.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/holiday.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "api/cstallk/workcalendar?day=" + day;
 		}
@@ -155,7 +155,7 @@ public class CompanyScg implements ICompany {
 	public List<Map<String, Object>> contracts(String member) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/contracts.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/contracts.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/contracts?member=" + member;
 		}
@@ -171,7 +171,7 @@ public class CompanyScg implements ICompany {
 	public Map<String, Object> getProfile(String member) {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/profile.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/profile.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/profile?member=" + member;
 		}
@@ -186,7 +186,7 @@ public class CompanyScg implements ICompany {
 	public List<Map<String, Object>> getMinwonsCodes() {
 		String url = "";
 		if(this.relayUseExample) {
-			url = "http://127.0.0.1:" + this.serverProperty.getPort() + "/example/1/minwonCodes.json";
+			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/minwonCodes.json";
 		}else {
 			url = "https://" + this.domainProperty.getRelayScg() + "/api/cstalk/minwons/ClassCodes";
 		}

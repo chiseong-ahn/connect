@@ -13,7 +13,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class DomainProperties {
-	private String sdtalk;
+	private String cstalk;
+	private String cstalkDev;
 	private String relayScg;
 	private String relayInc;
 }

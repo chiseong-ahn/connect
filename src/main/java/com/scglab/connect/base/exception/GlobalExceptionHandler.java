@@ -40,7 +40,14 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> handleBaseException(Exception e) {
 		
 		HttpStatus httpStatus = null;
+		this.logger.debug("Exception reason code : " + e.getMessage());
 		String reason = this.messageService.getMessage(e.getMessage());	
+		if(reason == null) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), reason, e.getStackTrace()[0]);
+			e.printStackTrace();
+			return new ResponseEntity<>(res, httpStatus);
+		}
 		
 		if(e instanceof com.scglab.connect.base.exception.UnauthorizedException) {
 			httpStatus = HttpStatus.UNAUTHORIZED;

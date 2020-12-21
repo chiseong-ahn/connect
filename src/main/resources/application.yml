@@ -99,7 +99,8 @@ spring:
       enabled: true
       
 domain:
-  sdtalk: cstalk-local.gasapp.co.kr
+  cstalk: cstalk-local.gasapp.co.kr
+  cstalk-dev: cstalk-dev.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
   relay-inc: relay-inc-dev.gasapp.co.kr
   
