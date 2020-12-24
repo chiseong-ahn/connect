@@ -1,5 +1,6 @@
 package com.scglab.connect.services.common.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import net.gpedro.integrations.slack.SlackApi;
@@ -9,7 +10,12 @@ import net.gpedro.integrations.slack.SlackMessage;
 public class NotificationService {
 	
 	private final String userName = "SYSTEM";
-	private final String webHookUrl = "https://hooks.slack.com/services/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";
+	
+	@Value("${notification.use}")
+	private boolean use;
+	
+	@Value("${notification.webhook}")
+	private String webHookUrl;
 	
 	public void webhookForSlack(String message) {
 		webhookForSlack(this.userName, message);
@@ -24,8 +30,10 @@ public class NotificationService {
 	}
 	
 	public void webhookForSlack(String webHookUrl, SlackMessage slackMessage) {
-		SlackApi api = new SlackApi(webHookUrl);
-		api.call(slackMessage);
+		if(use) {
+			SlackApi api = new SlackApi(webHookUrl);
+			api.call(slackMessage);
+		}
 	}
 	
 	
