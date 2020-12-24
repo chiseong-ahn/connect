@@ -29,6 +29,7 @@ public class LoginControllerTest {
 	@Autowired 
 	private MockMvc mockMvc;
 	
+	@Ignore
 	@Test
 	public void 고객_로그인_Test() throws Exception {
 		String api = "/api/auth/loginCustomer";
@@ -46,7 +47,7 @@ public class LoginControllerTest {
 					.andExpect(MockMvcResultMatchers.jsonPath("$.customer.gasappMemberNumber", Matchers.is(gasappMemberNumber)))
 					.andDo(print());
 	}
-	
+	@Ignore
 	@Test
 	public void 멤버_로그인_Test() throws Exception {
 		String api = "/api/auth/loginMember";

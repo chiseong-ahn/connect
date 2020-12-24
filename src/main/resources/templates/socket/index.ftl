@@ -382,7 +382,7 @@
                 	
                 	
                 	// 웹소켓 로그 출력.
-                	this.socket.ws.debug = (message) => {};
+                	this.socket.ws.debug = (message) => {console.log(message)};
                 	
                 	// 웹소켓 연결.
                 	this.socket.ws.connect(
