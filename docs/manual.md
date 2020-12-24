@@ -22,11 +22,13 @@
 
 1. [파일 업로드](file.md)
 
+1. [암/복호화](crypto.md)
+
 1. [샘플 예제](example.md)
 
 1. [웹소켓](websocket.md)
 
-1. [서버 설정](server.md)
+1. [서버 환경 구성](./env/env.md)
 
 1. [배포 프로세스](deploy.md)
 
