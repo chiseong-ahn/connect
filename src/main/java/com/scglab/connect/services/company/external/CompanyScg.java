@@ -1,5 +1,6 @@
 package com.scglab.connect.services.company.external;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,8 @@ public class CompanyScg implements ICompany {
 	@Override
 	public boolean login(String id, String password) {
 		String url = "";
+		this.logger.debug("relayUseExample : " + this.relayUseExample);
+		
 		if(this.relayUseExample) {
 			if(password.equals("1212")) {
 				return true;
@@ -135,12 +138,19 @@ public class CompanyScg implements ICompany {
 	// 7. 휴일 여부 체크
 	@Override
 	public int getWorkCalendar() {
-		String day = "20201001";
+		
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DATE);
+		
+		String today = "" + year + month + day;
+		
 		String url = "";
 		if(this.relayUseExample) {
 			url = "https://" + this.domainProperty.getCstalkDev() + "/example/1/holiday.json";
 		}else {
-			url = "https://" + this.domainProperty.getRelayScg() + "api/cstallk/workcalendar?day=" + day;
+			url = "https://" + this.domainProperty.getRelayScg() + "api/cstallk/workcalendar?day=" + today;
 		}
 		
 		Map<String, Object> data = HttpUtils.getForMap(url);

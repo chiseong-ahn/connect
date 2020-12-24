@@ -1,5 +1,7 @@
 package com.scglab.connect.utils;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -361,25 +363,55 @@ public class HttpUtils {
 	
 	
 	private static ResponseBody requestForGet(String url, Map<String, String> parames) {
+		LocalTime startTime = LocalTime.now();
+		System.out.println("\n\n외부 통신 시작. : " + startTime);
 		System.out.println("url : " + url);
+
 		parames = parames == null ? new HashMap<String, String>() : parames;
 		ResponseBody body = new QuickHttp()
 	               .url(url)
 	               .get()
 	               .addParames(parames)
 	               .body();
-		System.out.println("body : " + body.toString());
+		
+		System.out.println("StateCode : " + body.getStateCode());
+		System.out.println("Data : " + body.text());
+
+		LocalTime endTime = LocalTime.now();
+		System.out.println("외부 통신 종료. : " + endTime);
+		
+		Duration duration = Duration.between(startTime, endTime);
+		
+		long diffSeconds = duration.getSeconds();
+		System.out.println("외부 통신 소요시간(초) : " + diffSeconds);
+		
 		return body;
 	}
 	
 	
 	private static ResponseBody requestForPost(String url, Map<String, String> parames) {
+		
+		LocalTime startTime = LocalTime.now();
+		System.out.println("\n\n외부 통신 시작. : " + startTime);
+		System.out.println("url : " + url);
+
 		parames = parames == null ? new HashMap<String, String>() : parames;
 		ResponseBody body = (ResponseBody) new QuickHttp()
 	               .url(url)
 	               .post()
 	               .addParames(parames)
 	               .body();
+		
+		System.out.println("StateCode : " + body.getStateCode());
+		System.out.println("Data : " + body.text());
+
+		LocalTime endTime = LocalTime.now();
+		System.out.println("외부 통신 종료. : " + endTime);
+		
+		Duration duration = Duration.between(startTime, endTime);
+		
+		long diffSeconds = duration.getSeconds();
+		System.out.println("외부 통신 소요시간(초) : " + diffSeconds);
 		
 		return body;
 	}

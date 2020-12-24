@@ -78,6 +78,9 @@ springdoc:
 relay:
   use-example: false
 
+notification:
+  use: true
+  webhook: 'https://hooks.slack.com/services/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'
 
 ---
 # 로컬환경 

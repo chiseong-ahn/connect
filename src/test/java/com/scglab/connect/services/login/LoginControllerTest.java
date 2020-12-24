@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class LoginControllerTest {
 					.andDo(print());
 	}
 	
-	/*
+	@Ignore
 	@Test
 	public void 멤버_인증정보조회_테스트() throws Exception {
 		String api = "/api/auth/profile";
@@ -80,6 +81,4 @@ public class LoginControllerTest {
 					.andExpect(MockMvcResultMatchers.jsonPath("$.loginName", Matchers.is(loginName)))
 					.andDo(print());
 	}
-
-	*/
 }
