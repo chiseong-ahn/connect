@@ -238,6 +238,10 @@
 	            	sessionEndPoint: '/user/socket/message',	// 개인메세지를 받을 구독주소.
 	            	lobbyName: 'LOBBY1',					// 서울도시가스 조인(구독) 기본룸 Id (인천도시가스 - LOBBY2)
 	            	roomId: '',								// 현재 조인(구독)중인 방
+	            	options: {
+				        protocols_whitelist : [ "websocket", "xhr-streaming", "xdr-streaming", "xhr-polling", "xdr-polling", "iframe-htmlfile", "iframe-eventsource", "iframe-xhr-polling" ],
+				        debug : false
+				    }
             	},
             	companyId: 1,								// 가스사 Id
             	header: {},				// 공통 header
@@ -376,12 +380,18 @@
                 	// Stomp 객체 초기화.
                 	this.socket.ws = Stomp.over(sock);
                 	
+                	
+                	// 웹소켓 로그 출력.
+                	this.socket.ws.debug = (message) => {};
+                	
                 	// 웹소켓 연결.
                 	this.socket.ws.connect(
 						{"Authorization": "Bearer " + this.token},		// 연결시 전달할 헤더.
 						this.connectSuccessCallback, 					// 성공시 홀출되는 함수.
 						this.connectFailCallback						// 실패시 호출되는 함수.
 					);
+					
+					
                 },
                 
                 
