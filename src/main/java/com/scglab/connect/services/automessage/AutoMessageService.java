@@ -46,7 +46,7 @@ public class AutoMessageService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "type"))
+	    if(!this.commonService.valid(params, "type"))
 	        // 파라미터가 존재하지 않는 파라미터 등록.
 	        errorParams = this.commonService.appendText(errorParams, "메시지유형-type");
 	    
@@ -159,10 +159,10 @@ public class AutoMessageService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "type"))
+	    if(!this.commonService.validInteger(params, "type"))
 	        errorParams = this.commonService.appendText(errorParams, "메시지 유형-type");
 	    
-	    if(!this.commonService.validString(params, "message"))
+	    if(!this.commonService.valid(params, "message"))
 	        errorParams = this.commonService.appendText(errorParams, "메시지 내용-message");
 	    
 	    // 파라미터 유효성 검증.
@@ -197,7 +197,7 @@ public class AutoMessageService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "message"))
+	    if(!this.commonService.valid(params, "message"))
 	        errorParams = this.commonService.appendText(errorParams, "메시지 내용-message");
 	    
 	    // 파라미터 유효성 검증.

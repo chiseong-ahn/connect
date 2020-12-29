@@ -9,7 +9,7 @@
 public void example(Map<String, Object> params, HttpServletRequest request) throws Exception {
 
     String errorParams = "";
-    if(!this.commonService.validString(params, "name"))
+    if(!this.commonService.valid(params, "name"))
         errorParams = this.commonService.appendText(errorParams, "이름-name");
     
     // 파라미터 유효성 검증.

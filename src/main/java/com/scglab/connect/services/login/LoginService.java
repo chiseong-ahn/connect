@@ -51,12 +51,15 @@ public class LoginService {
 	public Map<String, Object> loginMember(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
+		this.logger.info("form parameters : " + params.toString());
+		this.logger.info("request parameters : " + request.getParameterMap().toString());
+		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "companyId"))
+		if(!this.commonService.valid(params, "companyId"))
 			errorParams = this.commonService.appendText(errorParams, "회사id-companyId");
-		if(!this.commonService.validString(params, "loginName"))
+		if(!this.commonService.valid(params, "loginName"))
 			errorParams = this.commonService.appendText(errorParams, "로그인id-loginName");
-		if(!this.commonService.validString(params, "password"))
+		if(!this.commonService.valid(params, "password"))
 			errorParams = this.commonService.appendText(errorParams, "비밀번호-password");
 			
 		// 파라미터 유효성 검증.
@@ -128,9 +131,9 @@ public class LoginService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "companyId"))
+		if(!this.commonService.valid(params, "companyId"))
 			errorParams = this.commonService.appendText(errorParams, "회사id-companyId");
-		if(!this.commonService.validString(params, "gasappMemberNumber"))
+		if(!this.commonService.valid(params, "gasappMemberNumber"))
 			errorParams = this.commonService.appendText(errorParams, "가스앱 고객번호-gasappMemberNumber");
 			
 		// 파라미터 유효성 검증.

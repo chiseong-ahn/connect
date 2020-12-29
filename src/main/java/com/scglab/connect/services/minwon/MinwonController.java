@@ -10,24 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.base.annotations.Auth;
-import com.scglab.connect.constant.Constant;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/minwon")
-@Tag(name = "민원관리", description = "민원 API를 제공합니다.")
+@RequestMapping(name = "민원관리", value="/api/minwon")
 public class MinwonController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -36,16 +31,14 @@ public class MinwonController {
 	private MinwonService minwonService;
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.GET, value = "/codes", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="민원코드 조회", description = "민원코드 조회", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public List<Map<String, Object>> codes(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name="민원코드 조회", method = RequestMethod.GET, value = "/codes", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Map<String, Object>> codes(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.minwonService.codes(params, request, response);
 	}
 	
 	@Auth
-	@RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="민원 등록", description = "민원 등록", security = {@SecurityRequirement(name = Constant.AUTH_BEARERR_KEY)})
-	public Minwon regist(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name="민원 등록", method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Minwon regist(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.minwonService.regist(params, request, response);
 	}
 	

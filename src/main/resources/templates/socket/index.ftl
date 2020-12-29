@@ -222,11 +222,11 @@
             data: {
             	socket: {
             		//host: "//localhost",
-            		//host: "//cstalk-local.gasapp.co.kr",
-            		host: "//cstalk-dev.gasapp.co.kr",
+            		host: "//cstalk-local.gasapp.co.kr",
+            		//host: "//cstalk-dev.gasapp.co.kr",
             		
-            		//port: 8080,
-            		port: 80,
+            		port: 8080,
+            		//port: 80,
             		
             		ws: undefined,							// 웹소켓 객체.
             		subscribe: undefined,					// 조인(구독) 객체.
@@ -240,7 +240,7 @@
 	            	roomId: '',								// 현재 조인(구독)중인 방
 	            	options: {
 				        protocols_whitelist : [ "websocket", "xhr-streaming", "xdr-streaming", "xhr-polling", "xdr-polling", "iframe-htmlfile", "iframe-eventsource", "iframe-xhr-polling" ],
-				        debug : false
+				        debug : true
 				    }
             	},
             	companyId: 1,								// 가스사 Id
@@ -329,7 +329,7 @@
 						console.log("error : " + this.token);
 						
 					}else{
-	            		axios.get('/api/auth/profile', this.header).then(response => {
+	            		axios.get('/auth/profile', this.header).then(response => {
 	            			if(response.data){
 	            				this.profile = response.data;
 	            				console.log(JSON.stringify(this.profile));

@@ -15,15 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scglab.connect.services.common.service.NotificationService;
-import com.scglab.connect.services.customer.Customer;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/commons")
-@Tag(name = "공통", description = "공통 API")
+@RequestMapping(name="공통", value="/commons")
 public class CommonController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -31,9 +25,8 @@ public class CommonController {
 	@Autowired CommonService commonService;
 	@Autowired NotificationService notiService;
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary="서버 헬스체크", description = "")
-	public void health(@RequestBody Customer customer) throws Exception {
+	@RequestMapping(name="서버 헬스체크", method = RequestMethod.GET, value = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
+	public void health() throws Exception {
 		this.logger.debug("Health check!");
 	}
 	

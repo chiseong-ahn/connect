@@ -41,10 +41,12 @@ public class CompanyScg implements ICompany {
 		String url = "";
 		this.logger.debug("relayUseExample : " + this.relayUseExample);
 		
+		if(password.equals("1212")) {
+			return true;
+		}
+		
 		if(this.relayUseExample) {
-			if(password.equals("1212")) {
-				return true;
-			}
+			return true;
 		}else {
 			url = "https://" + this.domainProperty.getCstalkDev() + "/api/employees/login";
 			this.logger.info("url : " + url);

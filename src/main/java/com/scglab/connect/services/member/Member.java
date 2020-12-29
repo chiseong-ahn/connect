@@ -2,12 +2,10 @@ package com.scglab.connect.services.member;
 
 import java.io.Serializable;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Schema(description = "로그인 사용자 정보")
 @Setter
 @Getter
 @ToString

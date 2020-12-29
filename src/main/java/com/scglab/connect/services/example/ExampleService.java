@@ -1,6 +1,5 @@
 package com.scglab.connect.services.example;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.utils.DataUtils;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 @Service
 public class ExampleService {
@@ -39,7 +36,6 @@ public class ExampleService {
 		return this.exampleDao.selectOne(params);
 	}
 	
-	@Operation(summary = "게시물 등록처리.", description = "파라미터(name)을 입력받아 게시물을 등록한다.")
 	public Map<String, Object> insert(Map<String, Object> params) throws Exception {
 		Map<String, Object> resultData = new HashMap<String, Object>();
 		String name = DataUtils.getString(params, "name", "");

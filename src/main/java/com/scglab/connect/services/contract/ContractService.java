@@ -57,7 +57,7 @@ public class ContractService {
 		String companyId = member.getCompanyId();
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "gasappMemberNumber"))
+	    if(!this.commonService.valid(params, "gasappMemberNumber"))
 	        errorParams = this.commonService.appendText(errorParams, "사용계약번호-gasappMemberNumber");
 	    
 	    // 파라미터 유효성 검증.
@@ -147,10 +147,10 @@ public class ContractService {
 		String companyId = member.getCompanyId();
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "requestYm"))
+	    if(!this.commonService.valid(params, "requestYm"))
 	        errorParams = this.commonService.appendText(errorParams, "청구연월-requestYm");
 	    
-	    if(!this.commonService.validString(params, "deadlineFlag"))
+	    if(!this.commonService.valid(params, "deadlineFlag"))
 	        errorParams = this.commonService.appendText(errorParams, "납기구분-deadlineFlag");
 	    
 	    // 파라미터 유효성 검증.

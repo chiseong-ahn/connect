@@ -109,7 +109,7 @@ public class LinkService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "name"))
+	    if(!this.commonService.valid(params, "name"))
 	        errorParams = this.commonService.appendText(errorParams, "메뉴명-name");
 	    
 	    // 파라미터 유효성 검증.
@@ -134,7 +134,7 @@ public class LinkService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "name"))
+	    if(!this.commonService.valid(params, "name"))
 	        errorParams = this.commonService.appendText(errorParams, "이름-name");
 	    
 	    // 파라미터 유효성 검증.
@@ -181,19 +181,19 @@ public class LinkService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "menuId"))
+	    if(!this.commonService.validInteger(params, "menuId"))
 	        errorParams = this.commonService.appendText(errorParams, "메뉴id-menuId");
 	    
-	    if(!this.commonService.validString(params, "linkProtocol"))
+	    if(!this.commonService.valid(params, "linkProtocol"))
 	        errorParams = this.commonService.appendText(errorParams, "링크프로토콜-linkProtocol");
 	    
-	    if(!this.commonService.validString(params, "linkText"))
+	    if(!this.commonService.valid(params, "linkText"))
 	        errorParams = this.commonService.appendText(errorParams, "링크명-linkText");
 	    
-	    if(!this.commonService.validString(params, "linkUrl"))
+	    if(!this.commonService.valid(params, "linkUrl"))
 	        errorParams = this.commonService.appendText(errorParams, "링크주소-linkUrl");
 	    
-	    if(!this.commonService.validString(params, "enable"))
+	    if(!params.containsKey("enable"))
 	        errorParams = this.commonService.appendText(errorParams, "활성화여부(1-활성,0-비활성)-enable");
 	    
 	    // 파라미터 유효성 검증.
@@ -220,16 +220,16 @@ public class LinkService {
 		
 		String errorParams = "";
 	    
-	    if(!this.commonService.validString(params, "linkProtocol"))
+	    if(!this.commonService.valid(params, "linkProtocol"))
 	        errorParams = this.commonService.appendText(errorParams, "링크프로토콜-linkProtocol");
 	    
-	    if(!this.commonService.validString(params, "linkText"))
+	    if(!this.commonService.valid(params, "linkText"))
 	        errorParams = this.commonService.appendText(errorParams, "링크명-linkText");
 	    
-	    if(!this.commonService.validString(params, "linkUrl"))
+	    if(!this.commonService.valid(params, "linkUrl"))
 	        errorParams = this.commonService.appendText(errorParams, "링크주소-linkUrl");
 	    
-	    if(!this.commonService.validString(params, "enable"))
+	    if(!params.containsKey("enable"))
 	        errorParams = this.commonService.appendText(errorParams, "활성화여부(1-활성,0-비활성)-enable");
 	    
 	    // 파라미터 유효성 검증.
@@ -254,7 +254,7 @@ public class LinkService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "enable"))
+		if(!params.containsKey("enable"))
 	        errorParams = this.commonService.appendText(errorParams, "활성화여부(1-활성,0-비활성)-enable");
 	    
 	    // 파라미터 유효성 검증.

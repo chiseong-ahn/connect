@@ -68,7 +68,7 @@ public class KeywordService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "name"))
+	    if(!this.commonService.valid(params, "name"))
 	        // 파라미터가 존재하지 않는 파라미터 등록.
 	        errorParams = this.commonService.appendText(errorParams, "키워드명-name");
 	    
@@ -102,7 +102,7 @@ public class KeywordService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "templateId"))
+	    if(!this.commonService.valid(params, "templateId"))
 	        // 파라미터가 존재하지 않는 파라미터 등록.
 	        errorParams = this.commonService.appendText(errorParams, "템플릿id-templateId");
 	    
@@ -136,7 +136,7 @@ public class KeywordService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "name"))
+	    if(!this.commonService.valid(params, "name"))
 	        // 파라미터가 존재하지 않는 파라미터 등록.
 	        errorParams = this.commonService.appendText(errorParams, "키워드명-name");
 	    

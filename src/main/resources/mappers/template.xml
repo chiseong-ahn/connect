@@ -163,7 +163,7 @@
 					SELECT COUNT(1)
 					FROM template_favorite
 					WHERE template_id = t.id
-					AND member_id = #{memberId}
+					AND member_id = #{loginId}
 				) AS isFavorite
 		FROM template2 t
 		LEFT OUTER JOIN v_category vc ON t.category_small_id = vc.id

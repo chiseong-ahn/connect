@@ -197,13 +197,13 @@ public class CategoryService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "대분류명-name");
 			
-		if(!this.commonService.validString(params, "minwonCode"))
+		if(!this.commonService.valid(params, "minwonCode"))
 			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
 			
-		if(!this.commonService.validString(params, "minwonName"))
+		if(!this.commonService.valid(params, "minwonName"))
 			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
 			
 		// 파라미터 유효성 검증.
@@ -240,16 +240,16 @@ public class CategoryService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "categoryLargeId"))
+		if(!this.commonService.valid(params, "categoryLargeId"))
 			errorParams = this.commonService.appendText(errorParams, "대분류id-categoryLargeId");
 			
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "중분류명-name");
 		
-		if(!this.commonService.validString(params, "minwonCode"))
+		if(!this.commonService.valid(params, "minwonCode"))
 			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
 			
-		if(!this.commonService.validString(params, "minwonName"))
+		if(!this.commonService.valid(params, "minwonName"))
 			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
 			
 		// 파라미터 유효성 검증.
@@ -287,16 +287,16 @@ public class CategoryService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "categoryMiddleId"))
+		if(!this.commonService.valid(params, "categoryMiddleId"))
 			errorParams = this.commonService.appendText(errorParams, "중분류id-categoryMiddleId");
 			
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "소분류명-name");
 		
-		if(!this.commonService.validString(params, "minwonCode"))
+		if(!this.commonService.valid(params, "minwonCode"))
 			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
 			
-		if(!this.commonService.validString(params, "minwonName"))
+		if(!this.commonService.valid(params, "minwonName"))
 			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
 			
 		// 파라미터 유효성 검증.
@@ -334,13 +334,13 @@ public class CategoryService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "대분류명-name");
 			
-		if(!this.commonService.validString(params, "minwonCode"))
+		if(!this.commonService.valid(params, "minwonCode"))
 			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
 			
-		if(!this.commonService.validString(params, "minwonName"))
+		if(!this.commonService.valid(params, "minwonName"))
 			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
 			
 		// 파라미터 유효성 검증.
@@ -376,16 +376,16 @@ public class CategoryService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "categoryLargeId"))
+		if(!this.commonService.valid(params, "categoryLargeId"))
 			errorParams = this.commonService.appendText(errorParams, "대분류id-categoryLargeId");
 			
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "중분류명-name");
 		
-		if(!this.commonService.validString(params, "minwonCode"))
+		if(!this.commonService.valid(params, "minwonCode"))
 			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
 			
-		if(!this.commonService.validString(params, "minwonName"))
+		if(!this.commonService.valid(params, "minwonName"))
 			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
 			
 		// 파라미터 유효성 검증.
@@ -421,16 +421,16 @@ public class CategoryService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "categoryMiddleId"))
+		if(!this.commonService.valid(params, "categoryMiddleId"))
 			errorParams = this.commonService.appendText(errorParams, "중분류id-categoryMiddleId");
 			
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "소분류명-name");
 		
-		if(!this.commonService.validString(params, "minwonCode"))
+		if(!this.commonService.valid(params, "minwonCode"))
 			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
 			
-		if(!this.commonService.validString(params, "minwonName"))
+		if(!this.commonService.valid(params, "minwonName"))
 			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
 			
 		// 파라미터 유효성 검증.
@@ -492,7 +492,7 @@ public class CategoryService {
 		params.put("updateMemberId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "sortIndex"))
+		if(!this.commonService.validInteger(params, "sortIndex"))
 			errorParams = this.commonService.appendText(errorParams, "정렬순번-sortIndex");
 		
 		// 파라미터 유효성 검증.
@@ -521,7 +521,7 @@ public class CategoryService {
 		params.put("updateMemberId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "sortIndex"))
+		if(!this.commonService.validInteger(params, "sortIndex"))
 			errorParams = this.commonService.appendText(errorParams, "정렬순번-sortIndex");
 		
 		// 파라미터 유효성 검증.
@@ -554,7 +554,7 @@ public class CategoryService {
 		params.put("updateMemberId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "sortIndex"))
+		if(!this.commonService.validInteger(params, "sortIndex"))
 			errorParams = this.commonService.appendText(errorParams, "정렬순번-sortIndex");
 		
 		// 파라미터 유효성 검증.

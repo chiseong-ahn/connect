@@ -63,19 +63,19 @@ public class MinwonService {
 		params.put("loginId", member.getId());		
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "gasappMemberNumber"))
+	    if(!this.commonService.valid(params, "gasappMemberNumber"))
 	        errorParams = this.commonService.appendText(errorParams, "가스앱 회원번호-gasappMemberNumber");
-	    if(!this.commonService.validString(params, "useContractNum"))
+	    if(!this.commonService.valid(params, "useContractNum"))
 	        errorParams = this.commonService.appendText(errorParams, "사용계약번호-useContractNum");
-	    if(!this.commonService.validString(params, "categorySmallId"))
+	    if(!this.commonService.valid(params, "categorySmallId"))
 	        errorParams = this.commonService.appendText(errorParams, "소분류 카테고리id-categorySmallId");
-	    if(!this.commonService.validString(params, "minwonCode"))
+	    if(!this.commonService.valid(params, "minwonCode"))
 	        errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
-	    if(!this.commonService.validString(params, "telNumber"))
+	    if(!this.commonService.valid(params, "telNumber"))
 	        errorParams = this.commonService.appendText(errorParams, "휴대폰번호-telNumber");
-	    if(!this.commonService.validString(params, "chatId"))
+	    if(!this.commonService.valid(params, "chatId"))
 	        errorParams = this.commonService.appendText(errorParams, "룸에 대한 chatId-chatId");
-	    if(!this.commonService.validString(params, "roomId"))
+	    if(!this.commonService.valid(params, "roomId"))
 	        errorParams = this.commonService.appendText(errorParams, "방id-roomId");
 	    
 	    // 파라미터 유효성 검증.

@@ -1,11 +1,9 @@
 package com.scglab.connect.services.keyword;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Schema(name = "키워드")
 @Getter
 @Setter
 @ToString

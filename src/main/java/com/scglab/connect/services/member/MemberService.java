@@ -113,9 +113,9 @@ public class MemberService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "authLevel"))
+		if(!this.commonService.valid(params, "authLevel"))
 			errorParams = this.commonService.appendText(errorParams, "권한레벨-authLevel");
-		if(!this.commonService.validString(params, "name"))
+		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "이름-name");
 			
 		// 파라미터 유효성 검증.
@@ -154,9 +154,9 @@ public class MemberService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "authLevel"))
+		if(!this.commonService.valid(params, "authLevel"))
 			errorParams = this.commonService.appendText(errorParams, "권한레벨-authLevel");
-		if(!this.commonService.validString(params, "state"))
+		if(!this.commonService.valid(params, "state"))
 			errorParams = this.commonService.appendText(errorParams, "상담상태-state");
 			
 		// 파라미터 유효성 검증.
@@ -193,7 +193,7 @@ public class MemberService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "state"))
+		if(!this.commonService.valid(params, "state"))
 			errorParams = this.commonService.appendText(errorParams, "상담상태-state");
 			
 		// 파라미터 유효성 검증.

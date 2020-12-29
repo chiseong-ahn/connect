@@ -611,6 +611,28 @@
 		WHERE id = #{chatid}
 	</update>
 	
+	<!-- chatid에 대한하는 room history 조회 -->
+	<select id="findRoomHistoryByChatId" parameterType="map" resultType="map">
+		select a.id
+				,a.create_date as createdate
+				,a.end_date as enddate
+				,a.room_id as space
+				,a.start_message_id as startid
+				,a.end_message_id as endid
+				,a.last_member_id as lastemp
+		from room_join_history a
+		where 1=1
+		and a.end_date is not null
+		and a.room_id = (
+			select r.id
+			from room r 
+			where 1=1
+			and r.chatid = #{chatId}
+		)
+		order by id desc
+		limit 1
+	</select>
+	
 	
 </mapper>
 

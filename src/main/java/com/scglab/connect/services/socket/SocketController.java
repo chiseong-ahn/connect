@@ -19,11 +19,7 @@ import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.socket.SocketService.EventName;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 @RestController
-@Tag(name = "상담 채팅", description = "상담 채팅")
 public class SocketController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -78,8 +74,7 @@ public class SocketController {
     	}
     }
     
-    @RequestMapping(method = RequestMethod.GET, value = "socket/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary="상담채팅 현황 조회")
+    @RequestMapping(name="상담채팅 현황 조회", method = RequestMethod.GET, value = "socket/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ChatRoom> getRoomsList(HttpServletRequest request, HttpServletResponse response){
     	return this.socketService.findRooms(request, response);
     }

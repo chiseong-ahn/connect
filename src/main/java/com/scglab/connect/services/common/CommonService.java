@@ -2,6 +2,7 @@ package com.scglab.connect.services.common;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class CommonService {
 		return str;
 	}
 	
+	
+	
 	public String validString(Map<String, Object> parameters, String[] names) {
 		String str = "";
 		for(String name : names) {
@@ -41,6 +44,17 @@ public class CommonService {
 		}
 		
 		return str;
+	}
+	
+	public boolean validBoolean(Map<String, Object> parameters, String name) {
+		try {
+			if(DataUtils.getBoolean(parameters, name, false)) {
+				return true;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public boolean validString(Map<String, Object> parameters, String name) {
@@ -77,6 +91,21 @@ public class CommonService {
 		return false;
 	}
 	
+	public boolean valid(Map<String, Object> parameters, String name) {
+		
+		if(parameters.containsKey(name)) {
+			Object obj = parameters.get(name);
+			if(obj instanceof String) {
+				if(!(StringUtils.defaultString((String)obj, "")).equals("")){
+					return true;
+				}
+			}else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.scglab.connect.services.template;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import com.scglab.connect.services.category.CategorySmall;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
+import com.scglab.connect.services.keyword.Keyword;
+import com.scglab.connect.services.keyword.KeywordDao;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
@@ -27,6 +30,7 @@ public class TemplateService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired private TemplateDao templateDao;
+	@Autowired private KeywordDao keywordDao;
 	@Autowired private CategoryDao categoryDao;
 	@Autowired private MessageHandler messageService;
 	@Autowired private LoginService loginService;
@@ -141,9 +145,9 @@ public class TemplateService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "ask"))
+		if(!this.commonService.valid(params, "ask"))
 			errorParams = this.commonService.appendText(errorParams, "질문내용-ask");
-		if(!this.commonService.validString(params, "reply"))
+		if(!this.commonService.valid(params, "reply"))
 			errorParams = this.commonService.appendText(errorParams, "답변내용-reply");
 			
 		// 파라미터 유효성 검증.
@@ -159,21 +163,20 @@ public class TemplateService {
 		result = this.templateDao.create(params);
 		
 		if(result > 0) {	// 등록 성공
-			this.logger.debug("generated key : " + params.get("id"));
+			BigInteger templateId = (BigInteger)params.get("id");
 			
-			if(params.containsKey("keywords")) {
-				String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
-				this.logger.debug("keywords : " + keywords.toString());
-				if(keywords.length > 0) {
-					for(String keyword : keywords) {
-						if(!DataUtils.getSafeValue(keyword).equals("")) {
-							params.put("keyword", keyword.trim());
-							
-							this.logger.debug("params : " + params.toString());
-							
-							// 템플릿 키워드 연결.
-							this.templateDao.insertTemplateKeyword(params);
-						}
+			if(params.containsKey("keywordIds")) {
+				List<Integer> keywords = (List<Integer>)params.get("keywordIds");
+				this.logger.debug("keywords : " + keywords);
+				if(keywords != null) {
+					for(int keywordId : keywords) {
+						params.put("templateId", templateId);
+						params.put("keywordId", keywordId);
+						
+						this.logger.debug("params : " + params.toString());
+						
+						// 템플릿 키워드 연결.
+						this.templateDao.insertTemplateKeyword(params);
 					}
 				}
 				
@@ -184,7 +187,14 @@ public class TemplateService {
 			this.logger.debug("params : " + params.toString());
 			
 			// 등록된 템플릿 정보 조회.
+			params.put("id", templateId);
 			data = this.templateDao.getDetail(params);
+			
+			if(data != null) {
+				params.put("templateId", templateId);
+				List<Keyword> keywordList = this.keywordDao.getByTemplateId(params);
+				data.put("keywordList", keywordList);
+			}
 			
 		}else {
 			throw new RuntimeException("error.template.regist");
@@ -212,9 +222,9 @@ public class TemplateService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "ask"))
+		if(!this.commonService.valid(params, "ask"))
 			errorParams = this.commonService.appendText(errorParams, "질문내용-ask");
-		if(!this.commonService.validString(params, "reply"))
+		if(!this.commonService.valid(params, "reply"))
 			errorParams = this.commonService.appendText(errorParams, "답변내용-reply");
 			
 		// 파라미터 유효성 검증.
@@ -281,7 +291,7 @@ public class TemplateService {
 		Map<String, Object> template = this.templateDao.getDetail(params);
 		if(template == null) {
 			Object[] messageParams = new String[1];
-			messageParams[0] = "id = " + DataUtils.getString(params, "id", "");
+			messageParams[0] = "id = " + DataUtils.getInt(params, "id", 0);
 			data.put("reason", this.messageService.getMessage("error.template.notexist", messageParams));
 		}else {
 			
@@ -314,7 +324,7 @@ public class TemplateService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "value"))
+		if(!params.containsKey("value"))
 			errorParams = this.commonService.appendText(errorParams, "추가/삭제구분(true-추가,false-삭제)-value");
 			
 		// 파라미터 유효성 검증.
@@ -324,11 +334,12 @@ public class TemplateService {
 		}
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		String value = DataUtils.getString(params, "value", "");
 		int result = 0;
-		if(value.equals("true")) {
+		
+		boolean value = DataUtils.getBoolean(params, "value", false);
+		if(value) {
 			result = this.templateDao.insertFavorite(params);
-		}else if(value.equals("false")) {
+		}else {
 			result = this.templateDao.deleteFavorite(params);
 		}
 		

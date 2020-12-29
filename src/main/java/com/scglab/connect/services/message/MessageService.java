@@ -40,10 +40,10 @@ public class MessageService {
 	public List<Message> getMessages(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "queryId"))
+	    if(!this.commonService.valid(params, "queryId"))
 	        errorParams = this.commonService.appendText(errorParams, "조회구분-queryId");
 	    
-	    if(!this.commonService.validString(params, "roomId"))
+	    if(!this.commonService.valid(params, "roomId"))
 	        errorParams = this.commonService.appendText(errorParams, "방id-roomId");
 	    
 	    // 파라미터 유효성 검증.
@@ -80,10 +80,10 @@ public class MessageService {
 			case "findRangeById":			// 메세지 조회(id 범위)
 				
 				errorParams = "";
-				if(!this.commonService.validString(params, "startId"))
+				if(!this.commonService.valid(params, "startId"))
 			        errorParams = this.commonService.appendText(errorParams, "시작 메시지id-startId");
 			    
-			    if(!this.commonService.validString(params, "endId"))
+			    if(!this.commonService.valid(params, "endId"))
 			        errorParams = this.commonService.appendText(errorParams, "종료 메시지id-endId");
 			    
 			    // 파라미터 유효성 검증.

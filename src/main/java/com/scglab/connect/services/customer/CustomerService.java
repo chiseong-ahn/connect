@@ -90,7 +90,7 @@ public class CustomerService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "blockType"))
+		if(!this.commonService.valid(params, "blockType"))
 			errorParams = this.commonService.appendText(errorParams, "지정/해제구분-blockType");
 			
 		// 파라미터 유효성 검증.

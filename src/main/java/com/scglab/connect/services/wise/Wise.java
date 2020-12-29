@@ -1,11 +1,9 @@
 package com.scglab.connect.services.wise;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Schema(description = "민원 정보")
 @Setter
 @Getter
 @ToString

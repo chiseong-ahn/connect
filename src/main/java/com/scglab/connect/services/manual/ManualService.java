@@ -49,7 +49,7 @@ public class ManualService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "manualIndex"))
+	    if(!this.commonService.valid(params, "manualIndex"))
 	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
 	    
 	    // 파라미터 유효성 검증.
@@ -133,7 +133,7 @@ public class ManualService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "manualIndex"))
+	    if(!this.commonService.valid(params, "manualIndex"))
 	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
 	    
 	    // 파라미터 유효성 검증.
@@ -165,7 +165,7 @@ public class ManualService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "value"))
+	    if(!this.commonService.valid(params, "value"))
 	        errorParams = this.commonService.appendText(errorParams, "즐겨찾기 구분(추가-true, 삭제-false)-value");
 	    
 	    // 파라미터 유효성 검증.
@@ -174,10 +174,10 @@ public class ManualService {
 	        this.errorService.throwParameterErrorWithNames(errorParams);
 	    }
 		
-		String value = DataUtils.getString(params, "value", "false");
+		boolean value = DataUtils.getBoolean(params, "value", false);
 		
 		int result = 0;
-		if(value.equals("true")) {
+		if(value) {
 			result = this.manualDao.createFavorite(params);
 		}else {
 			result = this.manualDao.deleteFavoriteToMember(params);
@@ -208,22 +208,22 @@ public class ManualService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "manualIndex"))
+		if(!this.commonService.valid(params, "manualIndex"))
 	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
 		
-		if(!this.commonService.validString(params, "pageNo"))
+		if(!this.commonService.valid(params, "pageNo"))
 	        errorParams = this.commonService.appendText(errorParams, "페이지번호-pageNo");
 		
-		if(!this.commonService.validString(params, "pageCode"))
+		if(!this.commonService.valid(params, "pageCode"))
 	        errorParams = this.commonService.appendText(errorParams, "페이지코드-pageCode");
 		
-		if(!this.commonService.validString(params, "title"))
+		if(!this.commonService.valid(params, "title"))
 	        errorParams = this.commonService.appendText(errorParams, "제목-title");
 		
-		if(!this.commonService.validString(params, "pdfImagePath"))
+		if(!this.commonService.valid(params, "pdfImagePath"))
 	        errorParams = this.commonService.appendText(errorParams, "이미지경로-pdfImagePath");
 		
-		if(!this.commonService.validString(params, "content"))
+		if(!this.commonService.valid(params, "content"))
 	        errorParams = this.commonService.appendText(errorParams, "내용-content");
 	    
 	    // 파라미터 유효성 검증.
@@ -264,22 +264,22 @@ public class ManualService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-		if(!this.commonService.validString(params, "manualIndex"))
+		if(!this.commonService.valid(params, "manualIndex"))
 	        errorParams = this.commonService.appendText(errorParams, "매뉴얼id-manualIndex");
 		
-		if(!this.commonService.validString(params, "pageNo"))
+		if(!this.commonService.valid(params, "pageNo"))
 	        errorParams = this.commonService.appendText(errorParams, "페이지번호-pageNo");
 		
-		if(!this.commonService.validString(params, "pageCode"))
+		if(!this.commonService.valid(params, "pageCode"))
 	        errorParams = this.commonService.appendText(errorParams, "페이지코드-pageCode");
 		
-		if(!this.commonService.validString(params, "title"))
+		if(!this.commonService.valid(params, "title"))
 	        errorParams = this.commonService.appendText(errorParams, "제목-title");
 		
-		if(!this.commonService.validString(params, "pdfImagePath"))
+		if(!this.commonService.valid(params, "pdfImagePath"))
 	        errorParams = this.commonService.appendText(errorParams, "이미지경로-pdfImagePath");
 		
-		if(!this.commonService.validString(params, "content"))
+		if(!this.commonService.valid(params, "content"))
 	        errorParams = this.commonService.appendText(errorParams, "내용-content");
 	    
 	    // 파라미터 유효성 검증.

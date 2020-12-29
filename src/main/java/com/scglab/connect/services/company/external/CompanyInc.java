@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
-
-import com.scglab.connect.services.common.auth.Contract;
-import com.scglab.connect.services.member.Member;
 @Service
 public class CompanyInc implements ICompany {
 

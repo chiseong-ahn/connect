@@ -46,7 +46,7 @@ public class RoomService {
 		params.put("companyId", member.getCompanyId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "queryId"))
+	    if(!this.commonService.valid(params, "queryId"))
 	        errorParams = this.commonService.appendText(errorParams, "조회항목구분-queryId");
 	    
 	    // 파라미터 유효성 검증.
@@ -61,10 +61,10 @@ public class RoomService {
 		
 		if(queryId.equals("findSearchCloseState")){
 			errorParams = "";
-		    if(!this.commonService.validString(params, "startDate"))
+		    if(!this.commonService.valid(params, "startDate"))
 		        errorParams = this.commonService.appendText(errorParams, "검색시작일-startDate");
 		    
-		    if(!this.commonService.validString(params, "endDate"))
+		    if(!this.commonService.valid(params, "endDate"))
 		        errorParams = this.commonService.appendText(errorParams, "검색시작일-endDate");
 		    
 		    // 파라미터 유효성 검증.
@@ -250,7 +250,7 @@ public class RoomService {
 		params.put("loginId", member.getId());
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "transferType"))
+	    if(!this.commonService.valid(params, "transferType"))
 	        errorParams = this.commonService.appendText(errorParams, "이관유형-transferType");
 	    
 	    // 파라미터 유효성 검증.
@@ -263,7 +263,7 @@ public class RoomService {
 		
 		if(transferType.equals("toMember")) {
 			errorParams = "";
-		    if(!this.commonService.validString(params, "memberId"))
+		    if(!params.containsKey("memberId"))
 		        errorParams = this.commonService.appendText(errorParams, "이관할 멤버id-memberId");
 		    
 		    // 파라미터 유효성 검증.
@@ -273,15 +273,15 @@ public class RoomService {
 		    }
 		}
 		
-		
-		String memberId = DataUtils.getString(params, "memberId", "");
+		int memberId = DataUtils.getInt(params, "memberId", 0);
 		if(transferType.equals("")) {
 			this.logger.error("transferType : " + transferType);
 			throw new RuntimeException("error.params.type0");
+			
 		}else if(transferType.equals("toMember")) {
-			if(memberId.equals("")) {
+			if(memberId <= 0) {
 				this.logger.error("memberId : " + memberId);
-				throw new RuntimeException("error.params.type0");
+				throw new RuntimeException("error.params.type5");
 			}
 		}
 		

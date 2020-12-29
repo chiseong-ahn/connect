@@ -135,10 +135,10 @@ public class StatsService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "startDate"))
+	    if(!this.commonService.valid(params, "startDate"))
 	        errorParams = this.commonService.appendText(errorParams, "종료일 검색 시작일(YYYY-MM-DD)-startDate");
 	    
-	    if(!this.commonService.validString(params, "endDate"))
+	    if(!this.commonService.valid(params, "endDate"))
 	        errorParams = this.commonService.appendText(errorParams, "종료일 검색 종료일(YYYY-MM-DD)-endDate");
 	    
 	    // 파라미터 유효성 검증.
@@ -278,7 +278,7 @@ public class StatsService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "type"))
+	    if(!this.commonService.valid(params, "type"))
 	        errorParams = this.commonService.appendText(errorParams, "검색유형-type");
 	    
 	    // 파라미터 유효성 검증.
@@ -351,7 +351,7 @@ public class StatsService {
 		params.put("companyId", companyId);
 		
 		String errorParams = "";
-	    if(!this.commonService.validString(params, "searchDate"))
+	    if(!this.commonService.valid(params, "searchDate"))
 	        errorParams = this.commonService.appendText(errorParams, "검색일(YYYY-MM-DD)-searchDate");
 	    
 	    // 파라미터 유효성 검증.

@@ -4,12 +4,10 @@ import java.util.List;
 
 import com.scglab.connect.services.keyword.Keyword;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Schema(name = "답변템플릿")
 @Setter
 @Getter
 @ToString

@@ -79,7 +79,7 @@
 	            			headers: {'Authorization' : 'Bearer ' + this.accessToken}
 	            		}
 	            		
-	            		axios.get('/api/auth/profile', this.header).then(response => {
+	            		axios.get('auth/profile', this.header).then(response => {
 	            			
 	            			if(response.data.id > 0){
 		                		this.moveTalk();
@@ -121,15 +121,26 @@
             	// 로그인
             	onSubmit: function(){
             		var header = {'Content-Type': 'multipart/form-data'};
+            		
+            		/*
             		var data = new FormData();
             			data.append("companyId", this.companyId);
             			data.append("loginName", this.loginName);
             			data.append("password", this.password);
             			data.append("name", this.name);
+            		*/
             		
+            		var data = {
+					    "companyId": "" + this.companyId,
+					    "loginName": this.loginName,
+					    "password": this.password,
+					    "name": this.name
+					}
+					
             		localStorage.removeItem("accessToken");
-            		axios.post('/api/auth/loginMember', data, header).then(response => {
-	                	if(response.data.token == null){
+            		axios.post('/auth/login', data, header).then(response => {
+            			console.log(response.data.token);
+	                	if(!response.data.token){
 	                		alert(response.data.reason);
 	                		return;
 	                	}
