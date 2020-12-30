@@ -130,7 +130,10 @@
 		        </choose>
 	        </if>
 	      ORDER BY t.id DESC
-	      limit #{startNum}, #{pageSize}
+	      <if test='startNum != null and startNum != "" and pageSize != null and pageSize != ""'>
+	      	limit #{startNum}, #{pageSize}
+	      </if>
+	      
 	</select>
 	
 	<!-- 템플릿 조회 -->

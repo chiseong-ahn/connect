@@ -45,7 +45,33 @@
 	
 	<!-- 매뉴얼 상세 -->
 	<select id="findManual" parameterType="map" resultMap="manual">
-		SELECT m.*
+		SELECT m.*,
+				(
+				SELECT
+					COUNT(1)
+				FROM
+					manual_favorite
+				WHERE
+					manual_id = m.id
+					AND member_id = #{loginId}) as is_favorite,
+				(
+				SELECT
+					MIN(page_number)
+				FROM
+					manual m2
+				WHERE
+					company_id = m.company_id
+					AND manual_index = m.manual_index
+					AND id <![CDATA[<]]> m.id) AS previous_page,
+				(
+				SELECT
+					MIN(page_number)
+				FROM
+					manual m2
+				WHERE
+					company_id = 1
+					AND manual_index = m.manual_index
+					AND id > m.id) AS next_page
 		FROM manual m
 		WHERE m.company_id = #{companyId}
 		AND m.id = #{id}

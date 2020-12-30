@@ -262,7 +262,7 @@ public class CategoryService {
 		params.put("sortIndex", lastSortIndex);
 		
 		CategoryMiddle category = null;
-		if(this.categoryDao.createCategoryLarge(params) > 0) {
+		if(this.categoryDao.createCategoryMiddle(params) > 0) {
 			category = this.categoryDao.getCategoryMiddle(params);
 		}
 		return category == null ? new CategoryMiddle() : category;
@@ -309,7 +309,7 @@ public class CategoryService {
 		params.put("sortIndex", lastSortIndex);
 		
 		CategorySmall category = null;
-		if(this.categoryDao.createCategoryLarge(params) > 0) {
+		if(this.categoryDao.createCategorySmall(params) > 0) {
 			category = this.categoryDao.getCategorySmall(params);
 		}
 		return category == null ? new CategorySmall() : category;

@@ -401,11 +401,22 @@
 	
 	<!-- 이전 상담 검색 -->
 	<select id="findSearchJoinHistory" parameterType="map" resultType="map">
-		SELECT rjh.create_date AS join_start_date, 
-		       TIMESTAMPDIFF(MINUTE, rjh.create_date, rjh.end_date) speak_minute, 
-		       rjh.*, 
-		       mb.name AS member_name,
-		       mb2.name AS last_member_name,
+		SELECT rjh.create_date AS joinStartDate, 
+		       TIMESTAMPDIFF(MINUTE, rjh.create_date, rjh.end_date) speakMinute, 
+		       rjh.create_date as createDate,
+		       rjh.update_date as updateDate,
+		       rjh.update_member_id as updateMemberId,
+		       rjh.member_id as memberId,
+		       rjh.room_id as roomId,
+		       rjh.company_id as companyId,
+		       rjh.start_message_id as startMessageId,
+		       rjh.end_message_id as endMessageId,
+		       rjh.end_date as endDate,
+		       rjh.last_member_id as lastMemberId,
+		       rjh.category_small_id as categorySmallId,
+		       rjh.join_history_json as joinHistoryJson,
+		       mb.name AS memberName,
+		       mb2.name AS lastMemberName,
 		       (SELECT GROUP_CONCAT(DISTINCT message_detail)
 		           FROM chat_message
 		        WHERE room_id = #{roomId} AND id BETWEEN rjh.start_message_id 

@@ -29,6 +29,10 @@ public class TemplateDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "findAllCount", params);
 	}
 	
+	public List<Map<String, Object>> search(Map<String, Object> params){
+		return this.sqlSession.selectList(this.namespace + "search", params);
+	}
+	
 	public List<Map<String, Object>> findAll(Map<String, Object> params){
 		return this.sqlSession.selectList(this.namespace + "findAll", params);
 	}

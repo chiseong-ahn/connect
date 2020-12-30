@@ -21,5 +21,7 @@ public class Manual {
 	private String tags;
 	private String content;
 	private String pdfImagePath;
-	private long favoriteId;
+	private long previousPage;
+	private long nextPage;
+	private int isFavorite;
 }

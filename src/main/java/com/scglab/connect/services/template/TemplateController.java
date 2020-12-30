@@ -32,7 +32,7 @@ public class TemplateController {
 	@Auth
 	@RequestMapping(name="답변템플릿 검색", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> search(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.templateService.findAll(params, request);
+		return this.templateService.search(params, request);
 	}
 	
 	@Auth
@@ -68,29 +68,35 @@ public class TemplateController {
 	
 	@Auth
 	@RequestMapping(name="답변템플릿 전체 조회", method = RequestMethod.POST, value = "/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> findAll(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<Map<String, Object>> findAll(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return this.templateService.findAll(params, request);
 	}
 	
 	
 	@Auth
-	@RequestMapping(name="답변템플릿 : 카테고리 중분류(대분류 기준)", method = RequestMethod.POST, value = "/findByCategoryLargeId", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CategoryMiddle> findByCategoryLargeId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.templateService.findByCategoryLargeId(params, request);
+	@RequestMapping(name="답변템플릿 : 카테고리 대분류", method = RequestMethod.POST, value = "/findByCategoryLargeId", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Map<String, Object>> findByCategoryLargeId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.templateService.findAll(params, request);
 	}
 	
 	
 	@Auth
-	@RequestMapping(name="답변템플릿 : 카테고리 소분류(중분류 기준)", method = RequestMethod.POST, value = "/findByCategoryMiddleId", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CategorySmall> findByCategoryMiddleId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.templateService.findByCategoryMiddleId(params, request);
+	@RequestMapping(name="답변템플릿 : 중분류", method = RequestMethod.POST, value = "/findByCategoryMiddleId", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Map<String, Object>> findByCategoryMiddleId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.templateService.findAll(params, request);
+	}
+	
+	@Auth
+	@RequestMapping(name="답변템플릿 : 소분류", method = RequestMethod.POST, value = "/findByCategorySmallId", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Map<String, Object>> findByCategorySmallId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.templateService.findAll(params, request);
 	}
 	
 	
 	
 	@Auth
 	@RequestMapping(name="템플릿 조회 : 내가 즐겨찾기한 템플릿 목록", method = RequestMethod.POST, value = "/findByFavoriteLoginMemberId", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> findByFavoriteLoginMemberId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<Map<String, Object>> findByFavoriteLoginMemberId(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("checkFavorite", 1);
 		return this.templateService.findAll(params, request);
 	}

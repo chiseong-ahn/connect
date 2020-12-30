@@ -66,7 +66,7 @@ public class MemberService {
 			memberList = this.memberDao.findAll(params);
 		}
 		data.put("totalCount", totalCount);
-		data.put("list", memberList);
+		data.put("data", memberList);
 		
 		return data;
 	}

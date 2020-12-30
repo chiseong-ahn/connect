@@ -61,7 +61,7 @@ public class CustomerService {
 		params.put("pageSize", pageSize);
 				
 		int totalCount = this.customerDao.findAllCount(params);
-		List<Map<String, Object>> list = null;
+		List<VCustomer> list = null;
 		if(totalCount > 0) {
 			list = this.customerDao.findAll(params);
 		}
@@ -83,11 +83,10 @@ public class CustomerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> block(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public VCustomer block(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
-		Map<String, Object> data = new HashMap<String, Object>();
 		
 		String errorParams = "";
 		if(!this.commonService.valid(params, "blockType"))
@@ -100,11 +99,12 @@ public class CustomerService {
 		}
 		
 		int result = this.customerDao.enableBlackStatus(params);
+		VCustomer vcustomer = null;
 		if(result > 0) {
-			data = this.customerDao.findCustomer(params);
+			vcustomer = this.customerDao.findCustomer(params);
 		}
 		
-		return data;
+		return vcustomer;
 	}
 	
 	/**
@@ -118,19 +118,18 @@ public class CustomerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> unBlock(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public VCustomer unBlock(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = new HashMap<String, Object>();
-		
+		VCustomer vcustomer = null;
 		int result = this.customerDao.disbleBlackStatus(params);
 		if(result > 0) {
-			data = this.customerDao.findCustomer(params);
+			vcustomer = this.customerDao.findCustomer(params);
 		}
 		
-		return data;
+		return vcustomer;
 	}
 	
 	/**

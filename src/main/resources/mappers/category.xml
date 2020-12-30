@@ -95,8 +95,8 @@
 				a.category_large_id as categoryLargeId
 		FROM   category_middle as a
 		WHERE company_id = #{companyId}
-		<if test='categoryLargeId != null and categoryLargeId != ""'>
-			AND a.category_large_id = #{categoryLargeId}
+		<if test='largeId != null and largeId != ""'>
+			AND a.category_large_id = #{largeId}
 		</if>
 		ORDER BY a.sort_index
 	</select>
@@ -157,8 +157,8 @@
 				a.sort_index as sortIndex
 		FROM v_category a
 		WHERE company_id = #{companyId}
-		<if test='categoryMiddleId != null and categoryMiddleId != ""'>
-			AND a.category_middle_id = #{categoryMiddleId}
+		<if test='middleId != null and middleId != ""'>
+			AND a.category_middle_id = #{middleId}
 		</if>
 		ORDER BY a.sort_index
 	</select>

@@ -337,6 +337,9 @@ public class ManualService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> nextPageNumber(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		
 		Map<String, Object> data = new HashMap<String, Object>(); 
 		int nextPageNumber = this.manualDao.getNextPageNumber(params);
 		data.put("nextPageNumber", nextPageNumber);

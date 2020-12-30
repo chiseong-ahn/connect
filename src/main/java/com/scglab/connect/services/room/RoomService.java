@@ -1,5 +1,6 @@
 package com.scglab.connect.services.room;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
@@ -23,8 +29,8 @@ import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.socket.SocketMessageHandler;
 import com.scglab.connect.services.socket.SocketService;
 import com.scglab.connect.services.socket.SocketService.EventName;
-import com.scglab.connect.services.socket.SocketService.Target;
 import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.utils.JsonUtils;
 
 @Service
 public class RoomService {
@@ -301,25 +307,14 @@ public class RoomService {
 	 * @param response
 	 * @return
 	 */
-	public List<Map<String, Object>> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
-		List<Map<String, Object>> list = this.roomDao.findSearchJoinHistory(params);
+	public Map<String, Object> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		Map<String, Object> data = this.roomDao.findSearchJoinHistory(params);
 		
-		/*
-		for(Map<String, Object> obj : list) {
-			// 대화 메시지 조회
-			BigInteger roomId = (BigInteger) obj.get("room_id");
-			BigInteger startMessageId = (BigInteger) obj.get("start_message_id");
-			BigInteger endMessageId = (BigInteger) obj.get("end_message_id");
-			
-			obj.put("roomId", roomId);
-			obj.put("startMessageId", startMessageId);
-			obj.put("endMessageId", endMessageId);
-			List<Message> messages = this.messageDao.findRangeById(obj);
-			obj.put("messages", messages);
-		}
-		*/
+		String joinHistoryJson = DataUtils.getString(data, "joinHistoryJson", "");
+		List<Map<String, Object>> list = JsonUtils.getListMapFromString(joinHistoryJson);
+		data.put("joinHistoryJson", list);
 		
-		return list;
+		return data;
 	}
 	
 	

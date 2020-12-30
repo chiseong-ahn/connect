@@ -29,7 +29,7 @@ public class CustomerDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "findAllCount", params);
 	}
 	
-	public List<Map<String, Object>> findAll(Map<String, Object> params) {
+	public List<VCustomer> findAll(Map<String, Object> params) {
 		return this.sqlSession.selectList(this.namespace + "findAll", params);
 	}
 	
@@ -43,7 +43,7 @@ public class CustomerDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> findCustomer(Map<String, Object> params){
+	public VCustomer findCustomer(Map<String, Object> params){
 		return this.sqlSession.selectOne(this.namespace + "getDetail", params);
 	}
 	
@@ -169,7 +169,7 @@ public class CustomerDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public List<Map<String, Object>> findBlockMember(Map<String, Object> params){
+	public List<VCustomer> findBlockMember(Map<String, Object> params){
 		return this.sqlSession.selectList(this.namespace + "findBlockMember", params);
 	}
 	

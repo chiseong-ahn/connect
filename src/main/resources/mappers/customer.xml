@@ -4,6 +4,7 @@
 <mapper namespace="customer">
 
 	<resultMap type="com.scglab.connect.services.customer.Customer" id="customer"></resultMap>
+	<resultMap type="com.scglab.connect.services.customer.VCustomer" id="vcustomer"></resultMap>
 	
 	<!-- 고객 카운트 -->
 	<select id="findAllCount" parameterType="map" resultType="int">
@@ -21,9 +22,27 @@
 	</select>
 	
 	<!-- 고객 검색 -->
-	<select id="findAll" parameterType="map" resultType="map">
-		SELECT *
-		FROM   v_customer
+	<select id="findAll" parameterType="map" resultMap="vcustomer">
+		SELECT a.id 
+				,a.customer_id
+				,a.gasapp_member_number
+				,a.name
+				,a.tel_number
+				,a.create_date
+				,a.update_date
+				,a.update_member_id
+				,a.company_id
+				,a.is_block
+				,a.block_type
+				,a.remark
+				,a.block_member_id
+				,a.room_id
+				,a.speaker_id
+				,a.swear_count
+				,a.insult_count
+				,a.state
+				,a.block_date
+		FROM   v_customer a
 		WHERE  1=1
 		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 			<choose>
@@ -37,9 +56,27 @@
 	</select>
 	
 	<!-- 고객 상세 -->
-	<select id="getDetail" parameterType="map" resultType="map">
-		SELECT * 
-		FROM   v_customer
+	<select id="getDetail" parameterType="map" resultMap="vcustomer">
+		SELECT a.id 
+				,a.customer_id
+				,a.gasapp_member_number
+				,a.name
+				,a.tel_number
+				,a.create_date
+				,a.update_date
+				,a.update_member_id
+				,a.company_id
+				,a.is_block
+				,a.block_type
+				,a.remark
+				,a.block_member_id
+				,a.room_id
+				,a.speaker_id
+				,a.swear_count
+				,a.insult_count
+				,a.state
+				,a.block_date
+		FROM   v_customer a
 		WHERE  customer_id = #{id}
 	</select>
 	
@@ -51,9 +88,9 @@
 	</select>
 	
 	<!-- 고객 상세(gasapp_member_number) -->
-	<select id="getByGasappMemberNumber" parameterType="map" resultMap="customer">
+	<select id="getByGasappMemberNumber" parameterType="map" resultMap="vcustomer">
 		select *
-		from v_customer
+		from v_customer a
 		where gasapp_member_number = #{gasappMemberNumber}
 		and company_id = #{companyId}
 	</select>
@@ -118,7 +155,7 @@
 	</update>
 	
 	<!-- 블록인 사용자 목록 가져오기 -->
-	<select id="findBlockMember" parameterType="map" resultType="map">
+	<select id="findBlockMember" parameterType="map" resultMap="vcustomer">
 		SELECT *
 		FROM  v_customer
 		WHERE company_id = #{companyId}

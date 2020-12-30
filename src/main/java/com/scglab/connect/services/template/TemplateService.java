@@ -37,19 +37,7 @@ public class TemplateService {
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
 	
-	/**
-	 * 
-	 * @Method Name : findAll
-	 * @작성일 : 2020. 11. 13.
-	 * @작성자 : anchiseong
-	 * @변경이력 : 
-	 * @Method 설명 : 답변템플릿 목록 조회
-	 * @param params
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String, Object> findAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> search(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
@@ -83,6 +71,28 @@ public class TemplateService {
 		data.put("data", list);
 		
 		return data;
+	}
+	
+	/**
+	 * 
+	 * @Method Name : findAll
+	 * @작성일 : 2020. 11. 13.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 답변템플릿 목록 조회
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Map<String, Object>> findAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		List<Map<String, Object>> list = this.templateDao.findAll(params);
+		
+		return list;
 	}
 	
 	/**
@@ -233,6 +243,8 @@ public class TemplateService {
 			this.errorService.throwParameterErrorWithNames(errorParams);
 		}
 		
+		int templateId = DataUtils.getInt(params, "id", 0);
+		
 		Map<String, Object> data = null;
 		int result = 0;
 		
@@ -241,18 +253,19 @@ public class TemplateService {
 		if(result > 0) {
 			// 이전에 연결된 키워드정보 삭제.
 			this.templateDao.deleteTemplateKeywords(params);
-			if(params.containsKey("keywords")) {
-				String[] keywords = DataUtils.getObjectValue(params, "keywords", "").split(",");
-				this.logger.debug("keywords : " + keywords.toString());
 			
-				if(keywords.length > 0) {
-					for(String keyword : keywords) {
-						if(!DataUtils.getSafeValue(keyword).equals("")) {
-							params.put("keyword", keyword.trim());
-							
-							// 신규 키워드 연결.
-							this.templateDao.insertTemplateKeyword(params);
-						}
+			if(params.containsKey("keywordIds")) {
+				List<Integer> keywords = (List<Integer>)params.get("keywordIds");
+				this.logger.debug("keywords : " + keywords);
+				if(keywords != null) {
+					for(int keywordId : keywords) {
+						params.put("templateId", templateId);
+						params.put("keywordId", keywordId);
+						
+						this.logger.debug("params : " + params.toString());
+						
+						// 템플릿 키워드 연결.
+						this.templateDao.insertTemplateKeyword(params);
 					}
 				}
 				
@@ -260,7 +273,14 @@ public class TemplateService {
 				this.logger.debug("keywords is nothing!");
 			}
 			
+			params.put("id", templateId);
 			data = this.templateDao.getDetail(params);
+			
+			if(data != null) {
+				params.put("templateId", templateId);
+				List<Keyword> keywordList = this.keywordDao.getByTemplateId(params);
+				data.put("keywordList", keywordList);
+			}
 		}else {
 			throw new RuntimeException("error.template.update");
 		}
@@ -346,15 +366,17 @@ public class TemplateService {
 		data.put("success", result > 0 ? true : false);
 		return data;
 	}
-	public List<CategoryMiddle> findByCategoryLargeId(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	
+	/*
+	public List<Template> findByCategoryLargeId(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		return this.categoryDao.findCategoryMiddleByLargeId(params);
+		return this.templateDao.
 	}
 	
-	public List<CategorySmall> findByCategoryMiddleId(Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public List<Template> findByCategoryMiddleId(Map<String, Object> params, HttpServletRequest request) throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
@@ -362,5 +384,13 @@ public class TemplateService {
 		return this.categoryDao.findCategorySmallByMiddleId(params);
 	}
 	
+	public List<Template> findByCategorySmallId(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
+		return this.categoryDao.findCategorySmallByMiddleId(params);
+	}
 	
+	*/
 }

@@ -38,14 +38,14 @@ public class CustomerController {
 	
 	@Auth
 	@RequestMapping(name="관심고객 지정 / 해제", method = RequestMethod.PUT, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> block(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public VCustomer block(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		return this.customerService.block(params, request);
 	}
 	
 	@Auth
 	@RequestMapping(name="관심고객 해제 : 초기화", method = RequestMethod.DELETE, value = "/{id}/block", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> unBlock(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public VCustomer unBlock(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
 		params.put("id", id);
 		return this.customerService.unBlock(params, request);
 	}
