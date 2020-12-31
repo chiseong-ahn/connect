@@ -248,23 +248,23 @@ this.socket.ws.disconnect();
 ### 1. 메시지 발송.
 ```json
 {
-	"eventName":"MESSAGE",
-	"data":{
-		"messageType":0,
-		"message":"1111",
-		"messageDetail":""
-	}
+    "eventName":"MESSAGE",
+    "data":{
+	"messageType":0,
+	"message":"1111",
+	"messageDetail":""
+    }
 }
 ```
 
 ### 2. 메시지 더보기.
 ```json
 {
-	"eventName":"MESSAGE_LIST",
-	"data":{
-		"messageAdminType":0,
-		"startId":"31"
-	}
+    "eventName":"MESSAGE_LIST",
+    "data":{
+	"messageAdminType":0,
+	"startId":"31"
+    }
 }
 ```
 
@@ -282,18 +282,18 @@ this.socket.ws.disconnect();
 ### 4. 메시지 삭제
 ```json
 {
-    "eventName": "END",
-    "data": {}
+    "eventName": "DELETE_MESSAGE",
+    "data": {
+        "id": 10
+    }
 }
 ```
 
 ### 5. 상담 종료.
 ```json
 {
-    "eventName": "DELETE_MESSAGE",
-    "data": {
-        "id": 10
-    }
+    "eventName": "END",
+    "data": {}
 }
 ```
 
