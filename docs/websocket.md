@@ -27,40 +27,40 @@ this.socket.ws = Stomp.over(sock);
 this.socket.ws.connect(
     {"Authorization": "Bearer " + token},		// 연결시 전달할 헤더.
     fnSuccessCallback, 					// 성공시 홀출되는 함수.
-    fnFailCallback						// 실패시 호출되는 함수.
+    fnFailCallback					// 실패시 호출되는 함수.
 );
 
 // 고객(가스앱 회원) 연결.
 // companyId - 가스사 관리번호(서울-1, 인천-2)
 // gasappMemberNumber - 가스앱 고객 관리번호
 this.socket.ws.connect(
-    {"companyId": "1", "gasappMemberNumber": 3825},		// 연결시 전달할 헤더.
+    {"companyId": "1", "gasappMemberNumber": 3825},	// 연결시 전달할 헤더.
     fnSuccessCallback, 					// 성공시 홀출되는 함수.
-    fnFailCallback						// 실패시 호출되는 함수.
+    fnFailCallback					// 실패시 호출되는 함수.
 );
 ```
 
 ### 2. 구독 | Subscribe
-- 개인 채널은 1회 연결.(개인 메시지 수신을 위해 구독)
-- 대기룸과 채팅룸 채널은 구독이 교체 됨.(대기룸 <--> 채팅룸)
+- 개인 채널과 대기룸 채널은 최초 1회 연결.
+- 채팅룸 채널은 구독하여 대화하고 채팅방을 나갈경우 구독해제한다.
 ```javascript
 // 개인메시지 수신전용 구독(Session 기반)
-this.socket.subscribePrivate = this.socket.ws.subscribe(
-    "user/session/message",     // 구독채널명
+this.socket.ws.subscribe(
+    "/user/session/message",     // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
 
 // 대기 룸 구독.
-this.socket.subscribeLobby = this.socket.ws.subscribe(
-    "sub/socket/room/LOBBY[회사번호]",  // 구독채널명
-    fnReceiveMessage,           // 메세지 수신함수
-    headers                     // 구독시 전송할 헤더 
+this.socket.ws.subscribe(
+    "/sub/socket/room/LOBBY[회사번호]",     // 구독채널명
+    fnReceiveMessage,           	 // 메세지 수신함수
+    headers                     	 // 구독시 전송할 헤더 
 );
 
 // 채팅 룸 구독.(고객과의 대화방)
 this.socket.subscribe = this.socket.ws.subscribe(
-    "sub/socket/room/[룸 번호]",  // 구독채널명
+    "/sub/socket/room/[룸 번호]",  // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
@@ -69,8 +69,8 @@ this.socket.subscribe = this.socket.ws.subscribe(
 ### 3. 메세지 전송 | Send
 ```javascript
 this.socket.ws.send(
-    "pub/socket/message",   // 메시지 발송URI
-    {},                   // 전송할 헤더
+    "/pub/socket/message",   // 메시지 발송URI
+    {},                     // 전송할 헤더
     payload                 // 전송할 데이터
 )
 ```
@@ -208,7 +208,7 @@ this.socket.ws.disconnect();
   "roomId" : "147",
   "data" : {
     "success" : true,
-    "id" : 3098
+    "id" : 3098		// 삭제된 메시지 id
   }
 }
 ```
@@ -238,7 +238,7 @@ this.socket.ws.disconnect();
     "companyId" : "1",
     "roomId" : "147",
     "data" : {
-        "reason" : "서버에 연결할 수 없습니다."
+        "reason" : "서버에 연결할 수 없습니다."	// 에러 발생 사유
     }
 }
 ```
@@ -248,23 +248,23 @@ this.socket.ws.disconnect();
 ### 1. 메시지 발송.
 ```json
 {
-	"eventName":"MESSAGE",
-	"data":{
-		"messageType":0,
-		"message":"1111",
-		"messageDetail":""
-	}
+    "eventName":"MESSAGE",
+    "data":{
+	"messageType":0,	// 메시지유형(0-일반텍스트, 1-이미지)
+	"message":"1111",	// 메시지 내용
+	"messageDetail":""	// 메시지 추가내용(이미지일 경우 이미지경로)
+    }
 }
 ```
 
 ### 2. 메시지 더보기.
 ```json
 {
-	"eventName":"MESSAGE_LIST",
-	"data":{
-		"messageAdminType":0,
-		"startId":"31"
-	}
+    "eventName":"MESSAGE_LIST",
+    "data":{
+	"messageAdminType":0,
+	"startId":"31"		// 더보기 할 메시지 시작번호
+    }
 }
 ```
 
@@ -273,8 +273,8 @@ this.socket.ws.disconnect();
 {
     "eventName": "READ_MESSAGE",
     "data": {
-        "startId": 3081,
-        "endId": 3083
+        "startId": 3081,	// 읽은메시지의 시작번호
+        "endId": 3083		// 읽은메시지의 마지막번호
     }
 }
 ```
@@ -282,18 +282,18 @@ this.socket.ws.disconnect();
 ### 4. 메시지 삭제
 ```json
 {
-    "eventName": "END",
-    "data": {}
+    "eventName": "DELETE_MESSAGE",
+    "data": {
+        "id": 10	// 삭제할 메시지 id
+    }
 }
 ```
 
 ### 5. 상담 종료.
 ```json
 {
-    "eventName": "DELETE_MESSAGE",
-    "data": {
-        "id": 10
-    }
+    "eventName": "END",
+    "data": {}
 }
 ```
 
