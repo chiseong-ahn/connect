@@ -71,7 +71,7 @@ public class RoomController {
 	
 	@Auth
 	@RequestMapping(name="이전 상담 검색", method = RequestMethod.GET, value = "/{id}/findSearchJoinHistory", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> findSearchJoinHistory(@PathVariable Long id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<Map<String, Object>> findSearchJoinHistory(@PathVariable Long id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		params.put("roomId", id);
 		return this.roomService.findSearchJoinHistory(params, request, response);

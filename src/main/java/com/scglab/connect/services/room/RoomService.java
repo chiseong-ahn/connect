@@ -307,14 +307,23 @@ public class RoomService {
 	 * @param response
 	 * @return
 	 */
-	public Map<String, Object> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
-		Map<String, Object> data = this.roomDao.findSearchJoinHistory(params);
+	public List<Map<String, Object>> findSearchJoinHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
+		List<Map<String, Object>> list = this.roomDao.findSearchJoinHistory(params);
+		if(list != null) {
+			if(list.size() > 0) {
+				for(Map<String, Object> obj : list) {
+					if(obj != null) {
+						String joinHistoryJson = DataUtils.getString(obj, "joinHistoryJson", "");
+						if(!joinHistoryJson.equals("")) {
+							List<Map<String, Object>> histList = JsonUtils.getListMapFromString(joinHistoryJson);
+							obj.put("joinHistoryJson", histList);
+						}
+					}
+				}
+			}
+		}
 		
-		String joinHistoryJson = DataUtils.getString(data, "joinHistoryJson", "");
-		List<Map<String, Object>> list = JsonUtils.getListMapFromString(joinHistoryJson);
-		data.put("joinHistoryJson", list);
-		
-		return data;
+		return list;
 	}
 	
 	

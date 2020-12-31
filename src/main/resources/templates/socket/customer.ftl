@@ -19,6 +19,12 @@
     <div class="container" id="app" v-cloak>
         <div class="col-md-3">
 	    	<h4>고객용 채팅</h4>
+			<select v-model="companyId">
+				<option value="1">서울도시가스</option>
+				<option value="2">인천도시가스</option>
+			</select>
+			<input type="text" v-model="gasappMemberNumber" />
+			<button type="button" @click="connect">연결</button>
 	    	<ul class="list-group">
 	            <li class="list-group-item" v-for="obj in messages">
 	            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
@@ -68,9 +74,9 @@
 	            	sendEndPoint: '/pub/socket/message',	// 메세지 전송 end point
 	            	roomPrefix: '/sub/socket/room/',			// 조인(구독)룸 end point의 prefix
 	            	sessionEndPoint: '/user/session/message',	// 개인메세지를 받을 구독주소.
-	            	roomId: '147',								// 현재 조인(구독)중인 방
+	            	roomId: '',								// 현재 조인(구독)중인 방
             	},
-            	companyId: 1,								// 가스사 Id
+            	companyId: "1",								// 가스사 Id
             	header: {},				// 공통 header
             	profile: {},
             	messages: [],			// 대화메세지
@@ -82,21 +88,15 @@
             },
             
             mounted() {
-            	this.init();
             },
             
             methods: {
             	/**************************************************************
-                * 초기화
-                **************************************************************/
-                init: function(){
-                	this.connect();
-                },	
-            
-            	/**************************************************************
                 * 웹소켓 연결
                 **************************************************************/
                 connect: function(){
+                
+                	console.log('connect!');
                 
                 	// SockJs 객체 초기화.
                 	var connectUrl = "";
@@ -160,12 +160,6 @@
                 	
                 	// 조인방 이름 생성.(예, /sub/chat/room/93)
                 	var uri = this.socket.roomPrefix + this.socket.roomId;
-                	
-                	// 구독
-                	this.socket.subscribe = this.socket.ws.subscribe(
-                		this.socket.roomPrefix + this.socket.roomId, // 구독 URI
-                		this.receiveMessage, 				// 구독 성공시 호출되는 함수.	 
-                	);
                 },
                 
 
@@ -195,9 +189,19 @@
 					// 각 이벤트에 따른 처리.
 					switch(eventName){
 					
+						case "LOGINED" : // 로그인 됨.
+							break;
+							
+					
 						case "JOINED" :	// 조인완료 수신.
 							// todo
-							// 메세지 전송.
+							// 구독
+							this.socket.roomId = data.profile.roomId;
+		                	this.socket.subscribe = this.socket.ws.subscribe(
+		                		this.socket.roomPrefix + this.socket.roomId, // 구독 URI
+		                		this.receiveMessage, 				// 구독 성공시 호출되는 함수.	 
+		                	);
+							
 		                	break;
 							
 						case "ROOM_DETAIL" : 	// 방 상세정보 수신.
@@ -234,7 +238,7 @@
 							this.messages.push(data.message);
 							
 							// 고객의 메세지일 경우에 읽음 메시지 전송.
-							if(data.message.isCustomer == 1){
+							if(data.message.isEmployee == 1){
 								// 읽음 알림.
 								data = {
 			                		speakerId: this.profile.speakerId,

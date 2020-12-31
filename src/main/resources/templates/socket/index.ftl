@@ -191,9 +191,9 @@
 		       	<h4>상담목록</h4>
 		    	<ul class="list-group">
 		            <li class="list-group-item" v-for="(obj, index) in histories" v-bind:key="obj.id" @click="toggleHistory(index)">
-		                {{obj.create_date}} - {{obj.end_date}}
+		                {{obj.createDate}} - {{obj.endDate}}
 		                <ul v-if="obj.toggle">
-		            		<li v-for="(message, idx) in obj.messages">
+		            		<li v-for="(message, idx) in obj.histories">
 		            			<strong>[시스템:{{message.isSystemMessage}}, 상담사:{{message.isEmployee}}, 고객:{{message.isCustomer}}, 작성자:{{message.speakerName}}]</strong>
 		                <br />&gt;&gt; {{message.message}} {{message.createDate}}</a>
 		            		</li>
@@ -276,15 +276,12 @@
 				    {
 				      "deadlineFlag": "",
 				      "requestYm": ""
-				    },
-				    {
-				      "deadlineFlag": "",
-				      "requestYm": ""
 				    }
 				  ]
 				},	// 선택된 사용계약상세정보
 				useContractNum: "",		// 사용계약번호
 				requestYm: '',			// 결제연월
+				deadlineFlag: '',
 				messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
 				selectedRoom: undefined,	// 선택된 룸 정보
@@ -494,10 +491,10 @@
                 	);
                 	
             		// 이전 상담목록 조회
-                	// this.getHistory(this.socket.roomId);
+                	this.getHistory(this.socket.roomId);
                 	
                 	// 계약정보 조회
-                	// this.getContracts();
+                	this.getContracts();
                 },
                 
 
@@ -633,6 +630,14 @@
                 * 서버로 메세지 발송.
                 **************************************************************/
                 sendMessage: function(eventName, data){
+                
+                	data = {
+                		messageType: 0,
+                		message: this.message,
+                		messageDetail: '',
+                		templateId: '1',
+                	}
+                
                 	uri = this.socket.sendEndPoint,
                 	header = {},
                 	payload = {
@@ -826,6 +831,7 @@
 						// 월별 선택 초기화.
 						if(this.selectedContract.history.length > 0){
 							this.requestYm = this.selectedContract.history[0].requestYm;
+							this.deadlineFlag = this.selectedContract.history[0].deadlineFlag;
 						}
 						
                     }, function(e){
@@ -838,7 +844,7 @@
 					var gasappMemberNumber = this.selectedRoom.gasappMemberNumber;
 					console.log('gasappMemberNumber : ' + gasappMemberNumber);
 					
-					var uri = '/api/customer/' + gasappMemberNumber + '/contracts/' + this.useContractNum + '/bil?requestYm=' + this.requestYm + '&deadlineFlag=';
+					var uri = '/api/customer/' + gasappMemberNumber + '/contracts/' + this.useContractNum + '/bil?requestYm=' + this.requestYm + '&deadlineFlag=' + this.deadlineFlag;
                     axios.get(uri, this.header).then(response => {
                     	this.contractBil = response.data;
                     	
