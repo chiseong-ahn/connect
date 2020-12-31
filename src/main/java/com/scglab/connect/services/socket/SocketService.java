@@ -308,7 +308,7 @@ public class SocketService {
 			sendData.put("endId", maxMessageId);
 			
 			// 나를 제외하고 메시지 발송.
-			this.socketMessageHandler.sendMessageToOther(EventName.READ_MESSAGE, profile, sendData);
+			this.socketMessageHandler.sendMessageToBroadcast(EventName.READ_MESSAGE, profile, sendData);
 		}
 		
 		
