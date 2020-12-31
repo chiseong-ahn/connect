@@ -208,7 +208,7 @@ this.socket.ws.disconnect();
   "roomId" : "147",
   "data" : {
     "success" : true,
-    "id" : 3098
+    "id" : 3098		// 삭제된 메시지 id
   }
 }
 ```
@@ -238,7 +238,7 @@ this.socket.ws.disconnect();
     "companyId" : "1",
     "roomId" : "147",
     "data" : {
-        "reason" : "서버에 연결할 수 없습니다."
+        "reason" : "서버에 연결할 수 없습니다."	// 에러 발생 사유
     }
 }
 ```
@@ -250,9 +250,9 @@ this.socket.ws.disconnect();
 {
     "eventName":"MESSAGE",
     "data":{
-	"messageType":0,
-	"message":"1111",
-	"messageDetail":""
+	"messageType":0,	// 메시지유형(0-일반텍스트, 1-이미지)
+	"message":"1111",	// 메시지 내용
+	"messageDetail":""	// 메시지 추가내용(이미지일 경우 이미지경로)
     }
 }
 ```
@@ -263,7 +263,7 @@ this.socket.ws.disconnect();
     "eventName":"MESSAGE_LIST",
     "data":{
 	"messageAdminType":0,
-	"startId":"31"
+	"startId":"31"		// 더보기 할 메시지 시작번호
     }
 }
 ```
@@ -273,8 +273,8 @@ this.socket.ws.disconnect();
 {
     "eventName": "READ_MESSAGE",
     "data": {
-        "startId": 3081,
-        "endId": 3083
+        "startId": 3081,	// 읽은메시지의 시작번호
+        "endId": 3083		// 읽은메시지의 마지막번호
     }
 }
 ```
@@ -284,7 +284,7 @@ this.socket.ws.disconnect();
 {
     "eventName": "DELETE_MESSAGE",
     "data": {
-        "id": 10
+        "id": 10	// 삭제할 메시지 id
     }
 }
 ```
