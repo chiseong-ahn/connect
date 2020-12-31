@@ -41,18 +41,18 @@ this.socket.ws.connect(
 ```
 
 ### 2. 구독 | Subscribe
-- 개인 채널은 1회 연결.(개인 메시지 수신을 위해 구독)
-- 대기룸과 채팅룸 채널은 구독이 교체 됨.(대기룸 <--> 채팅룸)
+- 개인 채널과 대기룸 채널은 최초 1회 연결.
+- 채팅룸 채널은 구독하여 대화하고 채팅방을 나갈경우 구독해제한다.
 ```javascript
 // 개인메시지 수신전용 구독(Session 기반)
-this.socket.subscribePrivate = this.socket.ws.subscribe(
+this.socket.ws.subscribe(
     "user/session/message",     // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
 
 // 대기 룸 구독.
-this.socket.subscribeLobby = this.socket.ws.subscribe(
+this.socket.ws.subscribe(
     "sub/socket/room/LOBBY[회사번호]",     // 구독채널명
     fnReceiveMessage,           	 // 메세지 수신함수
     headers                     	 // 구독시 전송할 헤더 
