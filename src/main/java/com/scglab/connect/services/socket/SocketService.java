@@ -71,6 +71,7 @@ public class SocketService {
 		READ_MESSAGE,
 		ROOM_DETAIL,
 		ASSIGN, ASSIGNED, 
+		LOGINED,
 		JOIN, JOINED,
 		AUTO_MESSAGE,
 		WELCOME_MESSAGE, START_MESSAGE,
@@ -118,6 +119,15 @@ public class SocketService {
 				String companyId = ((List<String>) nativeHeaders.get("companyId")).get(0);
 				String gasappMemberNumber = ((List<String>) nativeHeaders.get("gasappMemberNumber")).get(0);
 				profile = loginCustomer(companyId, gasappMemberNumber);
+				
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("companyId", companyId);
+				params.put("gasappMemberNumber", gasappMemberNumber);
+				VCustomer customer = this.customerDao.findByGassappMemberNumber(params);
+				this.logger.debug("customer : " + customer);
+				
+				profile.setRoomId(customer.getRoomId() + "");
+				this.logger.info("connect customer : " + profile.toString());
 			}
 		}
 		
@@ -137,12 +147,6 @@ public class SocketService {
 		this.logger.info("[Subscribe] headerAccessor : " + headerAccessor.toString());
 		String destination = headerAccessor.getDestination();
 		
-		// 개인룸 및 대기룸 조인일 경우.
-		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) || destination.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1) {
-			// 별도 작업을 하지 않음.
-			return;
-		}
-		
 		//MessageHeaders headers = headerAccessor.getMessageHeaders();
 		//String destination = (String) headers.get("simpDestination");
 		String roomId = destination.replaceAll(Constant.SOCKET_SIMPLE_BROKER + Constant.SOCKET_ROOM_PREFIX + "/", "");
@@ -153,6 +157,21 @@ public class SocketService {
 		
 		// [Redis] SessionId에 대한 토큰 추출
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
+		this.logger.debug("subscribe profile - " + profile);
+		
+		
+		// 개인룸 및 대기룸 조인일 경우.
+		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) || destination.indexOf(Constant.SOCKET_LOBBY_ROOM) > -1) {
+			
+			if(profile.getIsCustomer() == 1) {
+				Map<String, Object> data = new HashMap<String, Object>();
+				data.put("profile", profile);
+				this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
+			}
+			
+			return;
+		}
+		
 		profile.setRoomId(roomId);
 		this.chatRoomRepository.setProfileBySessionId(sessionId, profile);
 
