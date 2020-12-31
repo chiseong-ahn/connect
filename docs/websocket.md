@@ -46,21 +46,21 @@ this.socket.ws.connect(
 ```javascript
 // 개인메시지 수신전용 구독(Session 기반)
 this.socket.ws.subscribe(
-    "user/session/message",     // 구독채널명
+    "/user/session/message",     // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
 
 // 대기 룸 구독.
 this.socket.ws.subscribe(
-    "sub/socket/room/LOBBY[회사번호]",     // 구독채널명
+    "/sub/socket/room/LOBBY[회사번호]",     // 구독채널명
     fnReceiveMessage,           	 // 메세지 수신함수
     headers                     	 // 구독시 전송할 헤더 
 );
 
 // 채팅 룸 구독.(고객과의 대화방)
 this.socket.subscribe = this.socket.ws.subscribe(
-    "sub/socket/room/[룸 번호]",  // 구독채널명
+    "/sub/socket/room/[룸 번호]",  // 구독채널명
     fnReceiveMessage,           // 메세지 수신함수
     headers                     // 구독시 전송할 헤더 
 );
@@ -69,7 +69,7 @@ this.socket.subscribe = this.socket.ws.subscribe(
 ### 3. 메세지 전송 | Send
 ```javascript
 this.socket.ws.send(
-    "pub/socket/message",   // 메시지 발송URI
+    "/pub/socket/message",   // 메시지 발송URI
     {},                     // 전송할 헤더
     payload                 // 전송할 데이터
 )
