@@ -27,16 +27,16 @@ this.socket.ws = Stomp.over(sock);
 this.socket.ws.connect(
     {"Authorization": "Bearer " + token},		// 연결시 전달할 헤더.
     fnSuccessCallback, 					// 성공시 홀출되는 함수.
-    fnFailCallback						// 실패시 호출되는 함수.
+    fnFailCallback					// 실패시 호출되는 함수.
 );
 
 // 고객(가스앱 회원) 연결.
 // companyId - 가스사 관리번호(서울-1, 인천-2)
 // gasappMemberNumber - 가스앱 고객 관리번호
 this.socket.ws.connect(
-    {"companyId": "1", "gasappMemberNumber": 3825},		// 연결시 전달할 헤더.
+    {"companyId": "1", "gasappMemberNumber": 3825},	// 연결시 전달할 헤더.
     fnSuccessCallback, 					// 성공시 홀출되는 함수.
-    fnFailCallback						// 실패시 호출되는 함수.
+    fnFailCallback					// 실패시 호출되는 함수.
 );
 ```
 
@@ -53,9 +53,9 @@ this.socket.subscribePrivate = this.socket.ws.subscribe(
 
 // 대기 룸 구독.
 this.socket.subscribeLobby = this.socket.ws.subscribe(
-    "sub/socket/room/LOBBY[회사번호]",  // 구독채널명
-    fnReceiveMessage,           // 메세지 수신함수
-    headers                     // 구독시 전송할 헤더 
+    "sub/socket/room/LOBBY[회사번호]",     // 구독채널명
+    fnReceiveMessage,           	 // 메세지 수신함수
+    headers                     	 // 구독시 전송할 헤더 
 );
 
 // 채팅 룸 구독.(고객과의 대화방)
@@ -70,7 +70,7 @@ this.socket.subscribe = this.socket.ws.subscribe(
 ```javascript
 this.socket.ws.send(
     "pub/socket/message",   // 메시지 발송URI
-    {},                   // 전송할 헤더
+    {},                     // 전송할 헤더
     payload                 // 전송할 데이터
 )
 ```
