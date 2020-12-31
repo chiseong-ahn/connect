@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class Company {
 	
-	private int id;
+	private String id;
 	private String createDate;
 	private String updateDate;
 	private int updateMemberId;

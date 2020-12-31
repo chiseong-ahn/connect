@@ -68,6 +68,9 @@ public class SocketController {
     	}else if(eventName.equals(EventName.DELETE_MESSAGE)) {	// 메세지 삭제 요청.
     		this.socketService.deleteMessage(profile, socketData);
     		
+    	}else if(eventName.equals(EventName.REVIEW)) {	// 리뷰 요청.
+    		this.socketService.review(profile, socketData);
+    		
     	}else if(eventName.equals(EventName.END)) {			// 고객의 상담종료 요청.
     		this.socketService.end(profile, socketData);
     		

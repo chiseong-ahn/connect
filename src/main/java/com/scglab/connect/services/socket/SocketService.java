@@ -79,6 +79,7 @@ public class SocketService {
 		SAVE_HISTORY,
 		DELETE_MESSAGE,
 		LEAVE,
+		REVIEW,
 		END,
 		RELOAD, RELOAD_READY_ROOM
 	}
@@ -530,6 +531,15 @@ public class SocketService {
 		// this.socketMessageHandler.sendMessageToSelf(EventName.SAVE_HISTORY, profile, sendData);
 	}
 	
+	// 리뷰 처리.
+	public void review(Profile profile, SocketData payload) {
+		Map<String, Object> data = payload.getData();
+		Map<String, Object> sendData = null;
+		Map<String, Object> params = null;
+		
+		
+	}
+	
 	
 	// 메세지 삭제
 	public void deleteMessage(Profile profile, SocketData payload) {
@@ -669,7 +679,7 @@ public class SocketService {
 		params.put("roomId", payload.getRoomId());
 		params.put("speakerId", profile.getSpeakerId());
 		params.put("messageAdminType", DataUtils.getInt(data, "messageAdminType", 0));
-		params.put("startId", DataUtils.getLong(params, "startId", 0));
+		params.put("startId", DataUtils.getLong(data, "startId", 0));
 		params.put("intervalDay", Constant.DEFAULT_MESSAGE_INTERVAL_DAY);
 		params.put("pageSize", Constant.DEFAULT_MESSAGE_MORE_PAGE_SIZE);
 		List<Message> messages = this.messageDao.findByRoomIdToSpeaker(params);
