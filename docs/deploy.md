@@ -1,6 +1,6 @@
 # 배포
 ## 1. 전체 프로세스
-> 빌드 -> WAR 전송  -> 백업 -> 배포 -> 서버 재구동 -> Log 확인 -> 서비스 확인
+> 빌드 -> WAR 전송  -> 백업(최근 10개) -> 배포(WAR) -> 서버 재구동 -> Log 확인 -> 서비스 확인
 
 
 ## 2. 세부 설명.
@@ -13,7 +13,7 @@ mvn clean install
 or
 
 # eclipse
-프로젝트 선택 -> 마우스오른쪽 클릭 -> Run as 선택 -> Maven install 선택
+프로젝트 선택 -> 마우스오른쪽 클릭 -> Run as 선택 -> Maven install 실행.
 ``` 
 
 ### (2) 파일전송
@@ -35,6 +35,6 @@ $ ./log.sh
 ```
 
 ### (5) 서비스 구동 확인.
-- https://cstalk-dev.gasapp.co.kr/api/document
+- https://cstalk-dev.gasapp.co.kr
 
 [< 목록으로 돌아가기](manual.md)
