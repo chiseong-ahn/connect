@@ -41,7 +41,12 @@ public class GlobalExceptionHandler {
 		
 		HttpStatus httpStatus = null;
 		this.logger.debug("Exception reason code : " + e.getMessage());
-		String reason = this.messageService.getMessage(e.getMessage());	
+		
+		String reason = "";
+		try {
+			reason = this.messageService.getMessage(e.getMessage());
+		}catch(Exception e2) {}
+		
 		if(reason == null) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), reason, e.getStackTrace()[0]);

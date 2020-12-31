@@ -17,11 +17,12 @@ public class Constant {
 	public final static String	SOCKET_APPLICATION_DESTINATION_PREFIX = "/pub";
 	public final static String	SOCKET_SIMPLE_BROKER = "/sub";
 	public final static String	SOCKET_USER_DESTINATION_PREFIX = "/user";
+	public final static String	SOCKET_USER_SUBSCRIBE_URI = "/session/message";		// 소켓 수신채널의 prefix
 	public final static String	SOCKET_RECEIVE_URI = "/socket/message";		// 소켓 수신채널의 prefix
 	public final static String	SOCKET_ENDPOINT = "/ws";
 	public final static String	SOCKET_ROOM_PREFIX = "/socket/room";		// 소켓 채널의 prefix
 	public final static String	SOCKET_LOBBY_ROOM = "LOBBY";
-	public final static String	SOCKET_PRIVATE_ROOM = SOCKET_USER_DESTINATION_PREFIX + SOCKET_RECEIVE_URI;		// 유저 수신채
+	public final static String	SOCKET_PRIVATE_ROOM = SOCKET_USER_DESTINATION_PREFIX + SOCKET_USER_SUBSCRIBE_URI;		// 유저 수신채
 	
 	public final static long	JSONTOKEN_EXPIRE = 60 * 60 * 24 * 1000 * 7;		// 토큰의 유효기간 
 	//public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";	// 토큰의 비밀키

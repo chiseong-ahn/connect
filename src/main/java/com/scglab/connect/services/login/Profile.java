@@ -20,7 +20,7 @@ public class Profile implements Serializable {
 	private int isMember;
 	private int isCustomer;
 	private String loginName;
-	private int speakerId;
+	private long speakerId;
 	private String name;
 	private String sessionId;
 	private Map<String, Object> companyUseConfigJson;

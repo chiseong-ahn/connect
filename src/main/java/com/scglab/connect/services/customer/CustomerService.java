@@ -147,7 +147,7 @@ public class CustomerService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		this.customerDao.regist(params);
-		Customer customer = this.customerDao.findByGassappMemberNumber(params);
+		VCustomer customer = this.customerDao.findByGassappMemberNumber(params);
 		this.logger.debug("customer : " + customer);
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -266,9 +266,19 @@ public class CustomerService {
 		String requestYm = DataUtils.getString(params, "requestYm", "");
 		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
 		
-		if(!useContractNum.equals("")) {
-			return company.contractBill(useContractNum, requestYm, deadlineFlag);
-		}
-		return null;
+		String errorParams = "";
+	    if(!this.commonService.valid(params, "requestYm"))
+	        errorParams = this.commonService.appendText(errorParams, "청구연월-requestYm");
+	    
+	    if(!this.commonService.valid(params, "deadlineFlag"))
+	        errorParams = this.commonService.appendText(errorParams, "납기구분-deadlineFlag");
+	    
+	    // 파라미터 유효성 검증.
+	    if(!errorParams.equals("")) {
+	        // 필수파라미터 누락에 따른 오류 유발처리.
+	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+		
+		return company.contractBill(useContractNum, requestYm, deadlineFlag);
 	}
 }

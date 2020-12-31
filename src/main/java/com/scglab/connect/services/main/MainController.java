@@ -35,6 +35,7 @@ public class MainController {
 		return "talk/room";
 	}
 	
+	
 	@RequestMapping(method = RequestMethod.GET, name = "관리자메뉴 > 계정관리", value = "/api/admin/emp", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String adminEmp(HttpServletRequest request, HttpServletResponse response) {
 		return "admin/emp";
@@ -43,6 +44,11 @@ public class MainController {
 	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/api/socket", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String socket(HttpServletRequest request, HttpServletResponse response) {
 		return "socket/index";
+	}
+
+	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/api/socket/customer", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String customerTallk(HttpServletRequest request, HttpServletResponse response) {
+		return "socket/customer";
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/api/upload", produces = MediaType.APPLICATION_JSON_VALUE)

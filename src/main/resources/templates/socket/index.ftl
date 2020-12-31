@@ -17,27 +17,20 @@
   </head>
   <body>
     <div class="container" id="app" v-cloak>
+    	<!--
         <div class="row">
             <div class="col-md-6">
             	<span>로그인 : {{profile.loginName}} </span><br />
             	<span>기본룸 : {{socket.subscribeLobby}}</span><br />
             	<span>개인룸 : {{socket.subscribePrivate}}</span><br />
             	<span>조인룸 : {{socket.roomId}} - {{socket.subscribe}}</span><br />
-            	<!--<span>선택룸 : {{selectedRoom}}</span>-->
             </div>
             <div class="col-md-6 text-right">
                 <a class="btn btn-primary btn-sm" @click="logout">로그아웃</a>
             </div>
         </div>
+        -->
         <div class="row">
-        	<div class="col-md-2">
-        		<ul>
-        			<li><a href="/page/main" class="btn btn-default" type="button">상담채팅</a></li>
-        			<li><a href="/page/template" class="btn btn-default" type="button">답변템플릿</a></li>
-        			<li><a href="/page/helper" class="btn btn-default" type="button">답변도우미</a></li>
-        			<li><a href="/admin/emp" class="btn btn-default" type="button">관리자메뉴</a></li>
-        		</ul>
-        	</div>
         	<div class="col-md-3">
 		        <h4>상담대기</h4>
 		        <ul>
@@ -97,7 +90,7 @@
 		            </li>
 		        </ul>
 		    </div>
-		    <div class="col-md-3">
+		    <div class="col-md-6">
 		    	<h4>상담채팅 - </h4>
 		    	<span v-if="selectedRoom != undefined"><button type="button" @click="leave()">채팅나가기</button></span>
 		    	<ul  v-if="selectedRoom != undefined" class="list-group">
@@ -235,7 +228,7 @@
             		connectEndPoint: "/ws",			// 연결 end point
 	            	sendEndPoint: '/pub/socket/message',	// 메세지 전송 end point
 	            	roomPrefix: '/sub/socket/room/',			// 조인(구독)룸 end point의 prefix
-	            	sessionEndPoint: '/user/socket/message',	// 개인메세지를 받을 구독주소.
+	            	sessionEndPoint: '/user/session/message',	// 개인메세지를 받을 구독주소.
 	            	lobbyName: 'LOBBY1',					// 서울도시가스 조인(구독) 기본룸 Id (인천도시가스 - LOBBY2)
 	            	roomId: '',								// 현재 조인(구독)중인 방
 	            	options: {

@@ -32,6 +32,7 @@ import com.scglab.connect.services.common.service.PushService;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
+import com.scglab.connect.services.customer.VCustomer;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.member.Member;
@@ -690,7 +691,7 @@ public class SocketService {
 		this.customerDao.regist(params);
 		
 		// 고객정보 조회.
-		Customer customer = this.customerDao.findByGassappMemberNumber(params);
+		VCustomer customer = this.customerDao.findByGassappMemberNumber(params);
 		this.logger.debug("customer : " + customer);
 		
 		Profile profile = null;

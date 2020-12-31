@@ -71,7 +71,7 @@ public class CustomerDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Customer findByGassappMemberNumber(Map<String, Object> params){
+	public VCustomer findByGassappMemberNumber(Map<String, Object> params){
 		return this.sqlSession.selectOne(this.namespace + "getByGasappMemberNumber", params);
 	}
 	

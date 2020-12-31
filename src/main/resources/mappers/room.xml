@@ -639,6 +639,8 @@
 			from room r 
 			where 1=1
 			and r.chatid = #{chatId}
+			order by r.id desc
+			limit 1
 		)
 		order by id desc
 		limit 1

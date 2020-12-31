@@ -102,7 +102,7 @@ spring:
       enabled: true
       
 domain:
-  cstalk: cstalk-local.gasapp.co.kr
+  cstalk: cstalk-dev.gasapp.co.kr
   cstalk-dev: cstalk-dev.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
   relay-inc: relay-inc-dev.gasapp.co.kr
@@ -134,7 +134,7 @@ spring:
     web-application-type: servlet
 
 domain:
-  sdtalk: cstalk-dev.gasapp.co.kr
+  cstalk: cstalk-dev.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
   relay-inc: relay-inc-dev.gasapp.co.kr
   
@@ -145,7 +145,7 @@ logging:
   config: 'classpath:config/logback-dev.xml'
 
 relay:
-  use-example: true
+  use-example: false
 ---
 # 운영환경 
 server:
@@ -163,7 +163,7 @@ spring:
     web-application-type: servlet
 
 domain:
-  sdtalk: cstalk.gasapp.co.kr
+  cstalk: cstalk.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
   relay-inc: relay-inc.gasapp.co.kr
   

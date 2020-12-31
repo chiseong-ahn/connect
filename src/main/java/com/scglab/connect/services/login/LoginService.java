@@ -20,6 +20,7 @@ import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
+import com.scglab.connect.services.customer.VCustomer;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 
@@ -50,9 +51,6 @@ public class LoginService {
 	 */
 	public Map<String, Object> loginMember(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
-		
-		this.logger.info("form parameters : " + params.toString());
-		this.logger.info("request parameters : " + request.getParameterMap().toString());
 		
 		String errorParams = "";
 		if(!this.commonService.valid(params, "companyId"))
@@ -160,7 +158,7 @@ public class LoginService {
 		this.customerDao.regist(params);
 		
 		// 고객정보 조회.
-		Customer customer = this.customerDao.findByGassappMemberNumber(params);
+		VCustomer customer = this.customerDao.findByGassappMemberNumber(params);
 		this.logger.debug("customer : " + customer);
 		
 		ObjectMapper objectMapper = new ObjectMapper();

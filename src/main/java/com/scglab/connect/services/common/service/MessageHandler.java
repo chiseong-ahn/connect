@@ -64,7 +64,7 @@ public class MessageHandler {
 	}
 	
 	public String getMessage(String code, Object[] parameters, Locale locale) {
-		locale = Locale.KOREAN;
+		locale = Locale.KOREA;
 		
 		// 파라미터 확인.
 		if(parameters != null) {

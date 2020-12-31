@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
     	registry.setApplicationDestinationPrefixes(Constant.SOCKET_APPLICATION_DESTINATION_PREFIX);	// 메세지를 받을 uri prefix
-    	registry.enableSimpleBroker(Constant.SOCKET_SIMPLE_BROKER, "/socket");	// 메세지를 보낼 uri prefix
+    	registry.enableSimpleBroker(Constant.SOCKET_SIMPLE_BROKER, "/session");	// 메세지를 보낼 uri prefix
         registry.setUserDestinationPrefix(Constant.SOCKET_USER_DESTINATION_PREFIX);
     }
 }

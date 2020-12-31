@@ -89,7 +89,7 @@ public class RedisSubscriber {
 				}
 				
 				// :: /socket/message
-				destination = Constant.SOCKET_RECEIVE_URI;
+				destination = Constant.SOCKET_USER_SUBSCRIBE_URI;
 				this.logger.debug("send to " + sessionId + "[" + payload.getEventName() + "] : " + destination);
 				
 				// SessionId 기반으로 메시지 발송.

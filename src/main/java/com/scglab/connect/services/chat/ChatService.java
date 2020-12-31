@@ -16,6 +16,7 @@ import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.RoomDao;
+import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class ChatService {
@@ -30,9 +31,13 @@ public class ChatService {
 		
 		Map<String, Object> spaceHist = this.roomDao.findRoomHistoryByChatId(params);
 		
+		if(spaceHist == null) {
+			throw new RuntimeException("error.chattalk.reason1");
+		}
+		
 		params.put("roomId", spaceHist.get("space"));
-		params.put("startMessageId", spaceHist.get("startid"));
-		params.put("endMessageId", spaceHist.get("endid"));
+		params.put("startId", spaceHist.get("startid"));
+		params.put("endId", spaceHist.get("endid"));
 		List<Message> speaks = this.messageDao.findRangeById(params);  
 		
 		data.put("spaceHist", spaceHist);
