@@ -80,10 +80,14 @@
 ```json
 {
   "originFileName" : "20200805_133154.jpg",
-  "fileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/manual/1/1/10.jpg",
+  "fileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/manual/1/1/e0f7ba75-ee4d-4c0c-8d97-1ec03f52d32f.jpg",
   "fileSize" : 1301546,
   "width" : 4032,
-  "height" : 1908
+  "height" : 1908,
+  "thumbFileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/manual/1/1/thumb_e0f7ba75-ee4d-4c0c-8d97-1ec03f52d32f.jpg",
+  "thumbFileSize" : 5593,
+  "thumbWidth" : 300,
+  "thumbHeight" : 141
 }
 ```
 
