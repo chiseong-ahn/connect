@@ -535,12 +535,14 @@ public class SocketService {
 		Map<String, Object> params = null;
 		
 		String roomId = payload.getRoomId();
-		String history = DataUtils.getString(data, "history", "");
+		//String history = DataUtils.getString(data, "history", "");
+		List history = data.containsKey("history") ? (List) data.get("history") : null;
+		this.logger.debug("history : " + history.toString());
 		
 		// [DB] 이력저장.
 		params = new HashMap<String, Object>();
 		params.put("roomId", roomId);
-		params.put("history", history);
+		params.put("history", history.toString());
 		int result = this.roomDao.updateJoinHistory(params);
 		
 		// [Socket] 이력저장 완료메세지 전송.
@@ -861,6 +863,7 @@ public class SocketService {
 		MessageHeaders headers = headerAccessor.getMessageHeaders();
 		String sessionId = (String) headers.get("simpSessionId");
 		
+		this.logger.info("Disconnected : " + sessionId);
 		if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
 			String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId).replaceAll(Constant.SOCKET_ROOM_PREFIX, "");
 			Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
