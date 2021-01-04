@@ -44,7 +44,6 @@ public class FileService {
 	}
 	
 	public FileDto uploadFile(MultipartFile file, Map<String, Object> params, HttpServletRequest request, boolean autoDivision) throws Exception {
-		String saveFileName = DataUtils.getString(params, "saveFileName", "");
 		String div = DataUtils.getString(params, "div", "common");
 		FileDto fileDto = new FileDto();
 		
@@ -69,11 +68,7 @@ public class FileService {
 				
 				// 저장할 파일명.
 				// String saveFileName = md5Generator(originFileName + System.currentTimeMillis()).toString() + "." + ext;
-				if(saveFileName.equals("")) {
-					saveFileName = UUID.randomUUID() + "." + ext;
-				}else {
-					saveFileName = saveFileName + "."  + ext;
-				}
+				String saveFileName = UUID.randomUUID() + "." + ext;
 				
 				// 실제 저장할 파일경로.
 				String depth1 = "", depth2 = "", depth3 = "", savePath = "";
@@ -291,11 +286,9 @@ public class FileService {
 	public FileDto uploadManual(MultipartFile file, Map<String, Object> params, HttpServletRequest request) throws Exception {
 		String companyId = DataUtils.getString(params, "companyId", "");
 		String manualIndex = DataUtils.getString(params, "manualIndex", "");
-		String pageNo = DataUtils.getString(params, "pageNo", "");
 		
 		String div = "manual/" + companyId + "/" + manualIndex;
 		params.put("div", div);
-		params.put("saveFileName", pageNo);
 		return uploadFile(file, params, request, false);
 	}
 	
