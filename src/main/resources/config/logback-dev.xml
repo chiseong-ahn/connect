@@ -44,10 +44,10 @@
 	<logger name="jdbc.connection" level="OFF"/>
     <logger name="io.swagger.models.parameters.AbstractSerializableParameter" level="ERROR" />
     <logger name="com.scglab.connect" level="DEBUG">
-        <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+        <!-- <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" /> -->
     </logger>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+        <!-- <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" /> -->
     </root>
 </configuration>
