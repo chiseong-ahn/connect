@@ -18,28 +18,28 @@ import com.scglab.connect.utils.HttpUtils;
 
 @Service
 public class CompanyScg implements ICompany {
-	
+
 	@Value("${relay.use-example}")
 	private boolean relayUseExample;
-	
+
 	@Value("${domain.cstalk}")
 	private String cstalkDomain;
-	
+
 	@Value("${domain.relay-scg}")
 	private String relayDomain;
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	// 1. 상담사 로그인
 	@Override
 	public boolean login(String id, String password) {
 		String url = "";
 		this.logger.debug("relayUseExample : " + this.relayUseExample);
-		
+
 		if(password.equals("1212")) {
 			return true;
 		}
-		
+
 		if(this.relayUseExample) {
 			return true;
 			
@@ -50,7 +50,7 @@ public class CompanyScg implements ICompany {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -63,9 +63,9 @@ public class CompanyScg implements ICompany {
 		}else {
 			url = "https://" + this.relayDomain + "/api/employees?comIds=18";
 		}
-		
+
 		List<Map<String, Object>> list = HttpUtils.getForList(url);
-		
+
 		return list;
 	}
 
@@ -76,11 +76,11 @@ public class CompanyScg implements ICompany {
 		if(this.relayUseExample) {
 			url = "https://" + this.cstalkDomain + "/example/1/employee.json";
 		}else {
-			url = "https://" + this.relayDomain + "/api/employees/" + id;
+			url = "https://" + this.relayDomain + "/api/employee?id=" + id;
 		}
-		
+
 		Map<String, Object> obj = HttpUtils.getForMap(url);
-		
+
 		return obj;
 	}
 
@@ -97,11 +97,11 @@ public class CompanyScg implements ICompany {
 			String jsonContent = JSONObject.toJSONString(params);
 			obj = HttpUtils.postForMapWithBodyContent(url, jsonContent);
 		}
-		
+
 		return DataUtils.getString(obj, "id", "");
 	}
-	
-	
+
+
 	// 5. 사용계약번호 상세 정보
 	@Override
 	public Map<String, Object> contractInfo(String useContractNum){
@@ -111,13 +111,13 @@ public class CompanyScg implements ICompany {
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
 		}
-		
+
 		Map<String, Object> data = HttpUtils.getForMap(url);
-		
+
 		return data;
 	}
 
-	
+
 	// 6. 사용계약번호 결제 상세 정보
 	@Override
 	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag) {
@@ -127,39 +127,39 @@ public class CompanyScg implements ICompany {
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
 		}
-		
+
 		Map<String, Object> data = HttpUtils.getForMap(url);
-		
+
 		return data;
 	}
-	
+
 	// 7. 휴일 여부 체크
 	@Override
 	public int getWorkCalendar() {
-		
+
 		Calendar cal = Calendar.getInstance();
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int day = cal.get(Calendar.DATE);
-		
+
 		String today = year + "";
 		today += month < 10 ? "0" + month : "" + month;
 		today += day < 10 ? "0" + day : "" + day;
-		
+
 		String url = "";
 		if(this.relayUseExample) {
 			url = "https://" + this.cstalkDomain + "/example/1/holiday.json";
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstallk/workcalendar?day=" + today;
 		}
-		
+
 		Map<String, Object> data = HttpUtils.getForMap(url);
 		String isWorking = DataUtils.getString(data, "workingDay", "Y");
 
 		return isWorking.equals("Y") ? 1 : 2;
 	}
-	
-	
+
+
 	// 8. 고객의 계약정보 목록
 	@Override
 	public List<Map<String, Object>> contracts(String member) {
@@ -169,13 +169,13 @@ public class CompanyScg implements ICompany {
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstalk/contracts?member=" + member;
 		}
-		
+
 		List<Map<String, Object>> list = HttpUtils.getForList(url);
-		
+
 		return list;
 	}
-	
-	
+
+
 	// 9. 고객 profile 정보.
 	@Override
 	public Map<String, Object> getProfile(String member) {
@@ -185,12 +185,12 @@ public class CompanyScg implements ICompany {
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstalk/profile?member=" + member;
 		}
-		
-		Map<String, Object> profile = HttpUtils.getForMap(url);	
-			
+
+		Map<String, Object> profile = HttpUtils.getForMap(url);
+
 		return profile;
 	}
-	
+
 	// 10. 민원 코드목록 조회.
 	@Override
 	public List<Map<String, Object>> getMinwonsCodes() {
@@ -200,9 +200,9 @@ public class CompanyScg implements ICompany {
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstalk/minwons/ClassCodes";
 		}
-		
+
 		List<Map<String, Object>> list = HttpUtils.getForList(url);
-		
+
 		return list;
 	}
 
@@ -216,5 +216,5 @@ public class CompanyScg implements ICompany {
 		return Constant.COMPANY_NAME_SEOUL;
 	}
 
-	
+
 }
