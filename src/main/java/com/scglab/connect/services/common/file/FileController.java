@@ -66,6 +66,11 @@ public class FileController {
 		return this.fileService.uploadFileWithThumbnail(file, params, request);	
 	}
 	
+	@RequestMapping(name = "매뉴얼 업로드", method = RequestMethod.POST, value = "/uploadManual", produces = MediaType.APPLICATION_JSON_VALUE)
+	public FileDto uploadManual(@RequestParam("file") MultipartFile file, @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.fileService.uploadManual(file, params, request);	
+	}
+	
 	
 	@RequestMapping(name = "파일 삭제처리", method = RequestMethod.DELETE, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> delete(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {

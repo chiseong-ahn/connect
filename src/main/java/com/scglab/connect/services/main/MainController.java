@@ -22,7 +22,7 @@ public class MainController {
 	
 	@RequestMapping(method = RequestMethod.GET, name = "main", value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String index(HttpServletRequest request, HttpServletResponse response) {
-		return "redirect:/api/document";
+		return "Hello cstalk";
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, name = "main", value = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +54,11 @@ public class MainController {
 	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/api/upload", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String upload(HttpServletRequest request, HttpServletResponse response) {
 		return "file/upload";
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, name = "상담채팅", value = "/api/uploadManual", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String uploadManual(HttpServletRequest request, HttpServletResponse response) {
+		return "file/uploadManual";
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, name = "테스트", value = "/api/test", produces = MediaType.APPLICATION_JSON_VALUE)
