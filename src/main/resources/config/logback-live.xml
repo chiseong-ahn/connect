@@ -2,7 +2,7 @@
 <configuration>
 
     <!--로그 파일 저장 위치-->
-    <property name="LOGS_PATH" value="./logs"/>
+    <property name="LOGS_PATH" value="/data/log/gasapp-cstalk/tomcat"/>
 
 	<!-- 표준출력 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
