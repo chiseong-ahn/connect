@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.connector.Response;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -341,9 +342,32 @@ public class HttpUtils {
 	public static Map<String, Object> postForMap(String url, Map<String, String> params) {
 		Map<String, Object> obj = null;
 		
+		System.out.println(params.toString());
 		ResponseBody body = requestForPost(url, params);
 		
 		System.out.println("body.getStateCode() : " + body.getStateCode());
+		// 요청 성공시(200)
+		if(body.getStateCode() == Response.SC_OK) {
+			String text = body.text();
+			
+			try {
+				// String을 Map<String, Object> 객체로 변환.
+				obj = new ObjectMapper().readValue(text, new TypeReference<Map<String, Object>>(){});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return obj;
+	}
+	
+	public static Map<String, Object> postForMapWithBodyContent(String url, String content) {
+		Map<String, Object> obj = null;
+		
+		ResponseBody body = requestForPostwithBodyContent(url, content);
+		
 		// 요청 성공시(200)
 		if(body.getStateCode() == Response.SC_OK) {
 			String text = body.text();
@@ -394,6 +418,7 @@ public class HttpUtils {
 		LocalTime startTime = LocalTime.now();
 		System.out.println("\n\n외부 통신 시작. : " + startTime);
 		System.out.println("url : " + url);
+		System.out.println("parames : " + parames.toString());
 
 		parames = parames == null ? new HashMap<String, String>() : parames;
 		ResponseBody body = (ResponseBody) new QuickHttp()
@@ -404,6 +429,34 @@ public class HttpUtils {
 		
 		System.out.println("StateCode : " + body.getStateCode());
 		System.out.println("Data : " + body.text());
+
+		LocalTime endTime = LocalTime.now();
+		System.out.println("외부 통신 종료. : " + endTime);
+		
+		Duration duration = Duration.between(startTime, endTime);
+		
+		long diffSeconds = duration.getSeconds();
+		System.out.println("외부 통신 소요시간(초) : " + diffSeconds);
+		
+		return body;
+	}
+	
+	private static ResponseBody requestForPostwithBodyContent(String url, String content) {
+		
+		LocalTime startTime = LocalTime.now();
+		System.out.println("\n\n외부 통신 시작. : " + startTime);
+		System.out.println("- url : " + url);
+		System.out.println("- bodyContent : " + content);
+
+		ResponseBody body = (ResponseBody) new QuickHttp()
+	               .url(url)
+	               .post()
+	               .setContentType(ContentType.APPLICATION_JSON)
+	               .setBodyContent(content)
+	               .body();
+		
+		System.out.println("> StateCode : " + body.getStateCode());
+		System.out.println("> Data : " + body.text());
 
 		LocalTime endTime = LocalTime.now();
 		System.out.println("외부 통신 종료. : " + endTime);
