@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -537,12 +538,12 @@ public class SocketService {
 		String roomId = payload.getRoomId();
 		//String history = DataUtils.getString(data, "history", "");
 		List history = data.containsKey("history") ? (List) data.get("history") : null;
-		this.logger.debug("history : " + history.toString());
+		String historyString = JSONArray.toJSONString(history);
 		
 		// [DB] 이력저장.
 		params = new HashMap<String, Object>();
 		params.put("roomId", roomId);
-		params.put("history", history.toString());
+		params.put("history", historyString);
 		int result = this.roomDao.updateJoinHistory(params);
 		
 		// [Socket] 이력저장 완료메세지 전송.
