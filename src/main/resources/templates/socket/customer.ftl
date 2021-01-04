@@ -25,6 +25,7 @@
 			</select>
 			<input type="text" v-model="gasappMemberNumber" />
 			<button type="button" @click="connect">연결</button>
+			<button type="button" @click="review">리뷰 메기기</button>
 	    	<ul class="list-group">
 	            <li class="list-group-item" v-for="obj in messages">
 	            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
@@ -113,7 +114,7 @@
                 	
                 	// 웹소켓 연결.
                 	this.socket.ws.connect(
-						{"companyId": this.companyId, "gasappMemberNumber": this.gasappMemberNumber},		// 연결시 전달할 헤더.
+						{"companyId": this.companyId, "gasappMemberNumber": this.gasappMemberNumber, "secretKey": "1111"},		// 연결시 전달할 헤더.
 						this.connectSuccessCallback, 					// 성공시 홀출되는 함수.
 						this.connectFailCallback						// 실패시 호출되는 함수.
 					);
@@ -143,7 +144,7 @@
                 * 웹소켓 연결실패 처리.
                 **************************************************************/
                 connectFailCallback: function(errorMessage){
-                	alert("연결하는데 실패하였습니다.");
+                	alert("연결하는데 실패하였습니다.\n reason - " + errorMessage);
                 	console.log('Error : ' + errorMessage);
                 },
                 
@@ -373,6 +374,16 @@
             		
             		return thumbUrl;
             	},
+            	
+            	review: function(){
+            		if(confirm('리뷰를 남기시겠습니까?')){
+						data = {
+	                		gasappMemberNumber: this.gasappMemberNumber,
+	                		reviewScore: 3
+	                	}
+	            		this.sendMessage("REVIEW", data);
+					}
+            	}
                 
             }
         });

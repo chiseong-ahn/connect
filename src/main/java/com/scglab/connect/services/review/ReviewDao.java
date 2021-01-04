@@ -20,7 +20,7 @@ public class ReviewDao extends CommonDao {
 		return namespace;
 	}
 	
-	public int review(Map<String, Object> params) {
+	public int regist(Map<String, Object> params) {
 		return this.sqlSession.insert(namespace + "regist", params);
 	}
 }

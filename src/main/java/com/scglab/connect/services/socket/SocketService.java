@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -38,6 +37,7 @@ import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
+import com.scglab.connect.services.review.ReviewDao;
 import com.scglab.connect.services.room.Room;
 import com.scglab.connect.services.room.RoomDao;
 import com.scglab.connect.utils.DataUtils;
@@ -62,6 +62,7 @@ public class SocketService {
 	@Autowired private AutoMessageDao autoMessageDao;
 	@Autowired private JwtService jwtService;
 	@Autowired private CustomerDao customerDao;
+	@Autowired private ReviewDao reviewDao;
 	@Autowired private SocketMessageHandler socketMessageHandler;
 	
 	
@@ -119,7 +120,14 @@ public class SocketService {
 				// 고객 로그인
 				String companyId = ((List<String>) nativeHeaders.get("companyId")).get(0);
 				String gasappMemberNumber = ((List<String>) nativeHeaders.get("gasappMemberNumber")).get(0);
-				profile = loginCustomer(companyId, gasappMemberNumber);
+				String secretKey = ((List<String>) nativeHeaders.get("secretKey")).get(0);
+				
+				this.logger.info("secretKey : " + secretKey);
+//				if(secretKey != "1234") {
+//					throw new RuntimeException("비밀키가 일치하지 않습니다.");
+//				}
+				
+				profile = loginCustomer(companyId, gasappMemberNumber, secretKey);
 				
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put("companyId", companyId);
@@ -534,10 +542,14 @@ public class SocketService {
 	// 리뷰 처리.
 	public void review(Profile profile, SocketData payload) {
 		Map<String, Object> data = payload.getData();
-		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
 		
+		params = new HashMap<String, Object>();
+		params.put("companyId", profile.getCompanyId());
+		params.put("gasappMemberNumber", DataUtils.getInt(data, "gasappMemberNumber", 0));
+		params.put("reviewScore", DataUtils.getInt(data, "reviewScore", 0));
 		
+		this.reviewDao.regist(params);
 	}
 	
 	
@@ -704,12 +716,13 @@ public class SocketService {
 	}
 	
 	// 고객 로그인
-	public Profile loginCustomer(String companyId, String gasappMemberNumber) {
+	public Profile loginCustomer(String companyId, String gasappMemberNumber, String secretKey) {
 		// 기간계 서버에서 고객정보 조회.
 		Map<String, Object> data = this.commonService.getCompany(companyId).getProfile(gasappMemberNumber);
 		if(data == null) {
 			return null;
 		}
+		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("companyId", companyId);
 		params.put("gasappMemberNumber", gasappMemberNumber);
