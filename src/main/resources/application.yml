@@ -115,7 +115,7 @@ logging:
   config: 'classpath:config/logback-local.xml'
 
 relay:
-  use-example: true
+  use-example: false
   
 ---
 # 개발환경 

@@ -653,14 +653,22 @@ public class SocketService {
 	public void endByCustomer(Profile profile, SocketData payload) {
 		Map<String, Object> params = null;
 		
+		Room room = null;
+		
 		// [DB] 채팅상담 종료처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
 		params.put("loginId", null);
-		this.roomDao.closeRoom(params);
+		int result = this.roomDao.closeRoom(params);
+		if(result > 0) {
+			// [DB] 종료된 룸 정보 조회.
+			room = this.roomDao.getDetail(params);
+			//sendData.put("room", room);
+		}
 		
 		Map<String, Object> sendData = new HashMap<String, Object>();
 		sendData.put("success", true);
+		sendData.put("isCustomer", true);
 		
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
@@ -683,7 +691,6 @@ public class SocketService {
 		params.put("loginId", profile.getId());
 		int result = this.roomDao.closeRoom(params);
 		if(result > 0) {
-			
 			// [DB] 종료된 룸 정보 조회.
 			room = this.roomDao.getDetail(params);
 			sendData.put("room", room);

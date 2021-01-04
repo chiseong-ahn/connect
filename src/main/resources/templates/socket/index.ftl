@@ -95,7 +95,7 @@
 		    	<span v-if="selectedRoom != undefined"><button type="button" @click="leave()">채팅나가기</button></span>
 		    	<ul  v-if="selectedRoom != undefined" class="list-group">
 		            <li class="list-group-item" v-for="obj in messages">
-		            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
+		            	<strong>[{{obj.id}}][시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
 		                <template v-if="obj.messageType == 1">
 		                	<a :href="getImageUrl(obj.messageDetail)" target="_blank"><img :src="getThumbnailUrl(obj.messageDetail)" /></a>
 		                </template>
@@ -507,6 +507,7 @@
                 		this.socket.subscribe = undefined;
                 	}
                 	this.socket.roomId = ''
+                	this.selectedRoom = undefined
                 },
                 
                 
@@ -607,8 +608,6 @@
 							
 						case "END" :			// 상담 종료 수신.
 							// todo
-							this.findRooms(); 
-							
 							// 조인(구독) 해제.
 		                	this.unjoin();
 							
@@ -630,13 +629,6 @@
                 * 서버로 메세지 발송.
                 **************************************************************/
                 sendMessage: function(eventName, data){
-                
-                	data = {
-                		messageType: 0,
-                		message: this.message,
-                		messageDetail: '',
-                		templateId: '1',
-                	}
                 
                 	uri = this.socket.sendEndPoint,
                 	header = {},

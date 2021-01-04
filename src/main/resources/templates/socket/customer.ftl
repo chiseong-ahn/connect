@@ -24,21 +24,22 @@
 				<option value="2">인천도시가스</option>
 			</select>
 			<input type="text" v-model="gasappMemberNumber" />
-			<button type="button" @click="connect">연결</button>
-			<button type="button" @click="review">리뷰 메기기</button>
-	    	<ul class="list-group">
+			<button v-if="!isConnected" type="button" @click="connect">연결</button>
+			<button v-if="isConnected" type="button" @click="disconnect">연결해제</button>
+			<button v-if="isConnected" type="button" @click="end">종료</button>
+	    	<ul v-if="isConnected" class="list-group">
 	            <li class="list-group-item" v-for="obj in messages">
-	            	<strong>[시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
+	            	<strong>[{{obj.id}}][시스템:{{obj.isSystemMessage}}, 상담사:{{obj.isEmployee}}, 고객:{{obj.isCustomer}}, 작성자:{{obj.speakerName}}]</strong>
 	                <template v-if="obj.messageType == 1">
 	                	<a :href="getImageUrl(obj.messageDetail)" target="_blank"><img :src="getThumbnailUrl(obj.messageDetail)" /></a>
 	                </template>
 	                <template v-else>
-	                	[읽음카운트 : {{obj.noReadCount}}] <template v-if="obj.noReadCount > 0"><button type="button" @click="deleteMessage(obj.id)">[삭제]</button></template>
+	                	[읽음카운트 : {{obj.noReadCount}}] <template v-if="obj.noReadCount > 0"></template>
 	                	<br />&gt;&gt; {{obj.message}} {{obj.createDate}}
 	                </template>
 	            </li>
 	       	</ul>
-	       	<div>
+	       	<div v-if="isConnected">
 		       	<div>
 			       	<div>
 			            <textarea class="form-control" v-model="message" placeholder="내용을 입력하세요."></textarea>
@@ -48,6 +49,7 @@
 			       	</div>
 				</div>
 			</div>
+			<button v-if="isConnected" type="button" @click="review">리뷰 메기기</button>
 	    </div>
     </div>
     <!-- JavaScript -->
@@ -77,13 +79,14 @@
 	            	sessionEndPoint: '/user/session/message',	// 개인메세지를 받을 구독주소.
 	            	roomId: '',								// 현재 조인(구독)중인 방
             	},
+            	isConnected: false,							// 소켓 연결상태
             	companyId: "1",								// 가스사 Id
             	header: {},				// 공통 header
             	profile: {},
             	messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
 				imgPrefix: 'https://cstalk-dev.gasapp.co.kr/attach/',
-				gasappMemberNumber: 3825,
+				gasappMemberNumber: 3779,
 				secretKey: '$CSTALK#_20210104'
             },
             created() {
@@ -108,10 +111,14 @@
                 		connectUrl = this.socket.host + ":" + this.socket.port + this.socket.connectEndPoint;
                 	}
                 	
+                	this.disconnect();
+                	
                 	var sock = new SockJS(connectUrl);
                 	
                 	// Stomp 객체 초기화.
                 	this.socket.ws = Stomp.over(sock);
+                	
+                	
                 	
                 	// 웹소켓 연결.
                 	this.socket.ws.connect(
@@ -129,6 +136,7 @@
                 	if(this.socket.ws){
                 		this.socket.ws.disconnect();						// 웹소켓 닫기
                 	}
+                	this.isConnected = false;
                 },
                 
                 
@@ -136,8 +144,13 @@
                 * 웹소켓 연결성공 처리.
                 **************************************************************/
                 connectSuccessCallback: function(){
-                	// 기본룸 조인.
-                	this.join(this.socket.lobbyName);
+                	this.isConnected = true;
+                	
+                	// 개인메시지를 받을 구독.
+            		this.socket.subscribePrivate = this.socket.ws.subscribe(
+            			this.socket.sessionEndPoint, 
+            			this.receiveMessage
+            		);
                 },
                 
 
@@ -153,15 +166,13 @@
                 * 조인(구독).
                 **************************************************************/
                 join: function(roomId){
+                	this.socket.roomId = roomId;
                 	
             		// 개인메시지를 받을 구독.
-            		this.socket.subscribePrivate = this.socket.ws.subscribe(
-            			this.socket.sessionEndPoint, 
+            		this.socket.subscribe = this.socket.ws.subscribe(
+            			(this.socket.roomPrefix + this.socket.roomId),
             			this.receiveMessage
             		);
-                	
-                	// 조인방 이름 생성.(예, /sub/chat/room/93)
-                	var uri = this.socket.roomPrefix + this.socket.roomId;
                 },
                 
 
@@ -192,19 +203,13 @@
 					switch(eventName){
 					
 						case "LOGINED" : // 로그인 됨.
+							console.log("roomId : " + roomId);
+							this.join(roomId);
 							break;
 							
 					
 						case "JOINED" :	// 조인완료 수신.
-							// todo
-							// 구독
-							this.socket.roomId = data.profile.roomId;
-		                	this.socket.subscribe = this.socket.ws.subscribe(
-		                		this.socket.roomPrefix + this.socket.roomId, // 구독 URI
-		                		this.receiveMessage, 				// 구독 성공시 호출되는 함수.	 
-		                	);
-							
-		                	break;
+							break;
 							
 						case "ROOM_DETAIL" : 	// 방 상세정보 수신.
 							// todo
@@ -255,7 +260,6 @@
 						case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
 							// todo
 							messages = data.messages;
-							messages.reverse()		// 배열 뒤집기.
 							this.messages = messages;
 							break;
 							
@@ -275,8 +279,8 @@
 							
 						case "END" :			// 상담 종료 수신.
 							// todo
-							this.findRooms(); 
-							this.join(this.socket.lobbyName);
+							alert("상담을 종료합니다.");
+							this.disconnect();
 							
 							
 							break;
