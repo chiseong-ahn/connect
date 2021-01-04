@@ -297,4 +297,15 @@ this.socket.ws.disconnect();
 }
 ```
 
+### 6. 리뷰 남기기.
+```json
+{
+  "eventName":"REVIEW",
+  "data":{
+    "gasappMemberNumber":3825,    //가스앱 회원번호.
+    "reviewScore":3               // 리뷰 점수.
+  }
+}
+```
+
 [< 목록으로 돌아가기](manual.md)
