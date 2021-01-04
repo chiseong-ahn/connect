@@ -1,5 +1,6 @@
 package com.scglab.connect.services.socket;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class SocketService {
 		READ_MESSAGE,
 		ROOM_DETAIL,
 		ASSIGN, ASSIGNED, 
-		LOGINED,
+		LOGINED, UNAUTHORIZED,
 		JOIN, JOINED,
 		AUTO_MESSAGE,
 		WELCOME_MESSAGE, START_MESSAGE,
@@ -175,8 +176,15 @@ public class SocketService {
 			if(profile.getIsCustomer() == 1) {
 				Map<String, Object> data = new HashMap<String, Object>();
 				data.put("profile", profile);
-				this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
+				
+				if(profile.isAuthenticated()) {
+					this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
+				}else {
+					profile.setRoomId(null);
+					this.socketMessageHandler.sendMessageToSelf(EventName.UNAUTHORIZED, profile, data);
+				}
 			}
+			
 			
 			return;
 		}
@@ -716,6 +724,27 @@ public class SocketService {
 		// STOMP에서 leave는 사용하지 않고 해당 채팅방과의 Socket 연결을 해제(disconnected)한다.
 	}
 	
+	// 고객 인증키 유효여부 확인.
+	private boolean isValidSecretKey(String secretKey) {
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DATE);
+		
+		String today = year + "";
+		today += month < 10 ? "0" + month : "" + month;
+		today += day < 10 ? "0" + day : "" + day;
+		
+		String compareWord = Constant.CUSTOMER_KEY + "_" + today;
+		this.logger.debug("compareWord : " + compareWord);
+		this.logger.debug("secretKey : " + secretKey);
+		
+		if(compareWord.equals(secretKey)) {
+			return true;
+		}
+		return false;
+	}
+	
 	// 고객 로그인
 	public Profile loginCustomer(String companyId, String gasappMemberNumber, String secretKey) {
 		// 기간계 서버에서 고객정보 조회.
@@ -748,6 +777,7 @@ public class SocketService {
 			profile.setLoginName(customer.getGasappMemberNumber());
 			profile.setName(customer.getName());
 			profile.setSpeakerId(customer.getSpeakerId());
+			profile.setAuthenticated(isValidSecretKey(secretKey));
 		}
 		
 		return profile;

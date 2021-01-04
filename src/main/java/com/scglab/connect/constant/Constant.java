@@ -29,6 +29,7 @@ public class Constant {
 	public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACS";	// 토큰의 비밀키
 	
 	public final static String	ENCRYPT_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";		// 암호화 비밀키
+	public final static String	CUSTOMER_KEY = "SCGLABCSTALKAYSBHYACS";
 	
 	public final static int		DEFAULT_MESSAGE_INTERVAL_DAY = 1500;		// 메세지 조회 기간(일)
 	public final static int		DEFAULT_MESSAGE_MORE_PAGE_SIZE = 30;		// 더보기 메세지 갯수

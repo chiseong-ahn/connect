@@ -83,7 +83,8 @@
             	messages: [],			// 대화메세지
 				message: "",			// 작성하는 메세지
 				imgPrefix: 'https://cstalk-dev.gasapp.co.kr/attach/',
-				gasappMemberNumber: 3825
+				gasappMemberNumber: 3825,
+				secretKey: '$CSTALK#_20210104'
             },
             created() {
             },
@@ -114,7 +115,7 @@
                 	
                 	// 웹소켓 연결.
                 	this.socket.ws.connect(
-						{"companyId": this.companyId, "gasappMemberNumber": this.gasappMemberNumber, "secretKey": "1111"},		// 연결시 전달할 헤더.
+						{"companyId": this.companyId, "gasappMemberNumber": this.gasappMemberNumber, "secretKey": this.secretKey},		// 연결시 전달할 헤더.
 						this.connectSuccessCallback, 					// 성공시 홀출되는 함수.
 						this.connectFailCallback						// 실패시 호출되는 함수.
 					);

@@ -23,5 +23,6 @@ public class Profile implements Serializable {
 	private long speakerId;
 	private String name;
 	private String sessionId;
+	private boolean authenticated;
 	private Map<String, Object> companyUseConfigJson;
 }

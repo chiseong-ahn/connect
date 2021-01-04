@@ -146,7 +146,9 @@ public class CompanyScg implements ICompany {
 		int month = cal.get(Calendar.MONTH) + 1;
 		int day = cal.get(Calendar.DATE);
 		
-		String today = "" + year + month + day;
+		String today = year + "";
+		today += month < 10 ? "0" + month : "" + month;
+		today += day < 10 ? "0" + day : "" + day;
 		
 		String url = "";
 		if(this.relayUseExample) {
