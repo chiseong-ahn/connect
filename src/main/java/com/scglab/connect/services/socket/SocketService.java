@@ -43,6 +43,7 @@ import com.scglab.connect.services.room.Room;
 import com.scglab.connect.services.room.RoomDao;
 import com.scglab.connect.utils.DataUtils;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import lombok.RequiredArgsConstructor;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -446,6 +447,9 @@ public class SocketService {
 		params.put("intervalDay", Constant.DEFAULT_MESSAGE_INTERVAL_DAY);
 		params.put("pageSize", Constant.DEFAULT_MESSAGE_MORE_PAGE_SIZE);
 		List<Message> messages = this.messageDao.findByRoomIdToSpeaker(params);
+		
+		// 정렬순서 뒤집기
+		Collections.reverse(messages);
 		
 		if(messages != null && messages.size() > 0) {		// 이전 메세지가 존재할 경우.
 			

@@ -585,7 +585,7 @@
 						case "MESSAGE_LIST" : 		// 이전대화 목록 수신.
 							// todo
 							messages = data.messages;
-							messages.reverse()		// 배열 뒤집기.
+							// messages.reverse()		// 배열 뒤집기.
 							this.messages = messages;
 							break;
 							
