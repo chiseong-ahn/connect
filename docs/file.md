@@ -28,40 +28,71 @@
 <hr><Br>
 
 ## 업로드 API
-### 1. 파일 업로드
-- API : https://[Domain]:[Port]/api/file/upload
-- Method : POST
-- attach name : file
-- response
+### 1. 일반 파일 업로드
+1. API : https://[Domain]:[Port]/api/file/upload
+2. Method : POST
+3. Enctype : multipart/form-data
+4. Parameters 
+  - div : "talk" // 서비스 구분값
+  - attach name : "file" // 업로드파일 엘리먼트 name.
+5. response
 ```json
 {
-  "originFileName" : "200706_SCG-LAB_이메일-서명_안치성.png",   // 원본 이미지명.
-  "fileName" : "737dcaa7-df45-4f97-86d9-cae5e2a56a14.png",  // 저장된 이미지명.
-  "savePath" : "/data/project/gasapp-cstalk/apache/data/attach/talk/2020/12", // 저장된 경로
-  "fileSize" : 18645, // 파일 용량(Byte)
-  "width" : 800,  // 너비 사이즈(px)
-  "height" : 197, // 높이 사이즈(px)
+  "originFileName" : "20200805_133154.jpg",
+  "fileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/talk/2021/1/204724e0-7d35-4637-946b-9fd19649f59f.jpg",
+  "fileName" : "204724e0-7d35-4637-946b-9fd19649f59f.jpg",
+  "savePath" : "/talk/2021/1",
+  "fileSize" : 1301546,
+  "width" : 4032,
+  "height" : 1908,
 }
 ```
 
-### 2. 파일 업로드 및 썸네일 생성
-- API : https://[Domain]:[Port]/api/file/uploadWithThumbnail
-- Method : POST
-- attach name : file
-- response
+### 2. 일반 파일 업로드 및 썸네일 생성
+1. API : https://[Domain]:[Port]/api/file/uploadWithThumbnail
+2. Method : POST
+3. Enctype : multipart/form-data
+4. Parameters 
+  - div : "talk" // 서비스 구분값
+  - attach name : "file" // 업로드파일 엘리먼트 name.
+5. response
 ```json
 {
-  "originFileName" : "200706_SCG-LAB_이메일-서명_안치성.png",   // 원본 이미지명.
-  "fileName" : "737dcaa7-df45-4f97-86d9-cae5e2a56a14.png",  // 저장된 이미지명.
-  "savePath" : "/data/project/gasapp-cstalk/apache/data/attach/talk/2020/12", // 저장된 경로
-  "fileSize" : 18645, // 파일 용량(Byte)
-  "width" : 800,  // 너비 사이즈(px)
-  "height" : 197, // 높이 사이즈(px)
-  "thumbFileName" : "thumb_737dcaa7-df45-4f97-86d9-cae5e2a56a14.png",   // 저장된 썸네일 이미지명.
-  "thumbSavePath" : "/data/project/gasapp-cstalk/apache/data/attach/talk/2020/12",  // 저장된 썸네일 경로.
-  "thumbFileSize" : 10413,  // 썸네일 용량(Byte)
-  "thumbWidth" : 300, // 썸네일 너비 사이즈(px)
-  "thumbHeight" : 73  // 썸네이 ㄹ높이 사이즈(px)
+  "originFileName" : "20200805_133154.jpg",
+  "fileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/talk/2021/1/204724e0-7d35-4637-946b-9fd19649f59f.jpg",
+  "fileName" : "204724e0-7d35-4637-946b-9fd19649f59f.jpg",
+  "savePath" : "/talk/2021/1",
+  "fileSize" : 1301546,
+  "width" : 4032,
+  "height" : 1908,
+  "thumbFileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/talk/2021/1/thumb_204724e0-7d35-4637-946b-9fd19649f59f.jpg",
+  "thumbFileName" : "thumb_204724e0-7d35-4637-946b-9fd19649f59f.jpg",
+  "thumbSavePath" : "/talk/2021/1",
+  "thumbFileSize" : 5593,
+  "thumbWidth" : 300,
+  "thumbHeight" : 141
+}
+```
+
+### 3. 매뉴얼 업로드
+1. API : https://[Domain]:[Port]/api/file/uploadManual
+2. Method : 
+3. Enctype : multipart/form-data
+4. Parameters
+  - companyId : 1 // 가스사 관리번호.
+  - manualIndex : 1 // 매뉴얼 인덱스.
+  - pageNo : 10 // 페이지 번호.
+  - attach name : "file" // 업로드파일 엘리먼트 name.
+5. response
+```json
+{
+  "originFileName" : "20200805_133154.jpg",
+  "fileUrl" : "https://cstalk-dev.gasapp.co.kr/attach/manual/1/1/10.jpg",
+  "fileName" : "10.jpg",
+  "savePath" : "/manual/1/1",
+  "fileSize" : 1301546,
+  "width" : 4032,
+  "height" : 1908
 }
 ```
 
