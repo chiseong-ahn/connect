@@ -39,7 +39,7 @@ public class ContractController {
 	}
 	
 	
-	@RequestMapping(name="고객의 결제 상세정보", method = RequestMethod.GET, value = "/{useContractNum}/bil", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(name="고객의 결제 상세정보", method = RequestMethod.GET, value = "/{useContractNum}/bill", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> contractBil(@PathVariable String useContractNum, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("useContractNum", useContractNum);
 		return this.contractService.contractBil(params, request, response);
