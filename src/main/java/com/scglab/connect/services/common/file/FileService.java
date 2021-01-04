@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.properties.DomainProperties;
 import com.scglab.connect.properties.PathProperties;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
@@ -33,6 +34,7 @@ public class FileService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired private PathProperties pathProperty;
+	@Autowired private DomainProperties domainProperty;
 	@Autowired private MessageHandler messageHandler;
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
@@ -179,6 +181,7 @@ public class FileService {
 				fileDto.setFileName(saveFileName);
 				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setFileSize(fileSize);
+				fileDto.setFileUrl("//" + this.domainProperty.getCstalk() + fileDto.getSavePath() + saveFileName);
 				
 				BufferedImage bi = ImageIO.read(saveFile);
 				int width = bi.getWidth();
@@ -225,6 +228,8 @@ public class FileService {
 				fileDto.setThumbFileSize(thumbFileSize);
 				fileDto.setThumbWidth(thumbWidth);
 				fileDto.setThumbHeight(thumbHeight);
+				
+				fileDto.setThumbFileUrl("//" + this.domainProperty.getCstalk() + fileDto.getThumbSavePath() + saveFileName);
 				
 				this.logger.debug("file : " + fileDto.toString());
 			}else {
