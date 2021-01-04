@@ -168,7 +168,7 @@ public class FileService {
 				// 실제 저장할 파일경로.
 				String depth1 = "", depth2 = "", depth3 = "", savePath = "";
 				
-				//연월 디렉토리 자동생성 여부.
+				// 연월 디렉토리 자동생성 여부.
 				if(autoDivision) {
 					depth1 = this.pathProperty.getUpload() + "/" + div;
 					depth2 = depth1 + "/" + year;
@@ -199,14 +199,25 @@ public class FileService {
 				File saveFile = new File(filePath);
 				file.transferTo(saveFile);
 				
+				this.logger.debug("div : " + div);
+				if(div.indexOf("/") > -1) {
+					String[] divArray = div.split("/");
+					String dir = this.pathProperty.getUpload();
+					for(int i=0; i<divArray.length; i++) {
+						dir += ("/" + divArray[i]);
+						this.logger.debug("dir : " + dir);
+						grantFile(dir, true, true, true);
+					}
+				}
+				
 				//연월 디렉토리 자동생성 여부에 따라 디렉토리 권한처리.
 				if(autoDivision) {
 					// 디렉토리 및 파일에 대한 권한 허용.(읽기, 쓰기, 실행)
 					grantFile(depth1, true, true, true);
 					grantFile(depth2, true, true, true);
 					grantFile(depth3, true, true, true);
-					grantFile(filePath, true, false, false);
 				}
+				grantFile(filePath, true, false, false);
 				
 				// 업로드 된 파일 정보.
 				fileDto.setOriginFileName(originFileName);
