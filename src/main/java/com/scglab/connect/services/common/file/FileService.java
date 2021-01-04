@@ -2,9 +2,6 @@ package com.scglab.connect.services.common.file;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.UUID;
@@ -21,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.properties.DomainProperties;
 import com.scglab.connect.properties.PathProperties;
-import com.scglab.connect.services.common.CommonService;
-import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.utils.DataUtils;
 
@@ -36,8 +31,6 @@ public class FileService {
 	@Autowired private PathProperties pathProperty;
 	@Autowired private DomainProperties domainProperty;
 	@Autowired private MessageHandler messageHandler;
-	@Autowired private CommonService commonService;
-	@Autowired private ErrorService errorService;
 	
 	public FileDto uploadFile(MultipartFile file, Map<String, Object> params, HttpServletRequest request) throws Exception {
 		return uploadFile(file, params, request, true);
@@ -113,10 +106,10 @@ public class FileService {
 				
 				// 업로드 된 파일 정보.
 				fileDto.setOriginFileName(originFileName);
-				fileDto.setFileName(saveFileName);
-				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
+//				fileDto.setFileName(saveFileName);
+//				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setFileSize(fileSize);
-				fileDto.setFileUrl("https://" + this.domainProperty.getCstalk() + "/attach" + fileDto.getSavePath() + "/" + saveFileName);
+				fileDto.setFileUrl("https://" + this.domainProperty.getCstalk() + "/attach" + savePath.replace(this.pathProperty.getUpload(), "") + "/" + saveFileName);
 				
 				BufferedImage bi = ImageIO.read(saveFile);
 				int width = bi.getWidth();
@@ -217,10 +210,10 @@ public class FileService {
 				
 				// 업로드 된 파일 정보.
 				fileDto.setOriginFileName(originFileName);
-				fileDto.setFileName(saveFileName);
-				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
+//				fileDto.setFileName(saveFileName);
+//				fileDto.setSavePath(savePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setFileSize(fileSize);
-				fileDto.setFileUrl("https://" + this.domainProperty.getCstalk() + "/attach" + fileDto.getSavePath() + "/" + saveFileName);
+				fileDto.setFileUrl("https://" + this.domainProperty.getCstalk() + "/attach" + savePath.replace(this.pathProperty.getUpload(), "") + "/" + saveFileName);
 				
 				BufferedImage bi = ImageIO.read(saveFile);
 				int width = bi.getWidth();
@@ -262,12 +255,12 @@ public class FileService {
 				
 				long thumbFileSize = thumbFile.length();
 				
-				fileDto.setThumbFileName(thumbFileName);
-				fileDto.setThumbSavePath(thumbSavePath.replace(this.pathProperty.getUpload(), ""));
+//				fileDto.setThumbFileName(thumbFileName);
+//				fileDto.setThumbSavePath(thumbSavePath.replace(this.pathProperty.getUpload(), ""));
 				fileDto.setThumbFileSize(thumbFileSize);
 				fileDto.setThumbWidth(thumbWidth);
 				fileDto.setThumbHeight(thumbHeight);
-				fileDto.setThumbFileUrl("https://" + this.domainProperty.getCstalk() + "/attach" + fileDto.getThumbSavePath() + "/" + thumbFileName);
+				fileDto.setThumbFileUrl("https://" + this.domainProperty.getCstalk() + "/attach" + thumbSavePath.replace(this.pathProperty.getUpload(), "") + "/" + thumbFileName);
 				
 				this.logger.debug("file : " + fileDto.toString());
 			}else {
@@ -289,7 +282,7 @@ public class FileService {
 		
 		String div = "manual/" + companyId + "/" + manualIndex;
 		params.put("div", div);
-		return uploadFile(file, params, request, false);
+		return uploadFileWithThumbnail(file, params, request, false);
 	}
 	
 	private void grantFile(String filePath, boolean readable, boolean writable, boolean executable) {
@@ -305,16 +298,4 @@ public class FileService {
 		if(writable)
 			file.setWritable(true, false);
 	}
-	
-	private String md5Generator(String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest mdMD5 = MessageDigest.getInstance("MD5");
-        mdMD5.update(input.getBytes("UTF-8"));
-        byte[] md5Hash = mdMD5.digest();
-        StringBuilder hexMD5hash = new StringBuilder();
-        for(byte b : md5Hash) {
-            String hexString = String.format("%02x", b);
-            hexMD5hash.append(hexString);
-        }
-        return hexMD5hash.toString();
-    }
 }
