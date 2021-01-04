@@ -35,7 +35,7 @@ this.socket.ws.connect(
 // gasappMemberNumber - 가스앱 고객 관리번호
 // secretKey - 인증에 필요한 임의 키. [key_YYYYMMDD]
 this.socket.ws.connect(
-    {"companyId": "1", "gasappMemberNumber": 3825, "secretKey": "SCGLABCSTALKAYSBHYACS_20210104"},	// 연결시 전달할 헤더.
+    {"companyId": "1", "gasappMemberNumber": 3825, "secretKey": "$CSTALK#_20210104"},	// 연결시 전달할 헤더.
     fnSuccessCallback, 			// 성공시 홀출되는 함수.
     fnFailCallback					// 실패시 호출되는 함수.
 );
