@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
@@ -53,9 +54,14 @@ public class CategoryService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
+		String isMinwon = DataUtils.getString(params, "isMinwon", Constant.NO);
+		params.put("isMinwon", isMinwon);
+		
 		List<CategoryLarge> largeList = this.categoryDao.findCategoryLarge(params);
 		List<CategoryMiddle> middleList = this.categoryDao.findCategoryMiddle(params);
 		List<CategorySmall> smallList = this.categoryDao.findCategorySmall(params);
+		
+		// isMinwon=Y/N
 		
 		for(CategorySmall small : smallList) {
 			small.setKey("c" + small.getId());

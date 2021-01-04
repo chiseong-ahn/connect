@@ -41,6 +41,9 @@
 				a.sort_index as sortIndex
 		FROM   category_large as a
 		WHERE a.company_id = #{companyId}
+		<if test='isMinwon == "Y"'>
+			AND minwon_code IS NOT NULL
+		</if>
 		ORDER BY a.sort_index
 	</select>
 	
@@ -97,6 +100,9 @@
 		WHERE company_id = #{companyId}
 		<if test='largeId != null and largeId != ""'>
 			AND a.category_large_id = #{largeId}
+		</if>
+		<if test='isMinwon == "Y"'>
+			AND minwon_code IS NOT NULL
 		</if>
 		ORDER BY a.sort_index
 	</select>
@@ -157,6 +163,9 @@
 				a.sort_index as sortIndex
 		FROM v_category a
 		WHERE company_id = #{companyId}
+		<if test='isMinwon == "Y"'>
+			AND minwon_code IS NOT NULL
+		</if>
 		<if test='middleId != null and middleId != ""'>
 			AND a.category_middle_id = #{middleId}
 		</if>
