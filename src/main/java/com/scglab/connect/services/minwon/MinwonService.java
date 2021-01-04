@@ -110,7 +110,7 @@ public class MinwonService {
 			obj.put("transfer", false + "");
 			obj.put("handphone", DataUtils.getString(params, "telNumber", ""));
 			obj.put("memo", DataUtils.getString(params, "memo", ""));
-			obj.put("employeeId", member.getId() + "");
+			obj.put("employeeId", member.getLoginName());
 			obj.put("chatId", Integer.toString(DataUtils.getInt(params, "chatId", 0)));
 			this.logger.info("Minwon > " + obj.toString());
 

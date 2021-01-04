@@ -17,7 +17,7 @@
 	<!-- 민원 등록 -->
 	<insert id="insertMinwon" parameterType="map" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		INSERT INTO minwon_history(company_id, update_member_id, category_small_id, minwon_code, gasapp_member_number, use_contract_num, tel_number, memo, chatid, room_id)
-		VALUES(#{companyId}, #{loginId}, #{categorySmallId}, #{minwonCode}, #{gasappMemberNumber}, #{useContractNum}, #{telNumber}, #{memo}, #{chatid}, #{roomId})
+		VALUES(#{companyId}, #{loginId}, #{categorySmallId}, #{minwonCode}, #{gasappMemberNumber}, #{useContractNum}, #{telNumber}, #{memo}, #{chatId}, #{roomId})
 	</insert>
 	
 	

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.connector.Response;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,7 +100,8 @@ public class CompanyScg implements ICompany {
 			obj = HttpUtils.getForMap(url);
 		}else {
 			url = "https://" + this.relayDomain + "/api/cstalk/minwons";
-			obj = HttpUtils.postForMap(url, params);
+			String jsonContent = JSONObject.toJSONString(params);
+			obj = HttpUtils.postForMapWithBodyContent(url, jsonContent);
 		}
 
 		return DataUtils.getString(obj, "id", "");
