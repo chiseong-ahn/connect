@@ -68,7 +68,7 @@ public class TemplateService {
 		
 		
 		data.put("totalCount", totalCount);
-		data.put("data", list);
+		data.put("list", list);
 		
 		return data;
 	}

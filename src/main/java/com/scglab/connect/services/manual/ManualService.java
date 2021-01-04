@@ -84,7 +84,7 @@ public class ManualService {
 			// 매뉴얼이 존재할 경우 목록 조회
 			List<Manual> list = this.manualDao.findManuals(params);
 			if(list != null) {
-				data.put("data", list);
+				data.put("list", list);
 			}
 		}
 		
