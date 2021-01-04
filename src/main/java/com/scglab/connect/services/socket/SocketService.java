@@ -546,7 +546,8 @@ public class SocketService {
 		
 		params = new HashMap<String, Object>();
 		params.put("companyId", profile.getCompanyId());
-		params.put("gasappMemberNumber", DataUtils.getInt(data, "gasappMemberNumber", 0));
+		//params.put("gasappMemberNumber", DataUtils.getInt(data, "gasappMemberNumber", 0));
+		params.put("gasappMemberNumber", profile.getId());
 		params.put("reviewScore", DataUtils.getInt(data, "reviewScore", 0));
 		
 		this.reviewDao.regist(params);
@@ -906,6 +907,3 @@ public class SocketService {
 	}
 	
 }
-
-
-

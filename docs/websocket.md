@@ -302,7 +302,6 @@ this.socket.ws.disconnect();
 {
   "eventName":"REVIEW",
   "data":{
-    "gasappMemberNumber":3825,    //가스앱 회원번호.
     "reviewScore":3               // 리뷰 점수.
   }
 }

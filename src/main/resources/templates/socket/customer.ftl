@@ -378,8 +378,7 @@
             	review: function(){
             		if(confirm('리뷰를 남기시겠습니까?')){
 						data = {
-	                		gasappMemberNumber: this.gasappMemberNumber,
-	                		reviewScore: 3
+	                		reviewScore: 2
 	                	}
 	            		this.sendMessage("REVIEW", data);
 					}
