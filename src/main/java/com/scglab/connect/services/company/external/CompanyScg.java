@@ -154,7 +154,7 @@ public class CompanyScg implements ICompany {
 		if(this.relayUseExample) {
 			url = "https://" + this.cstalkDomain + "/example/1/holiday.json";
 		}else {
-			url = "https://" + this.relayDomain + "api/cstallk/workcalendar?day=" + today;
+			url = "https://" + this.relayDomain + "/api/cstallk/workcalendar?day=" + today;
 		}
 		
 		Map<String, Object> data = HttpUtils.getForMap(url);

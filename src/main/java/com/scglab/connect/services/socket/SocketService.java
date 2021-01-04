@@ -399,7 +399,7 @@ public class SocketService {
 				params = new HashMap<String, Object>();
 				params.put("companyId", payload.getCompanyId());
 				params.put("roomId", payload.getRoomId());
-				params.put("speakerId", profile.getSpeakerId());
+				params.put("speakerId", null);
 				params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
 				params.put("isSystemMessage", 1);
 				params.put("message", startMessage);
@@ -414,7 +414,7 @@ public class SocketService {
 				sendData.put("message", newMessage);
 				
 				// 룸 전체에 시작메시지 발송.
-				this.socketMessageHandler.sendMessageToBroadcast(EventName.START_MESSAGE, profile, sendData);
+				this.socketMessageHandler.sendMessageToSelf(EventName.START_MESSAGE, profile, sendData);
 				
 			}
 			
