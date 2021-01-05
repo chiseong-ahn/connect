@@ -42,6 +42,7 @@ public class Room {
 	
 	private int speakMinute;			// 상담 시간
 	private int joinHistoryCount;		// 이전 상담대화 건 수.
+	private int minwonHistoryCount;		// 민원등록 건 수.
 	
 	private String createDate;
 	private String updateDate;

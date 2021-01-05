@@ -125,11 +125,6 @@ public class SocketService {
 				String gasappMemberNumber = ((List<String>) nativeHeaders.get("gasappMemberNumber")).get(0);
 				String secretKey = ((List<String>) nativeHeaders.get("secretKey")).get(0);
 				
-				this.logger.info("secretKey : " + secretKey);
-//				if(secretKey != "1234") {
-//					throw new RuntimeException("비밀키가 일치하지 않습니다.");
-//				}
-				
 				profile = loginCustomer(companyId, gasappMemberNumber, secretKey);
 				
 				Map<String, Object> params = new HashMap<String, Object>();
@@ -316,6 +311,11 @@ public class SocketService {
 		Room room = this.roomDao.getDetail(params);
 		this.logger.debug("room : " + room);
 		
+		if(profile.getIsMember() == 1 && room.getMemberId() != profile.getId()) {
+			// 본인의 상담이 아닐경우.  별도처리하지 않음.
+			return;
+		}
+		
 		// [DB] 채팅방에 조인 처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
@@ -348,8 +348,6 @@ public class SocketService {
 			// 나를 제외하고 메시지 발송.
 			this.socketMessageHandler.sendMessageToBroadcast(EventName.READ_MESSAGE, profile, sendData);
 		}
-		
-		
 		
 		// 고객여부 판단.
 		if(profile.getIsCustomer() == 1) {
@@ -653,14 +651,22 @@ public class SocketService {
 	public void endByCustomer(Profile profile, SocketData payload) {
 		Map<String, Object> params = null;
 		
+		Room room = null;
+		
 		// [DB] 채팅상담 종료처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
 		params.put("loginId", null);
-		this.roomDao.closeRoom(params);
+		int result = this.roomDao.closeRoom(params);
+		if(result > 0) {
+			// [DB] 종료된 룸 정보 조회.
+			room = this.roomDao.getDetail(params);
+			//sendData.put("room", room);
+		}
 		
 		Map<String, Object> sendData = new HashMap<String, Object>();
 		sendData.put("success", true);
+		sendData.put("isCustomer", true);
 		
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
@@ -683,7 +689,6 @@ public class SocketService {
 		params.put("loginId", profile.getId());
 		int result = this.roomDao.closeRoom(params);
 		if(result > 0) {
-			
 			// [DB] 종료된 룸 정보 조회.
 			room = this.roomDao.getDetail(params);
 			sendData.put("room", room);

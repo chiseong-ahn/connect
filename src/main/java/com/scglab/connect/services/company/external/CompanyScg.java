@@ -30,12 +30,6 @@ public class CompanyScg implements ICompany {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static void main(String[] args) {
-		CompanyScg company = new CompanyScg();
-		boolean result = company.login("csmaster1", "1212");
-		System.out.println("result : " + result);
-	}
-
 	// 1. 상담사 로그인
 	@Override
 	public boolean login(String id, String password) {
@@ -48,9 +42,9 @@ public class CompanyScg implements ICompany {
 
 		if(this.relayUseExample) {
 			return true;
+			
 		}else {
 			url = "https://" + this.cstalkDomain + "/api/employees/login";
-			this.logger.info("url : " + url);
 			ResponseBody body = HttpUtils.getForResponseBody(url);
 			if(body.getStateCode() == Response.SC_OK) {
 				return true;
