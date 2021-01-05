@@ -311,7 +311,7 @@ public class SocketService {
 		Room room = this.roomDao.getDetail(params);
 		this.logger.debug("room : " + room);
 		
-		if(profile.getIsCustomer() != 1 && room.getMemberId() != profile.getId()) {
+		if(profile.getIsMember() == 1 && room.getMemberId() != profile.getId()) {
 			// 본인의 상담이 아닐경우.  별도처리하지 않음.
 			return;
 		}
