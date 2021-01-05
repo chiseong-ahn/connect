@@ -20,6 +20,23 @@
 		VALUES(#{companyId}, #{loginId}, #{categorySmallId}, #{minwonCode}, #{gasappMemberNumber}, #{useContractNum}, #{telNumber}, #{memo}, #{chatId}, #{roomId})
 	</insert>
 	
+	<!-- 민원 조회 -->
+	<select id="findSearchByRoomId" parameterType="map" resultMap="minwon">
+		SELECT  mh.*,
+				m.name AS create_member_name,
+				vc.category_large_name,
+				vc.category_middle_name,
+				vc.name AS category_small_name
+		FROM minwon_history mh
+		LEFT OUTER JOIN v_category vc ON mh.category_small_id = vc.id
+		INNER JOIN member m ON mh.update_member_id = m.id
+		WHERE room_id = #{roomId}
+			<if test='searchValue != null and searchValue != ""'>
+				AND memo LIKE CONCAT('%', #{searchValue}, '%')
+			</if>
+		ORDER BY create_date desc
+	</select>
+	
 	
 </mapper>
 

@@ -1,5 +1,6 @@
 package com.scglab.connect.services.minwon;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -50,5 +51,19 @@ public class MinwonDao extends CommonDao {
 	 */
 	public int insertMinwon(Map<String, Object> params) {
 		return this.sqlSession.insert(namespace + "insertMinwon", params);
-	}	
+	}
+	
+	/**
+	 * 
+	 * @Method Name : findSearchByRoomId
+	 * @작성일 : 2021. 1. 5.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 등록된 민원 조회.
+	 * @param params
+	 * @return
+	 */
+	public List<Minwon> findSearchByRoomId(Map<String, Object> params) {
+		return this.sqlSession.selectList(this.namespace + "findSearchByRoomId", params);
+	}
 }

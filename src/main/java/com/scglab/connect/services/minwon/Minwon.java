@@ -21,4 +21,8 @@ public class Minwon {
 	private String memo;
 	private Long chatId;
 	private int roomId;
+	private String createMemberName;
+	private String categoryLargeName;
+	private String categoryMiddleName;
+	private String categorySmallName;
 }
