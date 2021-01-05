@@ -472,13 +472,18 @@
 		  v_customer.is_block AS is_block_customer,
 		    v_customer.gasapp_member_number as gasapp_member_number,
 		    v_customer.tel_number as tel_number,
-		    TIMESTAMPDIFF(MINUTE, sub_room.join_start_date, chat_message.create_date) as speak_minute,
+		    TIMESTAMPDIFF(SECOND, sub_room.join_start_date, chat_message.create_date) as speak_minute,
 		     (
 		        SELECT COUNT(1)
 		            FROM room_join_history rjh
 		         WHERE rjh.room_id = sub_room.id
 		              AND end_date IS NOT NULL
-		      ) AS joinHistoryCount
+		      ) AS joinHistoryCount,
+		      (
+				SELECT COUNT(1)
+				FROM minwon_history
+				WHERE room_id = sub_room.id
+			  ) AS minwon_history_count
 		FROM 
 		  (
 		    SELECT 
