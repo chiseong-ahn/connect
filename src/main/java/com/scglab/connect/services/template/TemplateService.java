@@ -174,6 +174,8 @@ public class TemplateService {
 			this.errorService.throwParameterErrorWithNames(errorParams);
 		}
 		
+		int isFavorite = DataUtils.getInt(params, "isFavorite", 0);
+		
 		Map<String, Object> data = null;
 		int result = 0;
 		
@@ -182,6 +184,12 @@ public class TemplateService {
 		
 		if(result > 0) {	// 등록 성공
 			BigInteger templateId = (BigInteger)params.get("id");
+			
+			if(isFavorite == 1) {
+				// 즐겨찾기로 등록.
+				params.put("templateId", templateId);
+				this.templateDao.insertFavorite(params);
+			}
 			
 			if(params.containsKey("keywordIds")) {
 				List<Integer> keywords = (List<Integer>)params.get("keywordIds");
