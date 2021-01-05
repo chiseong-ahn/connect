@@ -27,4 +27,8 @@ public class VCustomer {
 	private int insultCount;
 	private int state;
 	private String blockDate;
+	private int roomState;
+	private long readLastMessageId;
+	private int noReadCount;
+	private int	endDays;
 }

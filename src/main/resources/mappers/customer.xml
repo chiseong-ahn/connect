@@ -89,10 +89,26 @@
 	
 	<!-- 고객 상세(gasapp_member_number) -->
 	<select id="getByGasappMemberNumber" parameterType="map" resultMap="vcustomer">
-		select *
-		from v_customer a
-		where gasapp_member_number = #{gasappMemberNumber}
-		and company_id = #{companyId}
+		SELECT vc.*,
+				r.state AS room_state,
+				rs.read_last_message_id,
+				(
+					SELECT COUNT(id)
+					FROM chat_message
+					WHERE room_id = r.id
+					AND id > rs.read_last_message_id
+					AND is_system_message = 0
+				) AS no_read_count,
+				IFNULL((
+					SELECT DATEDIFF(NOW(), MAX(create_date))
+					FROM chat_message
+					WHERE room_id = r.id),
+				0) AS end_days
+		FROM v_customer vc
+			INNER JOIN v_room r ON vc.room_id = r.id
+			INNER JOIN room_speaker rs ON r.id = rs.room_id AND rs.speaker_id = vc.speaker_id
+		WHERE vc.gasapp_member_number = #{gasappMemberNumber}
+		AND vc.company_id = #{companyId}
 	</select>
 	
 	<!-- 고객 등록 -->
