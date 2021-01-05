@@ -42,6 +42,10 @@ public class MinwonController {
 		return this.minwonService.regist(params, request, response);
 	}
 	
-	
+	@Auth
+	@RequestMapping(name="민원 조회", method = RequestMethod.GET, value = "/findSearchByRoomId", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Minwon> findSearchByRoomId(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.minwonService.findSearchByRoomId(params, request, response);
+	}
 }
 	

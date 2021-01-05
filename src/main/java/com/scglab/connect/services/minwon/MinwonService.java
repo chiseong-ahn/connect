@@ -118,5 +118,20 @@ public class MinwonService {
 		}
 		return minwon;
 	}
+	
+	public List<Minwon> findSearchByRoomId(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String errorParams = "";
+		if(!this.commonService.valid(params, "roomId"))
+			errorParams = this.commonService.appendText(errorParams, "방id-roomId");
+		
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
+		List<Minwon> minwons = this.minwonDao.findSearchByRoomId(params);
+		return minwons == null ? new ArrayList<Minwon>() : minwons;
+	}
 
 }
