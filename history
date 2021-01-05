@@ -1,4 +1,0 @@
-- regist_member : 프로시저 변경(부서명, 직급명, 사용여부 컬럼 추가) - 적용완료. 
-- member(회원) : 부서명, 직급명, 사용여부, 암호 4개 컬럼 추가 - 적용완료.
-- category_대중소 : 사용여부 use_status(1-사용, 0-미사용) 컬럼 추가 - 적용완료.
-- v_category view : use_status - 적용완료.
