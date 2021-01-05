@@ -12,7 +12,8 @@
 	      FROM 
 	        template2 t 
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
-	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
+	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id AND f.member_id = #{loginId}
+	        INNER JOIN member m ON t.member_id = m.id
 	      WHERE t.company_id = #{companyId}
 	      	<if test='categoryLargeId != null and categoryLargeId != ""'>
 	      		AND vc.category_large_id = #{categoryLargeId}
@@ -86,11 +87,13 @@
 			t.image_name as imageName,
 	        (
 	          CASE WHEN f.member_id = #{loginId} THEN 1 ELSE 0 END
-	        ) AS isFavortie 
+	        ) AS isFavorite,
+	        m.name as memberName
 	      FROM 
 	        template2 t 
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
-	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id 
+	        LEFT OUTER JOIN template_favorite f ON t.id = f.template_id AND f.member_id = #{loginId}
+	        INNER JOIN member m ON t.member_id = m.id
 	      WHERE t.company_id = #{companyId}
 	      	<if test='categoryLargeId != null and categoryLargeId != ""'>
 	      		AND vc.category_large_id = #{categoryLargeId}
@@ -130,7 +133,7 @@
 		        </choose>
 	        </if>
 	      ORDER BY t.id DESC
-	      <if test='startNum != null and startNum != "" and pageSize != null and pageSize != ""'>
+	      <if test='startNum != null and pageSize != null'>
 	      	limit #{startNum}, #{pageSize}
 	      </if>
 	      
