@@ -125,11 +125,6 @@ public class SocketService {
 				String gasappMemberNumber = ((List<String>) nativeHeaders.get("gasappMemberNumber")).get(0);
 				String secretKey = ((List<String>) nativeHeaders.get("secretKey")).get(0);
 				
-				this.logger.info("secretKey : " + secretKey);
-//				if(secretKey != "1234") {
-//					throw new RuntimeException("비밀키가 일치하지 않습니다.");
-//				}
-				
 				profile = loginCustomer(companyId, gasappMemberNumber, secretKey);
 				
 				Map<String, Object> params = new HashMap<String, Object>();
@@ -316,6 +311,11 @@ public class SocketService {
 		Room room = this.roomDao.getDetail(params);
 		this.logger.debug("room : " + room);
 		
+		if(profile.getIsCustomer() != 1 && room.getMemberId() != profile.getId()) {
+			// 본인의 상담이 아닐경우.  별도처리하지 않음.
+			return;
+		}
+		
 		// [DB] 채팅방에 조인 처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
@@ -348,8 +348,6 @@ public class SocketService {
 			// 나를 제외하고 메시지 발송.
 			this.socketMessageHandler.sendMessageToBroadcast(EventName.READ_MESSAGE, profile, sendData);
 		}
-		
-		
 		
 		// 고객여부 판단.
 		if(profile.getIsCustomer() == 1) {
