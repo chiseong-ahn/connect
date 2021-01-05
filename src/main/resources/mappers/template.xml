@@ -244,7 +244,7 @@
 	<!-- 즐겨찾기 해제 -->
 	<delete id="deleteFavorite" parameterType="map">
 		DELETE
-		FROM template_keyword
+		FROM template_favorite
 		WHERE template_id = #{templateId} 
 	</delete>
 	
