@@ -113,7 +113,15 @@ public class TemplateService {
 		params.put("loginId", member.getId());
 		
 		this.logger.debug("params : " + params.toString());
-		return this.templateDao.getDetail(params);
+		Map<String, Object> data = this.templateDao.getDetail(params);
+		
+		if(data != null) {
+			params.put("templateId", data.get("id"));
+			List<Keyword> keywordList = this.keywordDao.getByTemplateId(params);
+			data.put("keywordList", keywordList);
+		}
+		
+		return data;
 	}
 	
 	public Map<String, Object> saveKeyword(Map<String, Object> params, HttpServletRequest request) throws Exception {
