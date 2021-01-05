@@ -86,7 +86,7 @@
 			t.image_name as imageName,
 	        (
 	          CASE WHEN f.member_id = #{loginId} THEN 1 ELSE 0 END
-	        ) AS isFavortie 
+	        ) AS isFavorite 
 	      FROM 
 	        template2 t 
 	        INNER JOIN v_category vc ON t.category_small_id = vc.id 
