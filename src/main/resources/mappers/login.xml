@@ -6,6 +6,14 @@
 	<parameterMap type="com.scglab.connect.services.member.Member" id="member"></parameterMap>
 	<resultMap type="com.scglab.connect.services.member.Member" id="member"></resultMap>
 	
+	<select id="findAdmin" parameterType="map" resultMap="member">
+		SELECT *
+		FROM member As a
+		WHERE 1=1
+		AND a.auth_level = 0 
+		AND a.login_name = #{loginName}
+	</select>
+	
 	<select id="profileCount" parameterType="map" resultType="int">
 		SELECT count(*) as cnt
 		FROM member as a

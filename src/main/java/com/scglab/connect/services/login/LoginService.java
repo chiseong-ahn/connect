@@ -23,6 +23,7 @@ import com.scglab.connect.services.customer.CustomerDao;
 import com.scglab.connect.services.customer.VCustomer;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.utils.SHA256Utils;
 
 
 @Service
@@ -35,6 +36,62 @@ public class LoginService {
 	@Autowired private CommonService commonService;
 	@Autowired private CustomerDao customerDao;
 	@Autowired private ErrorService errorService;
+	
+	public Map<String, Object> loginAdmin(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		String errorParams = "";
+		if(!this.commonService.valid(params, "loginName"))
+			errorParams = this.commonService.appendText(errorParams, "로그인id-loginName");
+		if(!this.commonService.valid(params, "password"))
+			errorParams = this.commonService.appendText(errorParams, "비밀번호-password");
+
+		// 파라미터 유효성 검증.
+		if(!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
+		Member admin = this.loginDao.findAdmin(params);
+		if(admin == null) {
+			// 아이디에 일치하는 계정이 없을경우.
+			this.logger.debug("loginName : " + DataUtils.getString(params, "loginName", ""));
+			
+			data.put("token", null);
+			data.put("admin", null);
+			data.put("reason", this.messageHandler.getMessage("error.auth.login.reason6"));
+			return data;
+		}
+		
+		SHA256Utils sha256Utils = new SHA256Utils();
+		
+		String dbPassword = DataUtils.getSafeValue(admin.getPassword());		// DB에 저장되어있는 암호화된 비밀번호.
+		String paramPassword = sha256Utils.encrypt(DataUtils.getString(params, "password", ""));	// 입력된 비밀번호
+		
+		if(!dbPassword.equals(paramPassword)) {
+			//  비밀번호가 일치하지 않을경우.
+			this.logger.debug("dbPassword : " + dbPassword);
+			this.logger.debug("paramPassword : " + paramPassword);
+			
+			data.put("token", null);
+			data.put("admin", null);
+			data.put("reason", this.messageHandler.getMessage("error.auth.login.reason7"));
+			return data;
+		}
+		
+		admin.setPassword(null);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> memberMap = objectMapper.convertValue(admin, Map.class);
+
+		// 인증토큰 발급.
+		String token = this.jwtService.generateToken(memberMap);
+		this.logger.debug("token : " + token);
+		data.put("token", token);
+		data.put("admin", admin);
+		
+		return data;
+	}
+	
 
 	/**
 	 *

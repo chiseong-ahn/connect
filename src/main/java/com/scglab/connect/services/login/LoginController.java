@@ -29,6 +29,11 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
+	@RequestMapping(name="관리자 로그인",method = RequestMethod.POST, value = "/loginAdmin", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> loginAdmin(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.loginService.loginAdmin(params, request, response);
+	}
+	
 	@RequestMapping(name="멤버 로그인",method = RequestMethod.POST, value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> loginMember(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.loginService.loginMember(params, request, response);

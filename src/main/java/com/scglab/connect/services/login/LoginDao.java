@@ -29,6 +29,10 @@ public class LoginDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "profileCount", params);
 	}
 	
+	public Member findAdmin(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "findAdmin", params);
+	}
+	
 	public Member findProfile(Map<String, Object> params) {
 		return this.sqlSession.selectOne(this.namespace + "findProfile", params);
 	}

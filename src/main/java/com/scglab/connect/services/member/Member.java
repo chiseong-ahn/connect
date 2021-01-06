@@ -29,4 +29,5 @@ public class Member implements Serializable {
 	private String createDate;
 	private String updateDate;
 	private String updateMemberId;
+	private String password;
 }
