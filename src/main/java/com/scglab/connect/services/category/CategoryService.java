@@ -325,12 +325,6 @@ public class CategoryService {
 		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "대분류명-name");
 			
-		if(!this.commonService.valid(params, "minwonCode"))
-			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
-			
-		if(!this.commonService.valid(params, "minwonName"))
-			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
-			
 		// 파라미터 유효성 검증.
 		if(!errorParams.equals("")) {
 			// 필수파라미터 누락에 따른 오류 유발처리.
@@ -370,12 +364,6 @@ public class CategoryService {
 		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "중분류명-name");
 		
-		if(!this.commonService.valid(params, "minwonCode"))
-			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
-			
-		if(!this.commonService.valid(params, "minwonName"))
-			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
-			
 		// 파라미터 유효성 검증.
 		if(!errorParams.equals("")) {
 			// 필수파라미터 누락에 따른 오류 유발처리.
@@ -415,12 +403,6 @@ public class CategoryService {
 		if(!this.commonService.valid(params, "name"))
 			errorParams = this.commonService.appendText(errorParams, "소분류명-name");
 		
-		if(!this.commonService.valid(params, "minwonCode"))
-			errorParams = this.commonService.appendText(errorParams, "민원코드-minwonCode");
-			
-		if(!this.commonService.valid(params, "minwonName"))
-			errorParams = this.commonService.appendText(errorParams, "민원명-minwonName");	
-			
 		// 파라미터 유효성 검증.
 		if(!errorParams.equals("")) {
 			// 필수파라미터 누락에 따른 오류 유발처리.
