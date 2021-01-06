@@ -31,15 +31,18 @@
 		</if>
 		
 		<if test='searchValue != null and searchValue != ""'>
-		AND (
-			m.page_no = #{searchValue}
-			OR
-			m.title LIKE CONCAT('%', #{searchValue}, '%') 
-			OR 
-			m.content LIKE CONCAT('%', #{searchValue}, '%')
-			OR 
-			m.tags LIKE CONCAT('%', #{searchValue}, '%')
-		)
+			AND (
+				m.page_no = #{searchValue}
+				OR
+				m.title LIKE CONCAT('%', #{searchValue}, '%') 
+				OR 
+				m.content LIKE CONCAT('%', #{searchValue}, '%')
+				OR 
+				m.tags LIKE CONCAT('%', #{searchValue}, '%')
+			)
+		</if>
+		<if test='tag != null and tag != ""'>
+			AND m.tags LIKE CONCAT('%', #{tag}, '%')
 		</if>
 		ORDER BY (m.page_no + 0)
 		limit #{startNum}, #{pageSize}
@@ -92,15 +95,18 @@
 		</if>
 		
 		<if test='searchValue != null and searchValue != ""'>
-		AND (
-			m.page_no = #{searchValue}
-			OR
-			m.title LIKE CONCAT('%', #{searchValue}, '%') 
-			OR 
-			m.content LIKE CONCAT('%', #{searchValue}, '%')
-			OR 
-			m.tags LIKE CONCAT('%', #{searchValue}, '%')
-		)
+			AND (
+				m.page_no = #{searchValue}
+				OR
+				m.title LIKE CONCAT('%', #{searchValue}, '%') 
+				OR 
+				m.content LIKE CONCAT('%', #{searchValue}, '%')
+				OR 
+				m.tags LIKE CONCAT('%', #{searchValue}, '%')
+			)
+		</if>
+		<if test='tag != null and tag != ""'>
+			AND m.tags LIKE CONCAT('%', #{tag}, '%')
 		</if>
 	</select>
 	
