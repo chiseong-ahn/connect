@@ -11,7 +11,7 @@
 		SELECT count(*) as totalCount
 		FROM member
 		WHERE company_id = #{companyId}
-		AND auth_level > 0
+		AND auth_level > 2
 		<if test='searchType != null and searchValue != null'>
         	<choose>
 	        	<when test='searchType == "loginName"'>
@@ -29,7 +29,7 @@
 		SELECT *
 		FROM member
 		WHERE company_id = #{companyId}
-		AND auth_level > 0
+		AND auth_level > 2
 		<if test='searchType != null and searchValue != null'>
         	<choose>
 	        	<when test='searchType == "loginName"'>
@@ -49,7 +49,7 @@
 		SELECT *
 		FROM member
 		WHERE company_id = #{companyId}
-		AND auth_level > 0
+		AND auth_level > 2
 	</select>
 	
 	<!-- 회원 목록(관리자가 아니고 상담을 할 수 있는 회원) -->
@@ -57,7 +57,7 @@
 		SELECT *
 		FROM member
 		WHERE company_id = #{companyId}
-		AND auth_level > 0
+		AND auth_level > 2
 		AND auth_level <![CDATA[<]]> 5
 	</select>
 	
