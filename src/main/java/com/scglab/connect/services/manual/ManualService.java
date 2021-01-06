@@ -87,6 +87,8 @@ public class ManualService {
 			if(list != null) {
 				data.put("list", list);
 			}
+		}else {
+			data.put("list", new ArrayList<Manual>());
 		}
 		
 		return data;
