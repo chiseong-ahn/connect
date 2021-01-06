@@ -14,7 +14,15 @@
 		AND auth_level > 2
 		<if test='searchType != null and searchValue != null'>
         	<choose>
-	        	<when test='searchType == "loginName"'>
+				<when test='searchType == "all"'>
+	        		AND  
+	        		(
+		        		login_name like concat ('%', #{searchValue}, '%')
+		        		or
+		        		name like concat ('%', #{searchValue}, '%')
+	        		)
+				</when>
+				<when test='searchType == "loginName"'>
 	        		AND login_name like concat ('%', #{searchValue}, '%')
 				</when>
 				<when test='searchType == "name"'>
@@ -32,6 +40,14 @@
 		AND auth_level > 2
 		<if test='searchType != null and searchValue != null'>
         	<choose>
+        		<when test='searchType == "all"'>
+	        		AND  
+	        		(
+		        		login_name like concat ('%', #{searchValue}, '%')
+		        		or
+		        		name like concat ('%', #{searchValue}, '%')
+	        		)
+				</when>
 	        	<when test='searchType == "loginName"'>
 	        		AND login_name like concat ('%', #{searchValue}, '%')
 				</when>
