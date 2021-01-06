@@ -149,7 +149,7 @@
 			title = #{title},
 			tags = #{tags},
 			content = #{content},
-			pdf_image_path = #{pdf_image_path}
+			pdf_image_path = #{pdfImagePath}
 		WHERE id = #{id}
 	</update>
 	
