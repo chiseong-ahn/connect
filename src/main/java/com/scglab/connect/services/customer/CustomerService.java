@@ -1,5 +1,6 @@
 package com.scglab.connect.services.customer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +62,13 @@ public class CustomerService {
 		params.put("pageSize", pageSize);
 				
 		int totalCount = this.customerDao.findAllCount(params);
-		List<VCustomer> list = null;
+		List<VCustomer> list = new ArrayList<VCustomer>();
 		if(totalCount > 0) {
 			list = this.customerDao.findAll(params);
 		}
 		
 		data.put("totalCount", totalCount);
-		data.put("data", list);
+		data.put("list", list);
 		return data;
 	}
 	

@@ -9,7 +9,9 @@
 		SELECT *
 		FROM   auto_message
 		WHERE company_id = #{companyId}
-			  and type = #{type}
+			  <if test='type != null and type != ""'>
+			  	and type = #{type}
+			  </if>
 			  <if test='message != null and message != ""'>
 			  	and message like CONCAT('%', #{message}, '%')
 			  </if>

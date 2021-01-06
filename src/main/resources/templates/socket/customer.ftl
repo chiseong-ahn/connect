@@ -87,7 +87,7 @@
 				message: "",			// 작성하는 메세지
 				imgPrefix: 'https://cstalk-dev.gasapp.co.kr/attach/',
 				gasappMemberNumber: 3779,
-				secretKey: '$CSTALK#_20210104'
+				secretKey: '$CSTALK#_20210105'
             },
             created() {
             },

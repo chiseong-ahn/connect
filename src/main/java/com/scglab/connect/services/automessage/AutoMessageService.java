@@ -1,5 +1,6 @@
 package com.scglab.connect.services.automessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,18 +46,9 @@ public class AutoMessageService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		String errorParams = "";
-	    if(!this.commonService.valid(params, "type"))
-	        // 파라미터가 존재하지 않는 파라미터 등록.
-	        errorParams = this.commonService.appendText(errorParams, "메시지유형-type");
-	    
-	    // 파라미터 유효성 검증.
-	    if(!errorParams.equals("")) {
-	        // 필수파라미터 누락에 따른 오류 유발처리.
-	        this.errorService.throwParameterErrorWithNames(errorParams);
-	    }
+		List<AutoMessage> list = this.autoMessageDao.findAutoMessageAll(params);
 		
-		return this.autoMessageDao.findAutoMessageAll(params); 
+		return list == null ? new ArrayList<AutoMessage>() : list;
 	}
 	
 	/**
