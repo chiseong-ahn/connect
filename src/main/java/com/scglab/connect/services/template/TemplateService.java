@@ -1,6 +1,7 @@
 package com.scglab.connect.services.template;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.category.CategoryDao;
-import com.scglab.connect.services.category.CategoryMiddle;
-import com.scglab.connect.services.category.CategorySmall;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
@@ -61,7 +60,7 @@ public class TemplateService {
 		this.logger.debug("params : " + params.toString());
 		
 		int totalCount = this.templateDao.findAllCount(params);
-		List<Map<String, Object>> list = null;
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if(totalCount > 0) {
 			list = this.templateDao.findAll(params);
 		}

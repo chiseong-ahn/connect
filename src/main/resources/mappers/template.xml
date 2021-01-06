@@ -33,13 +33,13 @@
 	        <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 	        	<choose>
 		        	<when test='searchType == "memberName"'>
-		        		AND vc.member_name like concat('%', searchValue, '%')
+		        		AND vc.member_name like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "ask"'>
-		        		AND t.ask like concat('%', searchValue, '%')
+		        		AND t.ask like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "reply"'>
-		        		AND t.reply like concat('%', searchValue, '%')
+		        		AND t.reply like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "keyword"'>
 		        		AND t.id in (
@@ -47,7 +47,7 @@
 							from template_keyword tk 
 								 inner join keyword2 k on (k.id  = tk.keyword_id)
 							where 1=1
-							and k.name like concat('%', searchValue, '%')
+							and k.name like concat('%', #{searchValue}, '%')
 		        		)
 		        	</when>
 		        </choose>
@@ -113,13 +113,13 @@
 	        <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 	        	<choose>
 		        	<when test='searchType == "memberName"'>
-		        		AND vc.member_name like concat('%', searchValue, '%')
+		        		AND vc.member_name like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "ask"'>
-		        		AND t.ask like concat('%', searchValue, '%')
+		        		AND t.ask like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "reply"'>
-		        		AND t.reply like concat('%', searchValue, '%')
+		        		AND t.reply like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "keyword"'>
 		        		AND t.id in (
@@ -127,7 +127,7 @@
 							from template_keyword tk 
 								 inner join keyword2 k on (k.id  = tk.keyword_id)
 							where 1=1
-							and k.name like concat('%', searchValue, '%')
+							and k.name like concat('%', #{searchValue}, '%')
 		        		)
 		        	</when>
 		        </choose>

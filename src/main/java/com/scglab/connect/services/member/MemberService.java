@@ -1,5 +1,6 @@
 package com.scglab.connect.services.member;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class MemberService {
 		
 		int totalCount = this.memberDao.findAllCount(params);
 		
-		List<Member> memberList = null;
+		List<Member> memberList = new ArrayList<Member>();
 		if(totalCount > 0) {
 			memberList = this.memberDao.findAll(params);
 		}
