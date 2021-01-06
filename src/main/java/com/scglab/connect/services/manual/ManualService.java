@@ -1,5 +1,6 @@
 package com.scglab.connect.services.manual;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +144,20 @@ public class ManualService {
 	    }
 		
 		// 태그목록 조회
-		return this.manualDao.findTags(params);
+		List<String> list = this.manualDao.findTags(params);
+		List<String> tagList = new ArrayList<String>();
+		
+		for(String tags : list) {
+			tags = tags.replaceAll("–", "-");
+			String[] tagArray = tags.split("-");
+			for(String tag : tagArray) {
+				if(!tagList.contains(tag)) {
+					tagList.add(tag);
+				}
+			}
+		}
+		
+		return tagList;
 	}
 	
 	/**
