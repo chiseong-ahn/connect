@@ -94,6 +94,7 @@ public class MemberService {
 		return data;
 	}
 	
+	
 	/**
 	 * 
 	 * @Method Name : regist
