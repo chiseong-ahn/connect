@@ -102,6 +102,8 @@ public class RoomService {
 			}else if(member.getAuthLevel() < 4){
 				params.put("memberId", null);
 				
+			}else {
+				params.put("memberId", member.getId());
 			}
 			
 			if(searchType.equals("message")) {					// 메세지 조건으로 검색.
