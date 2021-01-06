@@ -52,7 +52,7 @@ public class ManualController {
 	
 	
 	@Auth
-	@RequestMapping(name="매뉴얼 즐겨찾기 추가/삭제", method = RequestMethod.PUT, value = "/{id}/favorite", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(name="매뉴얼 즐겨찾기 추가/삭제", method = RequestMethod.POST, value = "/{id}/favorite", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> favorite(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.manualService.favorite(params, request, response);

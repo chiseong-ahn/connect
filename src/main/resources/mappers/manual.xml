@@ -19,7 +19,10 @@
 	<!-- 매뉴얼 검색 -->
 	<select id="findSearch" parameterType="map" resultMap="manual">
 		SELECT f.id AS favorite_id,
-			m.*
+			m.*,
+			(
+			  CASE WHEN f.member_id = #{loginId} THEN 1 ELSE 0 END
+			) AS isFavorite
 		FROM manual m
 		LEFT OUTER JOIN manual_favorite f ON m.id = f.manual_id AND f.member_id = #{loginId}
 		WHERE m.company_id = #{companyId}
