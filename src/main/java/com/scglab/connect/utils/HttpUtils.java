@@ -445,7 +445,7 @@ public class HttpUtils {
 		return body;
 	}
 
-	private static ResponseBody requestForPostwithBodyContent(String url, String content) {
+	public static ResponseBody requestForPostwithBodyContent(String url, String content) {
 
 		LocalTime startTime = LocalTime.now();
 		logger.debug("외부 통신 시작. : " + startTime);

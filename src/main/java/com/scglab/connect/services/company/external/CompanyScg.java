@@ -1,6 +1,7 @@
 package com.scglab.connect.services.company.external;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,18 +37,32 @@ public class CompanyScg implements ICompany {
 		String url = "";
 		this.logger.debug("relayUseExample : " + this.relayUseExample);
 
-		if(password.equals("1212")) {
-			return true;
-		}
-
 		if(this.relayUseExample) {
+			// 기간계 연동하지 않을경우
 			return true;
 			
 		}else {
-			url = "https://" + this.cstalkDomain + "/api/employees/login";
-			ResponseBody body = HttpUtils.getForResponseBody(url);
-			if(body.getStateCode() == Response.SC_OK) {
-				return true;
+			if(password.equals("1212")) {
+				// 비밀번호가 "1212"일 경우 아이디에 해당하는 계정정보가 존재할경우 로그인 허용. 
+				url = "https://" + this.relayDomain + "/api/employee?id=" + id;
+				Map<String, Object> data = HttpUtils.getForMap(url);
+				if(data != null) {
+					return true;
+				}
+				
+			}else {
+				// 기간계에 아이디, 비밀번호 유효여부 검증하여 로그인 허용.
+				url = "https://" + this.relayDomain + "/api/employee/authentication";
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("id", id);
+				params.put("password", password);
+				
+				String jsonContent = JSONObject.toJSONString(params);
+				
+				ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
+				if(body.getStateCode() == Response.SC_OK) {
+					return true;
+				}
 			}
 		}
 
