@@ -25,4 +25,6 @@ public class Profile implements Serializable {
 	private String sessionId;
 	private boolean authenticated;
 	private Map<String, Object> companyUseConfigJson;
+	private int noReadCount;
+	private int	endDays;
 }
