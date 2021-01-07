@@ -4,7 +4,7 @@
 <mapper namespace="room">
 	<resultMap type="com.scglab.connect.services.message.Message" id="message"></resultMap>
 	<resultMap type="com.scglab.connect.services.room.Room" id="room"></resultMap>
-	
+
 	<!-- 현재 시간 방 통계 정보 -->
 	<select id="getCurrentTimeStats" parameterType="map" resultType="map">
 		SELECT 
@@ -57,10 +57,10 @@
 		  room r 
 		WHERE 
 		  company_id = #{companyId}
-		  AND state <![CDATA[<]]> 2
+		  AND state 		<![CDATA[<]]> 2
 				
 	</select>
-	
+
 	<!-- 진행중인 방 목록 -->
 	<select id="findIngState" parameterType="map" resultMap="room">
 		SELECT 
@@ -172,7 +172,7 @@
 		      ) messasge_search ON r.id = messasge_search.message_search_room_id
 		    WHERE 
 		      r.company_id = #{companyId} 
-		      AND r.state <![CDATA[<]]> 2 
+		      AND r.state 		<![CDATA[<]]> 2 
 		      AND (
 		        CASE WHEN #{memberId} IS NULL THEN 1 = 1 ELSE member_id = #{memberId} END
 		      )
@@ -187,7 +187,7 @@
 		ORDER BY 
 		  last_message_create_date DESC
 	</select>
-	
+
 	<!-- 대기중인 방 목록. -->
 	<select id="findReadyState" parameterType="map" resultMap="room">
 		SELECT 
@@ -300,7 +300,7 @@
 		      ) messasge_search ON r.id = messasge_search.message_search_room_id
 		    WHERE 
 		      r.company_id = #{companyId}
-		      AND r.state <![CDATA[<]]> 2 
+		      AND r.state 		<![CDATA[<]]> 2 
 		      AND r.member_id IS NULL
 		  ) AS sub_room 
 		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
@@ -311,7 +311,7 @@
 		  AND v_customer.name LIKE concat('%', #{customerName}, '%')
 		ORDER BY ${sort}
 	</select>
-	
+
 	<!-- 종료된 방 목록. -->
 	<select id="findCloseState" parameterType="map" resultMap="room">
 		SELECT 
@@ -385,9 +385,9 @@
 		      AND (
 		        CASE WHEN #{memberId} IS NULL THEN 1 = 1 ELSE last_member_id = #{memberId} END
 		      )
-		      <if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
+		<if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
 		      	AND date_format(end_date, '%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
-		      </if>
+		</if>
 		      
 		  ) AS sub_room 
 		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
@@ -398,10 +398,11 @@
 		ORDER BY 
 		  last_message_create_date DESC
 	</select>
-	
+
 	<!-- 이전 상담 검색 -->
 	<select id="findSearchJoinHistory" parameterType="map" resultType="map">
-		SELECT rjh.create_date AS joinStartDate, 
+		SELECT rjh.id AS id,
+		       rjh.create_date AS joinStartDate,
 		       TIMESTAMPDIFF(SECOND, rjh.create_date, rjh.end_date) speakMinute,
 		       rjh.create_date as createDate,
 		       rjh.update_date as updateDate,
@@ -438,29 +439,29 @@
 		                                 AND id BETWEEN rjh.start_message_id AND rjh.end_message_id 
 		                                 AND is_system_message = 0 
 		                                 AND message_admin_type = 0 
-		                                 <if test='message != null'>
+		<if test='message != null'>
 		                                 	AND message LIKE CONCAT('%', #{message}, '%')
-		                                 </if>
+		</if>
 								)         
 		ORDER  BY rjh.id DESC 
 	</select>
-	
-	
+
+
 	<!-- 방 종료시키기 -->
 	<select id="closeRoom" parameterType="map" statementType="CALLABLE">
 		CALL close_room(#{roomId}, #{loginId})
 	</select>
-	
+
 	<!-- 방 이관시키기 -->
 	<update id="transferRoom" parameterType="map" statementType="CALLABLE">
 		CALL transfer_room(#{transferType}, #{roomId}, #{memberId}, #{loginId})
 	</update>
-	
+
 	<!-- 방 상담사 매칭시키기 -->
 	<update id="matchRoom" parameterType="map" statementType="CALLABLE">
 		CALL match_room(#{roomId}, #{memberId})
 	</update>
-	
+
 	<!-- 방 상세. -->
 	<select id="getDetail" parameterType="map" resultMap="room">
 		SELECT 
@@ -567,7 +568,7 @@
 		  LEFT OUTER JOIN chat_message ON sub_room.recent_message_id = chat_message.id 
 		  INNER JOIN v_customer ON sub_room.customer_speaker_id = v_customer.speaker_id
 	</select>
-	
+
 	<!-- 방 조인 -->
 	<select id="joinRoom" parameterType="map" resultType="map" statementType="CALLABLE">
 		CALL join_room(
@@ -577,14 +578,14 @@
 			#{maxMessageId, mode=OUT, jdbcType=INTEGER}			
 		)
 	</select>
-	
+
 	<!-- 방 온라인 설정 -->
 	<update id="updateOnline" parameterType="map">
 		UPDATE room 
 		SET    is_online = #{isOnline} 
 		WHERE  id = #{id}
 	</update>
-	
+
 	<!-- 방 상세정보(speaer id기준) -->
 	<select id="getDetailBySpeakerId" parameterType="map" resultMap="room">
 		SELECT *
@@ -595,21 +596,21 @@
             WHERE speaker_id = #{speakerId}
 		) 
 	</select>
-	
+
 	<!-- 챗봇 이력 저장. -->
 	<update id="updateJoinHistory" parameterType="map">
 		UPDATE room 
 		SET  join_history_json = #{history} 
 		WHERE id = #{roomId}
 	</update>
-	
+
 	<!-- 방 종료 상세 정보 -->
 	<select id="getRoomJoinHistoryDetail" parameterType="map" resultType="map">
 		SELECT *
 		FROM   room_join_history 
 		WHERE  id = #{id}
 	</select>
-	
+
 	<!-- 메세지 조회 -->
 	<select id="findSearchRangeById" parameterType="map" resultType="map">
 		SELECT * 
@@ -619,14 +620,14 @@
 		AND    is_system_message = 0 
 		AND    message_admin_type = 0
 	</select>
-	
+
 	<!-- chatid의 카테고리 소분류 정보 수정 -->
 	<update id="updateJoinHistoryByChatId" parameterType="map">
 		UPDATE room_join_history
 		SET category_small_id = #{categorySmallId}
 		WHERE id = #{chatid}
 	</update>
-	
+
 	<!-- chatid에 대한하는 room history 조회 -->
 	<select id="findRoomHistoryByChatId" parameterType="map" resultType="map">
 		select a.id
@@ -650,8 +651,8 @@
 		order by id desc
 		limit 1
 	</select>
-	
-	
+
+
 </mapper>
 
 
