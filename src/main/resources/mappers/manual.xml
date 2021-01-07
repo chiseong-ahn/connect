@@ -62,7 +62,7 @@
 					AND member_id = #{loginId}) as is_favorite,
 				(
 				SELECT
-					MIN(page_number)
+					MIN(id)
 				FROM
 					manual m2
 				WHERE
@@ -71,7 +71,7 @@
 					AND id <![CDATA[<]]> m.id) AS previous_page,
 				(
 				SELECT
-					MIN(page_number)
+					MIN(id)
 				FROM
 					manual m2
 				WHERE
