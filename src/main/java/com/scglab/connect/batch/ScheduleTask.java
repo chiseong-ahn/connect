@@ -6,9 +6,12 @@ import java.time.LocalTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.scglab.connect.services.stats.StatsService;
 
 @Profile("local | dev | live1")
 @Component
@@ -21,9 +24,9 @@ public class ScheduleTask {
 	 * @Scheduled(cron = "* * * * * *") > 초(0~59) 분(0~59) 시간(0~23) 일(1-31) 월(1~12) 요일(0~7)
 	 * @Scheduled(fixedRate = (1000 * 1)) > 시간(1초)마다 실행(이전 작업 종료와 상관없이 시작)
 	 */
-	
-	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired private StatsService statsService;
 
 	/**
 	 * 
@@ -33,12 +36,13 @@ public class ScheduleTask {
 	 * @변경이력 : 
 	 * @Method 설명 : 일일집계 처리.
 	 */
-	@Scheduled(cron = "0 10 14 * * *")
+	@Scheduled(cron = "0 10 00 * * *")
 	public void dailyStatistics() {
 		LocalTime startTime = LocalTime.now();
 		this.logger.info("일일집계처리 시작. : " + startTime);
 		
-		// TODO :   
+		// TODO : 상담 일일집계.
+		this.statsService.createStatsCompanyDaily();
 
 		LocalTime endTime = LocalTime.now();
 		this.logger.info("일일집계처리 종료. : " + endTime);
@@ -63,8 +67,6 @@ public class ScheduleTask {
 		this.logger.info("기간계 민원코드 동기화 시작. : " + LocalDateTime.now());
 		// todo:
 
-		
-		
 		this.logger.info("기간계 민원코드 동기화 종료. : " + LocalDateTime.now());
 		LocalTime endTime = LocalTime.now();
 		

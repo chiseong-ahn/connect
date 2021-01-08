@@ -19,6 +19,7 @@ import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
+import com.scglab.connect.utils.DateUtils;
 
 @Service
 public class StatsService {
@@ -71,7 +72,7 @@ public class StatsService {
 		// -종료건(closeCount) : 히스토리 테이블에서 종료일이 오늘이고 담당이 나인 경우
 		// -이탈건(outCount) : 그냥 기본으로 0건(전체 이탈건)
 		// -최장 고객 대기 시간(maxReadyMinute) : 방의 담당이 나이고 join 메시지 시작일시가 오늘 이고 조인 메시지보다 큰 것 중 시스템 메시지가 아니고 상담사가 작성한 메시지의 시간 - 조인 메시지의 시작일시 중 가장 큰 시간
-		// -최장 상담시간(maxSpeakMinute) : 히스토리의 종료시간과 조인 메시지의 시작일을 뺀 시간
+		// -최장 상담시간(maxSpeakMinute) : 히스토리의 종료시간과 조인 메시지의 시작일을 뺀 시간 -> 히스토리의 종료시간에서 상담사 매칭된 시간을 뺀 시간.
 		// -평균 고객 대기 시간(avgReadyMinute) : 최장 고객 대기 시간의 함수를 avg로 바꿈
 		// -평균 상담시간(avgSpeakMinute)
 		// 
@@ -383,5 +384,13 @@ public class StatsService {
 		list.add(data2);
 		
 		return list;
+	}
+	
+	// 일일 상담집계
+	public void createStatsCompanyDaily() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("companyId", "1");
+		params.put("targetDate", DateUtils.getYesterday());
+		this.statsDao.createStatsCompanyDaily(params);
 	}
 }

@@ -26,7 +26,80 @@
 	
 	<!-- 통계 : 오늘의 나의 통계정보 -->
 	<select id="myToday" parameterType="map" resultType="map">
+		<![CDATA[
+		SET @p_today := curdate(), @p_id := #{loginId}
 		
+		select a.companyId
+				,(
+					select count(*)
+					from room a1
+					where 1=1
+					and a1.company_id = a.company_id 
+					and a1.member_id is null
+					and a1.join_message_id is not null
+					and a1.state < 2	
+				) as readyCount	-- 대기중
+				,(
+					select count(*)
+					from room a2
+					where 1=1
+					and a2.company_id = a.company_id 
+					and a2.member_id = a.id
+					and a2.state < 2
+				) as ingCount		-- 진행중
+				,(
+					select count(*)
+					from room a3
+					where 1=1
+					and a3.company_id = a.company_id 
+					and a3.member_id  = a.id
+					and a.create_date between @p_today and concat(@p_today, ' 23.59.59')
+				) as newCount -- 신규접수
+				,(	
+					select count(*)
+					from room_join_history a4
+					where 1=1
+					and a4.company_id = a.company_id 
+					and a4.member_id = a.id
+					and a4.end_date between @p_today and concat(@p_today, ' 23:59:59')
+				) as closeCount	-- 종료건
+				,0 as outCount 	-- 이탈건
+				,ifnull((
+					select max(consultSecond)
+					from(
+						select TIMESTAMPDIFF(
+										SECOND,
+										a5.create_date,
+										a5.end_date
+								) consultSecond
+						from room_join_history a5
+						where 1=1
+						and a5.company_id = a.company_id 
+						and a5.member_id = a.id
+						and a5.end_date is not null
+						and a5.create_date between @p_today and concat(@p_today, ' 06:34:34.0')
+					) a2
+				),0) as maxSpeakSecond
+				,ifnull((
+					select convert(avg(consultSecond), unsigned)
+					from(
+						select TIMESTAMPDIFF(
+										SECOND,
+										a5.create_date,
+										a5.end_date
+								) consultSecond
+						from room_join_history a5
+						where 1=1
+						and a5.company_id = a.company_id 
+						and a5.member_id = a.id
+						and a5.end_date is not null
+						and a5.create_date between @p_today and concat(@p_today, ' 06:34:34.0')
+					) a2
+				),0) as avgSpeakSecond
+		from member a
+		where 1=1
+		and a.id = @p_id
+		]]>
 	</select>
 	
 	<!-- 통계 : 기간 검색 -->
@@ -48,6 +121,11 @@
 	<select id="hashtag" parameterType="map" resultType="map">
 		
 	</select>
+	
+	<!-- 일일 상담집계 처리 -->
+	<insert id="createStatsCompanyDaily" parameterType="map">
+		CALL stats_company_daily(#{companyId}, #{targetDate})
+	</insert>
 	
 </mapper>
 
