@@ -41,7 +41,9 @@
 		FROM link_detail
 		WHERE company_id = #{companyId}
 		  AND menu_id = #{menuId}
-		  AND enable = 1
+		  <if test='enable != null'>
+		  	AND enable = #{enable}
+		  </if>
 		ORDER BY link_text ASC
 	</select>
 	
