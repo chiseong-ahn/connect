@@ -107,19 +107,21 @@ public class ContractService {
 		Map<String, Object> contractInfo = getCompany(companyId).contractInfo(useContractNum);
 		
 		// 결재 히스토리 존재여부.
-		if(contractInfo.containsKey("history")) {
-			List<Map<String, Object>> histories = (List<Map<String, Object>>) contractInfo.get("history");
-			if(histories != null) {
-				if(histories.size() > 0) {
-					
-					// 최신 1건의 히스토리에 대해 결제정보 조회.
-					Map<String, Object> history = histories.get(0);
-					String requestYm = DataUtils.getString(history, "requestYm", "");
-					String deadlineFlag = DataUtils.getString(history, "deadlineFlag", "");
-					
-					if(!requestYm.equals("") && !deadlineFlag.equals("")) {
-						Map<String, Object> bill = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
-						contractInfo.put("bill", bill);
+		if(contractInfo != null) {
+			if(contractInfo.containsKey("history")) {
+				List<Map<String, Object>> histories = (List<Map<String, Object>>) contractInfo.get("history");
+				if(histories != null) {
+					if(histories.size() > 0) {
+						
+						// 최신 1건의 히스토리에 대해 결제정보 조회.
+						Map<String, Object> history = histories.get(0);
+						String requestYm = DataUtils.getString(history, "requestYm", "");
+						String deadlineFlag = DataUtils.getString(history, "deadlineFlag", "");
+						
+						if(!requestYm.equals("") && !deadlineFlag.equals("")) {
+							Map<String, Object> bill = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
+							contractInfo.put("bill", bill);
+						}
 					}
 				}
 			}
