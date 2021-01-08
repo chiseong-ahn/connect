@@ -169,8 +169,9 @@ public class ContractService {
 			this.errorService.throwParameterError();
 		}
 		
-		Map<String, Object> contractBil = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
-		return contractBil;
+		Map<String, Object> contractBill = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
+		
+		return contractBill;
 	}
 	
 }

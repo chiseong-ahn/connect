@@ -1,5 +1,6 @@
 package com.scglab.connect.services.company.external;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -143,9 +144,25 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm=" + requestYm + "&deadlineFlag=" + deadlineFlag;
 		}
 
-		Map<String, Object> data = HttpUtils.getForMap(url);
-
-		return data;
+		Map<String, Object> contractBill = HttpUtils.getForMap(url);
+		
+		if(contractBill != null) {
+			if(contractBill.containsKey("previousUnpayInfos")) {
+				List<Map<String, Object>> previousUnpayInfos = (List<Map<String, Object>>) contractBill.get("previousUnpayInfos");
+				
+				if(previousUnpayInfos != null) {
+					int count = 2;		// 전달할 카운트.
+					
+					// 최근 [count]건에 대해서만 데이터 전달.
+					if(previousUnpayInfos.size() > count) {
+						List<Map<String, Object>> subList = new ArrayList<Map<String, Object>>(previousUnpayInfos.subList(0, 2));
+						contractBill.put("previousUnpayInfos", subList);
+					}
+				}
+			}
+		}
+		
+		return contractBill;
 	}
 
 	// 7. 휴일 여부 체크

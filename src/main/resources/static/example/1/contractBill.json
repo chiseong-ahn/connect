@@ -34,8 +34,20 @@
 	},
 	"previousUnpayInfos": [
 		{
-			"requestYm": "201709",
-			"unpayAmtAll": 2700
-		}
+            "requestYm": "2020-10",
+            "unpayAmtAll": 30.0
+        },
+        {
+            "requestYm": "2020-09",
+            "unpayAmtAll": 17100.0
+        },
+        {
+            "requestYm": "2020-08",
+            "unpayAmtAll": 30.0
+        },
+        {
+            "requestYm": "2020-07",
+            "unpayAmtAll": 17100.0
+        }
 	]
 }
