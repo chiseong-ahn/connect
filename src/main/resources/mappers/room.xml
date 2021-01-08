@@ -651,6 +651,14 @@
 		order by id desc
 		limit 1
 	</select>
+	
+	<!-- chatid에 대한 room history의 소분류 카테고리 정보 수정. -->
+	<update id="updateCategoryOfRoomHistory" parameterType="map">
+		update room_join_history
+		set category_small_id = #{categorySmallId} 
+		where 1=1
+		and id = #{chatId}
+	</update>
 
 
 </mapper>

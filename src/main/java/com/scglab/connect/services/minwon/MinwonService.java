@@ -19,6 +19,7 @@ import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.services.room.RoomDao;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -30,6 +31,7 @@ public class MinwonService {
 	@Autowired private LoginService loginService;
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
+	@Autowired private RoomDao roomDao;
 
 	public List<Map<String, Object>> codes(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
@@ -86,6 +88,11 @@ public class MinwonService {
 
 		Minwon minwon = null;
 		if(this.minwonDao.insertMinwon(params) > 0) {
+			
+			// room_history 의 소분류카테고리 업데이트.
+			this.roomDao.updateCategoryOfRoomHistory(params);
+			
+			// 등록된 민원정보 조회.
 			minwon = this.minwonDao.findMinwon(params);
 
 			// 각 회사별 기간망 클래스 가져오기.

@@ -268,6 +268,18 @@ public class RoomDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "findRoomHistoryByChatId", params);
 	}
 	
-	
+	/**
+	 * 
+	 * @Method Name : updateCategoryOfRoomHistory
+	 * @작성일 : 2021. 1. 8.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : room_history의 소분류 카테고리 수정.
+	 * @param params
+	 * @return
+	 */
+	public int updateCategoryOfRoomHistory(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "updateCategoryOfRoomHistory", params);
+	}
 	
 }
