@@ -1,5 +1,6 @@
 package com.scglab.connect.services.chat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,6 @@ import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.RoomDao;
-import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class ChatService {
@@ -30,17 +30,30 @@ public class ChatService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		Map<String, Object> spaceHist = this.roomDao.findRoomHistoryByChatId(params);
+		List<Map<String, Object>> speaks = new ArrayList<Map<String, Object>>();
 		
-		if(spaceHist == null) {
-			throw new RuntimeException("error.chattalk.reason1");
+		if(spaceHist != null) {
+			params.put("roomId", spaceHist.get("space"));
+			params.put("startId", spaceHist.get("startid"));
+			params.put("endId", spaceHist.get("endid"));
+			List<Message> list = this.messageDao.findRangeById(params);
+			
+			if(list != null && list.size() > 0) {
+				for(Message message : list) {
+					Map<String, Object> speak = new HashMap<String, Object>();
+					speak.put("id", message.getId());
+					speak.put("createdate", message.getCreateDate());
+					speak.put("mtype", message.getMessageType());
+					speak.put("msg", message.getMessage());
+					speak.put("msgname", message.getSpeakerName());
+					speak.put("isemp", message.getIsEmployee());
+					
+					speaks.add(speak);
+				}
+			}
 		}
 		
-		params.put("roomId", spaceHist.get("space"));
-		params.put("startId", spaceHist.get("startid"));
-		params.put("endId", spaceHist.get("endid"));
-		List<Message> speaks = this.messageDao.findRangeById(params);  
-		
-		data.put("spaceHist", spaceHist);
+		data.put("spacehist", spaceHist == null ? new HashMap<String, Object>() : spaceHist);
 		data.put("speak", speaks);
 		
 		return data;

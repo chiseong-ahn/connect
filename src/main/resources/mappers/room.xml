@@ -636,7 +636,7 @@
 				,a.room_id as space
 				,a.start_message_id as startid
 				,a.end_message_id as endid
-				,a.last_member_id as lastemp
+				,ifnull(a.last_member_id, a.member_id ) as lastemp
 		from room_join_history a
 		where 1=1
 		and a.end_date is not null
