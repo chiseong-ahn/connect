@@ -3,6 +3,8 @@ package com.scglab.connect.services.common.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.catalina.connector.Response;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fcibook.quick.http.ResponseBody;
 import com.scglab.connect.properties.DomainProperties;
 import com.scglab.connect.utils.HttpUtils;
 
@@ -47,8 +50,14 @@ public class PushService {
 			
 			params.put("member", member + "");
 			params.put("message", message);
+			String content = JSONObject.toJSONString(params);
 			
-			httpUtils.postForString(url, params);
+			ResponseBody body = httpUtils.requestForPostwithBodyContent(url, content);
+			if(body.getStateCode() == Response.SC_OK) {
+				this.logger.debug("Push발송 성공!");
+			}else {
+				this.logger.debug("Push발송 실패!");
+			}
 		}
 	}
 	
