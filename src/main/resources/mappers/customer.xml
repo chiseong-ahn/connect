@@ -103,7 +103,7 @@
 					SELECT DATEDIFF(NOW(), MAX(create_date))
 					FROM chat_message
 					WHERE room_id = r.id),
-				0) AS end_days
+				-1) AS end_days
 		FROM v_customer vc
 			INNER JOIN v_room r ON vc.room_id = r.id
 			INNER JOIN room_speaker rs ON r.id = rs.room_id AND rs.speaker_id = vc.speaker_id
