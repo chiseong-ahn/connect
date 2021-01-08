@@ -519,7 +519,7 @@ public class SocketService {
 				
 				// 채팅방의 상태가 오프라인일 경우.
 				if(room.getIsOnline() == 0) {
-					this.pushService.sendPush(profile.getId(), this.messageHandler.getMessage("sockekt.push"));
+					this.pushService.sendPush(profile.getId(), this.messageHandler.getMessage("socket.push"));
 					
 				}
 			}
