@@ -89,17 +89,15 @@ public class CustomerService {
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
 		
-		String errorParams = "";
-		if(!this.commonService.valid(params, "blockType"))
-			errorParams = this.commonService.appendText(errorParams, "지정/해제구분-blockType");
-			
-		// 파라미터 유효성 검증.
-		if(!errorParams.equals("")) {
-			// 필수파라미터 누락에 따른 오류 유발처리.
-			this.errorService.throwParameterErrorWithNames(errorParams);
-		}
+		String blockType = DataUtils.getString(params, "blockType", "");
+		int isBlock = blockType.equals("") ? 0 : 1;		// 관심고객 지정/해제여부(1-지정, 0-해제)
 		
-		int result = this.customerDao.enableBlackStatus(params);
+		int result =  0;
+		if(isBlock == 1) {
+			result = this.customerDao.enableBlackStatus(params);
+		}else {
+			result = this.customerDao.disbleBlackStatus(params);
+		} 
 		VCustomer vcustomer = null;
 		if(result > 0) {
 			vcustomer = this.customerDao.findCustomer(params);
