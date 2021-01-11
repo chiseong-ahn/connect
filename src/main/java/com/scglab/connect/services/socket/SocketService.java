@@ -362,7 +362,7 @@ public class SocketService {
 			this.socketMessageHandler.sendMessageToLobby(EventName.ONLINE, profile, sendData);
 			
 			// 채팅방의 상태가 최초이거나 종료일 경우 시작메세지 준비.
-			if(room.getState() == 0 || room.getState() == 2) {	
+			if(room.getState() == 8) {	
 				
 				// 각 회사의 서비스 클래스 가져오기.
 				ICompany company = this.commonService.getCompany(payload.getCompanyId());
