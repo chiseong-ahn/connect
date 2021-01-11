@@ -27,7 +27,7 @@ public class Room {
 	private String endDate;				// 종료일
 	private int lastMemberId;			// 이전 담당회원id
 	private String joinStartDate;		// 조인시작메세지 생성일
-	private String customerSpeakerId;	// 고객의 Speaker id
+	private int customerSpeakerId;	// 고객의 Speaker id
 	private int noReadCount;			// 읽지않은 사용자 수
 	private String waitStartDate;		// wait 시간
 
