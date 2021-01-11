@@ -27,4 +27,5 @@ public class Profile implements Serializable {
 	private Map<String, Object> companyUseConfigJson;
 	private int noReadCount;
 	private int	endDays;
+	private int state;
 }

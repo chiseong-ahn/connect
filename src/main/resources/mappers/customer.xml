@@ -96,7 +96,6 @@
 	<!-- 고객 상세(gasapp_member_number) -->
 	<select id="getByGasappMemberNumber" parameterType="map" resultMap="vcustomer">
 		SELECT vc.*,
-				r.state AS room_state,
 				rs.read_last_message_id,
 				(
 					SELECT COUNT(id)
@@ -110,6 +109,7 @@
 					FROM chat_message
 					WHERE room_id = r.id),
 				-1) AS end_days
+				,r.state
 		FROM v_customer vc
 			INNER JOIN v_room r ON vc.room_id = r.id
 			INNER JOIN room_speaker rs ON r.id = rs.room_id AND rs.speaker_id = vc.speaker_id

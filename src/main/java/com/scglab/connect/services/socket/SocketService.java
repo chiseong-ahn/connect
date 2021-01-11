@@ -790,6 +790,7 @@ public class SocketService {
 			profile.setAuthenticated(isValidSecretKey(secretKey));
 			profile.setNoReadCount(customer.getNoReadCount());
 			profile.setEndDays(customer.getEndDays());
+			profile.setState(customer.getState());
 		}
 		
 		return profile;
