@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
+import com.scglab.connect.services.room.Room;
+import com.scglab.connect.services.room.RoomDao;
 import com.scglab.connect.utils.DataUtils;
 
 @Service
@@ -24,6 +26,7 @@ public class MessageService {
 	@Autowired private MessageDao messageDao;
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
+	@Autowired private RoomDao roomDao;
 	
 	/**
 	 * 
@@ -50,6 +53,12 @@ public class MessageService {
 	    if(!errorParams.equals("")) {
 	        // 필수파라미터 누락에 따른 오류 유발처리.
 	        this.errorService.throwParameterErrorWithNames(errorParams);
+	    }
+	    
+	    params.put("id", DataUtils.getString(params, "roomId", ""));
+	    Room room = this.roomDao.getDetail(params);
+	    if(room != null && room.getState() == 8) {
+	    	params.put("state", room.getState());
 	    }
 		
 		List<Message> messages = null;
