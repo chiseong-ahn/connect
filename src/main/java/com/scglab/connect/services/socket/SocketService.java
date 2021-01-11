@@ -727,9 +727,7 @@ public class SocketService {
 			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
 		}
 	}
-	
-	
-	
+
 	
 	// 상담사 채팅방 나가기.
 	public void leave(SocketData payload) {

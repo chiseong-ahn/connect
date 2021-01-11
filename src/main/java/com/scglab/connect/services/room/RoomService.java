@@ -237,6 +237,22 @@ public class RoomService {
 		int result = this.roomDao.closeRoom(params);
 		if(result > 0) {
 			room = this.roomDao.getDetail(params);
+			
+			Profile profile = null;
+			if(member != null) {
+				profile = new Profile();
+				profile.setCompanyId(member.getCompanyId());
+				profile.setIsAdmin(0);
+				profile.setIsMember(1);
+				profile.setIsCustomer(0);
+				profile.setName(member.getName());
+				profile.setSpeakerId(member.getSpeakerId());
+				profile.setRoomId(room.getId() + "");
+			}
+			
+			Map<String, Object> sendData = new HashMap<String, Object>();
+			sendData.put("room", room);
+			this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
 		}
 		return room;
 	}
