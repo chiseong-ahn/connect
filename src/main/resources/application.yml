@@ -108,7 +108,37 @@ relay:
   use-example: false
   
 ---
-# 개발환경 
+# 로컬환경
+server:
+  port: 8081 
+spring:
+  profiles: server1
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+     
+relay:
+  use-example: false
+  
+---
+# 로컬환경 
+server:
+  port: 8082
+spring:
+  profiles: server2
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+     
+relay:
+  use-example: false
+  
+---
+# 개발환경1
 server:
   port: 8115
   
@@ -123,6 +153,24 @@ logging:
 
 relay:
   use-example: false
+
+--- 
+  # 개발환경2 
+server:
+  port: 8125
+  
+spring:
+  profiles: dev2
+  
+path:
+  upload: /data/project/gasapp-cstalk/apache/data/attach
+
+logging:
+  config: 'classpath:config/logback-dev.xml'
+
+relay:
+  use-example: false
+  
 ---
 # 운영환경 
 server:
