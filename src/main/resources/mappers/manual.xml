@@ -44,6 +44,7 @@
 		<if test='tag != null and tag != ""'>
 			AND m.tags LIKE CONCAT('%', #{tag}, '%')
 		</if>
+		AND m.manual_index = #{manualIndex}
 		ORDER BY (m.page_no + 0)
 		limit #{startNum}, #{pageSize}
 				
@@ -108,6 +109,7 @@
 		<if test='tag != null and tag != ""'>
 			AND m.tags LIKE CONCAT('%', #{tag}, '%')
 		</if>
+		AND m.manual_index = #{manualIndex}
 	</select>
 	
 	<!-- 다음 매뉴얼 -->
