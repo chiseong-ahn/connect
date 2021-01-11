@@ -416,7 +416,7 @@ public class SocketService {
 				sendData.put("message", newMessage);
 				
 				// 룸 전체에 시작메시지 발송.
-				this.socketMessageHandler.sendMessageToSelf(EventName.START_MESSAGE, profile, sendData);
+//				this.socketMessageHandler.sendMessageToSelf(EventName.START_MESSAGE, profile, sendData);
 				
 			}
 			
@@ -791,6 +791,8 @@ public class SocketService {
 			profile.setNoReadCount(customer.getNoReadCount());
 			profile.setEndDays(customer.getEndDays());
 			profile.setState(customer.getState());
+			profile.setRoomState(customer.getRoomState());
+
 		}
 		
 		return profile;

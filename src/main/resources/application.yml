@@ -2,12 +2,12 @@
 server:
   port: 8080
   servlet:
-    context-path: '/'
+    context-path: "/"
     session:
       timeout: 600
       cookie:
         domain: localhost
-        path: '/'
+        path: "/"
   error:
     include-exception: true
     include-stacktrace: never
@@ -18,10 +18,10 @@ server:
 # 스프링부트 기본 설정.
 spring:
   application:
-    name: 상담톡 v2.0 
+    name: 상담톡 v2.0
   banner:
     charset: UTF-8
-    location: 'classpath:config/banner.txt'
+    location: "classpath:config/banner.txt"
   profiles:
     active: local
     web-application-type: none
@@ -29,7 +29,7 @@ spring:
     host: localhost
     port: 6379
   freemarker:
-    template-loader-path: 'classpath:/templates'
+    template-loader-path: "classpath:/templates"
     suffix: .ftl
     cache: false
   main:
@@ -43,10 +43,13 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
-      jdbc-url: 'jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC'
-      username: cstalk
-      password: cstalk12#$
+      # jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+#      jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+#      username: cstalk
+#      password: cstalk12#$
+      jdbc-url: "jdbc:log4jdbc:mysql://127.0.0.1:3306/sdtprototype?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC"
+      username: scglab2
+      password: 1234
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -62,7 +65,7 @@ domain:
   cstalk-dev: cstalk-dev.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
   relay-inc: relay-inc-dev.gasapp.co.kr
-  
+
 path:
   upload: /Volumes/Data/_upload
 
@@ -76,26 +79,26 @@ management:
         include: "*"
   metrics:
     tags:
-      application: ${spring.application.name}  
+      application: ${spring.application.name}
 
 # Logging 설정.
 logging:
-  config: 'classpath:config/logback-local.xml'
+  config: "classpath:config/logback-local.xml"
 
 relay:
   use-example: false
 
 notification:
   use: true
-  webhook: 'https://hooks.slack.com/services/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'
+  webhook: "https://hooks.slack.com/services/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"
 
 ---
-# 배포환경 
+# 배포환경
 spring:
   profiles: deploy
 
 ---
-# 로컬환경 
+# 로컬환경
 spring:
   profiles: local
   devtools:
@@ -103,14 +106,14 @@ spring:
       enabled: true
     restart:
       enabled: true
-     
+
 relay:
   use-example: false
-  
+
 ---
 # 로컬환경
 server:
-  port: 8081 
+  port: 8081
 spring:
   profiles: server1
   devtools:
@@ -118,12 +121,12 @@ spring:
       enabled: true
     restart:
       enabled: true
-     
+
 relay:
   use-example: false
-  
+
 ---
-# 로컬환경 
+# 로컬환경
 server:
   port: 8082
 spring:
@@ -133,46 +136,46 @@ spring:
       enabled: true
     restart:
       enabled: true
-     
+
 relay:
   use-example: false
-  
+
 ---
 # 개발환경1
 server:
   port: 8115
-  
+
 spring:
   profiles: dev
-  
+
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
 logging:
-  config: 'classpath:config/logback-dev.xml'
+  config: "classpath:config/logback-dev.xml"
 
 relay:
   use-example: false
 
---- 
-  # 개발환경2 
+---
+# 개발환경2
 server:
   port: 8125
-  
+
 spring:
   profiles: dev2
-  
+
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
 logging:
-  config: 'classpath:config/logback-dev.xml'
+  config: "classpath:config/logback-dev.xml"
 
 relay:
   use-example: false
-  
+
 ---
-# 운영환경 
+# 운영환경
 server:
   port: 8080
 
@@ -186,13 +189,13 @@ domain:
   cstalk: cstalk.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
   relay-inc: relay-inc.gasapp.co.kr
-  
+
 path:
   upload: /data/project/cstalk/apache/data/attach
 
 # Logging 설정.
 logging:
-  config: 'classpath:config/logback-live.xml'
-  
+  config: "classpath:config/logback-live.xml"
+
 relay:
   use-example: false
