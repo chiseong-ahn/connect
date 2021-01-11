@@ -18,6 +18,9 @@
 				</when>
 			</choose>
 		</if>
+		<if test='isBlock != null'>
+			AND is_block = #{isBlock}
+		</if>
 		
 	</select>
 	
@@ -50,6 +53,9 @@
 					AND name like concat('%', #{searchValue}, '%')
 				</when>
 			</choose>
+		</if>
+		<if test='isBlock != null'>
+			AND a.is_block = #{isBlock}
 		</if>
 		ORDER BY id DESC
 		Limit #{startNum}, #{pageSize}
