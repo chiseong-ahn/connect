@@ -211,7 +211,7 @@ public class RoomService {
 			}
 			
 			this.socketMessageHandler.sendMessageToSelf(EventName.ASSIGNED, profile, sendData);
-			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
 		}
 		return room;
 	}

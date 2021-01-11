@@ -52,8 +52,8 @@ public class SocketMessageHandler {
 	}
 	
 	// 대기실에 메시지 보내기.
-	public void sendMessageToLobby(EventName eventName, Profile profile) {
-		sendMessage(eventName, profile, null, Target.LOBBY);
+	public void sendMessageToLobby(EventName eventName, Profile profile, Map<String, Object> data) {
+		sendMessage(eventName, profile, data, Target.LOBBY);
 	}
 	
 	// 본인에게 에러 메시지 보내기.

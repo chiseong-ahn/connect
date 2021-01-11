@@ -85,7 +85,7 @@ public class SocketService {
 		LEAVE,
 		REVIEW,
 		END,
-		RELOAD, RELOAD_READY_ROOM
+		RELOAD_READY, ONLINE, OFFLINE
 	}
 	
 	// 메세지 발신대상.
@@ -287,10 +287,8 @@ public class SocketService {
 		
 		// [Socket] > 상담사 배정메시지 전송.
 		sendData = new HashMap<String, Object>();
-		sendData.put("roomId", room.getId());
-		sendData.put("speakerId", profile.getSpeakerId());
 		sendData.put("room", room);
-		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
 	}
 
 	// 방 조인
@@ -358,6 +356,10 @@ public class SocketService {
 			params.put("id", payload.getRoomId());
 			params.put("isOnline", 1);
 			this.roomDao.updateOnline(params);
+			
+			sendData = new HashMap<String, Object>();
+			sendData.put("profile", profile);
+			this.socketMessageHandler.sendMessageToLobby(EventName.ONLINE, profile, sendData);
 			
 			// 채팅방의 상태가 최초이거나 종료일 경우 시작메세지 준비.
 			if(room.getState() == 0 || room.getState() == 2) {	
@@ -507,11 +509,9 @@ public class SocketService {
 			if(profile.getIsCustomer() == 1) {
 				
 				// 조인 메세지id와 마지막 생성된 메세지가 동일한 경우.
-				//if(newMessage.getJoinMessageId() == newMessage.getId()) {
-				long count = this.chatRoomRepository.getUserCount(profile.getRoomId());
-				this.logger.info("room's user count : " + count);
-				if(count < 2) {
-					this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+				if(newMessage.getJoinMessageId() == newMessage.getId()) {
+					sendData = new HashMap<String, Object>();
+					this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
 				}
 				
 				
@@ -670,7 +670,7 @@ public class SocketService {
 		
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
-		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+		//this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
 	}
 	
 	
@@ -696,7 +696,7 @@ public class SocketService {
 		
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
-		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+		//this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
 	}
 	
 	
@@ -884,7 +884,9 @@ public class SocketService {
 				this.roomDao.updateOnline(params);
 				
 				// [Socket] 상담목록 갱신요청 메세지 전송.
-				this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+				Map<String ,Object> sendData = new HashMap<String, Object>(); 
+				sendData.put("profile", profile);
+				this.socketMessageHandler.sendMessageToLobby(EventName.OFFLINE, profile, sendData);
 			}
 			
 			if(this.chatRoomRepository.getUserCount(roomId) > 0) {
