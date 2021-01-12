@@ -823,10 +823,6 @@ public class SocketService {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		this.logger.info("[Unsubscribe] headerAccessor : " + headerAccessor.toString());
 
-		//MessageHeaders headers = headerAccessor.getMessageHeaders();
-		//this.logger.info("unsubscribe headers : " + headers.toString());
-		
-		//String sessionId = (String) headers.get("simpSessionId");
 		String sessionId = headerAccessor.getSessionId();
 		String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId);
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
@@ -834,33 +830,35 @@ public class SocketService {
 		this.logger.info("roomId : " + roomId);
 		this.logger.info("sessionId : " + sessionId);
 		
-		if (roomId != null) {
-			
-			if(this.chatRoomRepository.getUserCount(roomId) > 0) {
-				// [Redis] 채팅방의 인원수 -1.
-				this.chatRoomRepository.minusUserCount(roomId);
-			}
-			
-			// [Redis] 채팅에 참여중인 인원 확인.
-			this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(roomId));
-			if(this.chatRoomRepository.getUserCount(roomId) <= 0) {
+		if(profile.getIsCustomer() == 0) {
+			if (roomId != null) {
 				
-				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
-				// this.chatRoomRepository.deleteChatRoom(roomId);
-				// this.chatRoomRepository.deleteUserCount(roomId);
-			}
+				if(this.chatRoomRepository.getUserCount(roomId) > 0) {
+					// [Redis] 채팅방의 인원수 -1.
+					this.chatRoomRepository.minusUserCount(roomId);
+				}
 				
-			if(profile.getIsCustomer() == 1) {
-				// 고객 조인.
-				//this.chatRoomRepository.removeCustomerJoin(roomId);
+				// [Redis] 채팅에 참여중인 인원 확인.
+				this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(roomId));
+				if(this.chatRoomRepository.getUserCount(roomId) <= 0) {
+					
+					// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
+					this.chatRoomRepository.deleteChatRoom(roomId);
+					this.chatRoomRepository.deleteUserCount(roomId);
+				}
+					
+				if(profile.getIsCustomer() == 1) {
+					// 고객 조인.
+					this.chatRoomRepository.removeCustomerJoin(roomId);
+					
+				}else {
+					// 멤버 조인.
+					this.chatRoomRepository.removeMemberJoin(roomId);
+				}
 				
-			}else {
-				// 멤버 조인.
-				//this.chatRoomRepository.removeMemberJoin(roomId);
+				// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
+				this.chatRoomRepository.removeUserJoinInfo(sessionId);
 			}
-			
-			// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
-			this.chatRoomRepository.removeUserJoinInfo(sessionId);
 		}
 		
 	}
