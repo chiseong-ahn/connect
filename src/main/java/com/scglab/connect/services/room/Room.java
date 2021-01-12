@@ -34,7 +34,8 @@ public class Room {
 	private int lastMessageId;			// 마지막 메세지 id
 	private String lastMessage;			// 마지막 메세지 
 	private String lastMessageCreateDate;	// 마지막 메세지의 생성일.
-	
+
+	private int customerId;		// 고객id
 	private String customerName;		// 고객이름
 	private String gasappMemberNumber;	// 고객의 가스앱 모바일 id
 	private String telNumber;			// 고객 전화번호
