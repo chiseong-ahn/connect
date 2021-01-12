@@ -119,42 +119,32 @@
 		        FROM 
 		          chat_message 
 		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
-		        WHERE 
-		          chat_message.room_id = r.id 
-		          AND chat_message.is_employee = 0 
-		          AND message_read.speaker_id != chat_message.speaker_id 
-		          AND message_read.read_date IS NULL 
-		          AND chat_message.id > (
-		            SELECT 
-		              MAX(id) 
-		            FROM 
-		              chat_message 
-		            WHERE 
-		              is_employee = 1 
-		              AND room_id = r.id
-		          )
-		      ) AS no_read_count, 
-		      (
-		        SELECT 
-		          MIN(chat_message.create_date) 
-		        FROM 
-		          chat_message 
-		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
-		        WHERE 
-		          chat_message.room_id = r.id 
-		          AND chat_message.is_employee = 0 
-		          AND message_read.speaker_id != chat_message.speaker_id 
-		          AND message_read.read_date IS NULL 
-		          AND chat_message.id > (
-		            SELECT 
-		              MAX(id) 
-		            FROM 
-		              chat_message 
-		            WHERE 
-		              is_employee = 1 
-		              AND room_id = r.id
-		          )
-		      ) AS wait_start_date,
+		        WHERE
+							chat_message.room_id = r.id
+							AND chat_message.is_employee = 0
+							AND message_read.room_id = r.id
+							AND message_read.speaker_id != chat_message.speaker_id
+							AND message_read.read_date IS NULL
+		      ) AS no_read_count,
+					(
+						SELECT
+							MIN(chat_message.create_date)
+						FROM
+							chat_message
+						WHERE
+							chat_message.room_id = r.id
+							AND chat_message.is_employee = 0
+							AND chat_message.id > (
+								SELECT
+									IFNULL(MAX(id), 0)
+								FROM
+									chat_message
+								WHERE
+									is_employee = 1
+									AND room_id = r.id
+									AND is_system_message = 0
+							)
+					) AS wait_start_date,
 		      mb.name as member_name
 		    FROM 
 		      room r
@@ -244,60 +234,45 @@
 		        SELECT 
 		          COUNT(DISTINCT chat_message.id) 
 		        FROM 
-		          chat_message 
-		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
+		          chat_message
 		        WHERE 
 		          chat_message.room_id = r.id 
-		          AND chat_message.is_employee = 0 
-		          AND message_read.speaker_id != chat_message.speaker_id 
-		          AND message_read.read_date IS NULL 
-		          AND chat_message.id > (
-		            SELECT 
-		              MAX(id) 
-		            FROM 
-		              chat_message 
-		            WHERE 
-		              is_employee = 1 
-		              AND room_id = r.id
-		          )
-		      ) AS no_read_count, 
+		          AND chat_message.is_employee = 0
+							AND chat_message.id > (
+									SELECT
+										IFNULL(MAX(id), 0)
+									FROM
+										chat_message
+									WHERE
+										is_employee = 1
+										AND room_id = r.id
+							)
+							AND chat_message.id >= r.join_message_id
+		      ) AS no_read_count,
 		      (
-		        SELECT 
-		          MIN(chat_message.create_date) 
-		        FROM 
-		          chat_message 
-		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
-		        WHERE 
-		          chat_message.room_id = r.id 
-		          AND chat_message.is_employee = 0 
-		          AND message_read.speaker_id != chat_message.speaker_id 
-		          AND message_read.read_date IS NULL 
-		          AND chat_message.id > (
-		            SELECT 
-		              MAX(id) 
-		            FROM 
-		              chat_message 
-		            WHERE 
-		              is_employee = 1 
-		              AND room_id = r.id
-		          )
+							SELECT
+								MIN(chat_message.create_date)
+							FROM
+								chat_message
+							WHERE
+								chat_message.room_id = r.id
+								AND chat_message.is_employee = 0
+								AND chat_message.id > (
+									SELECT
+										IFNULL(MAX(id), 0)
+									FROM
+										chat_message
+									WHERE
+										is_employee = 1
+										AND room_id = r.id
+										AND is_system_message = 0
+							)
 		      ) AS wait_start_date,
 		      mb.name as member_name
 		    FROM 
 		      room r
 		      LEFT OUTER JOIN member mb ON r.last_member_id = mb.id
 		                      AND mb.name LIKE concat('%', #{memberName}, '%')
-		      INNER JOIN (
-		        SELECT 
-		          DISTINCT(room_id), 
-		          room_id AS message_search_room_id 
-		        FROM 
-		          chat_message 
-		        WHERE 
-		          is_system_message = 0
-		          AND message_admin_type = 0 
-		          AND message LIKE concat('%', #{message}, '%')
-		      ) messasge_search ON r.id = messasge_search.message_search_room_id
 		    WHERE 
 		      r.company_id = #{companyId}
 		      AND r.state 		<![CDATA[<]]> 2 
@@ -486,7 +461,9 @@
 				SELECT COUNT(1)
 				FROM minwon_history
 				WHERE room_id = sub_room.id
-			  ) AS minwon_history_count
+			  ) AS minwon_history_count,
+				v_customer.swear_count AS swear_count,
+				v_customer.insult_count AS insult_count
 		FROM 
 		  (
 		    SELECT 
@@ -540,28 +517,26 @@
 		              is_employee = 1 
 		              AND room_id = r.id
 		          )
-		      ) AS no_read_count, 
-		      (
-		        SELECT 
-		          MIN(chat_message.create_date) 
-		        FROM 
-		          chat_message 
-		          INNER JOIN message_read ON chat_message.id = message_read.message_id 
-		        WHERE 
-		          chat_message.room_id = r.id 
-		          AND chat_message.is_employee = 0 
-		          AND message_read.speaker_id != chat_message.speaker_id 
-		          AND message_read.read_date IS NULL 
-		          AND chat_message.id > (
-		            SELECT 
-		              MAX(id) 
-		            FROM 
-		              chat_message 
-		            WHERE 
-		              is_employee = 1 
-		              AND room_id = r.id
-		          )
-		      ) AS wait_start_date
+		      ) AS no_read_count,
+					(
+						SELECT
+							MIN(chat_message.create_date)
+						FROM
+							chat_message
+						WHERE
+							chat_message.room_id = r.id
+							AND chat_message.is_employee = 0
+							AND chat_message.id > (
+										SELECT
+											IFNULL(MAX(id), 0)
+										FROM
+											chat_message
+										WHERE
+											is_employee = 1
+											AND room_id = r.id
+											AND is_system_message = 0
+							)
+					) AS wait_start_date
 		    FROM 
 		      room r 
 		    WHERE 

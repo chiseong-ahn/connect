@@ -49,5 +49,7 @@ public class Room {
 	private String createDate;
 	private String updateDate;
 	private String updateMemberId;
+	private int swearCount;
+	private int insultCount;
 	
 }

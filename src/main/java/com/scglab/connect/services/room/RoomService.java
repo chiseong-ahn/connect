@@ -252,6 +252,8 @@ public class RoomService {
 			
 			Map<String, Object> sendData = new HashMap<String, Object>();
 			sendData.put("room", room);
+			sendData.put("success", true);
+			sendData.put("isCustomer", false);
 			this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
 		}
 		return room;

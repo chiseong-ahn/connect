@@ -28,4 +28,6 @@ public class Profile implements Serializable {
 	private int noReadCount;
 	private int	endDays;
 	private int state;
+	private int roomState;
+	private String endDate;
 }
