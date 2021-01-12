@@ -846,17 +846,17 @@ public class SocketService {
 			if(this.chatRoomRepository.getUserCount(roomId) <= 0) {
 				
 				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
-				this.chatRoomRepository.deleteChatRoom(roomId);
-				this.chatRoomRepository.deleteUserCount(roomId);
+				// this.chatRoomRepository.deleteChatRoom(roomId);
+				// this.chatRoomRepository.deleteUserCount(roomId);
 			}
 				
 			if(profile.getIsCustomer() == 1) {
 				// 고객 조인.
-				this.chatRoomRepository.removeCustomerJoin(roomId);
+				//this.chatRoomRepository.removeCustomerJoin(roomId);
 				
 			}else {
 				// 멤버 조인.
-				this.chatRoomRepository.removeMemberJoin(roomId);
+				//this.chatRoomRepository.removeMemberJoin(roomId);
 			}
 			
 			// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
