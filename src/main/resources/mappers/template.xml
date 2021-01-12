@@ -32,8 +32,25 @@
 	        </if>
 	        <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 	        	<choose>
+	        		<when test='searchType == "all"'>
+	        			AND (
+		        				m.name like concat('%', #{searchValue}, '%')
+		        				or
+		        				t.ask like concat('%', #{searchValue}, '%')
+		        				or
+		        				t.reply like concat('%', #{searchValue}, '%')
+		        				or
+		        				t.id in (
+				        			select distinct(tk.template_id)
+									from template_keyword tk 
+										 inner join keyword2 k on (k.id  = tk.keyword_id)
+									where 1=1
+									and k.name like concat('%', #{searchValue}, '%')
+								)
+		        			)
+	        		</when>
 		        	<when test='searchType == "memberName"'>
-		        		AND vc.member_name like concat('%', #{searchValue}, '%')
+		        		AND m.name like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "ask"'>
 		        		AND t.ask like concat('%', #{searchValue}, '%')
@@ -112,8 +129,25 @@
 	        </if>
 	        <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 	        	<choose>
+	        		<when test='searchType == "all"'>
+	        			AND (
+		        				m.name like concat('%', #{searchValue}, '%')
+		        				or
+		        				t.ask like concat('%', #{searchValue}, '%')
+		        				or
+		        				t.reply like concat('%', #{searchValue}, '%')
+		        				or
+		        				t.id in (
+				        			select distinct(tk.template_id)
+									from template_keyword tk 
+										 inner join keyword2 k on (k.id  = tk.keyword_id)
+									where 1=1
+									and k.name like concat('%', #{searchValue}, '%')
+								)
+		        			)
+	        		</when>
 		        	<when test='searchType == "memberName"'>
-		        		AND vc.member_name like concat('%', #{searchValue}, '%')
+		        		AND m.name like concat('%', #{searchValue}, '%')
 		        	</when>
 		        	<when test='searchType == "ask"'>
 		        		AND t.ask like concat('%', #{searchValue}, '%')
