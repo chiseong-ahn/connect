@@ -230,9 +230,6 @@ public class ManualService {
 		if(!this.commonService.valid(params, "pageNo"))
 	        errorParams = this.commonService.appendText(errorParams, "페이지번호-pageNo");
 		
-		if(!this.commonService.valid(params, "pageCode"))
-	        errorParams = this.commonService.appendText(errorParams, "페이지코드-pageCode");
-		
 		if(!this.commonService.valid(params, "title"))
 	        errorParams = this.commonService.appendText(errorParams, "제목-title");
 		
@@ -285,9 +282,6 @@ public class ManualService {
 		
 		if(!this.commonService.valid(params, "pageNo"))
 	        errorParams = this.commonService.appendText(errorParams, "페이지번호-pageNo");
-		
-		if(!this.commonService.valid(params, "pageCode"))
-	        errorParams = this.commonService.appendText(errorParams, "페이지코드-pageCode");
 		
 		if(!this.commonService.valid(params, "title"))
 	        errorParams = this.commonService.appendText(errorParams, "제목-title");
