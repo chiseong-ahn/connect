@@ -49,7 +49,7 @@ public class RoomService {
 	
 	public Object getRoomInfo(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response){
 		Member member = this.loginService.getMember(request);
-		params.put("companyId", member.getCompanyId());
+		params.put("companyId", DataUtils.getString(params, "companyId", member.getCompanyId()));
 		
 		String errorParams = "";
 	    if(!this.commonService.valid(params, "queryId"))
