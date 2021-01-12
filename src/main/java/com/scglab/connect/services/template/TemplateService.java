@@ -63,6 +63,16 @@ public class TemplateService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if(totalCount > 0) {
 			list = this.templateDao.findAll(params);
+			if(list != null) {
+				
+				List<Keyword> keywordList;
+				for(Map<String, Object> template : list) {
+					params.put("templateId", template.get("id"));
+					keywordList = this.keywordDao.getByTemplateId(params);
+					template.put("keywordList", keywordList == null ? new ArrayList() : keywordList);
+				}
+				
+			}
 		}
 		
 		
