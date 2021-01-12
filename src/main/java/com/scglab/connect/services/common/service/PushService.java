@@ -52,6 +52,8 @@ public class PushService {
 			params.put("message", message);
 			String content = JSONObject.toJSONString(params);
 			
+			this.logger.debug("push url : " + url);
+			this.logger.debug("push data : " + content);
 			ResponseBody body = httpUtils.requestForPostwithBodyContent(url, content);
 			if(body.getStateCode() == Response.SC_OK) {
 				this.logger.debug("Push발송 성공!");
