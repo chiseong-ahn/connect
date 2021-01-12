@@ -175,8 +175,15 @@ public class CustomerService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		int count = this.customerDao.plusSwearCount(params);
-		data.put("isSuccess", count > 0 ? true : false);
+		VCustomer customer = this.customerDao.findCustomer(params);
+		if(customer.getSwearCount() >= 2) {
+			this.customerDao.resetSwearCount(params);
+			this.customerDao.resetInsultCount(params);
+		}else {
+			this.customerDao.plusSwearCount(params);
+		}
+		
+		data.put("isSuccess", true);
 		
 		return data;
 	}
@@ -188,8 +195,15 @@ public class CustomerService {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		int count = this.customerDao.plusInsultCount(params);
-		data.put("isSuccess", count > 0 ? true : false);
+		VCustomer customer = this.customerDao.findCustomer(params);
+		if(customer.getSwearCount() >= 2) {
+			this.customerDao.resetSwearCount(params);
+			this.customerDao.resetInsultCount(params);
+		}else {
+			this.customerDao.plusInsultCount(params);
+		}
+		
+		data.put("isSuccess", true);
 		
 		return data;
 	}

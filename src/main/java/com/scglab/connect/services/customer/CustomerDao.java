@@ -161,6 +161,34 @@ public class CustomerDao extends CommonDao {
 	
 	/**
 	 * 
+	 * @Method Name : resetSwearCount
+	 * @작성일 : 2021. 1. 12.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객의 욕설 count 0으로 초기화.
+	 * @param params
+	 * @return
+	 */
+	public int resetSwearCount(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "resetSwearCount", params);
+	}
+	
+	/**
+	 * 
+	 * @Method Name : resetInsultCount
+	 * @작성일 : 2021. 1. 12.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객의 부적절한 count 0으로 초기화.
+	 * @param params
+	 * @return
+	 */
+	public int resetInsultCount(Map<String, Object> params) {
+		return this.sqlSession.update(this.namespace + "resetInsultCount", params);
+	}
+	
+	/**
+	 * 
 	 * @Method Name : findBlockMember
 	 * @작성일 : 2020. 11. 13.
 	 * @작성자 : anchiseong

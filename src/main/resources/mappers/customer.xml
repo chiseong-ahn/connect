@@ -176,6 +176,25 @@
 		WHERE  company_id = #{companyId} 
 		       AND customer_id = #{id}
 	</update>
+	
+	
+	<!-- 고객의 욕설 count 초기화 -->
+	<update id="resetSwearCount" parameterType="map">
+		UPDATE customer_company 
+		SET    swear_count = 0,
+		       update_member_id = #{loginId}
+		WHERE  company_id = #{companyId} 
+		       AND customer_id = #{id}
+	</update>
+	
+	<!-- 고객의 부적절한 count 초기화 -->
+	<update id="resetInsultCount" parameterType="map">
+		UPDATE customer_company 
+		SET    insult_count = 0,
+		       update_member_id = #{loginId}
+		WHERE  company_id = #{companyId} 
+		       AND customer_id = #{id}
+	</update>
 
 	<!-- 블록인 사용자 목록 가져오기 -->
 	<select id="findBlockMember" parameterType="map" resultMap="vcustomer">
