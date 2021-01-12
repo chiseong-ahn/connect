@@ -196,7 +196,7 @@ public class CustomerService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		VCustomer customer = this.customerDao.findCustomer(params);
-		if(customer.getSwearCount() >= 2) {
+		if(customer.getInsultCount() >= 2) {
 			this.customerDao.resetSwearCount(params);
 			this.customerDao.resetInsultCount(params);
 		}else {
