@@ -22,6 +22,7 @@ import com.scglab.connect.services.customer.Customer;
 import com.scglab.connect.services.customer.CustomerDao;
 import com.scglab.connect.services.customer.VCustomer;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.services.member.MemberDao;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.SHA256Utils;
 
@@ -36,6 +37,7 @@ public class LoginService {
 	@Autowired private CommonService commonService;
 	@Autowired private CustomerDao customerDao;
 	@Autowired private ErrorService errorService;
+	@Autowired private MemberDao memberDao;
 	
 	public Map<String, Object> loginAdmin(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -246,7 +248,10 @@ public class LoginService {
 	 * @throws Exception
 	 */
 	public Member profile(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return getMember(request);
+		// Token에서 회원정보 추출.
+		Member member = getMember(request);
+		params.put("id", member.getId());
+		return this.memberDao.findMemberWithId(params);
 	}
 
 
