@@ -203,7 +203,7 @@ path:
 
 # Logging 설정.
 logging:
-  config: "classpath:config/logback-live.xml"
+  config: "classpath:config/logback-live1.xml"
 
 relay:
   use-example: false
@@ -240,7 +240,7 @@ path:
 
 # Logging 설정.
 logging:
-  config: "classpath:config/logback-live.xml"
+  config: "classpath:config/logback-live2.xml"
 
 relay:
   use-example: false
