@@ -75,7 +75,7 @@ public class CommonService {
 
 	public boolean validInteger(Map<String, Object> parameters, String name) {
 		try {
-			if (DataUtils.getInt(parameters, name, 0) != 0) {
+			if(parameters.get(name) != null) {
 				return true;
 			}
 		} catch (Exception e) {
