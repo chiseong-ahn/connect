@@ -86,12 +86,11 @@ public class MemberService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> member(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public Member member(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		Member member = this.memberDao.findMemberWithId(params);
-		data.put("member", member);
-		return data;
+		return member;
 	}
 	
 	
