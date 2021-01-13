@@ -236,10 +236,7 @@ public class ManualService {
 		if(!this.commonService.valid(params, "pdfImagePath"))
 	        errorParams = this.commonService.appendText(errorParams, "이미지경로-pdfImagePath");
 		
-		if(!this.commonService.valid(params, "content"))
-	        errorParams = this.commonService.appendText(errorParams, "내용-content");
-	    
-	    // 파라미터 유효성 검증.
+		// 파라미터 유효성 검증.
 	    if(!errorParams.equals("")) {
 	        // 필수파라미터 누락에 따른 오류 유발처리.
 	        this.errorService.throwParameterErrorWithNames(errorParams);
@@ -289,10 +286,7 @@ public class ManualService {
 		if(!this.commonService.valid(params, "pdfImagePath"))
 	        errorParams = this.commonService.appendText(errorParams, "이미지경로-pdfImagePath");
 		
-		if(!this.commonService.valid(params, "content"))
-	        errorParams = this.commonService.appendText(errorParams, "내용-content");
-	    
-	    // 파라미터 유효성 검증.
+		// 파라미터 유효성 검증.
 	    if(!errorParams.equals("")) {
 	        // 필수파라미터 누락에 따른 오류 유발처리.
 	        this.errorService.throwParameterErrorWithNames(errorParams);
