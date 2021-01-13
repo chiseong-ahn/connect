@@ -21,6 +21,7 @@ public class VCustomer {
 	private String blockType;
 	private String remark;
 	private long blockMemberId;
+	private String blockMemberName;
 	private long roomId;
 	private long speakerId;
 	private int swearCount;
