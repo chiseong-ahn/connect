@@ -34,6 +34,13 @@ public class MemberController {
 	}
 	
 	@Auth
+	@RequestMapping(name="멤버 검색 : 이름, 사번", method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> member(@RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		params.put("id", id);
+		return this.memberService.member(params, request, response);
+	}
+	
+	@Auth
 	@RequestMapping(name="멤버 수정 : 권한, 상태", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Member update(@RequestBody Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
