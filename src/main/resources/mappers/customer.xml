@@ -10,6 +10,7 @@
 	<select id="findAllCount" parameterType="map" resultType="int">
 		SELECT count(*) totalCount
 		FROM   v_customer a
+				left outer join member b on(b.id = a.block_member_id)
 		WHERE 1=1
 		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 			<choose>
