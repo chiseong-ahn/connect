@@ -408,7 +408,7 @@ public class SocketService {
 				params.put("isSystemMessage", 1);
 				params.put("message", startMessage);
 				params.put("messageAdminType", 0);	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
-				params.put("isEmployee", 1);
+				params.put("isEmployee", 0);
 				params.put("messageDetail", "");
 				params.put("templateId", null);
 				Message newMessage = this.messageDao.create(params);
