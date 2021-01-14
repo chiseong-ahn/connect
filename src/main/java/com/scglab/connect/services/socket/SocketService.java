@@ -533,8 +533,9 @@ public class SocketService {
 		// [Socket] 시작메시지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("message", newMessage);
+		this.socketMessageHandler.sendMessageToSelf(EventName.START_MESSAGE, profile, sendData);
+		this.logger.debug("시작메시지 전송처리 완료");
 		
-		// 룸 전체에 시작메시지 발송.
 		Map<String ,Object> reloadReadySendData = new HashMap<String, Object>();
 		reloadReadySendData.put("profile", profile);
 		reloadReadySendData.put("isCustomer", true);
