@@ -56,6 +56,9 @@ public class SocketController {
     	}else if(eventName.equals(EventName.MESSAGE_LIST)) {	// 이전 대화내용 요청.(더보기)
     		this.socketService.messageList(profile, socketData);
     		
+    	}else if(eventName.equals(EventName.START_MESSAGE)) {			// 시작메세지 요청.
+    		this.socketService.startMessage(profile, socketData);
+    	
     	}else if(eventName.equals(EventName.MESSAGE)) {			// 메세지 보내기 요청.
     		this.socketService.message(profile, socketData);
     		

@@ -363,6 +363,7 @@ public class SocketService {
 			sendData.put("profile", profile);
 			this.socketMessageHandler.sendMessageToLobby(EventName.ONLINE, profile, sendData);
 			
+			/*
 			// 채팅방의 상태가 최초이거나 종료일 경우 시작메세지 준비.
 			if(room.getState() == 8) {	
 				
@@ -424,7 +425,10 @@ public class SocketService {
 				reloadReadySendData.put("isCustomer", true);
 				this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, reloadReadySendData);
 				
+				
+				
 			}
+			*/
 			
 			// [DB] 상담사 배정지연 안내메세지 조회
 			params = new HashMap<String, Object>();
@@ -472,6 +476,69 @@ public class SocketService {
 		
 		// [Socket] 상담목록 갱신요청 메세지 전송.
 		// this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+	}
+	
+	public void startMessage(Profile profile, SocketData payload) {
+		
+		Map<String, Object> sendData = null;
+		Map<String, Object> params = null;
+		
+		// 각 회사의 서비스 클래스 가져오기.
+		ICompany company = this.commonService.getCompany(payload.getCompanyId());
+		
+		// 시작메세지 유형
+		int messageType = 0;
+		
+		// 회사별 근무상태 조회. (1-근무 중, 2-근무 외 시간, 3-점심시간.)
+		int isWorkType = company.getWorkCalendar();
+		
+		if(isWorkType == 1) {	// 근무중일 경우.(1)
+			
+			// 로비에 상담가능한 상담사 카운트 조회. 
+			Long readyMemberCount = this.chatRoomRepository.getUserCount(getLobbyRoom(payload.getCompanyId()));
+			
+			Map<String, Object> msgParams = new HashMap<String, Object>();
+			msgParams.put("companyId", payload.getCompanyId());
+			if(readyMemberCount == 0) {
+				// 상담가능한 상담사가 존재하지 않을경우.
+				messageType = 1;	// 상담가능한 상담사가 없을경우.
+			}
+			
+		} else if(isWorkType == 2) {	// 근무 외 시간
+			messageType = 2;	
+			
+		} else if(isWorkType == 3) {	// 점심시간
+			messageType = 3;
+			
+		}
+		this.logger.debug("messageType : " + messageType);
+		
+		// 시작메세지 조회
+		String startMessage = this.messageHandler.getMessage("socket.startmessage.type" + messageType);
+		
+		// [DB] 신규 메세지 생성.
+		params = new HashMap<String, Object>();
+		params.put("companyId", payload.getCompanyId());
+		params.put("roomId", payload.getRoomId());
+		params.put("speakerId", null);
+		params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+		params.put("isSystemMessage", 1);
+		params.put("message", startMessage);
+		params.put("messageAdminType", 0);	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
+		params.put("isEmployee", 0);
+		params.put("messageDetail", "");
+		params.put("templateId", null);
+		Message newMessage = this.messageDao.create(params);
+		
+		// [Socket] 시작메시지 전송.
+		sendData = new HashMap<String, Object>();
+		sendData.put("message", newMessage);
+		
+		// 룸 전체에 시작메시지 발송.
+		Map<String ,Object> reloadReadySendData = new HashMap<String, Object>();
+		reloadReadySendData.put("profile", profile);
+		reloadReadySendData.put("isCustomer", true);
+		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, reloadReadySendData);
 	}
 	
 	// 메세지 전송
