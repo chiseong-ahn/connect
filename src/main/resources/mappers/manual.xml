@@ -63,7 +63,7 @@
 					AND member_id = #{loginId}) as is_favorite,
 				(
 				SELECT
-					MIN(id)
+					MAX(id)
 				FROM
 					manual m2
 				WHERE
@@ -78,7 +78,7 @@
 				WHERE
 					company_id = 1
 					AND manual_index = m.manual_index
-					AND id > m.id) AS next_page
+					AND id <![CDATA[>]]> m.id) AS next_page
 		FROM manual m
 		WHERE m.company_id = #{companyId}
 		AND m.id = #{id}
