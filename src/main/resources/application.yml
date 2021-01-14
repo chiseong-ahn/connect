@@ -70,7 +70,7 @@ path:
 management:
   endpoints:
     web:
-      base-path: /application
+      base-path: /api/application
       exposure:
         #include: "prometheus"
         include: "*"
