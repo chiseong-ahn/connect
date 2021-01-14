@@ -76,15 +76,20 @@
 		  (
 		    CASE WHEN m.is_employee = 1 THEN 0 ELSE 1 END
 		  ) AS is_customer,
-		  (
-		    SELECT
-		      COUNT(1)
-		    FROM
-		      message_read
-		    WHERE
-		      message_id = m.id
-		      AND read_date is null
-		  ) noReadCount,
+			(
+				SELECT
+					CASE WHEN m.id >= r.join_message_id
+							AND r.state != 8
+							AND m.is_employee = 0
+							AND r.member_id IS NULL
+							THEN 1 ELSE COUNT(1) END
+				FROM
+					message_read
+				WHERE
+					room_id = r.id
+					AND message_id = m.id
+					AND read_date IS NULL
+			) no_read_count,
 		  r.name as room_name,
 		  s.name as speaker_name
 		FROM 
