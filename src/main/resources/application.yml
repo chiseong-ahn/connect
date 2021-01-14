@@ -43,8 +43,8 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
-      jdbc-url: "jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC"
+      jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      #jdbc-url: "jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC"
       username: cstalk
       password: cstalk12#$
       idle-timeout: 10000
@@ -87,7 +87,7 @@ relay:
 
 notification:
   use: true
-  webhook: "https://hooks.slack.com/services/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"
+  webhook: "https://hooks.slack.com/services/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"
 
 ---
 # 배포환경
