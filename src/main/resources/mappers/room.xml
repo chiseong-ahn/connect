@@ -338,6 +338,7 @@
 		        WHERE 
 		          room_id = r.id 
 		          AND speaker2.is_customer = 1
+		          LIMIt 1
 		      ) AS customer_speaker_id,
 		      mb.name as member_name
 		    FROM 
