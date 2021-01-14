@@ -486,6 +486,7 @@ public class SocketService {
 		Room room = this.roomDao.getDetail(params);
 		
 		String templateId = DataUtils.getString(data, "templateId", "");
+		int messageAdminType = DataUtils.getInt(data, "messageAdminType",0);
 		
 		// [DB] 신규 메세지 생성.
 		params = new HashMap<String, Object>();
@@ -495,7 +496,7 @@ public class SocketService {
 		params.put("messageType", DataUtils.getInt(data, "messageType", 0));		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
 		params.put("isSystemMessage", DataUtils.getInt(data, "isSystemMessage", 0));
 		params.put("message", DataUtils.getString(data, "message",""));
-		params.put("messageAdminType", DataUtils.getInt(data, "messageAdminType",0));	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
+		params.put("messageAdminType", messageAdminType);	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
 		params.put("isEmployee", profile.getIsCustomer() == 1 ? 0 : 1);
 		params.put("messageDetail", DataUtils.getString(data, "messageDetail",""));
 		params.put("templateId", templateId.equals("") ? null : templateId);
@@ -525,11 +526,8 @@ public class SocketService {
 				
 				
 			}else {	// 상담사의 메세지일 경우.
-				
-				// 채팅방의 상태가 오프라인일 경우.
-				if(room.getIsOnline() == 0) {
+				if(messageAdminType != 1 && room.getIsOnline() == 0) {
 					this.pushService.sendPush(Long.parseLong(room.getGasappMemberNumber()), this.messageHandler.getMessage("socket.push"));
-					
 				}
 			}
 		}
