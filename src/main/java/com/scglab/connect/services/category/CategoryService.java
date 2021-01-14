@@ -475,12 +475,11 @@ public class CategoryService {
 		
 		// 카테고리 조회.
 		// 영향을 받는 다른카테고리의 순번 변경.
-		if(this.categoryDao.updateLargeSortIndexToAfter(params) > 0) {
-			this.categoryDao.updateLargeSortIndex(params);
-			
-			// 해당하는 카테고리의 순번 변경.
-			category = this.categoryDao.getCategoryLarge(params);
-		}
+		this.categoryDao.updateLargeSortIndexToAfter(params);
+		this.categoryDao.updateLargeSortIndex(params);
+
+		// 해당하는 카테고리의 순번 변경.
+		category = this.categoryDao.getCategoryLarge(params);
 		
 		return category == null ? new CategoryLarge() : category;
 	}
@@ -508,12 +507,11 @@ public class CategoryService {
 		params.put("categoryLargeId", category.getCategoryLargeId());
 		
 		// 영향을 받는 다른카테고리의 순번 변경.
-		if(this.categoryDao.updateMiddleSortIndexToAfter(params) > 0) {
-			this.categoryDao.updateMiddleSortIndex(params);
-			
-			// 해당하는 카테고리의 순번 변경.
-			category = this.categoryDao.getCategoryMiddle(params);
-		}
+		this.categoryDao.updateMiddleSortIndexToAfter(params);
+		this.categoryDao.updateMiddleSortIndex(params);
+
+		// 해당하는 카테고리의 순번 변경.
+		category = this.categoryDao.getCategoryMiddle(params);
 		
 		return category == null ? new CategoryMiddle() : category;
 	}
@@ -541,12 +539,11 @@ public class CategoryService {
 		params.put("categoryMiddleId", category.getCategoryMiddleId());
 		
 		// 영향을 받는 다른카테고리의 순번 변경.
-		if(this.categoryDao.updateSmallSortIndexToAfter(params) > 0) {
-			this.categoryDao.updateSmallSortIndex(params);
-			
-			// 해당하는 카테고리의 순번 변경.
-			category = this.categoryDao.getCategorySmall(params);
-		}
+		this.categoryDao.updateSmallSortIndexToAfter(params);
+		this.categoryDao.updateSmallSortIndex(params);
+
+		// 해당하는 카테고리의 순번 변경.
+		category = this.categoryDao.getCategorySmall(params);
 		
 		return category == null ? new CategorySmall() : category;
 	}
