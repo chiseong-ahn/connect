@@ -143,7 +143,7 @@ server:
   port: 8115
 
 spring:
-  profiles: dev
+  profiles: dev1
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
@@ -172,7 +172,17 @@ server:
 
 spring:
   profiles: dev2
-
+  datasource:
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: "jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC"
+      username: cstalk
+      password: cstalk12#$
+      idle-timeout: 10000
+      connection-timeout: 300000
+      maximumPoolSize: 10
+      minimum-idle: 5
+      max-lifetime: 60000
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
