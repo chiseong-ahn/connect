@@ -520,7 +520,7 @@ public class SocketService {
 					sendData.put("room", room);
 					sendData.put("profile", profile);
 					sendData.put("isCustomer", true);
-				 this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
+				 this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, sendData);
 				}
 				
 				
