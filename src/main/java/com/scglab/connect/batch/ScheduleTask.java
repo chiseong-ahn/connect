@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.scglab.connect.services.stats.StatsService;
 
-@Profile("local | dev | live1")
+@Profile("local | dev1 | live1")
 @Component
 public class ScheduleTask {
 	
