@@ -517,7 +517,10 @@ public class SocketService {
 				// 조인 메세지id와 마지막 생성된 메세지가 동일한 경우.
 				if(newMessage.getJoinMessageId() == newMessage.getId()) {
 					sendData = new HashMap<String, Object>();
-					 this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
+					sendData.put("room", room);
+					sendData.put("profile", profile);
+					sendData.put("isCustomer", true);
+				 this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
 				}
 				
 				
