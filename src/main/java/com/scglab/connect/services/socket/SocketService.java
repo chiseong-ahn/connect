@@ -288,7 +288,9 @@ public class SocketService {
 		// [Socket] > 상담사 배정메시지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("room", room);
-		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
+		sendData.put("profile", profile);
+		sendData.put("isCustomer", false);
+		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, sendData);
 	}
 
 	// 방 조인
@@ -417,6 +419,10 @@ public class SocketService {
 				
 				// 룸 전체에 시작메시지 발송.
 //				this.socketMessageHandler.sendMessageToSelf(EventName.START_MESSAGE, profile, sendData);
+				Map<String ,Object> reloadReadySendData = new HashMap<String, Object>();
+				reloadReadySendData.put("profile", profile);
+				reloadReadySendData.put("isCustomer", true);
+				this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, reloadReadySendData);
 				
 			}
 			
@@ -511,7 +517,7 @@ public class SocketService {
 				// 조인 메세지id와 마지막 생성된 메세지가 동일한 경우.
 				if(newMessage.getJoinMessageId() == newMessage.getId()) {
 					sendData = new HashMap<String, Object>();
-					this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
+					 this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
 				}
 				
 				
@@ -660,6 +666,7 @@ public class SocketService {
 		int result = this.roomDao.closeRoom(params);
 		if(result > 0) {
 			// [DB] 종료된 룸 정보 조회.
+			params.put("id", params.get("roomId"));
 			room = this.roomDao.getDetail(params);
 			//sendData.put("room", room);
 		}
@@ -667,6 +674,7 @@ public class SocketService {
 		Map<String, Object> sendData = new HashMap<String, Object>();
 		sendData.put("success", true);
 		sendData.put("isCustomer", true);
+		sendData.put("room", room);
 		
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);

@@ -198,7 +198,7 @@ public class RoomService {
 			room = this.roomDao.getDetail(params);
 			Map<String, Object> sendData = new HashMap<String, Object>();
 			sendData.put("room", room);
-			
+
 			Profile profile = null;
 			if(member != null) {
 				profile = new Profile();
@@ -209,9 +209,14 @@ public class RoomService {
 				profile.setName(member.getName());
 				profile.setSpeakerId(member.getSpeakerId());
 			}
-			
+
+//			Map<String, Object> sendData = new HashMap<String, Object>();
+//			sendData.put("room", room);
+			sendData.put("profile", profile);
+			sendData.put("isCustomer", false);
+
 			this.socketMessageHandler.sendMessageToSelf(EventName.ASSIGNED, profile, sendData);
-			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, null);
+			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, sendData);
 		}
 		return room;
 	}
