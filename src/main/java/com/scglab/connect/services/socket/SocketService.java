@@ -1,5 +1,6 @@
 package com.scglab.connect.services.socket;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -789,20 +790,19 @@ public class SocketService {
 		params.put("roomId", payload.getRoomId());
 		params.put("speakerId", profile.getSpeakerId());
 		params.put("messageAdminType", DataUtils.getInt(data, "messageAdminType", 0));
-		params.put("startId", DataUtils.getLong(data, "startId", 0));
+		params.put("startId", DataUtils.getInt(data, "startId", 0));
 		params.put("intervalDay", Constant.DEFAULT_MESSAGE_INTERVAL_DAY);
 		params.put("pageSize", Constant.DEFAULT_MESSAGE_MORE_PAGE_SIZE);
 		List<Message> messages = this.messageDao.findByRoomIdToSpeaker(params);
-		
-		if(messages != null && messages.size() > 0) {
-			
-			// [Socket] 메세지 전송.
-			sendData = new HashMap<String, Object>();
-			sendData.put("messages", messages);
-			
-			// 본인에게 메시지 발송.
-			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
+		if(messages == null) {
+			messages = new ArrayList<Message>();
 		}
+		// [Socket] 메세지 전송.
+		sendData = new HashMap<String, Object>();
+		sendData.put("messages", messages);
+
+		// 본인에게 메시지 발송.
+		this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
 	}
 
 	
