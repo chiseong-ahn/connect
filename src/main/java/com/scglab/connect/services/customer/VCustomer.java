@@ -32,4 +32,5 @@ public class VCustomer {
 	private long readLastMessageId;
 	private int noReadCount;
 	private int	endDays;
+	private String endDate;
 }

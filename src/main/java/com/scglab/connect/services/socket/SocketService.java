@@ -869,6 +869,7 @@ public class SocketService {
 			profile.setEndDays(customer.getEndDays());
 			profile.setState(customer.getState());
 			profile.setRoomState(customer.getRoomState());
+			profile.setEndDate(customer.getEndDate());
 
 		}
 		
