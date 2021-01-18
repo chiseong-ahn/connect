@@ -370,14 +370,14 @@ public class StatsService {
 			for(Map<String, Object> hashtag : list) {
 				
 				String isNew = DataUtils.getString(hashtag, "isNew", "N");
-				int beforeDayPlusCount = 0;
-				BigInteger currentRank = (BigInteger) hashtag.get("currentRank");
+				long beforeDayPlusCount = 0;
+				Long currentRank = (Long) hashtag.get("currentRank");
 				
 				if(isNew.equals("Y")) {
 					hashtag.put("beforeRank", "-");
 				}else {					
 					Long beforeRank = (Long) hashtag.get("beforeRank");
-					beforeDayPlusCount = Long.valueOf(Optional.ofNullable(beforeRank).orElse(0L)).intValue() - currentRank.intValue();
+					beforeDayPlusCount = beforeRank - currentRank;
 				}
 				hashtag.remove("currentRank");
 				hashtag.put("rank", currentRank);
@@ -401,6 +401,15 @@ public class StatsService {
 		return review;
 	}
 	
+	// 시간별 상담집계
+	public void createStatsEveryHour() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("companyId", "1");
+		params.put("targetDate", DateUtils.getToday());
+		
+		this.statsDao.createStatsCompanyDaily(params);
+		this.statsDao.createStatsHashtagDaily(params);
+	}
 	
 	// 일일 상담집계
 	public void createStatsDaily() {

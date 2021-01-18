@@ -123,32 +123,18 @@
 				,a.name
 				,a.rank_num as currentRank
 				,b.rank_num as beforeRank
-				,case when b.name is null then 'Y' else 'N' end isNew
-		from(
-			select '1' as company_id 
-		 		,rank() over(order by a.count desc) as rank_num
-				,b.name
-				,a.count
-			from(
-				select a.category_small_id, count(*) as count
-				from minwon_history a
-				where 1=1
-				and a.create_date between #{searchDate} and adddate(#{searchDate}, 1)
-				and a.category_small_id is not null
-				and a.company_id = #{companyId}
-				group by a.category_small_id
-			) a
-				inner join category_small b on (b.id = a.category_small_id)
-			where 1=1
-		)a
-			left outer join stats_hashtag b on (b.name = a.name and b.save_date = (
-				select sh.save_date
+				,case when b.rank_num is null then 'Y' else 'N' end isNew
+		from stats_hashtag as a
+			 left outer join stats_hashtag as b on (b.name = a.name and b.save_date = (
+			 	select sh.save_date
 				from stats_hashtag sh 
 				where sh.save_date <![CDATA[<]]> #{searchDate}
 				order by sh.save_date desc
-				limit 1
-			))
+				limit 1)
+			 )
 		where 1=1
+		and a.save_date = #{searchDate}
+		order by a.rank_num, a.name
 		limit 10
 	</select>
 	
