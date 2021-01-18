@@ -545,7 +545,7 @@ public class SocketService {
 		// [Socket] 시작메시지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("message", newMessage);
-		this.socketMessageHandler.sendMessageToSelf(EventName.START_MESSAGE, profile, sendData);
+		this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE, profile, sendData);
 		this.logger.debug("시작메시지 전송처리 완료");
 		
 		Map<String ,Object> reloadReadySendData = new HashMap<String, Object>();
