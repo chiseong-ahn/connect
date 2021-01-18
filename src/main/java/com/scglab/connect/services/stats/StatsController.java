@@ -62,6 +62,12 @@ public class StatsController {
 		return this.statsService.hashtag(params, request, response);
 	}
 	
+	@Auth
+	@RequestMapping(method = RequestMethod.GET, value = "review", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> review(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.statsService.review(params, request, response);
+	}
+	
 	
 }
 	

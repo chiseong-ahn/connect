@@ -386,6 +386,18 @@ public class StatsService {
 		return list;
 	}
 	
+	public Map<String, Object> review(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Member member = this.loginService.getMember(request);
+		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
+		params.put("companyId", companyId);
+		
+		Double value = 1.05;
+		
+		Map<String, Object> review = this.statsDao.review(params);
+		return review;
+	}
+	
+	
 	// 일일 상담집계
 	public void createStatsCompanyDaily() {
 		Map<String, Object> params = new HashMap<String, Object>();

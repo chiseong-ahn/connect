@@ -49,6 +49,10 @@ public class StatsDao extends CommonDao {
 		return this.sqlSession.selectList(this.namespace + "hashtag", params);
 	}
 	
+	public Map<String, Object> review(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "review", params);
+	}
+	
 	public void createStatsCompanyDaily(Map<String, Object> params) {
 		this.sqlSession.insert(this.namespace + "createStatsCompanyDaily", params);
 	}
