@@ -1,9 +1,11 @@
 package com.scglab.connect.services.stats;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -362,26 +364,28 @@ public class StatsService {
 	    }
 		
 		List<Map<String, Object>> list = null;
-		//list = this.statsDao.hashtag(params);
+		list = this.statsDao.hashtag(params);
 		
-		list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> data1 = new HashMap<String, Object>();
-		data1.put("companyId", "1");
-		data1.put("rank", 1);
-		data1.put("name", "요금");
-		data1.put("isNew", 0);
-		data1.put("beforeDayPlusCount", 5);
-		data1.put("beforeRank", 2);
-		list.add(data1);
-		
-		Map<String, Object> data2 = new HashMap<String, Object>();
-		data2.put("companyId", "1");
-		data2.put("rank", 1);
-		data2.put("name", "요금");
-		data2.put("isNew", 0);
-		data2.put("beforeDayPlusCount", 5);
-		data2.put("beforeRank", 2);
-		list.add(data2);
+		if(list != null && list.size() > 0) {
+			for(Map<String, Object> hashtag : list) {
+				
+				String isNew = DataUtils.getString(hashtag, "isNew", "N");
+				int beforeDayPlusCount = 0;
+				BigInteger currentRank = (BigInteger) hashtag.get("currentRank");
+				
+				if(isNew.equals("Y")) {
+					hashtag.put("beforeRank", "-");
+				}else {					
+					Long beforeRank = (Long) hashtag.get("beforeRank");
+					beforeDayPlusCount = Long.valueOf(Optional.ofNullable(beforeRank).orElse(0L)).intValue() - currentRank.intValue();
+				}
+				hashtag.remove("currentRank");
+				hashtag.put("rank", currentRank);
+				hashtag.put("beforeDayPlusCount", beforeDayPlusCount);
+			}
+		}else{
+			list = new ArrayList<Map<String, Object>>();
+		}
 		
 		return list;
 	}

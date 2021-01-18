@@ -119,7 +119,37 @@
 	
 	<!-- 통계 : 문의 유형별 통계 -->
 	<select id="hashtag" parameterType="map" resultType="map">
-		
+		select  #{companyId} as companyId
+				,a.name
+				,a.rank_num as currentRank
+				,b.rank_num as beforeRank
+				,case when b.name is null then 'Y' else 'N' end isNew
+		from(
+			select '1' as company_id 
+		 		,rank() over(order by a.count desc) as rank_num
+				,b.name
+				,a.count
+			from(
+				select a.category_small_id, count(*) as count
+				from minwon_history a
+				where 1=1
+				and a.create_date between #{searchDate} and adddate(#{searchDate}, 1)
+				and a.category_small_id is not null
+				and a.company_id = #{companyId}
+				group by a.category_small_id
+			) a
+				inner join category_small b on (b.id = a.category_small_id)
+			where 1=1
+		)a
+			left outer join stats_hashtag b on (b.name = a.name and b.save_date = (
+				select sh.save_date
+				from stats_hashtag sh 
+				where sh.save_date <![CDATA[<]]> #{searchDate}
+				order by sh.save_date desc
+				limit 1
+			))
+		where 1=1
+		limit 10
 	</select>
 	
 	<!-- 통계 : 고객 만족도 -->
@@ -154,6 +184,11 @@
 	<!-- 일일 상담집계 처리 -->
 	<insert id="createStatsCompanyDaily" parameterType="map">
 		CALL stats_company_daily(#{companyId}, #{targetDate})
+	</insert>
+	
+	<!-- 일일 유형별통계 집계처리 -->
+	<insert id="createStatsHashtagDaily" parameterType="map">
+		CALL stats_hashtag_daily(#{companyId}, #{targetDate})
 	</insert>
 	
 </mapper>
