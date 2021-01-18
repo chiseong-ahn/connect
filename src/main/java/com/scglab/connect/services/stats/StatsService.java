@@ -403,10 +403,12 @@ public class StatsService {
 	
 	
 	// 일일 상담집계
-	public void createStatsCompanyDaily() {
+	public void createStatsDaily() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("companyId", "1");
 		params.put("targetDate", DateUtils.getYesterday());
+		
 		this.statsDao.createStatsCompanyDaily(params);
+		this.statsDao.createStatsHashtagDaily(params);
 	}
 }

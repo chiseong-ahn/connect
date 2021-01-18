@@ -42,7 +42,9 @@ public class ScheduleTask {
 		this.logger.info("일일집계처리 시작. : " + startTime);
 		
 		// TODO : 상담 일일집계.
-		this.statsService.createStatsCompanyDaily();
+		this.statsService.createStatsDaily();
+		
+		
 
 		LocalTime endTime = LocalTime.now();
 		this.logger.info("일일집계처리 종료. : " + endTime);
