@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="stats">
+
+	<resultMap type="com.scglab.connect.services.stats.StatsCompany" id="statsCompany"></resultMap>
 	
 	<!-- 통계 : 회원 전체 기준 -->
 	<select id="member" parameterType="map" resultType="map">
@@ -113,8 +115,53 @@
 	</select>
 	
 	<!-- 통계 : 상담 사용 추이 -->
-	<select id="useHistory" parameterType="map" resultType="map">
-		
+	<select id="useHistory" parameterType="map" resultMap="statsCompany">
+		<if test='type != null and type != ""'>
+			<choose>
+				<when test='type == "recent_week"'>
+					select a.*
+							,DATE_FORMAT(a.save_date, '%Y-%m') as month 
+					from stats_company a
+					where 1=1
+					and a.company_id = '1'
+					and a.save_date between adddate(#{today}, -6) and #{today}
+					order by a.save_date
+				</when>
+				<when test='type == "recent_month"'>
+					select a.*
+							,DATE_FORMAT(a.save_date, '%Y-%m') as month 
+					from stats_company a
+					where 1=1
+					and a.company_id = '1'
+					and a.save_date between date_add(#{today}, interval -1 month) and '2021-01-18' -- 한달
+					order by a.save_date
+				</when>
+				<when test='type == "recent_year"'>
+					select	a.company_id,
+							DATE_FORMAT(a.save_date, '%Y-%m') as month,
+							sum(a.chatbot_use_count) as chatbot_use_count,
+							sum(a.talk_system_enter_count) as talk_system_enter_count,
+							sum(a.new_count) as new_count, 
+							sum(a.ready_count) as ready_count,
+							sum(a.ing_count) as ing_count,
+							sum(a.close_count) as close_count, 
+							sum(a.out_count) as out_count,
+							sum(a.speak_count) as speak_count,
+							max(a.max_ready_minute) as max_ready_minute,
+							max(a.max_speak_minute) as max_speak_minute,
+							avg(a.avg_ready_minute) as avg_ready_minute,
+							avg(a.avg_speak_minute) as avg_speak_minute,
+							avg(a.avg_member_speak_count) as avg_member_speak_count
+					from stats_company a
+					where 1=1
+					and a.company_id = '1'
+					and a.save_date between date_add('2021-01-18', interval -1 year) and '2021-01-18' -- 일년
+					group by a.company_id, DATE_FORMAT(a.save_date, '%Y-%m')
+					order by a.company_id, DATE_FORMAT(a.save_date, '%Y-%m')
+				</when>
+			</choose>
+			
+		</if>
 	</select>
 	
 	<!-- 통계 : 문의 유형별 통계 -->

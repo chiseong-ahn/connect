@@ -1,11 +1,9 @@
 package com.scglab.connect.services.stats;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -275,7 +273,7 @@ public class StatsService {
 		// -상담원 평균 응대 건수(avgMemberSpeakCount)
 	 * @throws Exception
 	 */
-	public List<Map<String, Object>> useHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<StatsCompany> useHistory(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
@@ -289,10 +287,12 @@ public class StatsService {
 	        // 필수파라미터 누락에 따른 오류 유발처리.
 	        this.errorService.throwParameterErrorWithNames(errorParams);
 	    }
+	
+	    params.put("today", DateUtils.getToday());
+		List<StatsCompany> list = this.statsDao.useHistory(params);
 		
-		List<Map<String, Object>> list = null;
-		//list = this.statsDao.useHistory(params);
 		
+		/*
 		list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> data1 = new HashMap<String, Object>();
 		data1.put("companyId", "1");
@@ -331,6 +331,7 @@ public class StatsService {
 		data2.put("avgSpeakMinute", 5);
 		data2.put("avgMemberSpeakCount", 2);
 		list.add(data2);
+		*/
 		
 		return list;
 	}

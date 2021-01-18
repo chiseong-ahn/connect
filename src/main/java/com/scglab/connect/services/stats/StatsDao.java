@@ -41,7 +41,7 @@ public class StatsDao extends CommonDao {
 		return this.sqlSession.selectList(this.namespace + "customerAnalysis", params);
 	}
 	
-	public List<Map<String, Object>> useHistory(Map<String, Object> params){
+	public List<StatsCompany> useHistory(Map<String, Object> params){
 		return this.sqlSession.selectList(this.namespace + "useHistory", params);
 	}
 	

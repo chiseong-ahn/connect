@@ -52,7 +52,7 @@ public class StatsController {
 	
 	@Auth
 	@RequestMapping(name="통계 : 상담 사용 추이", method = RequestMethod.GET, value = "use-history", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Map<String, Object>> useHistory(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<StatsCompany> useHistory(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.statsService.useHistory(params, request, response);
 	}
 	
