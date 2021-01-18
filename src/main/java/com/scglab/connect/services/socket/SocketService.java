@@ -459,18 +459,29 @@ public class SocketService {
 		params.put("intervalDay", Constant.DEFAULT_MESSAGE_INTERVAL_DAY);
 		params.put("pageSize", Constant.DEFAULT_MESSAGE_MORE_PAGE_SIZE);
 		List<Message> messages = this.messageDao.findByRoomIdToSpeaker(params);
+
+		if(messages == null) {
+			messages = new ArrayList<Message>();
+		}
 		
 		// 정렬순서 뒤집기
 		Collections.reverse(messages);
+
+		// [Socket] 이전 대화내용 전송.
+		sendData = new HashMap<String, Object>();
+		sendData.put("messages", messages);
+
+		// 본인에게 메시지 발송.
+		this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
 		
 		if(messages != null && messages.size() > 0) {		// 이전 메세지가 존재할 경우.
 			
 			// [Socket] 이전 대화내용 전송.
-			sendData = new HashMap<String, Object>();
-			sendData.put("messages", messages);
-			
-			// 본인에게 메시지 발송.
-			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
+//			sendData = new HashMap<String, Object>();
+//			sendData.put("messages", messages);
+//
+//			// 본인에게 메시지 발송.
+//			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE_LIST, profile, sendData);
 		}else {
 			this.logger.info("이전 대화 없음.");
 		}
@@ -797,6 +808,8 @@ public class SocketService {
 		if(messages == null) {
 			messages = new ArrayList<Message>();
 		}
+		// 정렬순서 뒤집기
+		Collections.reverse(messages);
 		// [Socket] 메세지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("messages", messages);
