@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.services.category.CategoryDao;
+import com.scglab.connect.services.category.CategoryLarge;
+import com.scglab.connect.services.category.CategoryMiddle;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
@@ -32,6 +36,7 @@ public class MinwonService {
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
 	@Autowired private RoomDao roomDao;
+	@Autowired private CategoryDao categoryDao;
 
 	public List<Map<String, Object>> codes(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
@@ -140,5 +145,117 @@ public class MinwonService {
 		List<Minwon> minwons = this.minwonDao.findSearchByRoomId(params);
 		return minwons == null ? new ArrayList<Minwon>() : minwons;
 	}
-
+	
+	
+	// 민원코드 동기화.
+	public void syncMinwonCodes() {
+		String companyId = "1";
+		ICompany company = this.commonService.getCompany(companyId);
+		
+		List<Map<String, Object>> list = company.getMinwonsCodes();
+		
+		//this.logger.debug("codes : " + list.toString());
+		if(list != null && list.size() > 0) {
+			List<Map<String, Object>> largeCategories = list.stream().filter(code -> DataUtils.getString(code, "classLevel", "0").equals("1") && DataUtils.getString(code,  "useYn", "N").equals("Y")).collect(Collectors.toList());
+			List<Map<String, Object>> middleCategories = list.stream().filter(code -> DataUtils.getString(code, "classLevel", "0").equals("2") && DataUtils.getString(code,  "useYn", "N").equals("Y")).collect(Collectors.toList());
+			List<Map<String, Object>> smallCategories = list.stream().filter(code -> DataUtils.getString(code, "classLevel", "0").equals("3") && DataUtils.getString(code,  "useYn", "N").equals("Y")).collect(Collectors.toList());
+			
+			for(Map<String, Object> obj : largeCategories) {
+				
+				this.logger.debug("obj : " + obj);
+				String name = DataUtils.getString(obj, "name", "");
+				String code = DataUtils.getString(obj, "code", "");
+				
+				obj.put("companyId", companyId);
+				CategoryLarge category = this.categoryDao.findCategoryLargeByMinwonCode(obj);
+				
+				// 코드가 존재하지 않을 경우.
+				obj.put("minwonCode", code);
+				obj.put("minwonName", name);
+				obj.put("loginId", null);
+				
+				if(category == null) {
+					int lastSortIndex = this.categoryDao.getLastLargeSortIndex(obj);
+					obj.put("sortIndex", lastSortIndex);
+					this.categoryDao.createCategoryLarge(obj);
+					
+				}else {
+					if(!category.getMinwonName().equals(name)) {
+						// 코드명이 다를경우.
+						obj.put("id", category.getId());
+						this.categoryDao.updateCategoryLarge(obj);
+					}
+				}
+			}
+			
+			for(Map<String, Object> obj : middleCategories) {
+				this.logger.debug("obj : " + obj);
+				String name = DataUtils.getString(obj, "name", "");
+				String code = DataUtils.getString(obj, "code", "");
+				String largeClassCode = DataUtils.getString(obj, "largeClassCode", "");
+				
+				obj.put("companyId", companyId);
+				CategoryMiddle category = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
+				
+				obj.put("minwonCode", code);
+				obj.put("minwonName", name);
+				obj.put("loginId", null);
+				
+				if(category == null) {
+					// 코드가 존재하지 않을경우.
+					obj.put("companyId", companyId);
+					obj.put("code", largeClassCode);
+					CategoryLarge categoryLarge = this.categoryDao.findCategoryLargeByMinwonCode(obj);
+					obj.put("categoryLargeId", categoryLarge.getId());
+					
+					int lastSortIndex = this.categoryDao.getLastMiddleSortIndex(obj);
+					obj.put("sortIndex", lastSortIndex);
+					obj.put("code", code);
+					this.categoryDao.createCategoryMiddle(obj);
+					
+				}else {
+					if(!category.getMinwonName().equals(name)) {
+						// 코드명이 다를경우.
+						obj.put("id", category.getId());
+						this.categoryDao.updateCategoryMiddle(obj);
+					}
+				}
+			}
+			
+			for(Map<String, Object> obj : smallCategories) {
+				this.logger.debug("obj : " + obj);
+				String name = DataUtils.getString(obj, "name", "");
+				String code = DataUtils.getString(obj, "code", "");
+				String middleClassCode = DataUtils.getString(obj, "middleClassCode", "");
+				
+				obj.put("companyId", companyId);
+				CategoryMiddle category = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
+				
+				obj.put("minwonCode", code);
+				obj.put("minwonName", name);
+				obj.put("loginId", null);
+				
+				if(category == null) {
+					// 코드가 존재하지 않을경우.
+					obj.put("companyId", companyId);
+					obj.put("code", middleClassCode);
+					CategoryMiddle categorymiddle = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
+					obj.put("categoryMiddleId", categorymiddle.getId());
+					
+					int lastSortIndex = this.categoryDao.getLastSmallSortIndex(obj);
+					obj.put("sortIndex", lastSortIndex);
+					obj.put("code", code);
+					this.categoryDao.createCategorySmall(obj);
+					
+				}else {
+					if(!category.getMinwonName().equals(name)) {
+						// 코드명이 다를경우.
+						obj.put("id", category.getId());
+						this.categoryDao.updateCategorySmall(obj);
+					}
+				}
+			}
+		}
+	}
+	
 }

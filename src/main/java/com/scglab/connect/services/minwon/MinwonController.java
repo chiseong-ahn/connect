@@ -47,5 +47,10 @@ public class MinwonController {
 	public List<Minwon> findSearchByRoomId(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.minwonService.findSearchByRoomId(params, request, response);
 	}
+	
+	@RequestMapping(name="민원코드 동기화", method = RequestMethod.GET, value = "/sync", produces = MediaType.APPLICATION_JSON_VALUE)
+	public void sync(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		this.minwonService.syncMinwonCodes();
+	}
 }
 	

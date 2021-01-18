@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.scglab.connect.services.minwon.MinwonService;
 import com.scglab.connect.services.stats.StatsService;
 
 @Profile("local | dev1 | live1")
@@ -27,6 +28,24 @@ public class ScheduleTask {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired private StatsService statsService;
+	@Autowired private MinwonService minwonService;
+	
+	@Scheduled(cron = "0 00 * * * *")
+	public void everyHourStatistics() {
+		LocalTime startTime = LocalTime.now();
+		this.logger.info("일일집계처리 시작. : " + startTime);
+		
+		// TODO : 상담 일일집계.
+		this.statsService.createStatsEveryHour();
+		
+		LocalTime endTime = LocalTime.now();
+		this.logger.info("일일집계처리 종료. : " + endTime);
+		
+		Duration duration = Duration.between(startTime, endTime);
+		
+		long diffSeconds = duration.getSeconds();
+		this.logger.info("일일집계처리 소요시간(초) : " + diffSeconds);
+	}
 
 	/**
 	 * 
@@ -44,8 +63,6 @@ public class ScheduleTask {
 		// TODO : 상담 일일집계.
 		this.statsService.createStatsDaily();
 		
-		
-
 		LocalTime endTime = LocalTime.now();
 		this.logger.info("일일집계처리 종료. : " + endTime);
 		
@@ -63,12 +80,13 @@ public class ScheduleTask {
 	 * @변경이력 : 
 	 * @Method 설명 : 기간계 민원코드 동기화.
 	 */
-	@Scheduled(cron = "0 30 14 * * *")
+	@Scheduled(cron = "0 00 02 * * *")
 	public void syncMinwonCodes() {
 		LocalTime startTime = LocalTime.now();
 		this.logger.info("기간계 민원코드 동기화 시작. : " + LocalDateTime.now());
 		// todo:
-
+		this.minwonService.syncMinwonCodes();
+		
 		this.logger.info("기간계 민원코드 동기화 종료. : " + LocalDateTime.now());
 		LocalTime endTime = LocalTime.now();
 		

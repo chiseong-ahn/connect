@@ -288,4 +288,28 @@
 		ORDER BY name ASC
 	</select>
 	
+	<!-- 민원코드를 통한 대분류 조회 -->
+	<select id="findCategoryLargeByMinwonCode" parameterType="map" resultMap="categoryLarge">
+		SELECT *
+		FROM category_large
+		WHERE minwon_code = #{code}
+		AND company_id = #{companyId}
+	</select>
+	
+	<!-- 민원코드를 통한 중분류 조회 -->
+	<select id="findCategoryMiddleByMinwonCode" parameterType="map" resultMap="categoryMiddle">
+		SELECT *
+		FROM category_middle
+		WHERE minwon_code = #{code}
+		AND company_id = #{companyId}
+	</select>
+	
+	<!-- 민원코드를 통한 소분류 조회 -->
+	<select id="findCategorySmallByMinwonCode" parameterType="map" resultMap="categorySmall">
+		SELECT *
+		FROM category_small
+		WHERE minwon_code = #{code}
+		AND company_id = #{companyId}
+	</select>
+	
 </mapper>

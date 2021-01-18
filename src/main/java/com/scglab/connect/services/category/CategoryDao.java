@@ -295,4 +295,20 @@ public class CategoryDao extends CommonDao {
 		return this.sqlSession.selectList(this.namespace + "findCategorySmallByMiddleId", params);
 	}
 	
+	public CategoryLarge findCategoryLargeByMinwonCode(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "findCategoryLargeByMinwonCode", params);
+	}
+	
+	public CategoryMiddle findCategoryMiddleByMinwonCode(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "findCategoryMiddleByMinwonCode", params);
+	}
+	
+	public CategorySmall findCategorySmallByMinwonCode(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "findCategorySmallByMinwonCode", params);
+	}
+	
+	public int syncCategoryLarge(Map<String, Object> params) {
+		return this.sqlSession.insert(this.namespace + "syncCategoryLarge", params);
+	}
+	
 }
