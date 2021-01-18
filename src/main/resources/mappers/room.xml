@@ -249,6 +249,7 @@
 										AND room_id = r.id
 							)
 							AND chat_message.id >= r.join_message_id
+							AND speaker_id is not null
 		      ) AS no_read_count,
 		      (
 							SELECT
