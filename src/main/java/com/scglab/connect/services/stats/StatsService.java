@@ -291,49 +291,7 @@ public class StatsService {
 	    params.put("today", DateUtils.getToday());
 		List<StatsCompany> list = this.statsDao.useHistory(params);
 		
-		
-		/*
-		list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> data1 = new HashMap<String, Object>();
-		data1.put("companyId", "1");
-		data1.put("saveDate", "2020-11-01");
-		data1.put("month", "2020-11");
-		data1.put("chatbotUseCount", 0);
-		data1.put("talkSystemEnterCount", 10);
-		data1.put("newCount", 10);
-		data1.put("readyCount", 5);
-		data1.put("ingCount", 3);
-		data1.put("closeCount", 10);
-		data1.put("outCount", 0);
-		data1.put("speakCount", 10);
-		data1.put("maxReadyMinute", 125);
-		data1.put("maxSpeakMinute", 1);
-		data1.put("avgReadyMinute", 20);
-		data1.put("avgSpeakMinute", 5);
-		data1.put("avgMemberSpeakCount", 2);
-		list.add(data1);
-		
-		Map<String, Object> data2 = new HashMap<String, Object>();
-		data2.put("companyId", "1");
-		data2.put("saveDate", "2020-11-01");
-		data2.put("month", "2020-11");
-		data2.put("chatbotUseCount", 0);
-		data2.put("talkSystemEnterCount", 10);
-		data2.put("newCount", 10);
-		data2.put("readyCount", 5);
-		data2.put("ingCount", 3);
-		data2.put("closeCount", 10);
-		data2.put("outCount", 0);
-		data2.put("speakCount", 10);
-		data2.put("maxReadyMinute", 125);
-		data2.put("maxSpeakMinute", 1);
-		data2.put("avgReadyMinute", 20);
-		data2.put("avgSpeakMinute", 5);
-		data2.put("avgMemberSpeakCount", 2);
-		list.add(data2);
-		*/
-		
-		return list;
+		return list == null ? new ArrayList<StatsCompany>() : list;
 	}
 	
 	/**

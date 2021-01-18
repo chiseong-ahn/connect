@@ -33,18 +33,18 @@ public class ScheduleTask {
 	@Scheduled(cron = "0 00 * * * *")
 	public void everyHourStatistics() {
 		LocalTime startTime = LocalTime.now();
-		this.logger.info("일일집계처리 시작. : " + startTime);
+		this.logger.info("시간별 집계처리 시작. : " + startTime);
 		
-		// TODO : 상담 일일집계.
+		// TODO : 상담 집계.
 		this.statsService.createStatsEveryHour();
 		
 		LocalTime endTime = LocalTime.now();
-		this.logger.info("일일집계처리 종료. : " + endTime);
+		this.logger.info("시간별 집계처리 종료. : " + endTime);
 		
 		Duration duration = Duration.between(startTime, endTime);
 		
 		long diffSeconds = duration.getSeconds();
-		this.logger.info("일일집계처리 소요시간(초) : " + diffSeconds);
+		this.logger.info("시간별 집계처리 소요시간(초) : " + diffSeconds);
 	}
 
 	/**

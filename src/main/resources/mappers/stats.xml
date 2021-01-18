@@ -118,25 +118,25 @@
 	<select id="useHistory" parameterType="map" resultMap="statsCompany">
 		<if test='type != null and type != ""'>
 			<choose>
-				<when test='type == "recent_week"'>
+				<when test='type == "day"'>
 					select a.*
 							,DATE_FORMAT(a.save_date, '%Y-%m') as month 
 					from stats_company a
 					where 1=1
-					and a.company_id = '1'
+					and a.company_id = #{companyId}
 					and a.save_date between adddate(#{today}, -6) and #{today}
 					order by a.save_date
 				</when>
-				<when test='type == "recent_month"'>
+				<when test='type == "month"'>
 					select a.*
 							,DATE_FORMAT(a.save_date, '%Y-%m') as month 
 					from stats_company a
 					where 1=1
-					and a.company_id = '1'
-					and a.save_date between date_add(#{today}, interval -1 month) and '2021-01-18' -- 한달
+					and a.company_id = #{companyId}
+					and a.save_date between date_add(#{today}, interval -1 month) and #{today} -- 한달
 					order by a.save_date
 				</when>
-				<when test='type == "recent_year"'>
+				<when test='type == "year"'>
 					select	a.company_id,
 							DATE_FORMAT(a.save_date, '%Y-%m') as month,
 							sum(a.chatbot_use_count) as chatbot_use_count,
@@ -154,8 +154,8 @@
 							avg(a.avg_member_speak_count) as avg_member_speak_count
 					from stats_company a
 					where 1=1
-					and a.company_id = '1'
-					and a.save_date between date_add('2021-01-18', interval -1 year) and '2021-01-18' -- 일년
+					and a.company_id = #{companyId}
+					and a.save_date between date_add(#{today}, interval -1 year) and #{today} -- 일년
 					group by a.company_id, DATE_FORMAT(a.save_date, '%Y-%m')
 					order by a.company_id, DATE_FORMAT(a.save_date, '%Y-%m')
 				</when>
@@ -166,7 +166,8 @@
 	
 	<!-- 통계 : 문의 유형별 통계 -->
 	<select id="hashtag" parameterType="map" resultType="map">
-		select  #{companyId} as companyId
+		select  /* 문의 유형별 통계 */
+				#{companyId} as companyId
 				,a.name
 				,a.rank_num as currentRank
 				,b.rank_num as beforeRank
@@ -187,7 +188,7 @@
 	
 	<!-- 통계 : 고객 만족도 -->
 	<select id="review" parameterType="map" resultType="map">
-		select /* 고객만족도 현황 */
+		select /* 고객만족도 통계 */
 				 round((a.score1 / a.total) * 100, 2) as score1
 				,round((a.score2 / a.total) * 100, 2) as score2
 				,round((a.score3 / a.total) * 100, 2) as score3
