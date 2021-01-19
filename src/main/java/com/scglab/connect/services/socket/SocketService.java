@@ -169,15 +169,17 @@ public class SocketService {
 		
 		
 		// 고객이 개인룸에 조인할 경우.
-		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) && profile.getIsCustomer() == 1) {	
+		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM)) {	
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("profile", profile);
 			
-			if(profile.isAuthenticated()) {
-				this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
-			}else {
-				profile.setRoomId(null);
-				this.socketMessageHandler.sendMessageToSelf(EventName.UNAUTHORIZED, profile, data);
+			if(profile.getIsCustomer() == 1) {
+				if(profile.isAuthenticated()) {
+					this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
+				}else {
+					profile.setRoomId(null);
+					this.socketMessageHandler.sendMessageToSelf(EventName.UNAUTHORIZED, profile, data);
+				}
 			}
 			
 			return;
