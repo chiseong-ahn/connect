@@ -5,9 +5,9 @@
 
 ## 서버환경
 | 서버 | Host | Port | End point |
-|:---:|---|---|---|
-| 개발 | cstalk-dev.gasapp.co.kr | 80 | /ws |
-| 운영 | cstalk.gasapp.co.kr | 80 | /ws |
+|:---:|---|---|
+| 개발 | cstalk-dev.gasapp.co.kr | /ws |
+| 운영 | cstalk.gasapp.co.kr | /ws |
 
 ## Frontend
 ### 1. 연결 | Connect
