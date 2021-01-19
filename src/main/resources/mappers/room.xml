@@ -259,6 +259,7 @@
 							WHERE
 								chat_message.room_id = r.id
 								AND chat_message.is_employee = 0
+								AND chat_message.id >= r.join_message_id
 								AND chat_message.id > (
 									SELECT
 										IFNULL(MAX(id), 0)
