@@ -169,7 +169,7 @@ public class SocketService {
 		
 		
 		// 고객이 개인룸에 조인할 경우.
-		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) || profile.getIsCustomer() == 1) {	
+		if(destination.equals(Constant.SOCKET_PRIVATE_ROOM) && profile.getIsCustomer() == 1) {	
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("profile", profile);
 			
