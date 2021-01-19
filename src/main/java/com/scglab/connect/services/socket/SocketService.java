@@ -1008,26 +1008,27 @@ public class SocketService {
 			this.chatRoomRepository.dropProfileBySessionId(sessionId);
 		}
 		
-		if(profile.getIsCustomer() == 0) {
-			String lobbyRoom = getLobbyRoom(profile.getCompanyId());
-			this.logger.debug("disconnect lobby room : " + lobbyRoom);
-			this.chatRoomRepository.removeMemberJoin(lobbyRoom);
-			
-			if(this.chatRoomRepository.getUserCount(lobbyRoom) > 0) {
-				// [Redis] 채팅방의 인원수 -1.
-				this.chatRoomRepository.minusUserCount(lobbyRoom);
-			}
-			
-			// [Redis] 채팅에 참여중인 인원 확인.
-			this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(lobbyRoom));
-			if(this.chatRoomRepository.getUserCount(lobbyRoom) <= 0) {
+		if(profile != null) {
+			if(profile.getIsCustomer() == 0) {
+				String lobbyRoom = getLobbyRoom(profile.getCompanyId());
+				this.logger.debug("disconnect lobby room : " + lobbyRoom);
+				this.chatRoomRepository.removeMemberJoin(lobbyRoom);
 				
-				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
-				this.chatRoomRepository.deleteChatRoom(lobbyRoom);
-				this.chatRoomRepository.deleteUserCount(lobbyRoom);
+				if(this.chatRoomRepository.getUserCount(lobbyRoom) > 0) {
+					// [Redis] 채팅방의 인원수 -1.
+					this.chatRoomRepository.minusUserCount(lobbyRoom);
+				}
+				
+				// [Redis] 채팅에 참여중인 인원 확인.
+				this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(lobbyRoom));
+				if(this.chatRoomRepository.getUserCount(lobbyRoom) <= 0) {
+					
+					// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
+					this.chatRoomRepository.deleteChatRoom(lobbyRoom);
+					this.chatRoomRepository.deleteUserCount(lobbyRoom);
+				}
 			}
 		}
-		
 	}
 	
 	
