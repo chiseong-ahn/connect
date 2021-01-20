@@ -460,22 +460,23 @@
 		  v_customer.is_block AS is_block_customer,
 		  v_customer.block_type as blockType,
 		  v_customer.remark as remark,
-		    v_customer.gasapp_member_number as gasapp_member_number,
-		    v_customer.tel_number as tel_number,
-		    TIMESTAMPDIFF(SECOND, sub_room.join_start_date, chat_message.create_date) as speak_minute,
-		     (
-		        SELECT COUNT(1)
-		            FROM room_join_history rjh
-		         WHERE rjh.room_id = sub_room.id
-		              AND end_date IS NOT NULL
-		      ) AS joinHistoryCount,
-		      (
-				SELECT COUNT(1)
-				FROM minwon_history
-				WHERE room_id = sub_room.id
-			  ) AS minwon_history_count,
-				v_customer.swear_count AS swear_count,
-				v_customer.insult_count AS insult_count
+			v_customer.gasapp_member_number as gasapp_member_number,
+			v_customer.tel_number as tel_number,
+			TIMESTAMPDIFF(SECOND, sub_room.join_start_date, chat_message.create_date) as speak_minute,
+			 (
+					SELECT COUNT(1)
+							FROM room_join_history rjh
+					 WHERE rjh.room_id = sub_room.id
+								AND end_date IS NOT NULL
+								AND start_message_id IS NOT NULL
+				) AS joinHistoryCount,
+				(
+					SELECT COUNT(1)
+					FROM minwon_history
+					WHERE room_id = sub_room.id
+			) AS minwon_history_count,
+			v_customer.swear_count AS swear_count,
+			v_customer.insult_count AS insult_count
 		FROM 
 		  (
 		    SELECT 
