@@ -20,25 +20,15 @@
 		  ) no_read_count,
 		  r.name as room_name,
 		  s.name as speaker_name
-		FROM v_room r
+		FROM room r
 			INNER JOIN chat_message m ON r.id = m.room_id
 			LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE r.id = #{roomId}
-		<choose>
-			<when test='state == 8'>
-				AND m.id >= (
-		 			select rjh.start_message_id 
-		 			from room_join_history rjh 
-		 			where 1=1
-		 			and rjh.room_id = r.id
-		 			and rjh.id = r.chatid
-		 		)
-			</when>
-			<otherwise>
-				AND m.id >= r.join_message_id	
-			</otherwise>
-		</choose>
+		AND (
+			CASE WHEN IFNULL(#{startId}, '') = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
+		)
 		ORDER BY m.id
+		LIMIT #{pageSize}
 	</select>
 	
 	
