@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
-import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 import com.scglab.connect.base.interceptor.CommonInterceptor;
 
 import net.rakugakibox.util.YamlResourceBundle;
@@ -142,6 +140,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
 	 * @Method 설명 : XSS를 방어하기 위한 Filter 적용 - lucy-xss-servlet-filter-rule.xml 참조. 
 	 * @return
 	 */
+	/*
 	@Bean
     public FilterRegistrationBean<XssEscapeServletFilter> getFilterRegistrationBean(){
         FilterRegistrationBean<XssEscapeServletFilter> registrationBean = new FilterRegistrationBean<>();
@@ -150,6 +149,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
         registrationBean.addUrlPatterns("/*");
         return registrationBean;
     }
+    */
 }
 
 /**
