@@ -1,5 +1,6 @@
 package com.scglab.connect.services.message;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,7 @@ public class MessageService {
 		switch(queryId) {
 			case "findByRoomIdAll" :		// 메세지 전체 조회.
 				messages = this.messageDao.findByRoomIdAll(params);
+				Collections.reverse(messages);
 				break;
 				
 			case "findByRoomIdToSpeaker":	// 메세지 조회(조인한 사용자)
