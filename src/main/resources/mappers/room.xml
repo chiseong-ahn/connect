@@ -111,7 +111,7 @@
 		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
 		        WHERE 
 		          room_id = r.id 
-		          AND speaker2.is_customer = 1
+		          AND room_speaker.is_customer = 1
 		          LIMIt 1
 		      ) AS customer_speaker_id, 
 		      (
@@ -229,7 +229,7 @@
 		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
 		        WHERE 
 		          room_id = r.id 
-		          AND speaker2.is_customer = 1
+		          AND room_speaker.is_customer = 1
 		      ) AS customer_speaker_id,
 		      (
 		        SELECT 
@@ -339,7 +339,7 @@
 		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
 		        WHERE 
 		          room_id = r.id 
-		          AND speaker2.is_customer = 1
+		          AND room_speaker.is_customer = 1
 		          LIMIt 1
 		      ) AS customer_speaker_id,
 		      mb.name as member_name
@@ -507,7 +507,7 @@
 		          INNER JOIN speaker2 ON room_speaker.speaker_id = speaker2.id 
 		        WHERE 
 		          room_id = r.id 
-		          AND speaker2.is_customer = 1
+		          AND room_speaker.is_customer = 1
 		      ) AS customer_speaker_id,
 		      (
 		        SELECT 
