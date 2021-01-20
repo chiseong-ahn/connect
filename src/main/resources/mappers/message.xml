@@ -27,7 +27,7 @@
 		AND (
 			CASE WHEN IFNULL(#{startId}, '') = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
 		)
-		ORDER BY m.id
+		ORDER BY m.id DESC
 		LIMIT #{pageSize}
 	</select>
 	
