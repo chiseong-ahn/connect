@@ -1,5 +1,10 @@
 package com.scglab.connect.constant;
 
+import javax.crypto.SecretKey;
+
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
 public class Constant {
 	
 	public final static String	YES = "Y";
@@ -25,8 +30,7 @@ public class Constant {
 	public final static String	SOCKET_PRIVATE_ROOM = SOCKET_USER_DESTINATION_PREFIX + SOCKET_USER_SUBSCRIBE_URI;		// 유저 수신채
 	
 	public final static long	JSONTOKEN_EXPIRE = 60 * 60 * 24 * 1000 * 7;		// 토큰의 유효기간 
-	//public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";	// 토큰의 비밀키
-	public final static String	JSONTOKEN_SECRETKEY = "SCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACS";	// 토큰의 비밀키
+	public final static SecretKey JWT_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode("SCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACSSCGLABCSTALKAYSBHYACS"));
 	
 	public final static String	ENCRYPT_SECRETKEY = "SCGLABCSTALKAYSBHYACS20210205000";		// 암호화 비밀키
 	public final static String	CUSTOMER_KEY = "$CSTALK#";

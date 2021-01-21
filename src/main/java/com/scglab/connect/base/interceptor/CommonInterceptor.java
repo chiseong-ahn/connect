@@ -73,6 +73,10 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 				// 토큰이 유효한 경우.
 				
 				Map<String, Object> claims = this.jwtService.getJwtData(accessToken);
+				if(claims == null) {
+					throw new RuntimeException("claims is null");
+				}
+				this.logger.debug("claims : " + claims.toString());
 				request.setAttribute("accessToken", accessToken);
 				
 				Member profile = new Member();
