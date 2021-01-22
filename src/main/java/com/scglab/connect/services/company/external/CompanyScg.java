@@ -149,8 +149,10 @@ public class CompanyScg implements ICompany {
 		if(contractBill != null) {
 			if(contractBill.containsKey("previousUnpayInfos")) {
 				List<Map<String, Object>> previousUnpayInfos = (List<Map<String, Object>>) contractBill.get("previousUnpayInfos");
-				
+
+				int previousUnpayCount = 0;
 				if(previousUnpayInfos != null) {
+					previousUnpayCount = previousUnpayInfos.size();
 					int count = 2;		// 전달할 카운트.
 					
 					// 최근 [count]건에 대해서만 데이터 전달.
@@ -159,6 +161,8 @@ public class CompanyScg implements ICompany {
 						contractBill.put("previousUnpayInfos", subList);
 					}
 				}
+				// 2건 외의 실제 미납 건수룰 previousUnpayCount 속성으로 전달
+				contractBill.put("previousUnpayCount", previousUnpayCount);
 			}
 		}
 		
