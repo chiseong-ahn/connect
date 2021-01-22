@@ -324,6 +324,7 @@ public class SocketService {
 		// [Socket] > 채팅방 참여자들에게 조인완료 메세지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("profile", profile);
+		sendData.put("room", room);
 		
 		// 본인에게 조인성공 알림메시지 발송.
 		this.socketMessageHandler.sendMessageToSelf(EventName.JOINED, profile, sendData);
