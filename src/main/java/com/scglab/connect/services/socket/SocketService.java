@@ -740,34 +740,32 @@ public class SocketService {
 		
 		Room room = null;
 		
+		params = new HashMap<String, Object>();
+		params.put("companyId", payload.getCompanyId());
+		params.put("roomId", payload.getRoomId());
+		params.put("speakerId", null);
+		params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+		params.put("isSystemMessage", 1);
+		params.put("message", this.messageHandler.getMessage("socket.end"));
+		params.put("messageAdminType", 0);
+		params.put("isEmployee", 0);
+		params.put("messageDetail", "");
+		params.put("templateId", null);
+		Message newMessage = this.messageDao.create(params);
+		
+		sendData = new HashMap<String, Object>();
+		sendData.put("message", newMessage);
+		this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
+		
 		// [DB] 채팅상담 종료처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
 		params.put("loginId", null);
-		int result = this.roomDao.closeRoom(params);
-		if(result > 0) {
-			// [DB] 종료된 룸 정보 조회.
-			params.put("id", params.get("roomId"));
-			room = this.roomDao.getDetail(params);
-			//sendData.put("room", room);
-			
-			params = new HashMap<String, Object>();
-			params.put("companyId", payload.getCompanyId());
-			params.put("roomId", payload.getRoomId());
-			params.put("speakerId", null);
-			params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
-			params.put("isSystemMessage", 1);
-			params.put("message", this.messageHandler.getMessage("socket.end"));
-			params.put("messageAdminType", 0);
-			params.put("isEmployee", 0);
-			params.put("messageDetail", "");
-			params.put("templateId", null);
-			Message newMessage = this.messageDao.create(params);
-			
-			sendData = new HashMap<String, Object>();
-			sendData.put("message", newMessage);
-			this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
-		}
+		this.roomDao.closeRoom(params);
+		
+		// [DB] 종료된 룸 정보 조회.
+		params.put("id", params.get("roomId"));
+		room = this.roomDao.getDetail(params);
 		
 		sendData = new HashMap<String, Object>();
 		sendData.put("success", true);
@@ -790,35 +788,37 @@ public class SocketService {
 		
 		Room room = null;
 		
+		params = new HashMap<String, Object>();
+		params.put("companyId", payload.getCompanyId());
+		params.put("roomId", payload.getRoomId());
+		params.put("speakerId", null);
+		params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+		params.put("isSystemMessage", 1);
+		params.put("message", this.messageHandler.getMessage("socket.end"));
+		params.put("messageAdminType", 0);
+		params.put("isEmployee", 0);
+		params.put("messageDetail", "");
+		params.put("templateId", null);
+		Message newMessage = this.messageDao.create(params);
+		
+		sendData = new HashMap<String, Object>();
+		sendData.put("message", newMessage);
+		this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
+		
 		// [DB] 룸 종료처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", DataUtils.getInt(data, "roomId", 0));
 		params.put("id", DataUtils.getInt(data, "roomId", 0));
 		params.put("loginId", profile.getId());
-		int result = this.roomDao.closeRoom(params);
-		if(result > 0) {
-			// [DB] 종료된 룸 정보 조회.
-			room = this.roomDao.getDetail(params);
-			sendData.put("room", room);
-			
-			params = new HashMap<String, Object>();
-			params.put("companyId", payload.getCompanyId());
-			params.put("roomId", payload.getRoomId());
-			params.put("speakerId", null);
-			params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
-			params.put("isSystemMessage", 1);
-			params.put("message", this.messageHandler.getMessage("socket.end"));
-			params.put("messageAdminType", 0);
-			params.put("isEmployee", 1);
-			params.put("messageDetail", "");
-			params.put("templateId", null);
-			Message newMessage = this.messageDao.create(params);
-			
-			// [Socket] 시작메시지 전송.
-			sendData = new HashMap<String, Object>();
-			sendData.put("message", newMessage);
-			this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
-		}
+		this.roomDao.closeRoom(params);
+		
+		// [DB] 종료된 룸 정보 조회.
+		room = this.roomDao.getDetail(params);
+		
+		sendData = new HashMap<String, Object>();
+		sendData.put("success", true);
+		sendData.put("isCustomer", false);
+		sendData.put("room", room);
 		
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);

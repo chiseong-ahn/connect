@@ -25,6 +25,7 @@ import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.login.Profile;
 import com.scglab.connect.services.member.Member;
+import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.socket.SocketMessageHandler;
 import com.scglab.connect.services.socket.SocketService;
@@ -239,23 +240,41 @@ public class RoomService {
 		
 		Room room = null;
 		
+		Profile profile = null;
+		if(member != null) {
+			profile = new Profile();
+			profile.setCompanyId(member.getCompanyId());
+			profile.setIsAdmin(0);
+			profile.setIsMember(1);
+			profile.setIsCustomer(0);
+			profile.setName(member.getName());
+			profile.setSpeakerId(member.getSpeakerId());
+			profile.setRoomId(params.get("roomId") + "");
+		}
+		
+		params = new HashMap<String, Object>();
+		params.put("companyId", profile.getCompanyId());
+		params.put("roomId", profile.getRoomId());
+		params.put("speakerId", null);
+		params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+		params.put("isSystemMessage", 1);
+		params.put("message", this.messageHandler.getMessage("socket.end"));
+		params.put("messageAdminType", 0);
+		params.put("isEmployee", 0);
+		params.put("messageDetail", "");
+		params.put("templateId", null);
+		Message newMessage = this.messageDao.create(params);
+		
+		Map<String, Object> sendData = new HashMap<String, Object>();
+		sendData.put("message", newMessage);
+		this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
+		
+		
 		int result = this.roomDao.closeRoom(params);
 		if(result > 0) {
 			room = this.roomDao.getDetail(params);
 			
-			Profile profile = null;
-			if(member != null) {
-				profile = new Profile();
-				profile.setCompanyId(member.getCompanyId());
-				profile.setIsAdmin(0);
-				profile.setIsMember(1);
-				profile.setIsCustomer(0);
-				profile.setName(member.getName());
-				profile.setSpeakerId(member.getSpeakerId());
-				profile.setRoomId(room.getId() + "");
-			}
-			
-			Map<String, Object> sendData = new HashMap<String, Object>();
+			sendData = new HashMap<String, Object>();
 			sendData.put("room", room);
 			sendData.put("success", true);
 			sendData.put("isCustomer", false);
