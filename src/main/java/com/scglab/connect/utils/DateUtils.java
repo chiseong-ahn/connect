@@ -14,10 +14,10 @@ public class DateUtils {
 	}
 	
 	public static String getYesterday() {
-		Date dDate = new Date();
-		dDate = new Date(dDate.getTime()+(1000*60*60*24*-1));
+		Date date = new Date();
+		date = new Date(date.getTime()+(1000*60*60*24*-1));
 		SimpleDateFormat dSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-		String yesterday = dSdf.format(dDate);
+		String yesterday = dSdf.format(date);
 		return yesterday;
 	}
 	
