@@ -340,11 +340,16 @@ public class TemplateService {
 			data.put("reason", this.messageService.getMessage("error.template.notexist", messageParams));
 		}else {
 			
-			// 이전에 연결된 키워드정보 삭제.
-			this.templateDao.deleteTemplateKeywords(params);
+			// 템플릿의 등록자가 본인일 경우에만 삭제 가능하도록 처리.
+			BigInteger memberId = (BigInteger)template.get("memberId");
+			if(member.getId() == memberId.intValue()) {
 			
-			// 템플릿 삭제.
-			result = this.templateDao.delete(params);
+				// 이전에 연결된 키워드정보 삭제.
+				this.templateDao.deleteTemplateKeywords(params);
+				
+				// 템플릿 삭제.
+				result = this.templateDao.delete(params);
+			}
 		}
 		
 		data.put("success", result > 0 ? true : false);
