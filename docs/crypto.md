@@ -1,7 +1,7 @@
 # 암/복호화
 
 ## 양방향 암호화 (AES256)
-```
+```java
 try {
 AES256Utils aes256Utils = new AES256Utils();
 
@@ -27,7 +27,7 @@ e.printStackTrace();
 
 
 ## 단방향 암호화 (SHA256)
-```
+```java
 try {
     SHA256Utils sha256Utils = new SHA256Utils();
 

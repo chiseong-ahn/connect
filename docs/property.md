@@ -1,14 +1,14 @@
 # 어플레키에션 설정 프로퍼티
 ## 사용방법
 - application.yml
-```
+```yml
 domain:
     sdtalk:
     relay-scg: relay-scg-dev.gasapp.co.kr
     relay-inc: relay-inc-dev.gasapp.co.kr
 ```
 - property 생성
-```
+```java
 @Component
 @ConfigurationProperties("domain")
 @Getter
@@ -22,7 +22,7 @@ public class DomainProperties {
 ```
 
 - 서비스 사용
-```
+```java
 // 멤버 객체 선언
 @Autowired private DomainProperties domainProperty;
 

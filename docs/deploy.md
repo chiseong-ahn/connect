@@ -25,14 +25,14 @@ or
 
 ### (3) 배포 및 WAS 재구동
 > 배포용 쉘 파일 실행.
-```
+```sh
 $ cd /home/gasapp/cstalk/backend
 $ ./deploy.sh
 ```
 
 ### (4) 로그 확인
 > 로그확인 쉘 파일 실행.
-```
+```sh
 $ cd /home/gasapp/cstalk/backend
 $ ./log.sh
 ```

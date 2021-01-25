@@ -4,7 +4,7 @@
 - 참고 https://stomp.github.io
 
 ## 서버환경
-| 서버 | Host | Port | End point |
+| 서버 | Host | End point |
 |:---:|---|---|
 | 개발 | cstalk-dev.gasapp.co.kr | /ws |
 | 운영 | cstalk.gasapp.co.kr | /ws |
@@ -118,13 +118,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 2. ROOM_DETAIL
-- 룸 상세 정보.
-```json
-
-```
-
-### 3. 메시지 읽음.
+### 2. 메시지 읽음.
 ```json
 {
   "eventName" : "READ_MESSAGE",
@@ -139,7 +133,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 4. 메시지 목록 수신.
+### 3. 메시지 목록 수신.
 ```json
 {
   "eventName" : "MESSAGE_LIST",
@@ -170,7 +164,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 5. 메시지 수신.
+### 4. 메시지 수신.
 ```json
 {
   "eventName" : "MESSAGE",
@@ -201,7 +195,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 6. 메시지 삭제 됨.
+### 5. 메시지 삭제 됨.
 ```json
 {
   "eventName" : "DELETE_MESSAGE",
@@ -214,7 +208,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 7. 상담 종료.
+### 6. 상담 종료.
 ```json
 {
   "eventName" : "END",
@@ -224,7 +218,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 8. 룸 목록 갱신 요쳥.
+### 7. 룸 목록 갱신 요쳥.
 ```json
 {
   "eventName" : "RELOAD",
@@ -232,7 +226,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 9. 에러 발송.
+### 8. 에러 발송.
 ```json
 {
     "eventName" : "ERROR",
@@ -246,19 +240,27 @@ this.socket.ws.disconnect();
 
 
 ## 발신 메시지 유형
-### 1. 메시지 발송.
+### 1. 시작메시지 요청.
 ```json
 {
-    "eventName":"MESSAGE",
-    "data":{
-	"messageType":0,	// 메시지유형(0-일반텍스트, 1-이미지)
-	"message":"1111",	// 메시지 내용
-	"messageDetail":""	// 메시지 추가내용(이미지일 경우 이미지경로)
-    }
+  "eventName":"START_MESSAGE",
+  "data":{}
 }
 ```
 
-### 2. 메시지 더보기.
+### 2. 메시지 발송.
+```json
+{
+  "eventName":"MESSAGE",
+  "data":{
+	"messageType":0,	// 메시지유형(0-일반텍스트, 1-이미지)
+	"message":"1111",	// 메시지 내용
+	"messageDetail":""	// 메시지 추가내용(이미지일 경우 이미지경로)
+  }
+}
+```
+
+### 3. 메시지 더보기.
 ```json
 {
     "eventName":"MESSAGE_LIST",
@@ -269,7 +271,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 3. 메시지 읽음.
+### 4. 메시지 읽음.
 ```json
 {
     "eventName": "READ_MESSAGE",
@@ -280,7 +282,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 4. 메시지 삭제
+### 5. 메시지 삭제
 ```json
 {
     "eventName": "DELETE_MESSAGE",
@@ -290,7 +292,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 5. 상담 종료.
+### 6. 상담 종료.
 ```json
 {
     "eventName": "END",
@@ -298,7 +300,7 @@ this.socket.ws.disconnect();
 }
 ```
 
-### 6. 리뷰 남기기.
+### 7. 리뷰 남기기.
 ```json
 {
   "eventName":"REVIEW",
