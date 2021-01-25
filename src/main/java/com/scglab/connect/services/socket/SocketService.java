@@ -667,7 +667,7 @@ public class SocketService {
 			
 			// [DB] 메세지 읽음 카운트 조회.
 			int readCount = this.messageDao.getReadCountByMessageId(params);
-			if(readCount <= 0) {
+			if(readCount == 0) {
 				// [Socket] 메세지를 이미 읽은상태이기에 삭제불가 알림 전송.
 				this.socketMessageHandler.sendErrorMessage(profile, this.messageHandler.getMessage("error.message.delete"));
 			
