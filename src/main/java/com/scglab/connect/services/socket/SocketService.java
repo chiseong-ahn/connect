@@ -324,6 +324,7 @@ public class SocketService {
 		// [Socket] > 채팅방 참여자들에게 조인완료 메세지 전송.
 		sendData = new HashMap<String, Object>();
 		sendData.put("profile", profile);
+		sendData.put("room", room);
 		
 		// 본인에게 조인성공 알림메시지 발송.
 		this.socketMessageHandler.sendMessageToSelf(EventName.JOINED, profile, sendData);
@@ -563,7 +564,7 @@ public class SocketService {
 		params.put("id", profile.getRoomId());
 		Room room = this.roomDao.getDetail(params);
 		
-		String templateId = DataUtils.getString(data, "templateId", "");
+		int templateId = DataUtils.getInt(data, "templateId", 0);
 		int messageAdminType = DataUtils.getInt(data, "messageAdminType",0);
 		
 		// [DB] 신규 메세지 생성.
@@ -577,7 +578,7 @@ public class SocketService {
 		params.put("messageAdminType", messageAdminType);	// 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
 		params.put("isEmployee", profile.getIsCustomer() == 1 ? 0 : 1);
 		params.put("messageDetail", DataUtils.getString(data, "messageDetail",""));
-		params.put("templateId", templateId.equals("") ? null : templateId);
+		params.put("templateId", templateId == 0 ? null : templateId);
 		
 		Message newMessage = this.messageDao.create(params);
 		
