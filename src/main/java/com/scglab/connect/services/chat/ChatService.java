@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.RoomDao;
@@ -22,11 +21,33 @@ import com.scglab.connect.services.room.RoomDao;
 public class ChatService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired private MessageHandler messageService;
 	@Autowired private RoomDao roomDao;
 	@Autowired private MessageDao messageDao;
 	
 	public Map<String, Object> roomHistoryByChatId(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		// 접근을 허용하는 ip 목록.
+		List<String> ipList = new ArrayList<String>();
+		ipList.add("10.100.20.25");
+
+		// 접근한 클라이언트 ip
+		String ip = request.getHeader("X-FORWARDED-FOR") == null ? request.getRemoteAddr() : request.getHeader("X-FORWARDED-FOR");
+		
+		// 접근 허용여부.
+		boolean isAccess = false;
+		for(String allowedIp : ipList) {
+			if(ip.matches(allowedIp)) {
+				isAccess = true;
+				break;
+			}
+		}
+		
+		if(!isAccess) {
+			// 접근이 불가능할 경우.
+			throw new RuntimeException("error.access.denied");
+		}
+		
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		Map<String, Object> spaceHist = this.roomDao.findRoomHistoryByChatId(params);
