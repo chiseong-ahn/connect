@@ -2,6 +2,7 @@ package com.scglab.connect.services.company.external;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,7 +174,7 @@ public class CompanyScg implements ICompany {
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int day = cal.get(Calendar.DATE);
-
+		
 		String today = year + "";
 		today += month < 10 ? "0" + month : "" + month;
 		today += day < 10 ? "0" + day : "" + day;
@@ -187,8 +188,28 @@ public class CompanyScg implements ICompany {
 
 		Map<String, Object> data = HttpUtils.getForMap(url);
 		String isWorking = DataUtils.getString(data, "workingDay", "Y");
+		this.logger.debug("isWorking : " + isWorking);
+		
+		int num = isWorking.equals("Y") ? 1 : 2;
+		if(num == 1) {
+			int hour = Calendar.HOUR_OF_DAY;
+			int min = Calendar.MINUTE;
+			int second = Calendar.SECOND;
+			
+			this.logger.debug("time : " + hour + " " + min + " " + second);
+			
+			
+			if(hour < 9 || (hour == 17 && min >= 30) || hour >= 18) {
+				// 오전 9시 이전이거나, 오후 17시 30분 이후시간일 경우(업무 외 시간)
+				num = 2;
+				
+			}else if(hour >= 12 && hour < 13) {
+				// 오전 12시에서 오후1시일 경우(점심시간)
+				num = 3;
+			}
+		}
 
-		return isWorking.equals("Y") ? 1 : 2;
+		return num;
 	}
 
 
