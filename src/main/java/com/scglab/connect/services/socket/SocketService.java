@@ -735,6 +735,7 @@ public class SocketService {
 	// 고객의 상담 종료
 	public void endByCustomer(Profile profile, SocketData payload) {
 		Map<String, Object> params = null;
+		Map<String, Object> sendData = null;
 		
 		Room room = null;
 		
@@ -748,9 +749,27 @@ public class SocketService {
 			params.put("id", params.get("roomId"));
 			room = this.roomDao.getDetail(params);
 			//sendData.put("room", room);
+			
+			params = new HashMap<String, Object>();
+			params.put("companyId", payload.getCompanyId());
+			params.put("roomId", payload.getRoomId());
+			params.put("speakerId", null);
+			params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+			params.put("isSystemMessage", 1);
+			params.put("message", this.messageHandler.getMessage("socket.end"));
+			params.put("messageAdminType", 0);
+			params.put("isEmployee", 0);
+			params.put("messageDetail", "");
+			params.put("templateId", null);
+			Message newMessage = this.messageDao.create(params);
+			
+			// [Socket] 시작메시지 전송.
+			sendData = new HashMap<String, Object>();
+			sendData.put("message", newMessage);
+			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE, profile, sendData);
 		}
 		
-		Map<String, Object> sendData = new HashMap<String, Object>();
+		sendData = new HashMap<String, Object>();
 		sendData.put("success", true);
 		sendData.put("isCustomer", true);
 		sendData.put("room", room);
@@ -758,6 +777,8 @@ public class SocketService {
 		// [Socket] 상담종료 메세지 전송.
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.END, profile, sendData);
 		//this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD, profile);
+		
+		
 	}
 	
 	
@@ -779,6 +800,24 @@ public class SocketService {
 			// [DB] 종료된 룸 정보 조회.
 			room = this.roomDao.getDetail(params);
 			sendData.put("room", room);
+			
+			params = new HashMap<String, Object>();
+			params.put("companyId", payload.getCompanyId());
+			params.put("roomId", payload.getRoomId());
+			params.put("speakerId", null);
+			params.put("messageType", 0);		// 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+			params.put("isSystemMessage", 1);
+			params.put("message", this.messageHandler.getMessage("socket.end"));
+			params.put("messageAdminType", 0);
+			params.put("isEmployee", 1);
+			params.put("messageDetail", "");
+			params.put("templateId", null);
+			Message newMessage = this.messageDao.create(params);
+			
+			// [Socket] 시작메시지 전송.
+			sendData = new HashMap<String, Object>();
+			sendData.put("message", newMessage);
+			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE, profile, sendData);
 		}
 		
 		// [Socket] 상담종료 메세지 전송.

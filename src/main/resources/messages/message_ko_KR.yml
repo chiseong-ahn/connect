@@ -64,6 +64,8 @@ error:
     reason2: 오류가 발생하여 등록할 수 없습니다. 
   chattalk:
     reason1: chatid{0}에 해당하는 상담이 존재하지 않습니다.
+  access:
+    denied: 접근이 허용되지 않습니다. 
 auth: 
   login:
     success: 로그인을 성공하였습니다. 
