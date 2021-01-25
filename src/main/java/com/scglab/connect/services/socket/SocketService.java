@@ -764,10 +764,9 @@ public class SocketService {
 			params.put("templateId", null);
 			Message newMessage = this.messageDao.create(params);
 			
-			// [Socket] 시작메시지 전송.
 			sendData = new HashMap<String, Object>();
 			sendData.put("message", newMessage);
-			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE, profile, sendData);
+			this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
 		}
 		
 		sendData = new HashMap<String, Object>();
@@ -818,7 +817,7 @@ public class SocketService {
 			// [Socket] 시작메시지 전송.
 			sendData = new HashMap<String, Object>();
 			sendData.put("message", newMessage);
-			this.socketMessageHandler.sendMessageToSelf(EventName.MESSAGE, profile, sendData);
+			this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
 		}
 		
 		// [Socket] 상담종료 메세지 전송.
