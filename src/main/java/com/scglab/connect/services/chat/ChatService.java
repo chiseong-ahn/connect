@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.RoomDao;
@@ -26,16 +27,12 @@ public class ChatService {
 	
 	public Map<String, Object> roomHistoryByChatId(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		// 접근을 허용하는 ip 목록.
-		List<String> ipList = new ArrayList<String>();
-		ipList.add("10.100.20.25");
-
 		// 접근한 클라이언트 ip
 		String ip = request.getHeader("X-FORWARDED-FOR") == null ? request.getRemoteAddr() : request.getHeader("X-FORWARDED-FOR");
 		
 		// 접근 허용여부.
 		boolean isAccess = false;
-		for(String allowedIp : ipList) {
+		for(String allowedIp : Constant.accessIpList) {
 			if(ip.matches(allowedIp)) {
 				isAccess = true;
 				break;
