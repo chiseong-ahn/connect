@@ -354,8 +354,6 @@ public class StatsService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
-		Double value = 1.05;
-		
 		Map<String, Object> review = this.statsDao.review(params);
 		return review;
 	}
@@ -366,7 +364,6 @@ public class StatsService {
 		params.put("companyId", "1");
 		params.put("targetDate", DateUtils.getToday());
 		
-		this.statsDao.createStatsCompanyDaily(params);
 		this.statsDao.createStatsHashtagDaily(params);
 	}
 	
