@@ -1,5 +1,6 @@
 package com.scglab.connect.services.company.external;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +87,27 @@ public class ExtenalController {
 		String deadlineFlag = DataUtils.getString(params, "deadlineFlag", "");
 		return getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
 	}
+	
+
+	@RequestMapping(name="고객의 결제 상세정보", method = RequestMethod.GET, value = "/{companyId}/isWorking", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> test(@PathVariable String companyId, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		System.out.println(cal);
+
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		int sec = cal.get(Calendar.SECOND);
+		
+		this.logger.debug("time : " + hour + " " + min + " " + sec);
+		
+		return null;
+	}
+	
+	
+	
 	
 	
 }

@@ -196,11 +196,13 @@ public class CompanyScg implements ICompany {
 		
 		int num = isWorking.equals("Y") ? 1 : 2;
 		if(num == 1) {
-			int hour = Calendar.HOUR_OF_DAY;
-			int min = Calendar.MINUTE;
-			int second = Calendar.SECOND;
+			System.out.println(cal);
+
+			int hour = cal.get(Calendar.HOUR_OF_DAY);
+			int min = cal.get(Calendar.MINUTE);
+			int sec = cal.get(Calendar.SECOND);
 			
-			this.logger.debug("time : " + hour + " " + min + " " + second);
+			this.logger.debug("time : " + hour + " " + min + " " + sec);
 			
 			
 			if(hour < 9 || (hour == 17 && min >= 30) || hour >= 18) {
