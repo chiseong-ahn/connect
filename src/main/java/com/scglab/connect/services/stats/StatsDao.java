@@ -33,7 +33,7 @@ public class StatsDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "myToday", params);
 	}
 	
-	public Map<String, Object> search(Map<String, Object> params){
+	public StatsCompany search(Map<String, Object> params){
 		return this.sqlSession.selectOne(this.namespace + "search", params);
 	}
 	

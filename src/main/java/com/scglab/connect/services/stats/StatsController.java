@@ -40,7 +40,7 @@ public class StatsController {
 	
 	@Auth
 	@RequestMapping(name="통계 : 기간 검색", method = RequestMethod.GET, value = "search", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> search(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public StatsCompany search(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.statsService.search(params, request, response);
 	}
 	

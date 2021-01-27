@@ -10,8 +10,6 @@ import lombok.ToString;
 public class StatsCompany {
 	private int id;
 	private String companyId;
-	private String createDate;
-	private String updateDate;
 	private String saveDate;
 	private int chatbotUseCount;
 	private int talkSystemEnterCount;
@@ -26,5 +24,5 @@ public class StatsCompany {
 	private int avgReadyMinute;
 	private int avgSpeakMinute;
 	private int avgMemberSpeakCount;
-	private String month;
+	private int beforeDayPlusCount;
 }

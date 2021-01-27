@@ -130,7 +130,7 @@ public class StatsService {
 		// -전일 대비 상담 증감(beforeDayPlusCount)
 	 * @throws Exception
 	 */
-	public Map<String, Object> search(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public StatsCompany search(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
@@ -148,27 +148,7 @@ public class StatsService {
 	        this.errorService.throwParameterErrorWithNames(errorParams);
 	    }
 		
-		
-		
-		Map<String, Object> data = null;
-		//data = this.statsDao.search(params);
-		
-		data = new HashMap<String, Object>();
-		data.put("companyId", "1");
-		data.put("chatbotUseCount", 0);
-		data.put("talkSystemEnterCount", 10);
-		data.put("newCount", 10);
-		data.put("readyCount", 5);
-		data.put("ingCount", 3);
-		data.put("closeCount", 10);
-		data.put("outCount", 0);
-		data.put("speakCount", 10);
-		data.put("maxReadyMinute", 125);
-		data.put("maxSpeakMinute", 1);
-		data.put("avgReadyMinute", 20);
-		data.put("avgSpeakMinute", 5);
-		data.put("avgMemberSpeakCount", 2);
-		data.put("beforeDayPlusCount", 3);
+		StatsCompany data = this.statsDao.search(params);
 		
 		return data;
 	}
@@ -203,9 +183,8 @@ public class StatsService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
-		List<Map<String, Object>> list = null;
-		//data = this.statsDao.customerAnalysis(params);
-		
+		List<Map<String, Object>> list = this.statsDao.customerAnalysis(params);
+		/*
 		list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> data1 = new HashMap<String, Object>();
 		data1.put("companyId", "1");
@@ -242,8 +221,9 @@ public class StatsService {
 		data2.put("beforeDayPlusCount", 3);
 		data2.put("recentCloseCount", 10);
 		list.add(data2);
+		*/
 		
-		return list;
+		return list == null ? new ArrayList<Map<String, Object>>() : list;
 	}
 	
 	/**
@@ -278,17 +258,10 @@ public class StatsService {
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
 		
-		String errorParams = "";
-	    if(!this.commonService.valid(params, "type"))
-	        errorParams = this.commonService.appendText(errorParams, "검색유형-type");
-	    
-	    // 파라미터 유효성 검증.
-	    if(!errorParams.equals("")) {
-	        // 필수파라미터 누락에 따른 오류 유발처리.
-	        this.errorService.throwParameterErrorWithNames(errorParams);
-	    }
-	
-	    params.put("today", DateUtils.getToday());
+		String type = DataUtils.getString(params, "type", "day");
+		params.put("type", type);
+		
+		params.put("today", DateUtils.getToday());
 		List<StatsCompany> list = this.statsDao.useHistory(params);
 		
 		return list == null ? new ArrayList<StatsCompany>() : list;

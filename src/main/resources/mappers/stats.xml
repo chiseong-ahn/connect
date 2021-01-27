@@ -105,13 +105,103 @@
 	</select>
 	
 	<!-- 통계 : 기간 검색 -->
-	<select id="search" parameterType="map" resultType="map">
-		
+	<select id="search" parameterType="map" resultMap="statsCompany">
+		select 	a.company_id
+				,sum(a.chatbot_use_count) as chatbot_use_count
+				,sum(a.talk_system_enter_count) as talk_system_enter_count
+				,sum(a.new_count) as new_count
+				,sum(a.ready_count) as ready_count
+				,sum(a.ing_count) as ing_count 
+				,sum(a.close_count) as close_count
+				,sum(a.out_count) as out_count
+				,sum(a.speak_count) as speak_count
+				,max(a.max_ready_minute) as max_ready_minute
+				,max(a.max_speak_minute) as max_speak_minute
+				,round(avg(a.avg_ready_minute)) as avg_ready_minute
+				,round(avg(a.avg_speak_minute)) as avg_speak_minute
+				,round(avg(a.avg_member_speak_count)) as avg_member_speak_count
+				,sum(a.beforeDayPlusCount) as beforeDayPlusCount
+		from (
+			select a.*
+					,a.speak_count - ifnull((
+						select b.speak_count
+						from stats_company as b
+						where 1=1
+						and b.company_id = a.company_id
+						and b.save_date <![CDATA[<]]> a.save_date
+						order by b.save_date desc
+						limit 1
+					), 0) as beforeDayPlusCount
+			from stats_company as a
+			where 1=1
+			and a.company_id = #{companyId}
+			and a.save_date between #{startDate} and #{endDate}
+		) as a
+		where 1=1
+		group by a.company_id
 	</select>
 	
 	<!-- 통계 : 상담사별 분석 -->
 	<select id="customerAnalysis" parameterType="map" resultType="map">
-		
+		select a.company_id as companyId
+				,a.id
+				,a.name
+				,a.state
+				,a.ing_count as ingCount
+				,a.close_count as closeCount
+				,a.week_close_count as recentCloseCount
+				,a.close_count - a.yesterday_close_count as beforeDayPlusCount
+		from(
+			select a.id
+					,a.company_id
+					,a.name
+					,a.state
+					,(
+						select count(*)
+						from room as a1
+						where 1=1
+						and a1.company_id = a.company_id
+						and a1.state <![CDATA[<]]> 2
+						and a1.end_date is null
+						and a1.member_id = a.id
+					) as ing_count
+					,(
+						select count(*)
+						from room_join_history as a1
+						where 1=1
+						and a1.company_id = a.company_id
+						and a1.member_id = a.id
+						and a1.end_date between DATE_FORMAT(adddate(now(), -1), '%Y-%m-%d') and DATE_FORMAT(now(), '%Y-%m-%d')
+					) as yesterday_close_count
+					,(
+						select count(*)
+						from room_join_history as a1
+						where 1=1
+						and a1.company_id = a.company_id
+						and a1.member_id = a.id
+						and a1.end_date between DATE_FORMAT(now(), '%Y-%m-%d') and DATE_FORMAT(adddate(now(),1), '%Y-%m-%d')
+					) as close_count
+					,(
+						select count(*)
+						from room_join_history as a1
+						where 1=1
+						and a1.company_id = a.company_id
+						and a1.member_id = a.id
+						and a1.end_date between DATE_FORMAT(adddate(now(), -6), '%Y-%m-%d') and DATE_FORMAT(adddate(now(),1), '%Y-%m-%d')
+					) as week_close_count
+			from member as a
+			where 1=1
+			and a.company_id = #{companyId}
+		)a
+		where 1=1
+		<choose>
+			<when test='sort == "todayClose"'>
+				order by a.close_count desc, a.name
+			</when>
+			<when test='sort == "recentClose"'>
+				order by a.week_close_count desc, a.name
+			</when>
+		</choose>		
 	</select>
 	
 	<!-- 통계 : 상담 사용 추이 -->
@@ -138,7 +228,7 @@
 				</when>
 				<when test='type == "year"'>
 					select	a.company_id,
-							DATE_FORMAT(a.save_date, '%Y-%m') as month,
+							DATE_FORMAT(a.save_date, '%Y-%m') as save_date,
 							sum(a.chatbot_use_count) as chatbot_use_count,
 							sum(a.talk_system_enter_count) as talk_system_enter_count,
 							sum(a.new_count) as new_count, 
@@ -167,7 +257,7 @@
 	<!-- 통계 : 문의 유형별 통계 -->
 	<select id="hashtag" parameterType="map" resultType="map">
 		select  /* 문의 유형별 통계 */
-				#{companyId} as companyId
+				a.company_id as companyId
 				,a.name
 				,a.rank_num as currentRank
 				,b.rank_num as beforeRank
@@ -181,6 +271,7 @@
 				limit 1)
 			 )
 		where 1=1
+		and a.company_id = #{companyId}
 		and a.save_date = #{searchDate}
 		order by a.rank_num, a.name
 		limit 10
