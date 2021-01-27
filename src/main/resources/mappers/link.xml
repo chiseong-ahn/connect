@@ -45,7 +45,7 @@
 		<if test='enable != null'>
 		  	AND enable = #{enable}
 		</if>
-		ORDER BY id ASC
+		ORDER BY link_text
 	</select>
 
 	<!-- 링크상세 전체 조회 -->
