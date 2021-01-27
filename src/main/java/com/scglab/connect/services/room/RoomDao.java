@@ -24,7 +24,7 @@ public class RoomDao extends CommonDao {
 	protected String getNamespace() {
 		return namespace;
 	}
-	
+
 	/**
 	 * 
 	 * @Method Name : getCurrentTimeStats
@@ -37,6 +37,20 @@ public class RoomDao extends CommonDao {
 	 */
 	public Map<String, Object> getCurrentTimeStats(Map<String, Object> params){
 		return this.sqlSession.selectOne(this.namespace + "getCurrentTimeStats", params);
+	}
+
+	/**
+	 * 
+	 * @Method Name : getRoomTypeCountByLoginMember
+	 * @작성일 : 2021. 01. 27.
+	 * @작성자 : ahnyongseong
+	 * @변경이력 : 
+	 * @Method 설명 : 방 상태별 count(로그인 사용자 기준)
+	 * @param params
+	 * @return
+	 */
+	public Map<String, Object> getRoomTypeCountByLoginMember(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "getRoomTypeCountByLoginMember", params);
 	}
 	
 	
