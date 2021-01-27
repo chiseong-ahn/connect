@@ -62,7 +62,7 @@
 	</select>
 
 	<!-- 방 상태별 count(로그인 사용자 기준) : 관리자인 경우 -->
-	<select id="getRoomTypeCountByLoginMember" parameterType="map" resultType="map">
+	<select id="getRoomStateCountByLoginMember" parameterType="map" resultType="map">
 		SELECT
 			(
 				SELECT 
