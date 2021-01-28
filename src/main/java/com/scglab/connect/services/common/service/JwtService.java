@@ -28,15 +28,8 @@ public class JwtService {
 
 	public String generateToken(Map<String, Object> claims, Date expire) {
 		Date now = new Date();
-		/*
-		 * return Jwts.builder() //.setId(key) .setClaims(claims) .setIssuedAt(now) //
-		 * 토큰 발행일자 .setExpiration(expire) // 유효시간 설정 .signWith(SignatureAlgorithm.HS256,
-		 * Constant.JSONTOKEN_SECRETKEY) // 암호화 알고리즘, secret값 세팅 .compact();
-		 */
-		// Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-		return Jwts.builder()
-				// .setSubject("Joe")
-				.setClaims(claims).setExpiration(expire).setIssuedAt(new Date()).signWith(Constant.JWT_KEY).compact();
+		return Jwts.builder().setClaims(claims).setExpiration(expire).setIssuedAt(new Date()).signWith(Constant.JWT_KEY)
+				.compact();
 	}
 
 	/**
@@ -73,7 +66,7 @@ public class JwtService {
 		try {
 			Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(Constant.JWT_KEY).build().parseClaimsJws(jws);
 			return claims;
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

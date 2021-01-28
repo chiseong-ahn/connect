@@ -20,20 +20,19 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(name = "명언관리", value="/api/wise")
+@RequestMapping(name = "명언관리", value = "/api/wise")
 public class WiseController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private WiseService wiseService;
-	
+
 	@Auth
-	@RequestMapping(name="명언 조회", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Wise regist(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "명언 조회", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Wise regist(@RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.wiseService.findWise(params, request, response);
 	}
-	
-	
+
 }
-	

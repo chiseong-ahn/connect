@@ -22,19 +22,21 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(name = "회사 관리", value = "/api/company")
 public class CompanyController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private CompanyService companyService;
-	
-	@RequestMapping(name="회사 목록 조회", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Company> companys(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@RequestMapping(name = "회사 목록 조회", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Company> companys(@RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.companyService.getCompanies(params, request, response);
 	}
-	
-	@RequestMapping(name="회사 상세 조회", method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Company company(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@RequestMapping(name = "회사 상세 조회", method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Company company(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.companyService.getCompany(params, request, response);
 	}

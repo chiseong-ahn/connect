@@ -12,12 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
-/**
- * 일반문자열 유틸.
- *
- * @author someone
- * @version 1.0.0
- */
 public class JsonUtils {
 
 	/**
@@ -107,29 +101,30 @@ public class JsonUtils {
 
 		return list;
 	}
-	
-	public static List<Map<String, Object>> getListMapFromString(String jsonText){
+
+	public static List<Map<String, Object>> getListMapFromString(String jsonText) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		org.springframework.boot.configurationprocessor.json.JSONArray jsonArray;
 		try {
 			jsonArray = new org.springframework.boot.configurationprocessor.json.JSONArray(jsonText);
-			
+
 			if (jsonArray != null) {
 				int jsonSize = jsonArray.length();
-				
+
 				Map<String, Object> map;
 				for (int i = 0; i < jsonSize; i++) {
-					org.springframework.boot.configurationprocessor.json.JSONObject jsonObj = jsonArray.getJSONObject(i);
+					org.springframework.boot.configurationprocessor.json.JSONObject jsonObj = jsonArray
+							.getJSONObject(i);
 					map = new ObjectMapper().readValue(jsonObj.toString(), Map.class);
 					list.add(map);
 				}
 			}
-			
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-		
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return list;
 	}
 }

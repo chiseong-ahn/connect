@@ -130,7 +130,6 @@ public class HttpUtils {
 			String text = body.text();
 
 			try {
-				// String을 Map<String, Object> 객체로 변환.
 				obj = new ObjectMapper().readValue(text, new TypeReference<Map<String, Object>>() {
 				});
 
@@ -172,11 +171,10 @@ public class HttpUtils {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
 		ResponseBody body = requestForGet(url, params);
-		
+
 		// 요청 성공시(200)
 		if (body != null && body.getStateCode() == Response.SC_OK) {
 			try {
-				// String을 List<Map<String, Object>> 객체로 변환.
 				list = new ObjectMapper().readValue(body.text(), new TypeReference<List<Map<String, Object>>>() {
 				});
 
@@ -381,19 +379,16 @@ public class HttpUtils {
 		logger.debug("url : " + url);
 
 		parames = parames == null ? new HashMap<String, String>() : parames;
-		
+
 		ResponseBody body = null;
 		try {
-			body = new QuickHttp()
-					.url(url)
-					.get()
-					.addParames(parames)
-					.body();
-		}catch(Exception e) {}
+			body = new QuickHttp().url(url).get().addParames(parames).body();
+		} catch (Exception e) {
+		}
 
-		if(body == null) {
+		if (body == null) {
 			logger.debug("외부통신 결과데이터가 존재하지 않음.");
-		}else {
+		} else {
 			logger.debug("StateCode : " + body.getStateCode());
 			logger.debug("Data : " + body.text());
 		}
@@ -417,19 +412,16 @@ public class HttpUtils {
 		logger.debug("parames : " + parames.toString());
 
 		parames = parames == null ? new HashMap<String, String>() : parames;
-		
+
 		ResponseBody body = null;
 		try {
-			body = (ResponseBody) new QuickHttp()
-					.url(url)
-					.post()
-					.addParames(parames)
-					.body();
-		}catch(Exception e) {}
+			body = (ResponseBody) new QuickHttp().url(url).post().addParames(parames).body();
+		} catch (Exception e) {
+		}
 
-		if(body == null) {
+		if (body == null) {
 			logger.debug("외부통신 결과데이터가 존재하지 않음.");
-		}else {
+		} else {
 			logger.debug("StateCode : " + body.getStateCode());
 			logger.debug("Data : " + body.text());
 		}
@@ -454,17 +446,14 @@ public class HttpUtils {
 
 		ResponseBody body = null;
 		try {
-			body = (ResponseBody) new QuickHttp()
-				.url(url)
-				.post()
-				.setContentType(ContentType.APPLICATION_JSON)
-				.setBodyContent(content)
-				.body();
-		}catch(Exception e) {}
-		
-		if(body == null) {
+			body = (ResponseBody) new QuickHttp().url(url).post().setContentType(ContentType.APPLICATION_JSON)
+					.setBodyContent(content).body();
+		} catch (Exception e) {
+		}
+
+		if (body == null) {
 			logger.debug("외부통신 결과데이터가 존재하지 않음.");
-		}else {
+		} else {
 			logger.debug("> StateCode : " + body.getStateCode());
 			logger.debug("> Data : " + body.text());
 		}

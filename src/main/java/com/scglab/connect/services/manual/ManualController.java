@@ -23,70 +23,72 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(name = "매뉴얼 관리", value="/api/manual")
+@RequestMapping(name = "매뉴얼 관리", value = "/api/manual")
 public class ManualController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired private ManualService manualService;
-	
+
+	@Autowired
+	private ManualService manualService;
+
 	@Auth
-	@RequestMapping(name="매뉴얼 검색", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> manuals(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 검색", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> manuals(@RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.manualService.manuals(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 상세", method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Manual manual(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 상세", method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Manual manual(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.manualService.manual(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 태그 목록", method = RequestMethod.POST, value = "tags", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<String> tags(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 태그 목록", method = RequestMethod.POST, value = "tags", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<String> tags(@RequestBody Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.manualService.tags(params, request, response);
-		
+
 	}
-	
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 즐겨찾기 추가/삭제", method = RequestMethod.POST, value = "/{id}/favorite", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> favorite(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 즐겨찾기 추가/삭제", method = RequestMethod.POST, value = "/{id}/favorite", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> favorite(@PathVariable int id, @RequestBody Map<String, Object> params,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.manualService.favorite(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 등록", method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Manual regist(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 등록", method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Manual regist(@RequestBody Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.manualService.regist(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 수정", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Manual update(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 수정", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Manual update(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.manualService.update(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 삭제", method = RequestMethod.DELETE, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> delete(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 삭제", method = RequestMethod.DELETE, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> delete(@PathVariable int id, @RequestParam Map<String, Object> params,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.manualService.delete(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="매뉴얼 채번", method = RequestMethod.POST, value = "/getNextPageNumber", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> nextPageNumber(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "매뉴얼 채번", method = RequestMethod.POST, value = "/getNextPageNumber", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> nextPageNumber(@RequestBody Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.manualService.nextPageNumber(params, request, response);
 	}
 }
-
-
-
-
-
-	

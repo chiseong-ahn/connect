@@ -9,146 +9,141 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DataUtils {
-	
+
 	public static String getParameter(HttpServletRequest request, String name, String defaultValue) {
-		
-		if(request != null) {
+
+		if (request != null) {
 			return StringUtils.defaultString(request.getParameter(name), defaultValue);
 		}
 		return defaultValue;
 	}
-	
+
 	public static String getAttribute(HttpServletRequest request, String name, String defaultValue) {
-		
-		if(request != null) {
-			return StringUtils.defaultString((String)request.getAttribute(name), defaultValue);
+
+		if (request != null) {
+			return StringUtils.defaultString((String) request.getAttribute(name), defaultValue);
 		}
 		return defaultValue;
 	}
-	
+
 	public static String getObjectValue(Map<String, Object> object, String name, String defaultValue) {
-		
-		if(object != null) {
-			if(object.containsKey(name)) {
-				return StringUtils.defaultString((String)object.get(name), defaultValue);
+
+		if (object != null) {
+			if (object.containsKey(name)) {
+				return StringUtils.defaultString((String) object.get(name), defaultValue);
 			}
 		}
 		return defaultValue;
 	}
-	
+
 	public static int getInt(Map<String, Object> object, String key, int defaultValue) {
-		if(object == null) {
+		if (object == null) {
 			return defaultValue;
 		}
-		
-		if(!object.containsKey(key)) {
+
+		if (!object.containsKey(key)) {
 			return defaultValue;
 		}
-		
-		if(object.get(key) == null){
+
+		if (object.get(key) == null) {
 			return defaultValue;
 		}
-		
-		return (int)object.get(key);
+
+		return (int) object.get(key);
 	}
-	
+
 	public static long getLong(Map<String, Object> object, String key, long defaultValue) {
-		if(object == null) {
+		if (object == null) {
 			return defaultValue;
 		}
-		
-		if(!object.containsKey(key)) {
+
+		if (!object.containsKey(key)) {
 			return defaultValue;
 		}
-		
-		return (long)object.get(key);
+
+		return (long) object.get(key);
 	}
-	
+
 	public static BigInteger getBigInteger(Map<String, Object> object, String key, BigInteger defaultValue) {
-		if(object == null) {
+		if (object == null) {
 			return defaultValue;
 		}
-		
-		if(!object.containsKey(key)) {
+
+		if (!object.containsKey(key)) {
 			return defaultValue;
 		}
-		
-		return (BigInteger)object.get(key);
+
+		return (BigInteger) object.get(key);
 	}
-	
+
 	public static String getString(Map<String, Object> object, String name, String defaultValue) {
-		
-		if(object != null) {
-			if(object.containsKey(name)) {
-				return StringUtils.defaultString((String)object.get(name), defaultValue);
+
+		if (object != null) {
+			if (object.containsKey(name)) {
+				return StringUtils.defaultString((String) object.get(name), defaultValue);
 			}
 		}
 		return defaultValue.trim();
 	}
-	
+
 	public static boolean getBoolean(Map<String, Object> object, String name, boolean defaultValue) {
-		
-		if(object != null) {
-			if(object.containsKey(name)) {
+
+		if (object != null) {
+			if (object.containsKey(name)) {
 				return (boolean) object.get(name);
 			}
 		}
 		return defaultValue;
 	}
-	
-	
-	
+
 	public static String getSafeValue(String value) {
 		return getSafeValue(value, "");
 	}
-	
+
 	public static String getSafeValue(String value, String defaultValue) {
-		if(value == null) {
+		if (value == null) {
 			return defaultValue;
 		}
-		
-		if(value.equals("")) {
+
+		if (value.equals("")) {
 			return defaultValue;
 		}
-		
+
 		return value.trim();
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> convertMap(Object object){
+	public static Map<String, Object> convertMap(Object object) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.convertValue(object, Map.class);
 	}
-	
-	public static Object convertMapToObject(Map<String,Object> map,Object obj){
-		if(map == null) {
-			obj = new Object();
-		}else {
-			String keyAttribute = null;
-		    String setMethodString = "set";
-		    String methodString = null;
-		    Iterator itr = map.keySet().iterator();
 
-		    while(itr.hasNext()){
-		        keyAttribute = (String) itr.next();
-		        methodString = setMethodString+keyAttribute.substring(0,1).toUpperCase()+keyAttribute.substring(1);
-		        Method[] methods = obj.getClass().getDeclaredMethods();
-		        for(int i=0;i<methods.length;i++){
-		            if(methodString.equals(methods[i].getName())){
-		                try{
-		                    methods[i].invoke(obj, map.get(keyAttribute));
-		                }catch(Exception e){
-		                    e.printStackTrace();
-		                }
-		            }
-		        }
-		    }
+	public static Object convertMapToObject(Map<String, Object> map, Object obj) {
+		if (map == null) {
+			obj = new Object();
+		} else {
+			String keyAttribute = null;
+			String setMethodString = "set";
+			String methodString = null;
+			Iterator itr = map.keySet().iterator();
+
+			while (itr.hasNext()) {
+				keyAttribute = (String) itr.next();
+				methodString = setMethodString + keyAttribute.substring(0, 1).toUpperCase() + keyAttribute.substring(1);
+				Method[] methods = obj.getClass().getDeclaredMethods();
+				for (int i = 0; i < methods.length; i++) {
+					if (methodString.equals(methods[i].getName())) {
+						try {
+							methods[i].invoke(obj, map.get(keyAttribute));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
 		}
-	    
-	    return obj;
+
+		return obj;
 	}
-	
-	
-	
-	
+
 }

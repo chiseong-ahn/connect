@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(name = "상담조회", value="apis/chat")
+@RequestMapping(name = "상담조회", value = "apis/chat")
 public class ChatController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private ChatService chatService;
-	
-	@RequestMapping(name="중계서버에서 chatid로 상담조회", method = RequestMethod.GET, value = "{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> chat(@PathVariable int chatId, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@RequestMapping(name = "중계서버에서 chatid로 상담조회", method = RequestMethod.GET, value = "{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> chat(@PathVariable int chatId, @RequestParam Map<String, Object> params,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("chatId", chatId);
-		
+
 		return this.chatService.roomHistoryByChatId(params, request, response);
 	}
-	
+
 }
-	

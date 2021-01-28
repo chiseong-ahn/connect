@@ -9,7 +9,7 @@ public class SHA256Utils {
 	 * @Method Name : encrypt
 	 * @작성일 : 2020. 12. 10.
 	 * @작성자 : anchiseong
-	 * @변경이력 : 
+	 * @변경이력 :
 	 * @Method 설명 : 문자열 암호화.
 	 * @param msg
 	 * @return
@@ -26,16 +26,16 @@ public class SHA256Utils {
 	}
 
 	public static void main(String[] args) {
-		
+
 		try {
 			SHA256Utils sha256Utils = new SHA256Utils();
 
 			// 평문 문자열
 			String text = "안녕하세요";
-			
+
 			// 암호화된 문자열
 			String encryptText = sha256Utils.encrypt(text);
-			
+
 			// 결과 출력
 			System.out.println("text : " + text);
 			System.out.println("encryptText : " + encryptText);

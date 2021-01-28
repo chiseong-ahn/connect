@@ -19,32 +19,34 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(name = "계약관리", value="/api/contract")
+@RequestMapping(name = "계약관리", value = "/api/contract")
 public class ContractController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired private ContractService contractService;
-	
-	@RequestMapping(name="고객의 계약정보 목록", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> contracts(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@Autowired
+	private ContractService contractService;
+
+	@RequestMapping(name = "고객의 계약정보 목록", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> contracts(@RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.contractService.contracts(params, request, response);
 	}
-	
-	
-	@RequestMapping(name="고객의 계약상세정보", method = RequestMethod.GET, value = "/{useContractNum}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> contractInfo(@PathVariable String useContractNum, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@RequestMapping(name = "고객의 계약상세정보", method = RequestMethod.GET, value = "/{useContractNum}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> contractInfo(@PathVariable String useContractNum,
+			@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		params.put("useContractNum", useContractNum);
 		return this.contractService.contractInfo(params, request, response);
 	}
-	
-	
-	@RequestMapping(name="고객의 결제 상세정보", method = RequestMethod.GET, value = "/{useContractNum}/bill", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> contractBil(@PathVariable String useContractNum, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@RequestMapping(name = "고객의 결제 상세정보", method = RequestMethod.GET, value = "/{useContractNum}/bill", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> contractBil(@PathVariable String useContractNum,
+			@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		params.put("useContractNum", useContractNum);
 		return this.contractService.contractBil(params, request, response);
 	}
-	
-	
+
 }
-	

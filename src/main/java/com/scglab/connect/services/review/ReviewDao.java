@@ -10,16 +10,16 @@ import com.scglab.connect.services.common.dao.CommonDao;
 
 @Repository
 public class ReviewDao extends CommonDao {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	public String namespace = "review.";
-	
+
 	@Override
 	protected String getNamespace() {
 		return namespace;
 	}
-	
+
 	public int regist(Map<String, Object> params) {
 		return this.sqlSession.insert(namespace + "regist", params);
 	}

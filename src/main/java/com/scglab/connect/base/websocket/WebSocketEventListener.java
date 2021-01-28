@@ -51,6 +51,15 @@ public class WebSocketEventListener {
 		this.socketService.subscribe(event);
 	}
 	
+	/**
+	 * 
+	 * @Method Name : handleSessionConnectedEvent
+	 * @작성일 : 2021. 1. 28.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 세션 연결 이벤트 리스너.
+	 * @param event
+	 */
 	@EventListener
 	public void handleSessionConnectedEvent(SessionConnectedEvent event) {
 		this.logger.info("sessionConnectedEvent : " +event.toString());

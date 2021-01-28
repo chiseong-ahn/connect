@@ -30,6 +30,14 @@ public class ScheduleTask {
 	@Autowired private StatsService statsService;
 	@Autowired private MinwonService minwonService;
 	
+	/**
+	 * 
+	 * @Method Name : everyHourStatistics
+	 * @작성일 : 2021. 1. 28.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 매 시간 반복처리.
+	 */
 	@Scheduled(cron = "0 00 * * * *")
 	public void everyHourStatistics() {
 		LocalTime startTime = LocalTime.now();

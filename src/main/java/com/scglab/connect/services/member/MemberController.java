@@ -19,41 +19,43 @@ import org.springframework.web.bind.annotation.RestController;
 import com.scglab.connect.base.annotations.Auth;
 
 @RestController
-@RequestMapping(name = "멤버관리", value="/api/member")
+@RequestMapping(name = "멤버관리", value = "/api/member")
 public class MemberController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private MemberService memberService;
-	
+
 	@Auth
-	@RequestMapping(name="멤버 검색 : 이름, 사번", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> members(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "멤버 검색 : 이름, 사번", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> members(@RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.memberService.members(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="멤버 검색 : 이름, 사번", method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Member member(@RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "멤버 검색 : 이름, 사번", method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Member member(@RequestParam Map<String, Object> params, @PathVariable int id, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.memberService.member(params, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="멤버 수정 : 권한, 상태", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Member update(@RequestBody Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "멤버 수정 : 권한, 상태", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Member update(@RequestBody Map<String, Object> params, @PathVariable int id, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.memberService.update(params, id, request, response);
 	}
-	
+
 	@Auth
-	@RequestMapping(name="멤버 수정 : 상태",method = RequestMethod.PUT, value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> updateState(@RequestBody Map<String, Object> params, @PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "멤버 수정 : 상태", method = RequestMethod.PUT, value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> updateState(@RequestBody Map<String, Object> params, @PathVariable int id,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.memberService.state(params, id, request, response);
 	}
-	
-	
+
 }
-	

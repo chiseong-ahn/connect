@@ -16,16 +16,19 @@ import com.scglab.connect.services.member.Member;
 @Service
 public class WiseService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired private WiseDao wiseDao;
-	@Autowired private LoginService loginService;
-	
-	public Wise findWise(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	@Autowired
+	private WiseDao wiseDao;
+	@Autowired
+	private LoginService loginService;
+
+	public Wise findWise(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
-		
+
 		return this.wiseDao.findWise(params);
 	}
-	
+
 }

@@ -29,66 +29,68 @@ import com.scglab.connect.properties.PathProperties;
 import com.scglab.connect.utils.DataUtils;
 
 @RestController
-@RequestMapping(name = "파일관리", value="/api/file")
+@RequestMapping(name = "파일관리", value = "/api/file")
 public class FileController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired private PathProperties pathProperty;
-	@Autowired private FileService fileService;
-	
+
+	@Autowired
+	private PathProperties pathProperty;
+	@Autowired
+	private FileService fileService;
+
 	@RequestMapping(method = RequestMethod.POST, value = "/download")
 	public ResponseEntity<Resource> download(@RequestParam Map<String, Object> params) throws IOException {
-		
+
 		String filename = DataUtils.getString(params, "fileName", "test.jpg");
-		
+
 		// 파일 경로
 		Path path = Paths.get(this.pathProperty.getUpload() + "/" + filename);
 		String contentType = Files.probeContentType(path);
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + path.getFileName().toString());
 		headers.add(HttpHeaders.CONTENT_TYPE, contentType);
 
 		Resource resource = new InputStreamResource(Files.newInputStream(path));
-		
+
 		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(name = "파일 업로드", method = RequestMethod.POST, value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-	public FileDto upload(@RequestParam("file") MultipartFile file, @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.fileService.uploadFile(file, params, request);	
+	public FileDto upload(@RequestParam("file") MultipartFile file, @RequestParam Map<String, Object> params,
+			HttpServletRequest request) throws Exception {
+		return this.fileService.uploadFile(file, params, request);
 	}
-	
-	
+
 	@RequestMapping(name = "파일 업로드 및 썸네일 생성.", method = RequestMethod.POST, value = "/uploadWithThumbnail", produces = MediaType.APPLICATION_JSON_VALUE)
-	public FileDto uploadWithThumbnail(@RequestParam("file") MultipartFile file, @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.fileService.uploadFileWithThumbnail(file, params, request);	
+	public FileDto uploadWithThumbnail(@RequestParam("file") MultipartFile file,
+			@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+		return this.fileService.uploadFileWithThumbnail(file, params, request);
 	}
-	
+
 	@RequestMapping(name = "매뉴얼 업로드", method = RequestMethod.POST, value = "/uploadManual", produces = MediaType.APPLICATION_JSON_VALUE)
-	public FileDto uploadManual(@RequestParam("file") MultipartFile file, @RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
-		return this.fileService.uploadManual(file, params, request);	
+	public FileDto uploadManual(@RequestParam("file") MultipartFile file, @RequestParam Map<String, Object> params,
+			HttpServletRequest request) throws Exception {
+		return this.fileService.uploadManual(file, params, request);
 	}
-	
-	
+
 	@RequestMapping(name = "파일 삭제처리", method = RequestMethod.DELETE, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> delete(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public Map<String, Object> delete(@RequestParam Map<String, Object> params, HttpServletRequest request)
+			throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success", false);
-		
+
 		String fileFullname = DataUtils.getString(params, "fileFullname", "");
-		if(!fileFullname.equals("")) {
+		if (!fileFullname.equals("")) {
 			File file = new File(fileFullname);
-			if(file.exists()) {
-				if(file.delete()) {
+			if (file.exists()) {
+				if (file.delete()) {
 					result.put("success", true);
 				}
 			}
 		}
 		return result;
 	}
-	
-	
 
 }

@@ -10,16 +10,16 @@ import com.scglab.connect.services.common.dao.CommonDao;
 
 @Repository
 public class WiseDao extends CommonDao {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	public String namespace = "wise.";
-	
+
 	@Override
 	protected String getNamespace() {
 		return namespace;
 	}
-	
+
 	public Wise findWise(Map<String, Object> params) {
 		return this.sqlSession.selectOne(namespace + "findWise", params);
 	}

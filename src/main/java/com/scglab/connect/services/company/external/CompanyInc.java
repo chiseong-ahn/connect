@@ -81,6 +81,5 @@ public class CompanyInc implements ICompany {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 }

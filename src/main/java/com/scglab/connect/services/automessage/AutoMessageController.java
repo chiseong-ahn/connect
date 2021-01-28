@@ -23,50 +23,50 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(name = "자동메세지 관리", value="/api/auto-message")
+@RequestMapping(name = "자동메세지 관리", value = "/api/auto-message")
 public class AutoMessageController {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private AutoMessageService autoMessageService;
-	
+
 	@Auth
-	@RequestMapping(name="자동메세지 목록", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<AutoMessage> findAll(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "자동메세지 목록", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<AutoMessage> findAll(@RequestParam Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.autoMessageService.findAll(params, request, response);
 	}
-	
-	
+
 	@Auth
-	@RequestMapping(name="자동메세지 상세", method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public AutoMessage detail(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "자동메세지 상세", method = RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public AutoMessage detail(@PathVariable int id, @RequestParam Map<String, Object> params,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.autoMessageService.getDetail(params, request, response);
 	}
-	
-	
+
 	@Auth
-	@RequestMapping(name="자동메세지 등록", method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public AutoMessage regist(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "자동메세지 등록", method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public AutoMessage regist(@RequestBody Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return this.autoMessageService.regist(params, request, response);
 	}
-	
-	
+
 	@Auth
-	@RequestMapping(name="자동메세지 수정", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public AutoMessage update(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "자동메세지 수정", method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public AutoMessage update(@PathVariable int id, @RequestBody Map<String, Object> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.autoMessageService.update(params, request, response);
 	}
-	
-	
+
 	@Auth
-	@RequestMapping(name="자동메세지 삭제", method = RequestMethod.DELETE, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> delete(@PathVariable int id, @RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(name = "자동메세지 삭제", method = RequestMethod.DELETE, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> delete(@PathVariable int id, @RequestParam Map<String, Object> params,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.autoMessageService.delete(params, request, response);
 	}
 
 }
-	
