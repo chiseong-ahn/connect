@@ -21,20 +21,27 @@ or
 
 ### (2) 파일전송
 > FTP를 통해 개발서버로 WAR 파일 전송.
-- /home/gasapp/cstalk/backend/webapps/connect-1.0.0.war
+- /home/gasapp/cstalk/backend/build/dev.war		-- 개발서버
+- /home/gasapp/cstalk/backend/build/live1.war		-- 운영서버1
+- /home/gasapp/cstalk/backend/build/live2.war		-- 운영서버2
 
 ### (3) 배포 및 WAS 재구동
 > 배포용 쉘 파일 실행.
 ```sh
-$ cd /home/gasapp/cstalk/backend
-$ ./deploy.sh
+$ cd /home/gasapp/cstalk/backend/deploy
+$ ./dev.sh		-- 개발서버 배포.
+$ ./restart.sh	-- 개발서버 재구동.
+$ ./live1.sh		-- 운영서버1 배포.
+$ ./live2.sh		-- 운영서버2 배포.
+
 ```
 
 ### (4) 로그 확인
 > 로그확인 쉘 파일 실행.
 ```sh
 $ cd /home/gasapp/cstalk/backend
-$ ./log.sh
+$ ./log.sh 1		-- 1번 서버 로그 출력.
+$ ./log.sh 2		-- 2번 서버 로그 출력.
 ```
 
 ### (5) 서비스 구동 확인.
