@@ -27,7 +27,7 @@
 		      COUNT(*) 
 		    FROM 
 		      room_join_history 
-		    WHERE company_id = 1
+		    WHERE company_id = #{companyId}
 		      and start_message_id is not null
 		      AND DATE_FORMAT(end_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
 		  ) AS endCount, 
