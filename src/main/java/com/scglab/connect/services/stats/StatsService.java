@@ -78,25 +78,13 @@ public class StatsService {
 		// 
 	 * @throws Exception
 	 */
-	public Map<String, Object> myToday(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public StatsMyToday myToday(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
 		String companyId = DataUtils.getString(params, "companyId", member.getCompanyId());
 		params.put("companyId", companyId);
+		params.put("loginId", member.getId());
 		
-		Map<String, Object> data = null;
-		//data = this.statsDao.myToday(params);
-		
-		data = new HashMap<String, Object>();
-		data.put("companyId", "1");
-		data.put("newCount", 10);
-		data.put("readyCount", 5);
-		data.put("ingCount", 3);
-		data.put("closeCount", 10);
-		data.put("outCount", 0);
-		data.put("maxReadyMinute", 125);
-		data.put("maxSpeakMinute", 1);
-		data.put("avgReadyMinute", 20);
-		data.put("avgSpeakMinute", 5);
+		StatsMyToday data = this.statsDao.myToday(params);
 		
 		return data;
 	}

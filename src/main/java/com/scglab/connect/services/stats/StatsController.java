@@ -34,7 +34,7 @@ public class StatsController {
 	
 	@Auth
 	@RequestMapping(method = RequestMethod.GET, value = "myToday", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> myToday(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public StatsMyToday myToday(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.statsService.myToday(params, request, response);
 	}
 	

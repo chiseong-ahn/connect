@@ -29,7 +29,7 @@ public class StatsDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "member", params);
 	}
 	
-	public Map<String, Object> myToday(Map<String, Object> params){
+	public StatsMyToday myToday(Map<String, Object> params){
 		return this.sqlSession.selectOne(this.namespace + "myToday", params);
 	}
 	
