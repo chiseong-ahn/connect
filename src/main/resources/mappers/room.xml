@@ -24,12 +24,12 @@
 		  ) AS newCount, 
 		  (
 		    SELECT 
-		      COUNT(DISTINCT room_id) 
+		      COUNT(*) 
 		    FROM 
 		      room_join_history 
-		    WHERE 
-		      company_id = #{companyId} 
-		      AND DATE_FORMAT(create_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
+		    WHERE company_id = 1
+		      and start_message_id is not null
+		      AND DATE_FORMAT(end_date, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
 		  ) AS endCount, 
 		  (
 		    SELECT 
