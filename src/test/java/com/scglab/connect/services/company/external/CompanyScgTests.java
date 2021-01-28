@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import com.scglab.connect.utils.DataUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CompanyScgTest {
+public class CompanyScgTests {
 	
 	@Autowired private CompanyScg companyScg;
 	
@@ -60,7 +60,6 @@ public class CompanyScgTest {
 		String id = this.companyScg.minwons(data);
 		
 		Assertions.assertTrue(id != null);
-		Assertions.assertNotEquals(id, "");
 	}
 	
 	@Test
