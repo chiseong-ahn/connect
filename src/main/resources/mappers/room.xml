@@ -8,7 +8,9 @@
 	<!-- 현재 시간 방 통계 정보 -->
 	<select id="getCurrentTimeStats" parameterType="map" resultType="map">
 		SELECT 
-		  COUNT(*) AS ingCount, 
+		  SUM(
+		    CASE WHEN r.member_id IS NOT NULL THEN 1 ELSE 0 end
+		  ) AS ingCount, 
 		  SUM(
 		    CASE WHEN r.member_id IS NULL THEN 1 ELSE 0 end
 		  ) AS readyCount, 
