@@ -8,10 +8,10 @@
 
 | 항목 | Port | 설명 |
 |:---:|:---:|---|
-| Server | 8116 ||
-| Http | 8115 ||
-| Redirect | 8113 | |
-| AJP | 8112 | Apache 와 연동 |
+| Server | 8116, 8126 ||
+| Http | 8115, 8125 ||
+| Redirect | 8113, 8123 | |
+| AJP | 8112, 8122 | Apache 와 연동 |
 
 > 서버 설정.
 - /data/project/gasapp-cstalk/tomcat/conf/server.xml
@@ -19,9 +19,10 @@
 
 > 구동환경(env)
 - 개발 profile로 구동하기 위한 파일.
-- /data/project/gasapp-cstalk/tomcat/bin/setenv.sh
+- /data/project/gasapp-cstalk/tomcat/bin/tomcatctl
 ```
-export JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=dev"
+#line 12.
+-Dspring.profiles.active=dev
 ```
 
 ## Tomcat 서비스 제어

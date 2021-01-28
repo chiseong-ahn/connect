@@ -19,24 +19,24 @@
 |       |       |   | constant  | | 정적 변수 관리  |
 |       |       |   | properties | | 프로퍼티 관리  |
 |       |       |   | services  | | 기능별 서비스 관리  |
-|       |       |   |   | automessage  | 자동메시지 |
-|       |       |   |   | category  | 카테고리 |
-|       |       |   |   | common  | 공통 기능 |
-|       |       |   |   | company  | 회사 |
-|       |       |   |   | customer  | 고객 |
-|       |       |   |   | keyword | 키워드 |
-|       |       |   |   | link | 링크 |
-|       |       |   |   | login | 로그인(인증) |
-|       |       |   |   | main | 메인 |
-|       |       |   |   | manual | 메뉴얼 |
-|       |       |   |   | member | 멤버 |
-|       |       |   |   | message | 메시지 |
-|       |       |   |   | minwon | 민원 |
-|       |       |   |   | room | 룸 |
-|       |       |   |   | sample | 샘플소스 |
-|       |       |   |   | socket | 소켓 |
-|       |       |   |   | stats | 통계 |
-|       |       |   |   | template | 템플릿 |
+|       |       |   |   | automessage  | 자동메시지 서비스 |
+|       |       |   |   | category  | 카테고리 서비스 |
+|       |       |   |   | common  | 공통 서비스 |
+|       |       |   |   | company  | 회사 서비스 |
+|       |       |   |   | customer  | 고객 서비스 |
+|       |       |   |   | keyword | 키워드 서비스 |
+|       |       |   |   | link | 링크 서비스 |
+|       |       |   |   | login | 로그인(인증) 서비스 |
+|       |       |   |   | main | 메인 서비스 |
+|       |       |   |   | manual | 메뉴얼 서비스 |
+|       |       |   |   | member | 멤버(상담사) 서비스 |
+|       |       |   |   | message | 메시지 서비스 |
+|       |       |   |   | minwon | 민원 서비스 |
+|       |       |   |   | room | 룸 서비스 |
+|       |       |   |   | sample | 샘플 서비스 |
+|       |       |   |   | socket | 소켓 서비스 |
+|       |       |   |   | stats | 통계 서비스 |
+|       |       |   |   | template | 템플릿 서비스 |
 |       |       |   | utils  |    | 유틸리티 |
 |       |       |  resources |   |  | 리소스 관리|
 |       |       |   | config  |  |  |

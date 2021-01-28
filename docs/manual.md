@@ -31,5 +31,3 @@
 1. [서버 환경 구성](./env/env.md)
 
 1. [배포 프로세스](deploy.md)
-
-1. [문서](document.md)

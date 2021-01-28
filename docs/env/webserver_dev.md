@@ -15,101 +15,44 @@ LoadModule proxy_module modules/mod_proxy.so
 
 // 주석 해제 - line 137.
 LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
+
+// 주석 해제 - line 106.
+LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+
+// 주석 해제 - line 143.
+LoadModule slotmem_shm_module modules/mod_slotmem_shm.so
+
+// 주석 해제 - line 147.
+LoadModule lbmethod_byrequests_module modules/mod_lbmethod_byrequests.so
 ```
 
-> 가상 호스트 설정
+> 가상 호스트, Socket proxy, 로드밸런싱 설정.
 - /data/project/gasapp-cstalk/apache/conf/httpd-ssl.conf
-```
-<VirtualHost *:443>
-    ServerName cstalk-dev.gasapp.co.kr
-    DocumentRoot /data/project/gasapp-cstalk/apache/htdocs
 
-    JkMount /api/* gasapp-cstalk
-    jkMount /ws gasapp-cstalk
-    jkMount /pub/socket/* gasapp-cstalk
-    jkMount /sub/socket/* gasapp-cstalk
-    jkMount /webjars/* gasapp-cstalk
-    jkMount /auth/* gasapp-cstalk
-    #jkMount /example/* gasapp-cstalk
-    jkMount /swagger* gasapp-cstalk
-    jkMount /v3/* gasapp-cstalk
-
-    # 업로드한 파일에 대해 서비스를 위한 Alias
-    Alias /attach/ /data/project/gasapp-cstalk/apache/data/attach/
-
-    <Directory /data/project/gasapp-cstalk/apache/data/attach>
-        Options All
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    SSLProxyEngine On
-    
-    # Websocket 연동 설정.
-    RewriteEngine On
-    RewriteCond %{HTTP:Upgrade} =websocket [NC]
-    RewriteRule /(.*) ws://127.0.0.1:8115/$1 [P,L]
-    #RewriteCond %{HTTP:Upgrade} !=websocket [NC]
-    #RewriteRule /(.*) http://127.0.0.1:8115/$1 [P,L]
-
-    ProxyPass /ws/ http://127.0.0.1:8115/ws/
-    ProxyPassReverse /ws/ http://127.0.0.1:8115/ws/
-
-# 121.171.80.14 scg private ip
-
-    <LocationMatch ^/(index.html)?$>
-        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires "Thu, 1 Jan 1970 00:00:00 GMT"
-    </LocationMatch>
-
-    <IfModule expires_module>
-        ExpiresActive On
-        <Location /attach/>
-            ExpiresByType image/gif "access plus 2 month"
-            ExpiresByType image/jpeg "access plus 2 month"
-            ExpiresByType image/png "access plus 2 month"
-        </Location>
-        <Location /static/>
-            ExpiresByType text/css "access plus 1 month"
-            ExpiresByType application/javascript "access plus 1 month"
-        </Location>
-    </IfModule>
-
-    SetEnvIf Request_URI . cstalk-log
-    SetEnvIf Request_URI ^/favicon.ico$ no-log !cstalk-log
-    SetEnvIf Request_URI ^/static/* static-log !cstalk-log
-
-    SetEnvIf X-MEMBER "(\d+);?" X-MEMBER=$1
-    SetEnvIf X-COMPANY "(\d+);?" X-COMPANY=$1
-
-    LogFormat "%>s %{%Y-%m-%d %H:%M:%S}t.%{msec_frac}t %{Host}i %p %h %{X-COMPANY}e %{X-MEMBER}e %D %b \"%r\" \"%{Referer}i\" \"%{User-Agent}i\"" gasapp
-    CustomLog "|/usr/local/apache2/bin/rotatelogs -l /data/log/apache2/cstalk-dev.access_log.%Y%m%d 86400" gasapp env=cstalk-log
-    CustomLog "|/usr/local/apache2/bin/rotatelogs -l /data/log/apache2/cstalk-dev.static.access_log.%Y%m%d 86400" gasapp env=static-log
-
-    SSLEngine on
-    SSLCertificateFile "/usr/local/apache2/conf/extra/ssl/STAR.gasapp.co.kr.crt"
-    SSLCertificateKeyFile "/usr/local/apache2/conf/extra/ssl/STAR.gasapp.co.kr.key"
-    SSLCertificateChainFile "/usr/local/apache2/conf/extra/ssl/chainca.crt"
-
-    BrowserMatch "MSIE [2-5]" \
-         nokeepalive ssl-unclean-shutdown \
-         downgrade-1.0 force-response-1.0
-</VirtualHost>
-```
 > Tomcat 연동(AJP)
 - /usr/local/apache2/conf/workers.properties
 ```
 // line 1.
-worker.list=gasapp-cstalk
+worker.list=gasapp-cstalk1,gasapp-cstalk2,loadbalancer-cstalk
+
+// line 4. 로드밸런싱 설정.
+worker.loadbalancer-cstalk.type=lb
+worker.loadbalancer-cstalk.balance_workers=gasapp-cstalk1,gasapp-cstalk2
 
 // line 121.
-worker.gasapp-cstalk.type=ajp13
-worker.gasapp-cstalk.host=127.0.0.1
-worker.gasapp-cstalk.port=8112
-worker.gasapp-cstalk.socket_timeout=60
-worker.gasapp-cstalk.connection_pool_timeout=600
-worker.gasapp-cstalk.retries=1
+worker.gasapp-cstalk1.type=ajp13
+worker.gasapp-cstalk1.host=127.0.0.1
+worker.gasapp-cstalk1.port=8112
+worker.gasapp-cstalk1.socket_timeout=60
+worker.gasapp-cstalk1.connection_pool_timeout=600
+worker.gasapp-cstalk1.retries=1
+
+worker.gasapp-cstalk2.type=ajp13
+worker.gasapp-cstalk2.host=127.0.0.1
+worker.gasapp-cstalk2.port=8122
+worker.gasapp-cstalk2.socket_timeout=60
+worker.gasapp-cstalk2.connection_pool_timeout=600
+worker.gasapp-cstalk2.retries=1
 ```
 
 > 인증서
@@ -123,7 +66,7 @@ SSLCertificateChainFile "/usr/local/apache2/conf/extra/ssl/chainca.crt"
 
 > 설정파일 테스트
 ```
-[gasapp@gasapp-dev bin]$ ./apachectl configtest
+[gasapp@gasapp-dev bin]$ ./apachectl -t
 Syntax OK
 ```
 

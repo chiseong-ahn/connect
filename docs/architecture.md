@@ -1,7 +1,8 @@
 # 아키텍쳐 구성
 | 항목 | 내용 | 설명 |
 |:---:|---|---|
-| 서버 | Tomcat | 로컬 개발시 Embedded Tomcat 사용. |
+| Web Server | Apache |  |
+| WAS | Tomcat | 로컬 개발시 Embedded Tomcat 사용. |
 | 개발언어 | Java | openjdk 12 |
 | 프레임워크 | 스프링부트 | 2.3.3.RELEASE |
 | RDB | Mysql | |
@@ -14,7 +15,7 @@
 | XSS Filter | lucy xss servlet filter | |
 | template engine | freemarker | 프로토타입 작성을 위해사용(서비스용 아님) |
 | 테스팅 | Junit | |
-| 문서 | Postman + OpenApi 3.0(구 Swagger) | 서비스하는 API 정의|
+| 문서 | Postman, Markdown | 서비스하는 API 및 개발매뉴얼 |
 
 
 [< 목록으로 돌아가기](manual.md)
