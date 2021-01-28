@@ -276,7 +276,6 @@
 						where 1=1
 						and a1.company_id = a.company_id
 						and a1.state <![CDATA[<]]> 2
-						and a1.end_date is null
 						and a1.member_id = a.id
 					) as ing_count
 					,(
