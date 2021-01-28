@@ -49,8 +49,8 @@ public class RoomDao extends CommonDao {
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> getRoomTypeCountByLoginMember(Map<String, Object> params){
-		return this.sqlSession.selectOne(this.namespace + "getRoomTypeCountByLoginMember", params);
+	public Map<String, Object> getRoomStateCountByLoginMember(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "getRoomStateCountByLoginMember", params);
 	}
 	
 	

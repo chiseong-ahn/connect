@@ -134,8 +134,8 @@ public class RoomService {
 		case "getCurrentTimeStats" :	// 현재 시간 방 통계정보.
 			object = this.roomDao.getCurrentTimeStats(params);
 			break;
-		case "getRoomTypeCountByLoginMember" :	// 방 상태별 count 정보.
-			object = this.roomDao.getRoomTypeCountByLoginMember(params);
+		case "getRoomStateCountByLoginMember" :	// 방 상태별 count 정보.
+			object = this.roomDao.getRoomStateCountByLoginMember(params);
 			break;
 		case "findReadyState" :			// 대기중인 방 목록 조회.
 			object = this.roomDao.findReadyState(params);
