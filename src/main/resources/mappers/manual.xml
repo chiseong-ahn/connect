@@ -30,16 +30,33 @@
 			AND f.member_id = #{loginId}
 		</if>
 		
-		<if test='searchValue != null and searchValue != ""'>
-			AND (
-				m.page_no = #{searchValue}
-				OR
-				m.title LIKE CONCAT('%', #{searchValue}, '%') 
-				OR 
-				m.content LIKE CONCAT('%', #{searchValue}, '%')
-				OR 
-				m.tags LIKE CONCAT('%', #{searchValue}, '%')
-			)
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "all"'>
+					AND (
+						m.page_no = #{searchValue}
+						OR
+						m.title LIKE CONCAT('%', #{searchValue}, '%') 
+						OR 
+						m.content LIKE CONCAT('%', #{searchValue}, '%')
+						OR 
+						m.tags LIKE CONCAT('%', #{searchValue}, '%')
+					)	
+				</when>
+				<when test='searchType == "page"'>
+					AND m.page_no = #{searchValue}
+				</when>
+				<when test='searchType == "title"'>
+					AND m.title LIKE CONCAT('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "content"'>
+					AND m.content LIKE CONCAT('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "tag"'>
+					AND m.tags LIKE CONCAT('%', #{searchValue}, '%')
+				</when>
+			</choose>
+			
 		</if>
 		<if test='tag != null and tag != ""'>
 			AND m.tags LIKE CONCAT('%', #{tag}, '%')
@@ -95,16 +112,32 @@
 			AND f.member_id = #{loginId}
 		</if>
 		
-		<if test='searchValue != null and searchValue != ""'>
-			AND (
-				m.page_no = #{searchValue}
-				OR
-				m.title LIKE CONCAT('%', #{searchValue}, '%') 
-				OR 
-				m.content LIKE CONCAT('%', #{searchValue}, '%')
-				OR 
-				m.tags LIKE CONCAT('%', #{searchValue}, '%')
-			)
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "all"'>
+					AND (
+						m.page_no = #{searchValue}
+						OR
+						m.title LIKE CONCAT('%', #{searchValue}, '%') 
+						OR 
+						m.content LIKE CONCAT('%', #{searchValue}, '%')
+						OR 
+						m.tags LIKE CONCAT('%', #{searchValue}, '%')
+					)	
+				</when>
+				<when test='searchType == "page"'>
+					AND m.page_no = #{searchValue}
+				</when>
+				<when test='searchType == "title"'>
+					AND m.title LIKE CONCAT('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "content"'>
+					AND m.content LIKE CONCAT('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "tag"'>
+					AND m.tags LIKE CONCAT('%', #{searchValue}, '%')
+				</when>
+			</choose>
 		</if>
 		<if test='tag != null and tag != ""'>
 			AND m.tags LIKE CONCAT('%', #{tag}, '%')

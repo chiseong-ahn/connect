@@ -137,6 +137,10 @@ public class StatsService {
 	    }
 		
 		StatsCompany data = this.statsDao.search(params);
+		if (data == null) {
+			data = new StatsCompany();
+			data.setCompanyId(companyId);
+		}
 		
 		return data;
 	}
@@ -316,6 +320,14 @@ public class StatsService {
 		params.put("companyId", companyId);
 		
 		Map<String, Object> review = this.statsDao.review(params);
+		if(review == null) {
+			review = new HashMap<String, Object>();
+			review.put("score1", 0);
+			review.put("score2", 0);
+			review.put("score3", 0);
+			review.put("score4", 0);
+			review.put("score5", 0);
+		}
 		return review;
 	}
 	
