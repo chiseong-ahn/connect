@@ -237,7 +237,7 @@
 				,sum(a.beforeDayPlusCount) as beforeDayPlusCount
 		from (
 			select a.*
-					,a.speak_count - ifnull((
+					,cast(a.speak_count as signed) - ifnull((
 						select b.speak_count
 						from stats_company as b
 						where 1=1
