@@ -673,7 +673,7 @@ public class SocketService {
 		params.put("isSystemMessage", 1);
 		params.put("message", this.messageHandler.getMessage("socket.end"));
 		params.put("messageAdminType", 0);
-		params.put("isEmployee", 0);
+		params.put("isEmployee", 1);
 		params.put("messageDetail", "");
 		params.put("templateId", null);
 		Message newMessage = this.messageDao.create(params);
@@ -718,7 +718,7 @@ public class SocketService {
 		params.put("isSystemMessage", 1);
 		params.put("message", this.messageHandler.getMessage("socket.end"));
 		params.put("messageAdminType", 0);
-		params.put("isEmployee", 0);
+		params.put("isEmployee", 1);
 		params.put("messageDetail", "");
 		params.put("templateId", null);
 		Message newMessage = this.messageDao.create(params);
