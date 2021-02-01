@@ -365,7 +365,7 @@ public class SocketService {
 			params = new HashMap<String, Object>();
 			params.put("type", 2);
 			params.put("companyId", payload.getCompanyId());
-			AutoMessage autoMessage2 = this.autoMessageDao.getAutoMessageByMatchWait(params);
+			AutoMessage autoMessage2 = this.autoMessageDao.getAutoMessageByReplyWait(params);
 
 			// [Socket] 상담사 배정지연 및 답변지연 안내 메세지 전송. - 메세지를 미리 보내주고 알맞는 시기에 사용할 수 있도록 한다.
 			sendData = new HashMap<String, Object>();
