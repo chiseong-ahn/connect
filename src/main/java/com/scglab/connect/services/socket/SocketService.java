@@ -445,14 +445,14 @@ public class SocketService {
 			params = new HashMap<String, Object>();
 			params.put("type", 0);
 			params.put("companyId", payload.getCompanyId());
-			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageByMatchWait(params);
+			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageRandom(params);
 			startMessage = autoMessage.getMessage();
 			
 		}else if(messageType == 2) {
 			params = new HashMap<String, Object>();
 			params.put("type", 3);
 			params.put("companyId", payload.getCompanyId());
-			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageByMatchWait(params);
+			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageRandom(params);
 			startMessage = autoMessage.getMessage();
 			
 		}else {

@@ -133,6 +133,10 @@ public class AutoMessageDao extends CommonDao {
 		return this.sqlSession.selectOne(this.namespace + "getAutoMessageByReplyWait", params);
 	}
 	
+	public AutoMessage getAutoMessageRandom(Map<String, Object> params){
+		return this.sqlSession.selectOne(this.namespace + "getAutoMessageRandom", params);
+	}
+	
 	
 	
 	
