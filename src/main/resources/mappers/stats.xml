@@ -12,20 +12,21 @@
 		SELECT
 				(SELECT COUNT(1) 
 					FROM   member 
-					WHERE  is_admin = 0) AS totalCount, 
+					WHERE  is_admin = 0
+						AND company_id = #{companyId}) AS totalCount,
 				(SELECT COUNT(1) 
 					FROM   member 
-					WHERE  auth_level = 4) AS speakerCount, 
-				(SELECT COUNT(DISTINCT member_id) 
-					FROM   room 
-					WHERE  company_id = company.id
-								AND member_id IS NOT NULL 
-								AND state <![CDATA[<]]> 2) AS ingCount, 
+					WHERE  auth_level = 4
+						AND company_id = #{companyId}) AS speakerCount,
+				(SELECT COUNT(1)
+					FROM   member
+					WHERE  state = 0
+						AND  is_admin = 0
+						AND company_id = #{companyId}) AS ingCount,
 				(SELECT COUNT(1) 
 					FROM   member 
-					WHERE  auth_level = 3) AS managerCount 
-		FROM   company 
-		WHERE  id = #{companyId}
+					WHERE  auth_level = 3
+						AND company_id = #{companyId}) AS managerCount
 	</select>
 	
 	<!-- 통계 : 오늘의 나의 통계정보 -->
