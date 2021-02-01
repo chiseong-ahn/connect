@@ -441,14 +441,14 @@ public class SocketService {
 		this.logger.debug("messageType : " + messageType);
 
 		String startMessage = "";
-		if(isWorkType == 1) {
+		if(messageType == 0) {
 			params = new HashMap<String, Object>();
 			params.put("type", 0);
 			params.put("companyId", payload.getCompanyId());
 			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageByMatchWait(params);
 			startMessage = autoMessage.getMessage();
 			
-		}else if(isWorkType == 2) {
+		}else if(messageType == 2) {
 			params = new HashMap<String, Object>();
 			params.put("type", 3);
 			params.put("companyId", payload.getCompanyId());
