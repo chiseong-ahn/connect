@@ -443,7 +443,7 @@ public class SocketService {
 		String startMessage = "";
 		if(isWorkType == 1) {
 			params = new HashMap<String, Object>();
-			params.put("type", 1);
+			params.put("type", 0);
 			params.put("companyId", payload.getCompanyId());
 			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageByMatchWait(params);
 			startMessage = autoMessage.getMessage();
