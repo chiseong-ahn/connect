@@ -398,6 +398,7 @@
 				,round((a.score3 / a.total) * 100, 2) as score3
 				,round((a.score4 / a.total) * 100, 2) as score4
 				,round((a.score5 / a.total) * 100, 2) as score5
+				,a.total
 		from(
 			select count(*) as total
 				,sum(a.review_score1) as score1
@@ -405,6 +406,7 @@
 				,sum(a.review_score3) as score3
 				,sum(a.review_score4) as score4
 				,sum(a.review_score5) as score5
+				,a.total
 			from(
 				select   a.id
 						,case when a.review_score = 1 then 1 else 0 end as review_score1

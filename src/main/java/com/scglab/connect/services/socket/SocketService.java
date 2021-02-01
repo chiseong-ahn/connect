@@ -440,8 +440,24 @@ public class SocketService {
 		}
 		this.logger.debug("messageType : " + messageType);
 
-		// 시작메세지 조회
-		String startMessage = this.messageHandler.getMessage("socket.startmessage.type" + messageType);
+		String startMessage = "";
+		if(isWorkType == 1) {
+			params = new HashMap<String, Object>();
+			params.put("type", 1);
+			params.put("companyId", payload.getCompanyId());
+			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageByMatchWait(params);
+			startMessage = autoMessage.getMessage();
+			
+		}else if(isWorkType == 2) {
+			params = new HashMap<String, Object>();
+			params.put("type", 3);
+			params.put("companyId", payload.getCompanyId());
+			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageByMatchWait(params);
+			startMessage = autoMessage.getMessage();
+			
+		}else {
+			startMessage = this.messageHandler.getMessage("socket.startmessage.type" + messageType);
+		}
 
 		// [DB] 신규 메세지 생성.
 		params = new HashMap<String, Object>();
