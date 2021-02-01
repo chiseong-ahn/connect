@@ -26,4 +26,5 @@ public class Message {
     private int isCustomer;				// 고객 작성여부.
     private int isOnline;				// 방의 온라인 상태(1-온라인, 0-오프라인)
     private String messageDetail;		// 메시지 상세
+    private String thumbnail;			// 이미지 썸네일 URL
 }

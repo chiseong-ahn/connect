@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -387,6 +388,9 @@ public class SocketService {
 		if (messages == null) {
 			messages = new ArrayList<Message>();
 		}
+		
+		// 이미지유형의 메시지에 대해 썸네일 주소 생성.
+		setMessageThumbnail(messages);
 
 		// 정렬순서 뒤집기
 		Collections.reverse(messages);
@@ -402,6 +406,27 @@ public class SocketService {
 
 		} else {
 			this.logger.info("이전 대화 없음.");
+		}
+	}
+	
+	private void setMessageThumbnail(List<Message> messages) {
+		List<Message> list = messages.stream().filter(message -> message.getMessageType() == 1 && !message.getMessage().equals("")).collect(Collectors.toList());
+		for(Message message : list) {
+			setMessageThumbnail(message);
+		}
+	}
+	
+	private void setMessageThumbnail(Message message) {
+		if(message.getMessageType() == 1 && !message.getMessage().equals("")) {
+			// orign : https://cstalk-dev.gasapp.co.kr/attach/talk/2021/2/5a305428-fbb6-465a-92d4-389d31662693.png
+			// thumb : https://cstalk-dev.gasapp.co.kr/attach/talk/2021/2/thumb_5a305428-fbb6-465a-92d4-389d31662693.png
+			String imgUrl = message.getMessage();
+			if(imgUrl.indexOf("/") > -1) {
+				String[] div = imgUrl.split("/");
+				String imgName = div[div.length - 1];
+				String thumbnail = imgUrl.substring(0, imgUrl.indexOf(imgName)) + "thumb_" + imgName;
+				message.setThumbnail(thumbnail);
+			}
 		}
 	}
 
@@ -516,6 +541,9 @@ public class SocketService {
 		Message newMessage = this.messageDao.create(params);
 
 		if (newMessage != null) {
+			
+			// 이미지 메시지일 경우 썸네일 자동생성.
+			setMessageThumbnail(newMessage);
 
 			// [Socket] 생성된 메세지 전송.
 			sendData = new HashMap<String, Object>();
@@ -1018,6 +1046,21 @@ public class SocketService {
 		this.logger.info("profile : " + profile);
 
 		return profile;
+	}
+	
+	public static void main(String[] args) {
+		// orign : https://cstalk-dev.gasapp.co.kr/attach/talk/2021/2/5a305428-fbb6-465a-92d4-389d31662693.png
+		// thumb : https://cstalk-dev.gasapp.co.kr/attach/talk/2021/2/thumb_5a305428-fbb6-465a-92d4-389d31662693.png
+		//String imgUrl = message.getMessage();
+		String imgUrl = "https://cstalk-dev.gasapp.co.kr/attach/talk/2021/2/5a305428-fbb6-465a-92d4-389d31662693.png";
+		System.out.println("imgUrl : " + imgUrl);
+		if(imgUrl.indexOf("/") > -1) {
+			String[] div = imgUrl.split("/");
+			String imgName = div[div.length - 1];
+			String thumbnail = imgUrl.substring(0, imgUrl.indexOf(imgName)) + "thumb_" + imgName;
+			//message.setThumbnail(thumbnail);
+			System.out.println("thumbnail : " + thumbnail);
+		}
 	}
 
 }
