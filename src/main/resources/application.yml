@@ -205,9 +205,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
-      username: cstalk
-      password: coxldtkdeka12#$
+      #jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      #username: cstalk
+      #password: coxldtkdeka12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -220,7 +220,7 @@ domain:
   relay-inc: relay-inc.gasapp.co.kr
 
 path:
-  upload: /data/project/cstalk/apache/data/attach
+  upload: /data/project/gasapp-cstalk/apache/data/attach
 
 # Logging 설정.
 logging:
@@ -243,9 +243,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
-      username: cstalk
-      password: coxldtkdeka12#$
+      #jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      #username: cstalk
+      #password: coxldtkdeka12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -257,7 +257,7 @@ domain:
   relay-inc: relay-inc.gasapp.co.kr
 
 path:
-  upload: /data/project/cstalk/apache/data/attach
+  upload: /data/project/gasapp-cstalk/apache/data/attach
 
 # Logging 설정.
 logging:
