@@ -393,21 +393,11 @@
 	
 	<!-- 통계 : 고객 만족도 -->
 	<select id="review" parameterType="map" resultType="map">
-		select /* 고객만족도 통계 */
-				 round((a.score1 / a.total) * 100, 2) as score1
-				,round((a.score2 / a.total) * 100, 2) as score2
-				,round((a.score3 / a.total) * 100, 2) as score3
-				,round((a.score4 / a.total) * 100, 2) as score4
-				,round((a.score5 / a.total) * 100, 2) as score5
-				,a.total
-		from(
-			select count(*) as total
-				,sum(a.review_score1) as score1
-				,sum(a.review_score2) as score2
-				,sum(a.review_score3) as score3
-				,sum(a.review_score4) as score4
-				,sum(a.review_score5) as score5
-				,a.total
+			select   sum(a.review_score1) as score1
+					,sum(a.review_score2) as score2
+					,sum(a.review_score3) as score3
+					,sum(a.review_score4) as score4
+					,sum(a.review_score5) as score5
 			from(
 				select   a.id
 						,case when a.review_score = 1 then 1 else 0 end as review_score1
@@ -419,7 +409,6 @@
 				where 1=1
 				and a.company_id = #{companyId}
 			)a
-		)a
 	</select>
 	
 	<!-- 일일 상담집계 처리 -->
