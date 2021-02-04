@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.scglab.connect.services.category.CategoryDao;
 import com.scglab.connect.services.category.CategoryLarge;
 import com.scglab.connect.services.category.CategoryMiddle;
+import com.scglab.connect.services.category.CategorySmall;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.company.external.ICompany;
@@ -165,7 +166,7 @@ public class MinwonService {
 
 			for (Map<String, Object> obj : largeCategories) {
 
-				this.logger.debug("obj : " + obj);
+				// this.logger.debug("obj : " + obj);
 				String name = DataUtils.getString(obj, "name", "");
 				String code = DataUtils.getString(obj, "code", "");
 
@@ -180,12 +181,16 @@ public class MinwonService {
 				if (category == null) {
 					int lastSortIndex = this.categoryDao.getLastLargeSortIndex(obj);
 					obj.put("sortIndex", lastSortIndex);
+					
+					this.logger.info("[대분류] 대분류 카테고리 생성 : " + obj);
 					this.categoryDao.createCategoryLarge(obj);
 
 				} else {
 					if (!category.getMinwonName().equals(name)) {
 						// 코드명이 다를경우.
 						obj.put("id", category.getId());
+						
+						this.logger.info("[대분류] 대분류 카테고리 수정 : " + obj);
 						this.categoryDao.updateCategoryLarge(obj);
 					}
 				}
@@ -209,56 +214,70 @@ public class MinwonService {
 					obj.put("companyId", companyId);
 					obj.put("code", largeClassCode);
 					CategoryLarge categoryLarge = this.categoryDao.findCategoryLargeByMinwonCode(obj);
-					obj.put("categoryLargeId", categoryLarge.getId());
+					if(categoryLarge != null) {
+						obj.put("categoryLargeId", categoryLarge.getId());
 
-					int lastSortIndex = this.categoryDao.getLastMiddleSortIndex(obj);
-					obj.put("sortIndex", lastSortIndex);
-					obj.put("code", code);
-					this.categoryDao.createCategoryMiddle(obj);
-
+						int lastSortIndex = this.categoryDao.getLastMiddleSortIndex(obj);
+						obj.put("sortIndex", lastSortIndex);
+						obj.put("code", code);
+						
+						this.logger.info("[중분류] 중분류 카테고리 생성 : " + obj);
+						this.categoryDao.createCategoryMiddle(obj);
+					}else {
+						this.logger.info("[중분류] 중분류가 존재하지 않음 : " + obj);
+					}
 				} else {
 					if (!category.getMinwonName().equals(name)) {
 						// 코드명이 다를경우.
 						obj.put("id", category.getId());
+						
+						this.logger.info("[중분류] 중분류 카테고리 수정 : " + obj);
 						this.categoryDao.updateCategoryMiddle(obj);
 					}
 				}
 			}
 
 			for (Map<String, Object> obj : smallCategories) {
-				this.logger.debug("obj : " + obj);
+				// this.logger.debug("obj : " + obj);
 				String name = DataUtils.getString(obj, "name", "");
 				String code = DataUtils.getString(obj, "code", "");
 				String middleClassCode = DataUtils.getString(obj, "middleClassCode", "");
 
 				obj.put("companyId", companyId);
-				CategoryMiddle category = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
+				CategorySmall category = this.categoryDao.findCategorySmallByMinwonCode(obj);
 
 				obj.put("minwonCode", code);
 				obj.put("minwonName", name);
 				obj.put("loginId", null);
 
+				
 				if (category == null) {
 					// 코드가 존재하지 않을경우.
 					obj.put("companyId", companyId);
 					obj.put("code", middleClassCode);
-					CategoryMiddle categorymiddle = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
-					obj.put("categoryMiddleId", categorymiddle.getId());
+					CategoryMiddle categoryMiddle = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
+					if(categoryMiddle != null) {
+						obj.put("categoryMiddleId", categoryMiddle.getId());
 
-					int lastSortIndex = this.categoryDao.getLastSmallSortIndex(obj);
-					obj.put("sortIndex", lastSortIndex);
-					obj.put("code", code);
-					this.categoryDao.createCategorySmall(obj);
-
+						int lastSortIndex = this.categoryDao.getLastSmallSortIndex(obj);
+						obj.put("sortIndex", lastSortIndex);
+						obj.put("code", code);
+						
+						this.logger.info("[소분류] 소분류 카테고리 생성 : " + obj);
+						this.categoryDao.createCategorySmall(obj);
+					}else {
+						this.logger.info("[소분류] 중분류가 존재하지 않음 : " + obj);
+					}
 				} else {
 					if (!category.getMinwonName().equals(name)) {
 						// 코드명이 다를경우.
 						obj.put("id", category.getId());
+						
+						this.logger.info("[소분류] 소분류 카테고리 수정 : " + obj);
 						this.categoryDao.updateCategorySmall(obj);
 					}
 				}
 			}
 		}
 	}
-
 }
