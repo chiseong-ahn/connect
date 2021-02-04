@@ -87,7 +87,7 @@ relay:
 
 notification:
   use: true
-  webhook: "https://hooks.slack.com/services/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"
+  webhook: "https://hooks.slack.com/services/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"
 
 ---
 # 배포환경

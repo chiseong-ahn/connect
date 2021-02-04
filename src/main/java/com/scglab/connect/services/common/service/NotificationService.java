@@ -1,5 +1,7 @@
 package com.scglab.connect.services.common.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +10,8 @@ import net.gpedro.integrations.slack.SlackMessage;
 
 @Service
 public class NotificationService {
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private final String userName = "SYSTEM";
 
@@ -22,6 +26,7 @@ public class NotificationService {
 	}
 
 	public void webhookForSlack(String userName, String message) {
+		
 		webhookForSlack(new SlackMessage(userName, message));
 	}
 
@@ -29,8 +34,11 @@ public class NotificationService {
 		webhookForSlack(this.webHookUrl, slackMessage);
 	}
 
-	public void webhookForSlack(String webHookUrl, SlackMessage slackMessage) {
+	public void webhookForSlack(String webhookUrl, SlackMessage slackMessage) {
 		if (use) {
+			this.logger.debug("webhookUrl : " + webhookUrl);
+			this.logger.debug("slackMessage : " + slackMessage);
+			
 			SlackApi api = new SlackApi(webHookUrl);
 			api.call(slackMessage);
 		}
