@@ -77,6 +77,8 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+  server:
+    address: "127.0.0.1"
 
 # Logging 설정.
 logging:
@@ -159,6 +161,11 @@ spring:
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
+# Prometheus 설정.
+management:
+  server:
+    address: "221.147.44.2"
+
 logging:
   config: "classpath:config/logback-dev.xml"
 
@@ -185,6 +192,11 @@ spring:
       max-lifetime: 60000
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
+
+# Prometheus 설정.
+management:
+  server:
+    address: "221.147.44.2"
 
 logging:
   config: "classpath:config/logback-dev.xml"
@@ -222,6 +234,11 @@ domain:
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
+# Prometheus 설정.
+management:
+  server:
+    address: "221.147.44.2"
+
 # Logging 설정.
 logging:
   config: "classpath:config/logback-live1.xml"
@@ -258,6 +275,11 @@ domain:
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
+
+# Prometheus 설정.
+management:
+  server:
+    address: "221.147.44.2"
 
 # Logging 설정.
 logging:
