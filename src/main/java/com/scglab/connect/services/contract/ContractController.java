@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scglab.connect.base.annotations.Auth;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -27,12 +29,14 @@ public class ContractController {
 	@Autowired
 	private ContractService contractService;
 
+	@Auth
 	@RequestMapping(name = "고객의 계약정보 목록", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> contracts(@RequestParam Map<String, Object> params, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		return this.contractService.contracts(params, request, response);
 	}
 
+	@Auth
 	@RequestMapping(name = "고객의 계약상세정보", method = RequestMethod.GET, value = "/{useContractNum}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> contractInfo(@PathVariable String useContractNum,
 			@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response)
@@ -41,6 +45,7 @@ public class ContractController {
 		return this.contractService.contractInfo(params, request, response);
 	}
 
+	@Auth
 	@RequestMapping(name = "고객의 결제 상세정보", method = RequestMethod.GET, value = "/{useContractNum}/bill", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> contractBil(@PathVariable String useContractNum,
 			@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response)
