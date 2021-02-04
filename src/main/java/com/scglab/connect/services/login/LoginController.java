@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scglab.connect.base.annotations.Auth;
 import com.scglab.connect.services.member.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class LoginController {
 		return this.loginService.loginMember(params, request, response);
 	}
 
+	@Auth
 	@RequestMapping(name = "멤버 인증 정보 조회", method = RequestMethod.GET, value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Member profile(@RequestParam Map<String, Object> params, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
