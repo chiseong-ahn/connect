@@ -227,12 +227,19 @@ public class MinwonService {
 						this.logger.info("[중분류] 중분류가 존재하지 않음 : " + obj);
 					}
 				} else {
-					if (!category.getMinwonName().equals(name)) {
+					if (!category.getMinwonName().equals(name) || category.getCategoryLargeId() == 0) {
 						// 코드명이 다를경우.
-						obj.put("id", category.getId());
 						
-						this.logger.info("[중분류] 중분류 카테고리 수정 : " + obj);
-						this.categoryDao.updateCategoryMiddle(obj);
+						obj.put("companyId", companyId);
+						obj.put("code", largeClassCode);
+						CategoryLarge categoryLarge = this.categoryDao.findCategoryLargeByMinwonCode(obj);
+						if(categoryLarge != null) {
+							obj.put("id", category.getId());
+							obj.put("categoryLargeId", categoryLarge.getId());
+							
+							this.logger.info("[중분류] 중분류 카테고리 수정 : " + obj);
+							this.categoryDao.updateCategoryMiddle(obj);
+						}
 					}
 				}
 			}
@@ -269,12 +276,20 @@ public class MinwonService {
 						this.logger.info("[소분류] 중분류가 존재하지 않음 : " + obj);
 					}
 				} else {
-					if (!category.getMinwonName().equals(name)) {
-						// 코드명이 다를경우.
-						obj.put("id", category.getId());
+					if (!category.getMinwonName().equals(name) || category.getCategoryMiddleId() == 0) {
 						
-						this.logger.info("[소분류] 소분류 카테고리 수정 : " + obj);
-						this.categoryDao.updateCategorySmall(obj);
+						obj.put("companyId", companyId);
+						obj.put("code", middleClassCode);
+						CategoryMiddle categoryMiddle = this.categoryDao.findCategoryMiddleByMinwonCode(obj);
+						
+						if(categoryMiddle != null) {
+						
+							// 코드명이 다를경우.
+							obj.put("id", category.getId());
+							obj.put("categoryMiddleId", categoryMiddle.getId());
+							this.logger.info("[소분류] 소분류 카테고리 수정 : " + obj);
+							this.categoryDao.updateCategorySmall(obj);
+						}
 					}
 				}
 			}
