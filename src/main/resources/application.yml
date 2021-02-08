@@ -43,7 +43,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: 'jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC'
+      jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
       #jdbc-url: "jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC"
       username: cstalk
       password: cstalk12#$
@@ -149,7 +149,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false"
       username: cstalk
       password: coxldtkdeka12#$
       idle-timeout: 10000
@@ -182,7 +182,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false"
       username: cstalk
       password: coxldtkdeka12#$
       idle-timeout: 10000
@@ -245,7 +245,6 @@ logging:
 
 relay:
   use-example: false
-
 
 ---
 # 운영환경2
