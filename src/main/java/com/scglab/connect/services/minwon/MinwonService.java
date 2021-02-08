@@ -79,8 +79,6 @@ public class MinwonService {
 		String errorParams = "";
 		if (!this.commonService.valid(params, "gasappMemberNumber"))
 			errorParams = this.commonService.appendText(errorParams, "가스앱 회원번호-gasappMemberNumber");
-		if (!this.commonService.valid(params, "useContractNum"))
-			errorParams = this.commonService.appendText(errorParams, "사용계약번호-useContractNum");
 		if (!this.commonService.valid(params, "categorySmallId"))
 			errorParams = this.commonService.appendText(errorParams, "소분류 카테고리id-categorySmallId");
 		if (!this.commonService.valid(params, "minwonCode"))
@@ -122,7 +120,10 @@ public class MinwonService {
 			obj.put("chatId", Integer.toString(DataUtils.getInt(params, "chatId", 0)));
 			this.logger.info("Minwon > " + obj.toString());
 
-			company.minwons(obj);
+			// useContractNum 사용계약번호가 존재하는 경우만 기간계에 민원 등록
+			if(!DataUtils.getString(params, "useContractNum", "").equals("")) {
+				company.minwons(obj);
+			}
 		}
 		return minwon;
 	}
