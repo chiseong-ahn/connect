@@ -228,8 +228,8 @@ spring:
 
 domain:
   cstalk: cstalk.gasapp.co.kr
-  relay-scg: relay-scg.gasapp.co.kr
-  relay-inc: relay-inc.gasapp.co.kr
+#  relay-scg: relay-scg.gasapp.co.kr
+#  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
@@ -269,8 +269,8 @@ spring:
       max-lifetime: 60000
 domain:
   cstalk: cstalk.gasapp.co.kr
-  relay-scg: relay-scg.gasapp.co.kr
-  relay-inc: relay-inc.gasapp.co.kr
+#  relay-scg: relay-scg.gasapp.co.kr
+#  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
