@@ -227,7 +227,7 @@ spring:
       max-lifetime: 60000
       
 domain:
-  cstalk: cstalk.gasapp.co.krSSH user password to connect to the SSH tunnel.
+  cstalk: cstalk.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
   relay-inc: relay-inc.gasapp.co.kr
 
@@ -246,7 +246,7 @@ logging:
 relay:
   use-example: false
 
-
+dev
 ---
 # 운영환경2
 server:
