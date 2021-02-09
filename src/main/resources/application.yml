@@ -44,7 +44,6 @@ spring:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
-      #jdbc-url: "jdbc:log4jdbc:mysql://127.0.0.1:3306/cstalk?autoReconnect=true&characterEncoding=UTF-8&serverTimezone=UTC"
       username: cstalk
       password: cstalk12#$
       idle-timeout: 10000
@@ -110,36 +109,6 @@ relay:
   use-example: false
 
 ---
-# 로컬환경
-server:
-  port: 8081
-spring:
-  profiles: server1
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-
-relay:
-  use-example: false
-
----
-# 로컬환경
-server:
-  port: 8082
-spring:
-  profiles: server2
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-
-relay:
-  use-example: false
-
----
 # 개발환경1
 server:
   port: 8115
@@ -149,9 +118,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false"
-      #username: scglab
-      #password: dptmTlwlfoq12#$
+      jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      username: cstalk
+      password: cstalk12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -182,9 +151,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UT C&allowPublicKeyRetrieval=true&useSSL=false"
-      #username: scglab
-      #password: dptmTlwlfoq12#$
+      jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      username: cstalk
+      password: cstalk12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -228,7 +197,7 @@ spring:
 
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
-  relay-scg: relay-scg-stage.gasapp.co.kr
+  relay-scg: relay-scg.gasapp.co.kr
   relay-inc: relay-inc-stage.gasapp.co.kr
 
 path:
