@@ -213,7 +213,7 @@ logging:
   config: "classpath:config/logback-stage.xml"
 
 relay:
-  use-example: false
+  use-example: true
 
 ---
 # 운영환경1
