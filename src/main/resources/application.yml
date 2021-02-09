@@ -198,7 +198,7 @@ spring:
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
-  relay-inc: relay-inc-stage.gasapp.co.kr
+  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
