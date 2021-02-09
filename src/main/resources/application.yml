@@ -241,7 +241,7 @@ management:
 
 # Logging 설정.
 logging:
-  config: "classpath:config/logback-live1.xml"
+  config: "classpath:config/logback-stage.xml"
 
 relay:
   use-example: false
