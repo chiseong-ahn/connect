@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.scglab.connect.services.minwon.MinwonService;
 import com.scglab.connect.services.stats.StatsService;
 
-@Profile("dev1 | stage1 | live1")
+@Profile("dev1 | live1")
 @Component
 public class ScheduleTask {
 	
