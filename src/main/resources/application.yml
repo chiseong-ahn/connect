@@ -174,12 +174,12 @@ relay:
   use-example: false
 
 ---
-# 스테이지
+# 스테이지1
 server:
   port: 8115
 
 spring:
-  profiles: stage
+  profiles: stage1
   redis:
     host: 10.1.3.72
     port: 6379
@@ -188,7 +188,7 @@ spring:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
       username: cstalk
-      password: coxldtkdeka12#$
+      password: cstalk12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -215,6 +215,47 @@ logging:
 relay:
   use-example: true
 
+---
+# 스테이지2
+server:
+  port: 8116
+
+spring:
+  profiles: stage2
+  redis:
+    host: 10.1.3.72
+    port: 6379
+  datasource:
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      username: cstalk
+      password: cstalk12#$
+      idle-timeout: 10000
+      connection-timeout: 300000
+      maximumPoolSize: 10
+      minimum-idle: 5
+      max-lifetime: 60000
+
+domain:
+  cstalk: cstalk-stage.gasapp.co.kr
+  relay-scg: relay-scg.gasapp.co.kr
+  relay-inc: relay-inc.gasapp.co.kr
+
+path:
+  upload: /data/project/gasapp-cstalk/apache/data/attach
+
+# Prometheus 설정.
+management:
+  server:
+    address: "221.147.44.2"
+
+# Logging 설정.
+logging:
+  config: "classpath:config/logback-stage.xml"
+
+relay:
+  use-example: true
 ---
 # 운영환경1
 server:
