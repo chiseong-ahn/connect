@@ -186,9 +186,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
       username: cstalk
-      password: cstalk12#$
+      password: coxldtkdeka12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
@@ -228,9 +228,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: "jdbc:log4jdbc:mysql://dev.gasapp.co.kr:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
+      jdbc-url: "jdbc:log4jdbc:mysql://GASAPP-APP-DB:3306/cstalk?characterEncoding=UTF-8&serverTimezone=UTC"
       username: cstalk
-      password: cstalk12#$
+      password: coxldtkdeka12#$
       idle-timeout: 10000
       connection-timeout: 300000
       maximumPoolSize: 10
