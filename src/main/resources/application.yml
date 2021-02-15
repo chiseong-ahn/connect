@@ -197,7 +197,7 @@ spring:
 
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
-  relay-scg: relay-scg.gasapp.co.kr
+  relay-scg: relay-scg-stage.gasapp.co.kr
   relay-inc: relay-inc.gasapp.co.kr
 
 path:
@@ -239,7 +239,7 @@ spring:
 
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
-  relay-scg: relay-scg.gasapp.co.kr
+  relay-scg: relay-scg-stage.gasapp.co.kr
   relay-inc: relay-inc.gasapp.co.kr
 
 path:
