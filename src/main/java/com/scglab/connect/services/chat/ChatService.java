@@ -79,24 +79,24 @@ public class ChatService {
 			params.put("startId", spaceHist.get("startid"));
 			params.put("endId", spaceHist.get("endid"));
 			
-			String createDate = DataUtils.getString(spaceHist, "createdate", "") + ":717+05:30";
-			String endDate = DataUtils.getString(spaceHist, "enddate", "") + ":717+05:30";
+			String createDate = DataUtils.getString(spaceHist, "createdate", "") + ".000Z";
+			String endDate = DataUtils.getString(spaceHist, "enddate", "") + ".000Z";
 			
 //			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 //			OffsetDateTime offsetDateTime = ZonedDateTime.parse(createDate, format).toOffsetDateTime();
 			
 			
-			DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss:SSSXXXXX");
+			//DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss:SSSXXXXX");
 
 			//Date string with offset information
-			String dateString = "03/08/2019T16:20:17:717+05:30";
+			//String dateString = "03/08/2019T16:20:17:717+05:30";
 			
 			//Instance with given offset
-			OffsetDateTime createDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
-			OffsetDateTime endDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
-			
-			params.put("createdate", createDateOffsetDateTime);
-			params.put("enddate", endDateOffsetDateTime);
+//			OffsetDateTime createDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
+//			OffsetDateTime endDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
+//			
+			spaceHist.put("createdate", createDate);
+			spaceHist.put("enddate", endDate);
 			
 			List<Message> list = this.messageDao.findRangeById(params);
 
@@ -104,7 +104,7 @@ public class ChatService {
 				for (Message message : list) {
 					Map<String, Object> speak = new HashMap<String, Object>();
 					speak.put("id", message.getId());
-					speak.put("createdate", message.getCreateDate());
+					speak.put("createdate", message.getCreateDate()+ ".000Z");
 					speak.put("mtype", message.getMessageType());
 					speak.put("msg", message.getMessage());
 					speak.put("msgname", message.getSpeakerName());
