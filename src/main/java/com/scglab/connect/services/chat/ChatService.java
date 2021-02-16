@@ -1,8 +1,12 @@
 package com.scglab.connect.services.chat;
 
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +21,7 @@ import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.RoomDao;
+import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class ChatService {
@@ -66,12 +71,33 @@ public class ChatService {
 		Map<String, Object> data = new HashMap<String, Object>();
 
 		Map<String, Object> spaceHist = this.roomDao.findRoomHistoryByChatId(params);
+		
 		List<Map<String, Object>> speaks = new ArrayList<Map<String, Object>>();
 
 		if (spaceHist != null) {
 			params.put("roomId", spaceHist.get("space"));
 			params.put("startId", spaceHist.get("startid"));
 			params.put("endId", spaceHist.get("endid"));
+			
+			String createDate = DataUtils.getString(spaceHist, "createdate", "") + ":717+05:30";
+			String endDate = DataUtils.getString(spaceHist, "enddate", "") + ":717+05:30";
+			
+//			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//			OffsetDateTime offsetDateTime = ZonedDateTime.parse(createDate, format).toOffsetDateTime();
+			
+			
+			DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss:SSSXXXXX");
+
+			//Date string with offset information
+			String dateString = "03/08/2019T16:20:17:717+05:30";
+			
+			//Instance with given offset
+			OffsetDateTime createDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
+			OffsetDateTime endDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
+			
+			params.put("createdate", createDateOffsetDateTime);
+			params.put("enddate", endDateOffsetDateTime);
+			
 			List<Message> list = this.messageDao.findRangeById(params);
 
 			if (list != null && list.size() > 0) {
