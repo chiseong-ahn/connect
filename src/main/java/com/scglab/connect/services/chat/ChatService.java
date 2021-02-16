@@ -104,7 +104,7 @@ public class ChatService {
 				for (Message message : list) {
 					Map<String, Object> speak = new HashMap<String, Object>();
 					speak.put("id", message.getId());
-					speak.put("createdate", message.getCreateDate()+ ".000Z");
+					speak.put("createdate", message.getCreateDate2()+ ".000Z");
 					speak.put("mtype", message.getMessageType());
 					speak.put("msg", message.getMessage());
 					speak.put("msgname", message.getSpeakerName());
