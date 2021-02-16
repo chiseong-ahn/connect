@@ -213,7 +213,7 @@ logging:
   config: "classpath:config/logback-stage.xml"
 
 relay:
-  use-example: true
+  use-example: false
 
 ---
 # 스테이지2
@@ -255,7 +255,7 @@ logging:
   config: "classpath:config/logback-stage.xml"
 
 relay:
-  use-example: true
+  use-example: false
 ---
 # 운영환경1
 server:
