@@ -669,8 +669,8 @@
 	<!-- chatid에 대한하는 room history 조회 -->
 	<select id="findRoomHistoryByChatId" parameterType="map" resultType="map">
 		select a.id
-				,a.create_date as createdate
-				,a.end_date as enddate
+				,DATE_FORMAT(a.create_date, '%Y-%m-%d %T') as createdate
+				,DATE_FORMAT(a.end_date, '%Y-%m-%d %T') as enddate
 				,a.room_id as space
 				,a.start_message_id as startid
 				,a.end_message_id as endid
