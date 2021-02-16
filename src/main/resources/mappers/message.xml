@@ -54,7 +54,14 @@
 		INNER JOIN chat_message m ON r.id = m.room_id
 		LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE  r.id = #{roomId}
-		AND m.id BETWEEN #{startId} AND #{endId}
+		<choose>
+			<when test='endId != null or endId == ""'>
+				AND m.id >= #{startId}
+			</when>
+			<otherwise>
+				AND m.id BETWEEN #{startId} AND #{endId}
+			</otherwise>	
+		</choose>
 	</select>
 
 	

@@ -50,6 +50,7 @@ public class ChatService {
 
 		// 접근 허용여부.
 		boolean isAccess = false;
+		this.logger.debug("allowedIp : " + ip);
 		for (String allowedIp : Constant.accessIpList) {
 			if (ip.matches(allowedIp)) {
 				isAccess = true;
