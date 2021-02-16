@@ -58,7 +58,7 @@ public class Constant {
 	public final static int		THUMBNAIL_WIDTH_SIZE = 300;
 	
 	// chatid 기준으로 상담을 조회할 수 있도록 허용한 ip 목록.
-	public final static List<String> accessIpList = new ArrayList<String>(Arrays.asList(new String[]{"127.0.0.1", "221.147.44.2", "10.20.1.41", "10.20.1.42", "10.20.1.43", "10.20.11.0", "1.229.41.30", "10.3.1.52", "0:0:0:0:0:0:0:1"}));
+	public final static List<String> accessIpList = new ArrayList<String>(Arrays.asList(new String[]{"127.0.0.1", "221.147.44.2", "10.20.1.41", "10.20.1.42", "10.20.1.43", "10.20.11.0", "1.229.41.30", "10.3.1.52", "0:0:0:0:0:0:0:1", "10.3.1.51", "10.3.1.52"}));
 	
 	
 	
