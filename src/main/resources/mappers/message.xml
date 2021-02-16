@@ -36,6 +36,7 @@
 	<select id="findRangeById" parameterType="map" resultMap="message">
 		SELECT 
 		  m.*,
+		  DATE_FORMAT(m.create_date, '%Y-%m-%dT%T') as create_date2, 
 		  (
 		    CASE WHEN m.is_employee = 1 THEN 0 ELSE 1 END
 		  ) AS is_customer,

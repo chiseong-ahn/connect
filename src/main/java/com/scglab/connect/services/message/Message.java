@@ -1,5 +1,7 @@
 package com.scglab.connect.services.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +13,7 @@ public class Message {
 	private long id;					// 메시지 id
 	private long joinMessageId;			// 속한 방의 조인 메세지 id
 	private String createDate;			// 등록일시
-    private String updateDate;			// 수정일시 
+	private String updateDate;			// 수정일시 
     private long speakerId;				// 메시지를 작성한 사용자
     private String speakerName;			// 메시지를 작성한 사용자 명
     private long roomId;				// 방 id
@@ -27,4 +29,7 @@ public class Message {
     private int isOnline;				// 방의 온라인 상태(1-온라인, 0-오프라인)
     private String messageDetail;		// 메시지 상세
     private String thumbnail;			// 이미지 썸네일 URL
+    
+    @JsonIgnore
+    private String createDate2;			// 등록일시2
 }
