@@ -1,8 +1,12 @@
 package com.scglab.connect.services.chat;
 
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +21,7 @@ import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.message.Message;
 import com.scglab.connect.services.message.MessageDao;
 import com.scglab.connect.services.room.RoomDao;
+import com.scglab.connect.utils.DataUtils;
 
 @Service
 public class ChatService {
@@ -66,19 +71,40 @@ public class ChatService {
 		Map<String, Object> data = new HashMap<String, Object>();
 
 		Map<String, Object> spaceHist = this.roomDao.findRoomHistoryByChatId(params);
+		
 		List<Map<String, Object>> speaks = new ArrayList<Map<String, Object>>();
 
 		if (spaceHist != null) {
 			params.put("roomId", spaceHist.get("space"));
 			params.put("startId", spaceHist.get("startid"));
 			params.put("endId", spaceHist.get("endid"));
+			
+			String createDate = DataUtils.getString(spaceHist, "createdate", "") + ".000Z";
+			String endDate = DataUtils.getString(spaceHist, "enddate", "") + ".000Z";
+			
+//			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//			OffsetDateTime offsetDateTime = ZonedDateTime.parse(createDate, format).toOffsetDateTime();
+			
+			
+			//DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss:SSSXXXXX");
+
+			//Date string with offset information
+			//String dateString = "03/08/2019T16:20:17:717+05:30";
+			
+			//Instance with given offset
+//			OffsetDateTime createDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
+//			OffsetDateTime endDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
+//			
+			spaceHist.put("createdate", createDate);
+			spaceHist.put("enddate", endDate);
+			
 			List<Message> list = this.messageDao.findRangeById(params);
 
 			if (list != null && list.size() > 0) {
 				for (Message message : list) {
 					Map<String, Object> speak = new HashMap<String, Object>();
 					speak.put("id", message.getId());
-					speak.put("createdate", message.getCreateDate());
+					speak.put("createdate", message.getCreateDate2()+ ".000Z");
 					speak.put("mtype", message.getMessageType());
 					speak.put("msg", message.getMessage());
 					speak.put("msgname", message.getSpeakerName());

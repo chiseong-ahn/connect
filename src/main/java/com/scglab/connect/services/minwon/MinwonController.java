@@ -40,7 +40,7 @@ public class MinwonController {
 	@RequestMapping(name="민원 등록", method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Minwon regist(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return this.minwonService.regist(params, request, response);
-	}
+	} 
 	
 	@Auth
 	@RequestMapping(name="민원 조회", method = RequestMethod.GET, value = "/findSearchByRoomId", produces = MediaType.APPLICATION_JSON_VALUE)
