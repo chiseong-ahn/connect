@@ -3,9 +3,6 @@
 
 <mapper namespace="review">
 
-	<parameterMap type="com.scglab.connect.services.wise.Wise" id="wise"></parameterMap>
-	<resultMap type="com.scglab.connect.services.wise.Wise" id="wise"></resultMap>
-
 	<insert id="regist" parameterType="map">
 		insert into talk_review (company_id, gasapp_member_number, review_score)
 		values(#{companyId}, #{gasappMemberNumber}, #{reviewScore})
