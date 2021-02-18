@@ -32,4 +32,6 @@
 
 1. [배포 프로세스](deploy.md)
 
+1. [DB 스키마](db/sql.md)
+
 1. [서비스 확장](extension.md)

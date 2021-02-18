@@ -7,6 +7,7 @@
 | 서버 | Host | End point |
 |:---:|---|---|
 | 개발 | cstalk-dev.gasapp.co.kr | /ws |
+| 스테이지 | cstalk-stage.gasapp.co.kr | /ws |
 | 운영 | cstalk.gasapp.co.kr | /ws |
 
 ## Frontend

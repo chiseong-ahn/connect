@@ -2,6 +2,8 @@ package com.scglab.connect.services.member;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,5 +31,7 @@ public class Member implements Serializable {
 	private String createDate;
 	private String updateDate;
 	private String updateMemberId;
+	
+	@JsonIgnore
 	private String password;
 }

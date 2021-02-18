@@ -100,8 +100,6 @@ public class LoginService {
 			data.put("reason", this.messageHandler.getMessage("error.auth.login.reason7"));
 			return data;
 		}
-
-		admin.setPassword(null);
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> memberMap = objectMapper.convertValue(admin, Map.class);
 

@@ -1,12 +1,8 @@
 package com.scglab.connect.services.chat;
 
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +51,7 @@ public class ChatService {
 
 		// 접근 허용여부.
 		boolean isAccess = false;
-		this.logger.debug("allowedIp : " + ip);
+		this.logger.debug("ip : " + ip);
 		for (String allowedIp : Constant.accessIpList) {
 			if (ip.matches(allowedIp)) {
 				isAccess = true;
@@ -82,19 +78,6 @@ public class ChatService {
 			String createDate = DataUtils.getString(spaceHist, "createdate", "") + ".000Z";
 			String endDate = DataUtils.getString(spaceHist, "enddate", "") + ".000Z";
 			
-//			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-//			OffsetDateTime offsetDateTime = ZonedDateTime.parse(createDate, format).toOffsetDateTime();
-			
-			
-			//DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss:SSSXXXXX");
-
-			//Date string with offset information
-			//String dateString = "03/08/2019T16:20:17:717+05:30";
-			
-			//Instance with given offset
-//			OffsetDateTime createDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
-//			OffsetDateTime endDateOffsetDateTime = OffsetDateTime.parse(createDate, DATE_TIME_FORMATTER);
-//			
 			spaceHist.put("createdate", createDate);
 			spaceHist.put("enddate", endDate);
 			
