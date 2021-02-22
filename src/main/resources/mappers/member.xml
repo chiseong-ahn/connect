@@ -30,6 +30,9 @@
 				</when>
 			</choose>
 		</if>
+		<if test='state != null and state != ""'>
+			AND state = #{state}
+		</if>
 	</select>
 	
 	<!-- 회원 목록 -->
@@ -55,6 +58,9 @@
 					AND name like concat ('%', #{searchValue}, '%')
 				</when>
 			</choose>
+		</if>
+		<if test='state != null and state != ""'>
+			AND state = #{state}
 		</if>
 		ORDER BY id desc
 		LIMIT #{startNum}, #{pageSize}
