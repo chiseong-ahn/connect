@@ -358,7 +358,7 @@ public class HttpUtils {
 		// 요청 성공시(200)
 		if (body.getStateCode() == Response.SC_OK) {
 			String text = body.text();
-
+			
 			try {
 				// String을 Map<String, Object> 객체로 변환.
 				obj = new ObjectMapper().readValue(text, new TypeReference<Map<String, Object>>() {

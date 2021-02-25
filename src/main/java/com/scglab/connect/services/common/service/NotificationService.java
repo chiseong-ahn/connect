@@ -26,6 +26,7 @@ public class NotificationService {
 		
 		String webhookUrl = this.webHookUrl1 + this.webHookUrl2;
 		Map<String, String> params = new HashMap<String, String>();
+		params.put("username", userName);
 		params.put("text", message);
 		
 		//ResponseBody response = HttpUtils.postForResponseBody(webhookUrl, params);
