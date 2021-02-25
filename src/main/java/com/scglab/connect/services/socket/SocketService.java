@@ -612,7 +612,11 @@ public class SocketService {
 		params.put("gasappMemberNumber", profile.getId());
 		params.put("reviewScore", DataUtils.getInt(data, "reviewScore", 0));
 
-		int result = this.reviewDao.regist(params);
+		int result = 1;
+		if(room.getMemberId() > 0) {
+			// 상담사 정보가 존재할 경우에만 만족도 데이터 입력.  // 없을경우 그냥 패스함. 
+			result = this.reviewDao.regist(params);
+		}
 		
 		// [Socket] 고객만족도 등록결과 데이터 전달.
 		sendData = new HashMap<String, Object>();
