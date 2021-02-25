@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.common.service.NotificationService;
@@ -111,14 +113,20 @@ public class GlobalExceptionHandler {
 			Date now = new Date();
 			String datetime = format1.format(now);
 			
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder .getRequestAttributes()).getRequest();
+			String ip = request.getHeader("X-FORWARDED-FOR") == null ? request.getRemoteAddr()
+					: request.getHeader("X-FORWARDED-FOR");
+			
 			String accessToken = DataUtils.getSafeValue(this.request.getHeader("Authorization")).replaceAll("Bearer ", "");
 			String name = "[" + this.profile + "] CSTALK-API [" + datetime + "]";
-			this.notiService.webhookForSlack(name, "상담톡 오류 발생");
-			this.notiService.webhookForSlack(name, "> Request : " + "[" + this.request.getMethod() + "] " + this.request.getRequestURI());
-			this.notiService.webhookForSlack(name, "> accessToken : " + accessToken);
-			this.notiService.webhookForSlack(name, "> Status : [" + httpStatus.value() + "] " + httpStatus.name());
-			this.notiService.webhookForSlack(name, "> Reason : " + reason);
-			this.notiService.webhookForSlack(name, "> Trace : " + e.getStackTrace()[0]);
+			this.notiService.webhookForSlack(name, "상담톡 백엔드 오류 발생!!!");
+			this.notiService.webhookForSlack(name, "> 응답코드 : [" + httpStatus.value() + "] " + httpStatus.name());
+			this.notiService.webhookForSlack(name, "> 요청 URI : " + "[" + this.request.getMethod() + "] " + this.request.getRequestURI());
+			this.notiService.webhookForSlack(name, "> Referer : " + request.getHeader("referer"));
+			this.notiService.webhookForSlack(name, "> IP : " + ip);
+			this.notiService.webhookForSlack(name, "> 인증토큰 : " + accessToken);
+			this.notiService.webhookForSlack(name, "> 발생이유 : " + reason);
+			this.notiService.webhookForSlack(name, "> 추적 : " + e.getStackTrace()[0]);
 			
 		}catch(Exception e1) {
 			e1.printStackTrace();
