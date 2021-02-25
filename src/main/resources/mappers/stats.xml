@@ -266,6 +266,7 @@
 				,a.close_count as closeCount
 				,a.week_close_count as recentCloseCount
 				,a.close_count - a.yesterday_close_count as beforeDayPlusCount
+				,a.avg_review_score as avgReviewScore
 		from(
 			select a.id
 					,a.company_id
@@ -303,6 +304,12 @@
 						and a1.member_id = a.id
 						and a1.end_date between DATE_FORMAT(adddate(now(), -6), '%Y-%m-%d') and DATE_FORMAT(adddate(now(),1), '%Y-%m-%d')
 					) as week_close_count
+					,ifnull((
+						select round(avg(tr.review_score), 1)
+						from talk_review tr 
+						where 1=1
+						and tr.member_id = a.id
+					), 0) as avg_review_score
 			from member as a
 			where 1=1
 			and a.company_id = #{companyId}
@@ -314,6 +321,9 @@
 			</when>
 			<when test='sort == "recentClose"'>
 				order by a.week_close_count desc, a.name
+			</when>
+			<when test='sort == "reviewScore"'>
+				order by a.avg_review_score desc, a.name
 			</when>
 		</choose>		
 	</select>

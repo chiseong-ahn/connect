@@ -484,6 +484,7 @@ CREATE TABLE IF NOT EXISTS `talk_review` (
   `update_date` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '수정일',
   `gasapp_member_number` varchar(255) NOT NULL COMMENT '가스앱 회원번호',
   `review_score` smallint(5) unsigned NOT NULL DEFAULT 1 COMMENT '리뷰 점수(1,2,3,4,5)',
+  `member_id` bigint(5) unsigned DEFAULT NULL COMMENT '회원 id(member table)',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='고객 리뷰';
 

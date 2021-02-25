@@ -176,44 +176,6 @@ public class StatsService {
 		params.put("companyId", companyId);
 		
 		List<Map<String, Object>> list = this.statsDao.customerAnalysis(params);
-		/*
-		list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> data1 = new HashMap<String, Object>();
-		data1.put("companyId", "1");
-		data1.put("memberId", 1);
-		data1.put("state", 1);
-		data1.put("memberName", "안용성");
-		data1.put("saveDate", "2020-11-01");
-		data1.put("newCount", 10);
-		data1.put("ingCount", 3);
-		data1.put("closeCount", 10);
-		data1.put("speakCount", 10);
-		data1.put("maxReadyMinute", 125);
-		data1.put("maxSpeakMinute", 1);
-		data1.put("avgReadyMinute", 20);
-		data1.put("avgSpeakMinute", 5);
-		data1.put("beforeDayPlusCount", 3);
-		data1.put("recentCloseCount", 10);
-		list.add(data1);
-		
-		Map<String, Object> data2 = new HashMap<String, Object>();
-		data2.put("companyId", "1");
-		data2.put("memberId", 1);
-		data2.put("state", 1);
-		data2.put("memberName", "안치성");
-		data2.put("saveDate", "2020-11-01");
-		data2.put("newCount", 10);
-		data2.put("ingCount", 3);
-		data2.put("closeCount", 10);
-		data2.put("speakCount", 10);
-		data2.put("maxReadyMinute", 125);
-		data2.put("maxSpeakMinute", 1);
-		data2.put("avgReadyMinute", 20);
-		data2.put("avgSpeakMinute", 5);
-		data2.put("beforeDayPlusCount", 3);
-		data2.put("recentCloseCount", 10);
-		list.add(data2);
-		*/
 		
 		return list == null ? new ArrayList<Map<String, Object>>() : list;
 	}
