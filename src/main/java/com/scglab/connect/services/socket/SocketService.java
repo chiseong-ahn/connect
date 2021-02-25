@@ -606,15 +606,16 @@ public class SocketService {
 		params.put("id", profile.getRoomId());
 		Room room = this.roomDao.getDetail(params);
 
-		params = new HashMap<String, Object>();
-		params.put("companyId", profile.getCompanyId());
-		params.put("memberId", room.getMemberId());
-		params.put("gasappMemberNumber", profile.getId());
-		params.put("reviewScore", DataUtils.getInt(data, "reviewScore", 0));
-
 		int result = 1;
 		if(room.getMemberId() > 0) {
-			// 상담사 정보가 존재할 경우에만 만족도 데이터 입력.  // 없을경우 그냥 패스함. 
+			// 상담사 정보가 존재할 경우에만 만족도 데이터 입력.  // 없을경우 그냥 패스함.
+			
+			params = new HashMap<String, Object>();
+			params.put("companyId", profile.getCompanyId());
+			params.put("memberId", room.getMemberId());
+			params.put("gasappMemberNumber", profile.getId());
+			params.put("reviewScore", DataUtils.getInt(data, "reviewScore", 0));
+			
 			result = this.reviewDao.regist(params);
 		}
 		
