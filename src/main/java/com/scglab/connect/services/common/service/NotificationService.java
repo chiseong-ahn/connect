@@ -18,8 +18,7 @@ public class NotificationService {
 	@Value("${notification.use}")
 	private boolean use;
 
-	@Value("${notification.webhook}")
-	private String webHookUrl;
+	private String webHookUrl = "https://hooks.slack.com/services/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";
 
 	public void webhookForSlack(String message) {
 		webhookForSlack(this.userName, message);
