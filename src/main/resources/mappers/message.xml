@@ -27,6 +27,7 @@
 		AND (
 			CASE WHEN IFNULL(#{startId}, '') = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
 		)
+		AND m.is_delete = 0
 		ORDER BY m.id DESC
 		LIMIT #{pageSize}
 	</select>
@@ -55,6 +56,7 @@
 		INNER JOIN chat_message m ON r.id = m.room_id
 		LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
 		WHERE  r.id = #{roomId}
+		AND m.is_delete = 0
 		<choose>
 			<when test='endId != null or endId == ""'>
 				AND m.id >= #{startId}
@@ -110,7 +112,8 @@
 		  AND (
 		    CASE WHEN IFNULL(#{startId}, '') = '' THEN 1 = 1 ELSE m.id <![CDATA[<]]> #{startId} END
 		  ) 
-		  AND m.message_admin_type <![CDATA[<=]]> IFNULL(#{messageAdminType}, 0) 
+		  AND m.message_admin_type <![CDATA[<=]]> IFNULL(#{messageAdminType}, 0)
+		  AND m.is_delete = 0 
 		ORDER BY 
 		  m.id DESC 
 		LIMIT #{pageSize}
@@ -144,6 +147,7 @@
 		WHERE 
 		  r.id = #{roomId} 
 		  AND m.id >= r.join_message_id
+		  AND m.is_delete = 0
 		ORDER BY 
 		  m.id DESC 
 		LIMIT #{pageSize}
@@ -194,9 +198,10 @@
 		SELECT * 
 		FROM   chat_message 
 		WHERE  room_id = #{roomId} 
-		       AND id BETWEEN #{startId} AND #{endId}
-		       AND is_system_message = 0 
-		       AND message_admin_type = 0
+		AND id BETWEEN #{startId} AND #{endId}
+		AND is_system_message = 0 
+		AND message_admin_type = 0
+		AND is_delete = 0
 	</select>
 	
 	<!-- 읽은 메세지 사용자 수 -->
@@ -209,9 +214,9 @@
 	
 	<!-- 메세지 삭제 -->
 	<delete id="delete" parameterType="map">
-		DELETE
-		FROM chat_message 
-		WHERE  id = #{id} 
+		UPDATE chat_message
+		SET is_delete = 1
+		WHERE id = #{id}
 	</delete>
 	
 	<!-- 메세지 읽음 삭제 -->
@@ -243,8 +248,8 @@
 		  room r 
 		  INNER JOIN chat_message m ON r.id = m.room_id
 		  LEFT OUTER JOIN speaker2 s ON m.speaker_id = s.id
-		WHERE 
-		  m.id = #{id}
+		WHERE m.id = #{id}
+		AND m.is_delete = 0
 	</select>
 	
 	<!-- 메시지 읽음 처리-->
