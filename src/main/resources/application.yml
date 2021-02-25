@@ -86,8 +86,6 @@ logging:
 relay:
   use-example: false
 
-notification:
-  use: true
 
 ---
 # 배포환경
