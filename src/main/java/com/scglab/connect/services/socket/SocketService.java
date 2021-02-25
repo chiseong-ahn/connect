@@ -596,19 +596,28 @@ public class SocketService {
 
 	}
 
-	// 리뷰 처리.
+	// 고객만족도 등록처리
 	public void review(Profile profile, SocketData payload) {
 		Map<String, Object> data = payload.getData();
+		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
+		
+		params = new HashMap<String, Object>();
+		params.put("id", profile.getRoomId());
+		Room room = this.roomDao.getDetail(params);
 
 		params = new HashMap<String, Object>();
 		params.put("companyId", profile.getCompanyId());
-		// params.put("gasappMemberNumber", DataUtils.getInt(data, "gasappMemberNumber",
-		// 0));
+		params.put("memberId", room.getMemberId());
 		params.put("gasappMemberNumber", profile.getId());
 		params.put("reviewScore", DataUtils.getInt(data, "reviewScore", 0));
 
-		this.reviewDao.regist(params);
+		int result = this.reviewDao.regist(params);
+		
+		// [Socket] 고객만족도 등록결과 데이터 전달.
+		sendData = new HashMap<String, Object>();
+		sendData.put("success", result > 0 ? true : false);
+		this.socketMessageHandler.sendMessageToSelf(EventName.REVIEW, profile, sendData);
 	}
 
 	// 메세지 삭제
