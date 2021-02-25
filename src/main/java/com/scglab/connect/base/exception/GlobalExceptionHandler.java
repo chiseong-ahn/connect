@@ -120,7 +120,9 @@ public class GlobalExceptionHandler {
 			this.notiService.webhookForSlack(name, "> Reason : " + reason);
 			this.notiService.webhookForSlack(name, "> Trace : " + e.getStackTrace()[0]);
 			
-		}catch(Exception e1) {}
+		}catch(Exception e1) {
+			e1.printStackTrace();
+		}
 
 	}
 	
