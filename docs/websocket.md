@@ -227,6 +227,19 @@ this.socket.ws.disconnect();
 }
 ```
 
+### 8. 고객만족도 등록결과.
+```json
+{
+  "eventName": "REVIEW",
+  "companyId": "1",
+  "roomId": "153",
+  "target": "SELF",
+  "data": {
+    "success": true // true-성공, false-실패
+  }
+}
+```
+
 ### 8. 에러 발송.
 ```json
 {
