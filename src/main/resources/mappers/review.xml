@@ -4,8 +4,8 @@
 <mapper namespace="review">
 
 	<insert id="regist" parameterType="map">
-		insert into talk_review (company_id, gasapp_member_number, review_score)
-		values(#{companyId}, #{gasappMemberNumber}, #{reviewScore})
+		insert into talk_review (company_id, gasapp_member_number, review_score, member_id)
+		values(#{companyId}, #{gasappMemberNumber}, #{reviewScore}, #{memberId})
 	</insert>
 	
 	
