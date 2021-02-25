@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,6 +36,9 @@ public class GlobalExceptionHandler {
 	@Autowired private NotificationService notiService;
 	@Autowired private LoginService loginService;
 	@Autowired private HttpServletRequest request;
+	
+	@Value("${spring.profiles}")
+	private String profile;
 	
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<?> handleBaseException(Exception e) {
@@ -108,8 +112,7 @@ public class GlobalExceptionHandler {
 			String datetime = format1.format(now);
 			
 			String accessToken = DataUtils.getSafeValue(this.request.getHeader("Authorization")).replaceAll("Bearer ", "");
-			
-			String name = "CSTALK-API [" + datetime + "]";
+			String name = "[" + this.profile + "] CSTALK-API [" + datetime + "]";
 			this.notiService.webhookForSlack(name, "상담톡 오류 발생");
 			this.notiService.webhookForSlack(name, "> Request : " + "[" + this.request.getMethod() + "] " + this.request.getRequestURI());
 			this.notiService.webhookForSlack(name, "> accessToken : " + accessToken);
