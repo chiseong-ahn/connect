@@ -52,5 +52,6 @@ public class Room {
 	private String updateMemberId;
 	private int swearCount;
 	private int insultCount;
+	private int lastMessageIsEmployee;
 	
 }
