@@ -48,5 +48,6 @@ public class Room {
 	private String createDate;
 	private String updateDate;
 	private String updateMemberId;
+	private int lastMessageIsEmployee;
 	
 }
