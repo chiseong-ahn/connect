@@ -109,17 +109,13 @@ public class GlobalExceptionHandler {
 	private void sendExceptionNotification(HttpStatus httpStatus, String reason, Exception e) {
 		
 		try {
-			SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-			Date now = new Date();
-			String datetime = format1.format(now);
-			
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder .getRequestAttributes()).getRequest();
 			String ip = request.getHeader("X-FORWARDED-FOR") == null ? request.getRemoteAddr()
 					: request.getHeader("X-FORWARDED-FOR");
 			
 			String accessToken = DataUtils.getSafeValue(this.request.getHeader("Authorization")).replaceAll("Bearer ", "");
-			String name = "[" + this.profile + "] CSTALK-API [" + datetime + "]";
-			this.notiService.webhookForSlack(name, "상담톡 백엔드 오류 발생!!!");
+			String name = "상담톡 백엔드 오류 발생";
+			this.notiService.webhookForSlack(name, "> Profile : " + this.profile);
 			this.notiService.webhookForSlack(name, "> 응답코드 : [" + httpStatus.value() + "] " + httpStatus.name());
 			this.notiService.webhookForSlack(name, "> 요청 URI : " + "[" + this.request.getMethod() + "] " + this.request.getRequestURI());
 			this.notiService.webhookForSlack(name, "> Referer : " + request.getHeader("referer"));
