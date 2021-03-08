@@ -731,7 +731,7 @@ public class SocketService {
 		this.roomDao.closeRoom(params);
 
 		// [DB] 종료된 룸 정보 조회.
-		params.put("id", params.get("roomId"));
+		params.put("id", payload.getRoomId());
 		room = this.roomDao.getDetail(params);
 
 		sendData = new HashMap<String, Object>();
@@ -771,8 +771,8 @@ public class SocketService {
 
 		// [DB] 룸 종료처리.
 		params = new HashMap<String, Object>();
-		params.put("roomId", DataUtils.getInt(data, "roomId", 0));
-		params.put("id", DataUtils.getInt(data, "roomId", 0));
+		params.put("roomId", payload.getRoomId());
+		params.put("id", payload.getRoomId());
 		params.put("loginId", profile.getId());
 		this.roomDao.closeRoom(params);
 
