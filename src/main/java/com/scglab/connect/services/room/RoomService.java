@@ -265,6 +265,7 @@ public class RoomService {
 		params = new HashMap<String, Object>();
 		params.put("companyId", profile.getCompanyId());
 		params.put("roomId", profile.getRoomId());
+		params.put("id", profile.getRoomId());
 		params.put("speakerId", null);
 		params.put("messageType", 0); // 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
 		params.put("isSystemMessage", 1);
