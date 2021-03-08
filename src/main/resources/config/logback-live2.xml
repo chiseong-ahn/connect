@@ -45,6 +45,6 @@
     <logger name="com.scglab.connect" level="WARN"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+        <!-- <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" /> -->
     </root>
 </configuration>
