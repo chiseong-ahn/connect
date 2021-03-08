@@ -774,6 +774,7 @@ public class SocketService {
 		params.put("roomId", payload.getRoomId());
 		params.put("id", payload.getRoomId());
 		params.put("loginId", profile.getId());
+		this.logger.debug("params : " + params.toString());
 		this.roomDao.closeRoom(params);
 
 		// [DB] 종료된 룸 정보 조회.
