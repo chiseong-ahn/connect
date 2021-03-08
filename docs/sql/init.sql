@@ -5,6 +5,14 @@ where CONSTRAINT_SCHEMA = 'cstalk'
 and CONSTRAINT_TYPE = 'FOREIGN KEY'
 order by table_name;
 
+-- index 제거
+select concat('alter table ', TABLE_NAME, ' drop INDEX ', constraint_name, ';') 
+from information_schema.table_constraints
+where CONSTRAINT_SCHEMA = 'cstalk'
+and CONSTRAINT_TYPE != 'FOREIGN KEY'
+and CONSTRAINT_NAME != 'PRIMARY'
+order by table_name;
+
 alter table action_history drop foreign key action_history_member_FK;
 alter table action_history drop foreign key action_history_company_FK;
 alter table alarm_member drop foreign key alarm_member_member_FK;
@@ -61,8 +69,6 @@ alter table room drop foreign key room_member_FK;
 alter table room drop foreign key room_company_FK;
 alter table room drop foreign key room_chat_message_FK;
 alter table room_join_history drop foreign key room_join_history_category_small_FK;
-alter table room_join_history drop foreign key room_join_history_chat_message_FK;
-alter table room_join_history drop foreign key room_join_history_chat_message_FK_1;
 alter table room_join_history drop foreign key room_join_history_company_FK;
 alter table room_join_history drop foreign key room_join_history_member_FK;
 alter table room_join_history drop foreign key room_join_history_member_FK_1;
@@ -93,6 +99,17 @@ alter table template_use_history drop foreign key template_use_history_company_F
 alter table template_use_history drop foreign key template_use_history_member_FK;
 alter table template_use_history drop foreign key template_use_history_room_FK;
 alter table template_use_history drop foreign key template_use_history_template_FK;
+
+-- index 삭제
+alter table customer2 DROP INDEX customer_gasapp_member_number_IDX;
+alter table customer_company drop INDEX customer_company_customer_id_IDX;
+alter table keyword2 drop INDEX keyword_company_id_IDX;
+alter table manual drop INDEX manual_company_id_IDX;
+alter table manual_favorite drop INDEX manual_favorite_member_id_IDX;
+alter table room_speaker drop INDEX room_speaker_room_id_IDX;
+alter table template_favorite drop INDEX template_favorite_member_id_IDX;
+alter table template_keyword drop INDEX template_keyword_template_id_IDX;
+
 
 -- table truncate
 TRUNCATE TABLE company;

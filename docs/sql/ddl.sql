@@ -674,10 +674,11 @@ ALTER TABLE category_small ADD CONSTRAINT category_small_member_FK FOREIGN KEY (
 ALTER TABLE category_small ADD CONSTRAINT category_small_category_middle_FK FOREIGN KEY (category_middle_id) REFERENCES category_middle(id);
 
 -- customer2
+
 ALTER TABLE customer2 ADD CONSTRAINT customer_member_FK FOREIGN KEY (update_member_id) REFERENCES `member`(id) ON DELETE SET NULL;
 ALTER TABLE customer2 ADD CONSTRAINT customer_speaker_FK FOREIGN KEY (speaker_id) REFERENCES speaker2(id);
 
- @@.customer_gasapp_member_number_IDX 유니크 인덱스 생성전에 중복 데이터 삭제
+@@.customer_gasapp_member_number_IDX 유니크 인덱스 생성전에 중복 데이터 삭제
   delete
   from customer2
   where id in(
@@ -700,10 +701,7 @@ ALTER TABLE customer2 ADD CONSTRAINT customer_speaker_FK FOREIGN KEY (speaker_id
 
 CREATE UNIQUE INDEX customer_gasapp_member_number_IDX USING BTREE ON customer2 (gasapp_member_number);
 
-
 -- customer_company
-ALTER TABLE customer_company ADD CONSTRAINT customer_company_customer_FK FOREIGN KEY (customer_id) REFERENCES customer2(id) ON DELETE CASCADE;
-
 delete
     from customer_company cc 
     where customer_id not in(
@@ -714,6 +712,7 @@ delete
       ) as a
     );
 
+ALTER TABLE customer_company ADD CONSTRAINT customer_company_customer_FK FOREIGN KEY (customer_id) REFERENCES customer2(id) ON DELETE CASCADE;
 ALTER TABLE customer_company ADD CONSTRAINT customer_company_member_FK FOREIGN KEY (update_member_id) REFERENCES `member`(id) ON DELETE SET NULL;
 ALTER TABLE customer_company ADD CONSTRAINT customer_company_company_FK FOREIGN KEY (company_id) REFERENCES company(id);
 ALTER TABLE customer_company ADD CONSTRAINT customer_company_member_FK_1 FOREIGN KEY (block_member_id) REFERENCES `member`(id) ON DELETE SET NULL;
@@ -816,7 +815,16 @@ ALTER TABLE speaker2 ADD CONSTRAINT speaker_company_FK FOREIGN KEY (company_id) 
 ALTER TABLE speaker2 ADD CONSTRAINT speaker_member_FK FOREIGN KEY (update_member_id) REFERENCES `member`(id) ON DELETE SET NULL;
 
 -- chat_message
+update chat_message
+set speaker_id = NULL 
+where speaker_id = 0;
+
 ALTER TABLE chat_message ADD CONSTRAINT chat_message_speaker_FK FOREIGN KEY (speaker_id) REFERENCES speaker2(id);
+
+delete 
+from chat_message
+where room_id = 0;
+
 ALTER TABLE chat_message ADD CONSTRAINT chat_message_room_FK FOREIGN KEY (room_id) REFERENCES room(id);
 ALTER TABLE chat_message ADD CONSTRAINT chat_message_company_FK FOREIGN KEY (company_id) REFERENCES company(id);
 ALTER TABLE chat_message ADD CONSTRAINT chat_message_template_FK FOREIGN KEY (template_id) REFERENCES template2(id) ON DELETE SET NULL;
@@ -833,7 +841,6 @@ ALTER TABLE message_read ADD CONSTRAINT message_read_company_FK FOREIGN KEY (com
 ALTER TABLE message_read ADD CONSTRAINT message_read_room_FK FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE;
 ALTER TABLE message_read ADD CONSTRAINT message_read_chat_message_FK FOREIGN KEY (message_id) REFERENCES chat_message(id) ON DELETE CASCADE;
 ALTER TABLE message_read ADD CONSTRAINT message_read_speaker_FK FOREIGN KEY (speaker_id) REFERENCES speaker2(id) ON DELETE CASCADE;
-CREATE INDEX message_read_room_id_IDX USING BTREE ON message_read (room_id, message_id, speaker_id);
 
 -- minwon_history
 ALTER TABLE minwon_history ADD CONSTRAINT minwon_history_member_FK FOREIGN KEY (update_member_id) REFERENCES `member`(id) ON DELETE SET NULL;
@@ -897,42 +904,5 @@ and pdf_image_path like '/static/images/%'
       where speaker_id not in(select id from speaker2) 
       ) as a
     )
-
-*/
-
-/*
-
-메시지 읽음 처리
-
--- 마지막 메시지까지 모두 읽음 처리
-        UPDATE chat_message 
-           SET not_read_count = not_read_count - 1
-         WHERE room_id = _room_id AND id <= IFNULL(v_max_message_id, 0);
-        -- where room_id = _room_id and id between IFNULL(v_read_last_message_id, 0) and IFNULL(v_max_message_id, 0);
-
--- 사용자의 메시지 읽음 처리 하기
-UPDATE message_read
-    SET read_date = now()
-  WHERE room_id = :room_id AND speaker_id = :speaker_id AND message_id <= IFNULL(:message_id, 0);
-
--- 방에 사용자가 정보가 존재하는 경우 : 마지막 읽은 메시지 최신화
-UPDATE room_speaker
-    SET old_last_message_id = read_last_message_id, read_last_message_id = v_max_message_id
-  WHERE room_id = _room_id and speaker_id = _speaker_id;
-
-*/
-
-/*
-
-
-1.chat_message의 join_message_id
- -join_message_id 값이 null 인 경우를 데이터 정립화할 필요가 있음
-
-2.room_join_history의 start_message_id, end_message_id
- -start_message_id, end_message_id 값이 null 인 경우를 데이터 정립화할 필요가 있음
-
-3.room_speaker의 read_last_message_id, old_last_message_id
- -read_last_message_id, old_last_message_id 값이 null 인 경우를 데이터 정립화할 필요가 있음
-
 
 */
