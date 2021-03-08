@@ -280,6 +280,7 @@ public class RoomService {
 		this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
 
 		int result = this.roomDao.closeRoom(params);
+		this.logger.debug("params : " + params.toString());
 		if (result > 0) {
 			room = this.roomDao.getDetail(params);
 

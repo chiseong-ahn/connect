@@ -710,6 +710,7 @@ public class SocketService {
 		params = new HashMap<String, Object>();
 		params.put("companyId", payload.getCompanyId());
 		params.put("roomId", payload.getRoomId());
+		params.put("id", payload.getRoomId());
 		params.put("speakerId", null);
 		params.put("messageType", 0); // 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
 		params.put("isSystemMessage", 1);
@@ -772,9 +773,8 @@ public class SocketService {
 		// [DB] 룸 종료처리.
 		params = new HashMap<String, Object>();
 		params.put("roomId", payload.getRoomId());
-		params.put("id", payload.getRoomId());
-		params.put("loginId", profile.getId());
-		this.logger.debug("params : " + params.toString());
+		params.put("id", DataUtils.getInt(data, "roomId", 0));
+		params.put("loginId", payload.getRoomId());
 		this.roomDao.closeRoom(params);
 
 		// [DB] 종료된 룸 정보 조회.
