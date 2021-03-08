@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
+import com.scglab.connect.base.filter.SecurityFilter;
 import com.scglab.connect.base.interceptor.CommonInterceptor;
 
 import net.rakugakibox.util.YamlResourceBundle;
@@ -150,6 +152,15 @@ public class WebMvcConfig implements WebMvcConfigurer{
         return registrationBean;
     }
     */
+	
+	@Bean
+    public FilterRegistrationBean<SecurityFilter> securityFilter(){
+        FilterRegistrationBean<SecurityFilter> bean = new FilterRegistrationBean<SecurityFilter>();
+        bean.setFilter(new SecurityFilter());
+        //bean.setUrlPatterns(Arrays.asList("/testHello")); //testHello 요청으로 오는 애들만 필러링
+        bean.addUrlPatterns("/*");
+        return bean;
+    }
 }
 
 /**
