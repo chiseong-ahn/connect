@@ -1,4 +1,5 @@
 # 개발 메뉴얼
+1. [이해관계자](stakeholders.md)
 
 1. [아키텍쳐 구성](architecture.md)
 
