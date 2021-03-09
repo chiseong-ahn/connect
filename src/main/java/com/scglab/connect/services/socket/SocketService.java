@@ -479,6 +479,7 @@ public class SocketService {
 
 		if (isWorkType == 1) { // 근무중일 경우.(1)
 
+			/*
 			// 로비에 상담가능한 상담사 카운트 조회.
 			Long readyMemberCount = this.chatRoomRepository.getUserCount(getLobbyRoom(payload.getCompanyId()));
 
@@ -488,6 +489,7 @@ public class SocketService {
 				// 상담가능한 상담사가 존재하지 않을경우.
 				messageType = 1; // 상담가능한 상담사가 없을경우.
 			}
+			*/
 
 		} else if (isWorkType == 2) { // 근무 외 시간
 			messageType = 2;
