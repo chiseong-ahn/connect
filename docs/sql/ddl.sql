@@ -607,12 +607,12 @@ update room
 set join_message_id = null
 where join_message_id = 0;
 
+CREATE INDEX room_state_IDX USING BTREE ON room (state);
+
 -- room_join_history
 INSERT INTO room_join_history (id, create_date, update_date, company_id, member_id, room_id, start_message_id, end_message_id, end_date, last_member_id, category_small_id, join_history_json)
 SELECT id, createdate, workdate, CONCAT(cid, ''), emp, space, startid, endid, enddt, lastemp, catesm, prehistory
 FROM SpaceHist;
-
-CREATE INDEX room_state_IDX USING BTREE ON room (state);
 
 update room_join_history
 set start_message_id = null
