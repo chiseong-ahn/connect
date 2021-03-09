@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
@@ -62,7 +61,7 @@ public class WebSocketEventListener {
 	 */
 	@EventListener
 	public void handleSessionConnectedEvent(SessionConnectedEvent event) {
-		this.logger.info("sessionConnectedEvent : " +event.toString());
+		this.logger.debug("sessionConnectedEvent : " +event.toString());
 	}
 	
 	/**

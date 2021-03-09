@@ -148,7 +148,7 @@ public class SocketService {
 		}
 		profile.setSessionId(sessionId);
 
-		this.logger.info("Connection profile : " + profile.toString());
+		this.logger.debug("Connection profile : " + profile.toString());
 		// [Redis] 연결된 세션ID와 Token을 저장.
 		this.chatRoomRepository.setProfileBySessionId(sessionId, profile);
 		

@@ -66,7 +66,7 @@ public class ChatRoomRepository {
 	public void setProfileBySessionId(String sessionId, Profile profile) {
 		this.logger.debug("mapping session - token : " + sessionId + " - " + profile.toString());
 		String strProfile = SerializeUtils.serialize(profile);
-		this.logger.info("setProfileBySessionId - strProfile : " + strProfile);
+		this.logger.debug("setProfileBySessionId - strProfile : " + strProfile);
 		this.hashOpsEnterInfo.put(CSTALK_SESSION_PROFILE, sessionId, strProfile);
 	}
 
