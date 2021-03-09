@@ -165,7 +165,7 @@
 				,r.state AS room_state,
 				r.end_date AS end_date
 		FROM v_customer vc
-			INNER JOIN v_room r ON vc.room_id = r.id
+			INNER JOIN room r on vc.room_id = r.id
 			INNER JOIN room_speaker rs ON r.id = rs.room_id AND rs.speaker_id = vc.speaker_id
 		WHERE vc.gasapp_member_number = #{gasappMemberNumber}
 		AND vc.company_id = #{companyId}
