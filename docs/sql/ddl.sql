@@ -612,6 +612,8 @@ INSERT INTO room_join_history (id, create_date, update_date, company_id, member_
 SELECT id, createdate, workdate, CONCAT(cid, ''), emp, space, startid, endid, enddt, lastemp, catesm, prehistory
 FROM SpaceHist;
 
+CREATE INDEX room_state_IDX USING BTREE ON room (state);
+
 update room_join_history
 set start_message_id = null
 where start_message_id = 0;
