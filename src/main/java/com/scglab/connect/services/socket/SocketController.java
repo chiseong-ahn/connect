@@ -42,8 +42,8 @@ public class SocketController {
 		EventName eventName = socketData.getEventName();
 		Profile profile = this.socketService.getMemberWithSettings(accessor, socketData);
 
-		this.logger.info("socketData : " + socketData);
-		this.logger.info("profile : " + profile);
+		this.logger.debug("socketData : " + socketData);
+		this.logger.debug("profile : " + profile);
 
 		socketData.setCompanyId(profile.getCompanyId());
 		socketData.setRoomId(profile.getRoomId());

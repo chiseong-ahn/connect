@@ -108,8 +108,8 @@ public class SocketService {
 		MessageHeaders headers = headerAccessor.getMessageHeaders();
 		String sessionId = headerAccessor.getSessionId();
 
-		this.logger.info("[headerAccessor] - " + headerAccessor.toString());
-		this.logger.info("[Socket sessionId] - " + sessionId);
+		this.logger.debug("[headerAccessor] - " + headerAccessor.toString());
+		this.logger.debug("[Socket sessionId] - " + sessionId);
 
 		Profile profile = null;
 
@@ -139,7 +139,7 @@ public class SocketService {
 				this.logger.debug("customer : " + customer);
 
 				profile.setRoomId(customer.getRoomId() + "");
-				this.logger.info("connect customer : " + profile.toString());
+				this.logger.debug("connect customer : " + profile.toString());
 			}
 		}
 
@@ -166,13 +166,13 @@ public class SocketService {
 		logger.info("소켓구독 시작. : " + startTime);
 		
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		this.logger.info("[Subscribe] headerAccessor : " + headerAccessor.toString());
+		this.logger.debug("[Subscribe] headerAccessor : " + headerAccessor.toString());
 		String destination = headerAccessor.getDestination();
 
 		String roomId = destination.replaceAll(Constant.SOCKET_SIMPLE_BROKER + Constant.SOCKET_ROOM_PREFIX + "/", "");
 		String sessionId = headerAccessor.getSessionId();
-		this.logger.info("sessionId : " + sessionId);
-		this.logger.info("roomId : " + roomId);
+		this.logger.debug("sessionId : " + sessionId);
+		this.logger.debug("roomId : " + roomId);
 
 		// [Redis] SessionId에 대한 토큰 추출
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
@@ -430,7 +430,7 @@ public class SocketService {
 		if (messages != null && messages.size() > 0) { // 이전 메세지가 존재할 경우.
 
 		} else {
-			this.logger.info("이전 대화 없음.");
+			this.logger.debug("이전 대화 없음.");
 		}
 		
 		LocalTime endTime = LocalTime.now();
@@ -716,8 +716,8 @@ public class SocketService {
 		params.put("speakerId", profile.getSpeakerId());
 		params.put("startId", DataUtils.getInt(data, "startId", 0));
 		params.put("endId", DataUtils.getInt(data, "endId", 0));
-		this.logger.info("payload : " + payload.toString());
-		this.logger.info("params : " + params.toString());
+		this.logger.debug("payload : " + payload.toString());
+		this.logger.debug("params : " + params.toString());
 		this.messageDao.readMessage(params);
 
 		// 룸 전체에 메시지 발송.
@@ -942,14 +942,14 @@ public class SocketService {
 
 	public void unsubscribe(SessionUnsubscribeEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		this.logger.info("[Unsubscribe] headerAccessor : " + headerAccessor.toString());
+		this.logger.debug("[Unsubscribe] headerAccessor : " + headerAccessor.toString());
 
 		String sessionId = headerAccessor.getSessionId();
 		String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId);
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
 
-		this.logger.info("roomId : " + roomId);
-		this.logger.info("sessionId : " + sessionId);
+		this.logger.debug("roomId : " + roomId);
+		this.logger.debug("sessionId : " + sessionId);
 
 		if (profile != null) {
 			if (profile.getIsCustomer() == 0) {
@@ -993,7 +993,7 @@ public class SocketService {
 		String sessionId = (String) headers.get("simpSessionId");
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
 
-		this.logger.info("Disconnected : " + sessionId);
+		this.logger.debug("Disconnected : " + sessionId);
 		if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
 			String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId).replaceAll(Constant.SOCKET_ROOM_PREFIX,
 					"");
@@ -1053,7 +1053,7 @@ public class SocketService {
 				}
 
 				// [Redis] 채팅에 참여중인 인원 확인.
-				this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(lobbyRoom));
+				this.logger.debug("usercount : " + this.chatRoomRepository.getUserCount(lobbyRoom));
 				if (this.chatRoomRepository.getUserCount(lobbyRoom) <= 0) {
 
 					// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
@@ -1089,9 +1089,9 @@ public class SocketService {
 		String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId);
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
 
-		this.logger.info("sessionId : " + sessionId);
-		this.logger.info("roomId : " + roomId);
-		this.logger.info("profile : " + profile);
+		this.logger.debug("sessionId : " + sessionId);
+		this.logger.debug("roomId : " + roomId);
+		this.logger.debug("profile : " + profile);
 
 		return profile;
 	}

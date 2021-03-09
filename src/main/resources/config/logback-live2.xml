@@ -36,13 +36,13 @@
     </appender>
     
     <logger name="jdbc" level="OFF"/>
-	<logger name="jdbc.sqlonly" level="OFF"/>
+	<logger name="jdbc.sqlonly" level="INFO"/>
 	<logger name="jdbc.sqltiming" level="OFF"/>
 	<logger name="jdbc.audit" level="OFF"/>
 	<logger name="jdbc.resultset" level="OFF"/>
-	<logger name="jdbc.resultsettable" level="OFF"/>
+	<logger name="jdbc.resultsettable" level="INFO"/>
 	<logger name="jdbc.connection" level="OFF"/>
-    <logger name="com.scglab.connect" level="DEBUG"/>
+    <logger name="com.scglab.connect" level="INFO"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
         <!-- <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" /> -->

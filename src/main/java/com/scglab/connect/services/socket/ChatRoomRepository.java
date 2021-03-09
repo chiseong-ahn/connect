@@ -50,7 +50,7 @@ public class ChatRoomRepository {
 
 	// 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
 	public ChatRoom createChatRoom(String name) {
-		this.logger.info("Create chat room - " + name);
+		this.logger.debug("Create chat room - " + name);
 		ChatRoom chatRoom = ChatRoom.create(name);
 		hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
 		return chatRoom;
@@ -58,13 +58,13 @@ public class ChatRoomRepository {
 
 	// 채팅방 삭제 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
 	public void deleteChatRoom(String roomId) {
-		this.logger.info("Delete chat room - " + roomId);
+		this.logger.debug("Delete chat room - " + roomId);
 		this.hashOpsChatRoom.delete(CHAT_ROOMS, roomId);
 	}
 
 	// 커넥션한 유저 프로필 저장.
 	public void setProfileBySessionId(String sessionId, Profile profile) {
-		this.logger.info("mapping session - token : " + sessionId + " - " + profile.toString());
+		this.logger.debug("mapping session - token : " + sessionId + " - " + profile.toString());
 		String strProfile = SerializeUtils.serialize(profile);
 		this.logger.info("setProfileBySessionId - strProfile : " + strProfile);
 		this.hashOpsEnterInfo.put(CSTALK_SESSION_PROFILE, sessionId, strProfile);
@@ -73,7 +73,7 @@ public class ChatRoomRepository {
 	// 커넥션한 유저 프로필 조회.
 	public Profile getProfileBySessionId(String sessionId) {
 		String strProfile = hashOpsEnterInfo.get(CSTALK_SESSION_PROFILE, sessionId);
-		this.logger.info("getProfileBySessionId - strProfile : " + strProfile);
+		this.logger.debug("getProfileBySessionId - strProfile : " + strProfile);
 
 		if (strProfile == null) {
 			return null;
@@ -88,7 +88,7 @@ public class ChatRoomRepository {
 
 	// 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
 	public void setUserJoinInfo(String sessionId, String roomId) {
-		this.logger.info("mapping session - roomId : " + sessionId + " - " + roomId);
+		this.logger.debug("mapping session - roomId : " + sessionId + " - " + roomId);
 		this.hashOpsEnterInfo.put(JOIN_INFO, sessionId, roomId);
 	}
 
@@ -119,7 +119,7 @@ public class ChatRoomRepository {
 	// 유저 세션으로 입장해 있는 채팅방 ID 조회
 	public String getUserJoinRoomId(String sessionId) {
 		String roomId = hashOpsEnterInfo.get(JOIN_INFO, sessionId);
-		this.logger.info("Search chat room[" + sessionId + "] - " + roomId);
+		this.logger.debug("Search chat room[" + sessionId + "] - " + roomId);
 		return roomId;
 	}
 
