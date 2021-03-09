@@ -375,7 +375,7 @@ public class HttpUtils {
 
 	private static ResponseBody requestForGet(String url, Map<String, String> parames) {
 		LocalTime startTime = LocalTime.now();
-		logger.debug("외부 통신 시작. : " + startTime);
+		logger.debug("외부통신 시작. : " + startTime);
 		logger.debug("url : " + url);
 
 		parames = parames == null ? new HashMap<String, String>() : parames;
@@ -394,12 +394,12 @@ public class HttpUtils {
 		}
 
 		LocalTime endTime = LocalTime.now();
-		logger.debug("외부 통신 종료 : " + endTime);
+		logger.debug("외부통신 종료 : " + endTime);
 
 		Duration duration = Duration.between(startTime, endTime);
 
-		long diffSeconds = duration.getSeconds();
-		logger.debug("외부 통신 소요시간(초) : " + diffSeconds);
+		long diffMillis = duration.toMillis();
+		logger.info("외부통신 처리시간 : " + diffMillis + "ms");
 
 		return body;
 	}
@@ -407,7 +407,7 @@ public class HttpUtils {
 	private static ResponseBody requestForPost(String url, Map<String, String> parames) {
 
 		LocalTime startTime = LocalTime.now();
-		logger.debug("외부 통신 시작. : " + startTime);
+		logger.debug("외부통신 시작. : " + startTime);
 		logger.debug("url : " + url);
 		logger.debug("parames : " + parames.toString());
 
@@ -427,12 +427,12 @@ public class HttpUtils {
 		}
 
 		LocalTime endTime = LocalTime.now();
-		logger.debug("외부 통신 종료. : " + endTime);
+		logger.debug("외부통신 종료. : " + endTime);
 
 		Duration duration = Duration.between(startTime, endTime);
 
-		long diffSeconds = duration.getSeconds();
-		logger.debug("외부 통신 소요시간(초) : " + diffSeconds);
+		long diffMillis = duration.toMillis();
+		logger.info("외부통신 처리시간 : " + diffMillis + "ms");
 
 		return body;
 	}
@@ -440,7 +440,7 @@ public class HttpUtils {
 	public static ResponseBody requestForPostwithBodyContent(String url, String content) {
 
 		LocalTime startTime = LocalTime.now();
-		logger.debug("외부 통신 시작. : " + startTime);
+		logger.debug("외부통신 시작. : " + startTime);
 		logger.debug("- url : " + url);
 		logger.debug("- bodyContent : " + content);
 
@@ -459,12 +459,12 @@ public class HttpUtils {
 		}
 
 		LocalTime endTime = LocalTime.now();
-		logger.debug("외부 통신 종료. : " + endTime);
+		logger.debug("외부통신 종료. : " + endTime);
 
 		Duration duration = Duration.between(startTime, endTime);
-
-		long diffSeconds = duration.getSeconds();
-		logger.debug("외부 통신 소요시간(초) : " + diffSeconds);
+		
+		long diffMillis = duration.toMillis();
+		logger.info("외부통신 처리시간 : " + diffMillis + "ms");
 
 		return body;
 	}

@@ -1,5 +1,7 @@
 package com.scglab.connect.services.socket;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -99,6 +101,9 @@ public class SocketService {
 
 	// 연결처리.
 	public void connect(SessionConnectedEvent event) {
+		LocalTime startTime = LocalTime.now();
+		logger.info("소켓연결 시작. : " + startTime);
+		
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		MessageHeaders headers = headerAccessor.getMessageHeaders();
 		String sessionId = headerAccessor.getSessionId();
@@ -146,10 +151,20 @@ public class SocketService {
 		this.logger.info("Connection profile : " + profile.toString());
 		// [Redis] 연결된 세션ID와 Token을 저장.
 		this.chatRoomRepository.setProfileBySessionId(sessionId, profile);
+		
+		LocalTime endTime = LocalTime.now();
+		logger.info("소켓연결 종료. : " + endTime);
+		
+		Duration duration = Duration.between(startTime, endTime);
+		long diffMillis = duration.toMillis();
+		logger.info("소켓연결 처리시간 : " + diffMillis + "ms");
 	}
 
 	// 구독처리.
 	public void subscribe(SessionSubscribeEvent event) {
+		LocalTime startTime = LocalTime.now();
+		logger.info("소켓구독 시작. : " + startTime);
+		
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		this.logger.info("[Subscribe] headerAccessor : " + headerAccessor.toString());
 		String destination = headerAccessor.getDestination();
@@ -205,6 +220,13 @@ public class SocketService {
 
 		// 조인처리.
 		join(payload, profile);
+		
+		LocalTime endTime = LocalTime.now();
+		logger.info("소켓구독 종료. : " + endTime);
+		
+		Duration duration = Duration.between(startTime, endTime);
+		long diffMillis = duration.toMillis();
+		logger.info("소켓구독 처리시간 : " + diffMillis + "ms");
 	}
 
 	// 방 상세 조회
@@ -287,6 +309,9 @@ public class SocketService {
 
 	// 방 조인
 	public void join(SocketData payload, Profile profile) {
+		
+		LocalTime startTime = LocalTime.now();
+		logger.debug("[Socket] JOIN 시작. : " + startTime);
 
 		Map<String, Object> sendData = null;
 		Map<String, Object> params = null;
@@ -407,6 +432,14 @@ public class SocketService {
 		} else {
 			this.logger.info("이전 대화 없음.");
 		}
+		
+		LocalTime endTime = LocalTime.now();
+		logger.debug("[Socket] JOIN 종료. : " + endTime);
+
+		Duration duration = Duration.between(startTime, endTime);
+
+		long diffMillis = duration.toMillis();
+		logger.info("[Socket] JOIN 처리시간 : " + diffMillis + "ms");
 	}
 	
 	private void setMessageThumbnail(List<Message> messages) {
@@ -844,6 +877,7 @@ public class SocketService {
 
 	// 고객 로그인
 	public Profile loginCustomer(String companyId, String gasappMemberNumber, String secretKey) {
+		
 		// 기간계 서버에서 고객정보 조회.
 		Map<String, Object> data = this.commonService.getCompany(companyId).getProfile(gasappMemberNumber);
 		if (data == null) {
@@ -882,7 +916,7 @@ public class SocketService {
 			profile.setEndDate(customer.getEndDate());
 
 		}
-
+		
 		return profile;
 	}
 
