@@ -35,33 +35,22 @@ public class CompanyScg implements ICompany {
 	// 1. 상담사 로그인
 	@Override
 	public boolean login(String id, String password) {
-		String url = "";
-		if (this.relayUseExample) {
-			// 기간계 연동하지 않을경우
+		if(id.matches("csmaster1") && password.equals("1212")) {
+			// 마스터 계정.
 			return true;
-
+			
 		} else {
-			if (password.equals("1212")) {
-				// 비밀번호가 "1212"일 경우 아이디에 해당하는 계정정보가 존재할경우 로그인 허용.
-				url = "https://" + this.relayDomain + "/api/employee?id=" + id;
-				Map<String, Object> data = HttpUtils.getForMap(url);
-				if (data != null) {
-					return true;
-				}
+			// 기간계에 아이디, 비밀번호 유효여부 검증하여 로그인 허용.
+			String url = "https://" + this.relayDomain + "/api/employee/authentication";
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("id", id);
+			params.put("password", password);
 
-			} else {
-				// 기간계에 아이디, 비밀번호 유효여부 검증하여 로그인 허용.
-				url = "https://" + this.relayDomain + "/api/employee/authentication";
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("id", id);
-				params.put("password", password);
+			String jsonContent = JSONObject.toJSONString(params);
 
-				String jsonContent = JSONObject.toJSONString(params);
-
-				ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
-				if (body.getStateCode() == Response.SC_OK) {
-					return true;
-				}
+			ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
+			if (body.getStateCode() == Response.SC_OK) {
+				return true;
 			}
 		}
 
