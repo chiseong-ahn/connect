@@ -21,19 +21,19 @@ public class SecurityFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		
 		LocalTime startTime = LocalTime.now();
-		logger.info("프로세스 시작. : " + startTime);
+		logger.debug("프로세스 시작. : " + startTime);
 		
 		chain.doFilter(req, res);
 		
 		LocalTime endTime = LocalTime.now();
-		logger.info("프로세스 종료. : " + endTime);
+		logger.debug("프로세스 종료. : " + endTime);
 
 		
 		Duration duration = Duration.between(startTime, endTime);
 
 		//long diffSeconds = duration.getSeconds();
 		long diffMillis = duration.toMillis();
-		logger.info("프로세스 처리시간 : " + diffMillis + "ms");
+		logger.debug("프로세스 처리시간 : " + diffMillis + "ms");
 	}
 
 }
