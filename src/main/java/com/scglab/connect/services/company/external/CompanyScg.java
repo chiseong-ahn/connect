@@ -20,6 +20,9 @@ import com.scglab.connect.utils.HttpUtils;
 
 @Service
 public class CompanyScg implements ICompany {
+	
+	@Value("${spring.profiles}")
+	private String profile;
 
 	@Value("${relay.use-example}")
 	private boolean relayUseExample;
@@ -35,25 +38,49 @@ public class CompanyScg implements ICompany {
 	// 1. 상담사 로그인
 	@Override
 	public boolean login(String id, String password) {
-		if(id.matches("csmaster1") && password.equals("1212")) {
-			// 마스터 계정.
-			return true;
+		
+		if(profile.matches("live(.*)")) {
 			
-		} else {
-			// 기간계에 아이디, 비밀번호 유효여부 검증하여 로그인 허용.
-			String url = "https://" + this.relayDomain + "/api/employee/authentication";
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("id", id);
-			params.put("password", password);
-
-			String jsonContent = JSONObject.toJSONString(params);
-
-			ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
-			if (body.getStateCode() == Response.SC_OK) {
+			// 운영서버는 csmaster1에 대해서만 마스터비밀번호 적용.
+			if(id.equals("csmaster1") && password.equals("1212")) {
 				return true;
+				
+			}else {
+				// 기간계에 아이디, 비밀번호 유효여부 검증하여 로그인 허용.
+				String url = "https://" + this.relayDomain + "/api/employee/authentication";
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("id", id);
+				params.put("password", password);
+	
+				String jsonContent = JSONObject.toJSONString(params);
+	
+				ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
+				if (body.getStateCode() == Response.SC_OK) {
+					return true;
+				}
+			}
+		}else {
+			// 로컬 및 개발서버는 마스터비밀번호 적용.
+			
+			if(password.equals("1212")){
+				return true;
+				
+			}else {
+				// 기간계에 아이디, 비밀번호 유효여부 검증하여 로그인 허용.
+				String url = "https://" + this.relayDomain + "/api/employee/authentication";
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("id", id);
+				params.put("password", password);
+	
+				String jsonContent = JSONObject.toJSONString(params);
+	
+				ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
+				if (body.getStateCode() == Response.SC_OK) {
+					return true;
+				}
 			}
 		}
-
+		
 		return false;
 	}
 
