@@ -1,10 +1,4 @@
 # 코드 작성규칙
-## 클래스
-
-## 메소드
-
-## 변수
-
 ### 주석
 > Class
 - Eclipse > Preference > Java > Code Style > Code Template > Comments > Types

@@ -3,7 +3,7 @@
 - application.yml
 ```yml
 domain:
-    sdtalk:
+    cstalk:
     relay-scg: relay-scg-dev.gasapp.co.kr
     relay-inc: relay-inc-dev.gasapp.co.kr
 ```
@@ -15,7 +15,7 @@ domain:
 @Setter
 @ToString
 public class DomainProperties {
-	private String sdtalk;
+	private String cstalk;
 	private String relayScg;
 	private String relayInc;
 }
@@ -27,7 +27,7 @@ public class DomainProperties {
 @Autowired private DomainProperties domainProperty;
 
 // method 사용.
-String sdtalk = this.domainProperty.getSdtalk();
+String cstalk = this.domainProperty.getCstalk();
 ```
 
 [< 목록으로 돌아가기](manual.md)
