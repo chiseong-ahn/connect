@@ -216,7 +216,7 @@ public class CompanyScg implements ICompany {
 		String isWorking = DataUtils.getString(data, "holidayFlag", "Y");
 		this.logger.debug("isWorking : " + isWorking);
 
-		int num = isWorking.equals("Y") ? 1 : 2;
+		int num = isWorking.equals("N") ? 1 : 2;
 		if (num == 1) {
 			System.out.println(cal);
 
