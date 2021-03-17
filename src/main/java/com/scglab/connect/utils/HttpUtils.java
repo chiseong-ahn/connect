@@ -1,5 +1,10 @@
 package com.scglab.connect.utils;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -382,8 +387,14 @@ public class HttpUtils {
 
 		ResponseBody body = null;
 		try {
-			body = new QuickHttp().url(url).get().addParames(parames).body();
+			body = new QuickHttp()
+					.url(url)
+					.get()
+					.addParames(parames)
+					.body();
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (body == null) {
@@ -415,8 +426,14 @@ public class HttpUtils {
 
 		ResponseBody body = null;
 		try {
-			body = (ResponseBody) new QuickHttp().url(url).post().addParames(parames).body();
+			body = (ResponseBody) new QuickHttp()
+					.url(url)
+					.post()
+					.addParames(parames)
+					.body();
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (body == null) {
@@ -446,9 +463,16 @@ public class HttpUtils {
 
 		ResponseBody body = null;
 		try {
-			body = (ResponseBody) new QuickHttp().url(url).post().setContentType(ContentType.APPLICATION_JSON)
+			body = (ResponseBody) new QuickHttp()
+					.url(url)
+					.post()
+					.setContentType(ContentType.APPLICATION_JSON)
 					.setBodyContent(content).body();
+			
+			
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (body == null) {
@@ -467,5 +491,57 @@ public class HttpUtils {
 		logger.info("외부통신 처리시간 : " + diffMillis + "ms");
 
 		return body;
+	}
+	
+	
+	
+	public void post(String strUrl, String jsonMessage) {
+		
+		HttpURLConnection connect = null;
+		
+		try {
+			URL url = new URL(strUrl);
+			connect = (HttpURLConnection) url.openConnection();
+			connect.setConnectTimeout(5000); // 서버에 연결되는 Timeout 시간 설정
+			connect.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+			
+			connect.setRequestMethod("POST");
+
+			// json으로 message를 전달하고자 할 때
+			connect.setRequestProperty("Content-Type", "application/json");
+			connect.setDoInput(true);
+			connect.setDoOutput(true); // POST 데이터를 OutputStream으로 넘겨 주겠다는 설정
+			connect.setUseCaches(false);
+			connect.setDefaultUseCaches(false);
+
+			
+			OutputStreamWriter wr = new OutputStreamWriter(connect.getOutputStream());
+			
+			if(jsonMessage != null) {
+				wr.write(jsonMessage); // json 형식의 message 전달
+			}
+			
+			wr.flush();
+
+			StringBuilder sb = new StringBuilder();
+			if (connect.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Stream을 처리해줘야 하는 귀찮음이 있음.
+				BufferedReader br = new BufferedReader(new InputStreamReader(connect.getInputStream(), "utf-8"));
+				String line;
+				while ((line = br.readLine()) != null) {
+					sb.append(line).append("\n");
+				}
+				br.close();
+				System.out.println("" + sb.toString());
+			} else {
+				System.out.println(connect.getResponseMessage());
+			}
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		} finally {
+			if(connect != null) {
+				connect.disconnect();
+			}
+		}
 	}
 }
