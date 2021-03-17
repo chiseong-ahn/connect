@@ -890,6 +890,9 @@ set pdf_image_path = concat('https://cstalk.gasapp.co.kr/attach/manual',pdf_imag
 where 1=1
 and pdf_image_path like '/static/images/%'
 
+-- 상담 만족도 인덱스 생성.
+CREATE INDEX talk_review_member_id_IDX USING BTREE ON talk_review (member_id);
+
 */
 
 

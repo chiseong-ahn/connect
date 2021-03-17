@@ -109,6 +109,7 @@ alter table manual_favorite drop INDEX manual_favorite_member_id_IDX;
 alter table room_speaker drop INDEX room_speaker_room_id_IDX;
 alter table template_favorite drop INDEX template_favorite_member_id_IDX;
 alter table template_keyword drop INDEX template_keyword_template_id_IDX;
+alter table room drop INDEX room_state_IDX;
 
 
 -- table truncate
