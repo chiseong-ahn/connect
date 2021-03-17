@@ -205,13 +205,15 @@ public class CompanyScg implements ICompany {
 		if (this.relayUseExample) {
 			url = "https://" + this.cstalkDomain + "/example/1/holiday.json";
 		} else {
-			url = "https://" + this.relayDomain + "/api/cstallk/workcalendar?day=" + today;
+			url = "https://" + this.relayDomain + "/api/cstalk/workcalendar?date=" + today;
 		}
 
+		this.logger.debug("url : " + url);
 		//Map<String, Object> data = HttpUtils.getForMap(url);
 		Map<String, Object> data = this.apiService.getForMap(url);
+		this.logger.debug("data : " + data.toString());
 		
-		String isWorking = DataUtils.getString(data, "workingDay", "Y");
+		String isWorking = DataUtils.getString(data, "holidayFlag", "Y");
 		this.logger.debug("isWorking : " + isWorking);
 
 		int num = isWorking.equals("Y") ? 1 : 2;

@@ -98,6 +98,7 @@ public class ApiService<T> {
 		if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
 			data = (Map<String, Object>) response.getBody();
 		}
+		logger.debug("data : " + data.toString());
 		
 		LocalTime endTime = LocalTime.now();
 		logger.debug("외부통신 종료 : " + endTime);
