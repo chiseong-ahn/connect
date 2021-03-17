@@ -21,6 +21,8 @@ import com.scglab.connect.services.category.CategorySmall;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.company.external.ICompany;
+import com.scglab.connect.services.customer.CustomerDao;
+import com.scglab.connect.services.customer.VCustomer;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.services.room.RoomDao;
@@ -42,6 +44,8 @@ public class MinwonService {
 	private RoomDao roomDao;
 	@Autowired
 	private CategoryDao categoryDao;
+	@Autowired
+	private CustomerDao customerDao;
 
 	public List<Map<String, Object>> codes(Map<String, Object> params, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -75,6 +79,8 @@ public class MinwonService {
 		Member member = this.loginService.getMember(request);
 		params.put("companyId", member.getCompanyId());
 		params.put("loginId", member.getId());
+		
+		VCustomer vCustomer = this.customerDao.findByGassappMemberNumber(params);
 
 		String errorParams = "";
 		if (!this.commonService.valid(params, "gasappMemberNumber"))
@@ -111,7 +117,8 @@ public class MinwonService {
 			Map<String, String> obj = new HashMap<String, String>();
 			obj.put("customerMobileId", DataUtils.getString(params, "gasappMemberNumber", ""));
 			obj.put("useContractNum", DataUtils.getString(params, "useContractNum", ""));
-			obj.put("reqName", member.getName());
+			// obj.put("reqName", member.getName());
+			obj.put("reqName", vCustomer.getName());
 			obj.put("classCode", DataUtils.getString(params, "minwonCode", ""));
 			obj.put("transfer", false + "");
 			obj.put("handphone", DataUtils.getString(params, "telNumber", ""));
