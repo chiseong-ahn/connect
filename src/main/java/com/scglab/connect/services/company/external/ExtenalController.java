@@ -58,7 +58,6 @@ public class ExtenalController {
 	@RequestMapping(name = "직원목록 조회", method = RequestMethod.GET, value = "/{companyId}/employees", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Map<String, Object>> employees(@PathVariable String companyId, @RequestParam Map<String, Object> params,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		return getCompany(companyId).employees();
 	}
 
@@ -70,7 +69,7 @@ public class ExtenalController {
 		return getCompany(companyId).employee(id);
 	}
 
-	@RequestMapping(name = "민원등록", method = RequestMethod.GET, value = "/{companyId}/minwons", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(name = "민원등록", method = RequestMethod.POST, value = "/{companyId}/minwons", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String minwons(@PathVariable String companyId, @RequestParam Map<String, String> params,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return getCompany(companyId).minwons(params);

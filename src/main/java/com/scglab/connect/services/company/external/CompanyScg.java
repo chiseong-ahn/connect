@@ -1,23 +1,26 @@
 package com.scglab.connect.services.company.external;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.catalina.connector.Response;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fcibook.quick.http.ResponseBody;
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.common.service.ApiService;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.HttpUtils;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 @Service
 public class CompanyScg implements ICompany {
 	
@@ -32,10 +35,13 @@ public class CompanyScg implements ICompany {
 
 	@Value("${domain.relay-scg}")
 	private String relayDomain;
+	
+	@Autowired private ApiService apiService;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	// 1. 상담사 로그인
+	
 	@Override
 	public boolean login(String id, String password) {
 		
@@ -52,10 +58,7 @@ public class CompanyScg implements ICompany {
 				params.put("id", id);
 				params.put("password", password);
 	
-				String jsonContent = JSONObject.toJSONString(params);
-	
-				ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
-				if (body.getStateCode() == Response.SC_OK) {
+				if(this.apiService.postStatusCode(url, params) == HttpURLConnection.HTTP_OK) {
 					return true;
 				}
 			}
@@ -72,10 +75,7 @@ public class CompanyScg implements ICompany {
 				params.put("id", id);
 				params.put("password", password);
 	
-				String jsonContent = JSONObject.toJSONString(params);
-	
-				ResponseBody body = HttpUtils.requestForPostwithBodyContent(url, jsonContent);
-				if (body.getStateCode() == Response.SC_OK) {
+				if(this.apiService.postStatusCode(url, params) == HttpURLConnection.HTTP_OK) {
 					return true;
 				}
 			}
@@ -93,9 +93,9 @@ public class CompanyScg implements ICompany {
 		} else {
 			url = "https://" + this.relayDomain + "/api/employees?comIds=18";
 		}
-
-		List<Map<String, Object>> list = HttpUtils.getForList(url);
-
+		
+		List<Map<String, Object>> list = this.apiService.getForList(url);
+		
 		return list;
 	}
 
@@ -109,7 +109,8 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/employee?id=" + id;
 		}
 
-		Map<String, Object> obj = HttpUtils.getForMap(url);
+		//Map<String, Object> obj = HttpUtils.getForMap(url);
+		Map<String, Object> obj = this.apiService.getForMap(url);
 
 		return obj;
 	}
@@ -124,8 +125,9 @@ public class CompanyScg implements ICompany {
 			obj = HttpUtils.getForMap(url);
 		} else {
 			url = "https://" + this.relayDomain + "/api/cstalk/minwons";
-			String jsonContent = JSONObject.toJSONString(params);
-			obj = HttpUtils.postForMapWithBodyContent(url, jsonContent);
+			
+			//obj = HttpUtils.postForMapWithBodyContent(url, jsonContent);
+			obj = this.apiService.postForMap(url, params);
 		}
 
 		return DataUtils.getString(obj, "id", "");
@@ -141,8 +143,9 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
 		}
 
-		Map<String, Object> data = HttpUtils.getForMap(url);
-
+		//Map<String, Object> data = HttpUtils.getForMap(url);
+		Map<String, Object> data = this.apiService.getForMap(url);
+		
 		return data;
 	}
 
@@ -157,7 +160,8 @@ public class CompanyScg implements ICompany {
 					+ requestYm + "&deadlineFlag=" + deadlineFlag;
 		}
 
-		Map<String, Object> contractBill = HttpUtils.getForMap(url);
+		//Map<String, Object> contractBill = HttpUtils.getForMap(url);
+		Map<String, Object> contractBill = this.apiService.getForMap(url);
 
 		if (contractBill != null) {
 			if (contractBill.containsKey("previousUnpayInfos")) {
@@ -204,7 +208,9 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstallk/workcalendar?day=" + today;
 		}
 
-		Map<String, Object> data = HttpUtils.getForMap(url);
+		//Map<String, Object> data = HttpUtils.getForMap(url);
+		Map<String, Object> data = this.apiService.getForMap(url);
+		
 		String isWorking = DataUtils.getString(data, "workingDay", "Y");
 		this.logger.debug("isWorking : " + isWorking);
 
@@ -241,7 +247,8 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstalk/contracts?member=" + member;
 		}
 
-		List<Map<String, Object>> list = HttpUtils.getForList(url);
+		//List<Map<String, Object>> list = HttpUtils.getForList(url);
+		List<Map<String, Object>> list = this.apiService.getForList(url);
 
 		return list;
 	}
@@ -256,7 +263,8 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstalk/profile?member=" + member;
 		}
 
-		Map<String, Object> profile = HttpUtils.getForMap(url);
+		//Map<String, Object> profile = HttpUtils.getForMap(url);
+		Map<String, Object> profile = this.apiService.getForMap(url);
 
 		return profile;
 	}
@@ -271,7 +279,8 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstalk/minwons/ClassCodes";
 		}
 
-		List<Map<String, Object>> list = HttpUtils.getForList(url);
+		//List<Map<String, Object>> list = HttpUtils.getForList(url);
+		List<Map<String, Object>> list = this.apiService.getForList(url);
 
 		return list;
 	}
