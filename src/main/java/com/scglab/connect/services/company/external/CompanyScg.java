@@ -213,10 +213,10 @@ public class CompanyScg implements ICompany {
 		Map<String, Object> data = this.apiService.getForMap(url);
 		this.logger.debug("data : " + data.toString());
 		
-		String isWorking = DataUtils.getString(data, "holidayFlag", "Y");
-		this.logger.debug("isWorking : " + isWorking);
+		String isHoliday = DataUtils.getString(data, "holidayFlag", "Y");
+		this.logger.debug("isHoliday : " + isHoliday);
 
-		int num = isWorking.equals("N") ? 1 : 2;
+		int num = isHoliday.equals("N") ? 1 : 2;
 		if (num == 1) {
 			System.out.println(cal);
 

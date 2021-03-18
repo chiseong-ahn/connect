@@ -474,51 +474,30 @@ public class SocketService {
 		// 시작메세지 유형
 		int messageType = 0;
 
+		String startMessage = "";
+		
 		// 회사별 근무상태 조회. (1-근무 중, 2-근무 외 시간, 3-점심시간.)
 		int isWorkType = company.getWorkCalendar();
+		this.logger.debug("isWorkType : " + isWorkType);
 
-		if (isWorkType == 1) { // 근무중일 경우.(1)
-
-			/*
-			// 로비에 상담가능한 상담사 카운트 조회.
-			Long readyMemberCount = this.chatRoomRepository.getUserCount(getLobbyRoom(payload.getCompanyId()));
-
-			Map<String, Object> msgParams = new HashMap<String, Object>();
-			msgParams.put("companyId", payload.getCompanyId());
-			if (readyMemberCount == 0) {
-				// 상담가능한 상담사가 존재하지 않을경우.
-				messageType = 1; // 상담가능한 상담사가 없을경우.
-			}
-			*/
-
-		} else if (isWorkType == 2) { // 근무 외 시간
-			messageType = 2;
-
-		} else if (isWorkType == 3) { // 점심시간
-			messageType = 3;
-
-		}
-		this.logger.debug("messageType : " + messageType);
-
-		String startMessage = "";
-		if(messageType == 0) {
-			params = new HashMap<String, Object>();
-			params.put("type", 0);
-			params.put("companyId", payload.getCompanyId());
-			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageRandom(params);
-			startMessage = autoMessage.getMessage();
+		if(isWorkType == 1) {
+			// 근무시간 메시지 조회.
+			startMessage = this.messageHandler.getMessage("socket.startmessage.type1");
 			
-		}else if(messageType == 2) {
+		}else if(isWorkType == 2) {
+			// 근무 외 시간 메시지 조회.
 			params = new HashMap<String, Object>();
 			params.put("type", 3);
 			params.put("companyId", payload.getCompanyId());
 			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageRandom(params);
 			startMessage = autoMessage.getMessage();
 			
-		}else {
-			startMessage = this.messageHandler.getMessage("socket.startmessage.type" + messageType);
+		}else if(isWorkType == 3) {
+			// 점심시간 메시지 조회.
+			startMessage = this.messageHandler.getMessage("socket.startmessage.type3");
+			
 		}
-
+		
 		// [DB] 신규 메세지 생성.
 		params = new HashMap<String, Object>();
 		params.put("companyId", payload.getCompanyId());
@@ -543,6 +522,7 @@ public class SocketService {
 		reloadReadySendData.put("profile", profile);
 		reloadReadySendData.put("isCustomer", true);
 		this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, reloadReadySendData);
+
 	}
 
 	// 메세지 전송

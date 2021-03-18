@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.automessage.AutoMessage;
+import com.scglab.connect.services.automessage.AutoMessageDao;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
@@ -42,9 +44,10 @@ public class RoomService {
 	private ErrorService errorService;
 	@Autowired
 	private SocketMessageHandler socketMessageHandler;
-
 	@Autowired
 	private RoomDao roomDao;
+	@Autowired
+	private AutoMessageDao autoMessageDao;
 
 	/**
 	 * 
@@ -228,6 +231,33 @@ public class RoomService {
 
 			this.socketMessageHandler.sendMessageToSelf(EventName.ASSIGNED, profile, sendData);
 			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, sendData);
+			
+			
+			params = new HashMap<String, Object>();
+			params.put("type", 0);
+			params.put("companyId", member.getCompanyId());
+			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageRandom(params);
+			String startMessage = autoMessage.getMessage();
+			
+			// [DB] 신규 메세지 생성.
+			params = new HashMap<String, Object>();
+			params.put("companyId", member.getCompanyId());
+			params.put("roomId", room.getId());
+			params.put("speakerId", null);
+			params.put("messageType", 0); // 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+			params.put("isSystemMessage", 1);
+			params.put("message", startMessage);
+			params.put("messageAdminType", 0); // 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
+			params.put("isEmployee", 0);
+			params.put("messageDetail", "");
+			params.put("templateId", null);
+			Message newMessage = this.messageDao.create(params);
+
+			// [Socket] 시작메시지 전송.
+			sendData = new HashMap<String, Object>();
+			sendData.put("message", newMessage);
+			this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
+			this.logger.debug("시작메시지 전송처리 완료");
 		}
 		return room;
 	}
