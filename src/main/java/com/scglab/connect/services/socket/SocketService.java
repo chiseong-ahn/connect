@@ -482,7 +482,7 @@ public class SocketService {
 
 		if(isWorkType == 1) {
 			// 근무시간 메시지 조회.
-			startMessage = this.messageHandler.getMessage("socket.startmessage.type1");
+			startMessage = this.messageHandler.getMessage("socket.startmessage.type0");
 			
 		}else if(isWorkType == 2) {
 			// 근무 외 시간 메시지 조회.

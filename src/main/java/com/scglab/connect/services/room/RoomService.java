@@ -222,6 +222,7 @@ public class RoomService {
 				profile.setIsCustomer(0);
 				profile.setName(member.getName());
 				profile.setSpeakerId(member.getSpeakerId());
+				profile.setRoomId(room.getId() + "");
 			}
 
 //			Map<String, Object> sendData = new HashMap<String, Object>();
