@@ -234,13 +234,38 @@ public class RoomService {
 			this.socketMessageHandler.sendMessageToLobby(EventName.RELOAD_READY, profile, sendData);
 			
 			
+			// [DB] 상담시작 및 대기시간 메세지 생성.
+			String timeMessage = DataUtils.getString(params, "timeMessage", "");
+			if(!timeMessage.equals("")) {
+				params = new HashMap<String, Object>();
+				params.put("companyId", member.getCompanyId());
+				params.put("roomId", room.getId());
+				params.put("speakerId", null);
+				params.put("messageType", 0); // 메세지 유형 (0-일반, 1-이미지, 2-동영상, 3-첨부, 4-링크, 5-이모티콘)
+				params.put("isSystemMessage", 1);
+				params.put("message", timeMessage);
+				params.put("messageAdminType", 0); // 시스템 메세지의 다른 유형. (0-일반 메세지, 1-시스템 메세지)
+				params.put("isEmployee", 0);
+				params.put("messageDetail", "");
+				params.put("templateId", null);
+				
+				Message message = this.messageDao.create(params);
+
+				// [Socket] 상담시작 및 대기시간 메세지 생성.
+				sendData = new HashMap<String, Object>();
+				sendData.put("message", message);
+				this.socketMessageHandler.sendMessageToBroadcast(EventName.MESSAGE, profile, sendData);
+				this.logger.debug("상담시작 및 대기시간 메세지 전송처리 완료");
+			}
+			
+			
 			params = new HashMap<String, Object>();
 			params.put("type", 0);
 			params.put("companyId", member.getCompanyId());
 			AutoMessage autoMessage = this.autoMessageDao.getAutoMessageRandom(params);
 			String startMessage = autoMessage.getMessage();
 			
-			// [DB] 신규 메세지 생성.
+			// [DB] 시작 메세지 생성.
 			params = new HashMap<String, Object>();
 			params.put("companyId", member.getCompanyId());
 			params.put("roomId", room.getId());
