@@ -2,7 +2,6 @@
 
 ### 프로젝트 생성 (clone)
 ```bash
-// 임시 Repository
 # git clone https://github.com/chiseong-ahn/connect.git
 ```
 
