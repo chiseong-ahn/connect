@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS `stats_member` (
   `max_speak_minute` int(10) unsigned DEFAULT 0 COMMENT '최장 상담시간',
   `avg_ready_minute` int(10) unsigned DEFAULT 0 COMMENT '평균 고객 대기시간',
   `avg_speak_minute` int(10) unsigned DEFAULT 0 COMMENT '평균 상담시간',
-  `avg_review_score` decimal(1, 1) not null default 0 COMMENT '고객만족도 평균 평점',
+  `avg_review_score` decimal(2, 1) not null default 0 COMMENT '고객만족도 평균 평점',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='일별 회원 통계';
 
