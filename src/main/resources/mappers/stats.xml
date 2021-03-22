@@ -424,6 +424,11 @@
 		CALL stats_company_daily(#{companyId}, #{targetDate})
 	</insert>
 	
+	<!-- 일일 상담사별 상담집계 처리 -->
+	<insert id="createStatsMemberDaily" parameterType="map">
+		CALL stats_member_daily(#{companyId}, #{targetDate})
+	</insert>
+	
 	<!-- 일일 유형별통계 집계처리 -->
 	<insert id="createStatsHashtagDaily" parameterType="map">
 		CALL stats_hashtag_daily(#{companyId}, #{targetDate})

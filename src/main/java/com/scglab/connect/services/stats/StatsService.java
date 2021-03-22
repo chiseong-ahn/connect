@@ -309,6 +309,7 @@ public class StatsService {
 		params.put("targetDate", DateUtils.getYesterday());
 		
 		this.statsDao.createStatsCompanyDaily(params);
+		this.statsDao.createStatsMemberDaily(params);
 		this.statsDao.createStatsHashtagDaily(params);
 	}
 }

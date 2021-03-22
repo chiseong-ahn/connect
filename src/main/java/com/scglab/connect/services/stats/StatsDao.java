@@ -124,6 +124,20 @@ public class StatsDao extends CommonDao {
 	public void createStatsCompanyDaily(Map<String, Object> params) {
 		this.sqlSession.insert(this.namespace + "createStatsCompanyDaily", params);
 	}
+	
+	
+	/**
+	 * 
+	 * @Method Name : createStatsMemberDaily
+	 * @작성일 : 2021. 3. 22.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 일별 상담사 상담현황 집계처리. 
+	 * @param params
+	 */
+	public void createStatsMemberDaily(Map<String, Object> params) {
+		this.sqlSession.insert(this.namespace + "createStatsMemberDaily", params);
+	}
 
 	/**
 	 * 

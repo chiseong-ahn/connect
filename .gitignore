@@ -157,3 +157,6 @@ $RECYCLE.BIN/
 *.ppt
 *.pptx
 *.pdf
+
+.DS_Store
+.DS_Store**
