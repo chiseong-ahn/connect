@@ -431,6 +431,7 @@ CREATE TABLE IF NOT EXISTS `stats_member` (
   `max_speak_minute` int(10) unsigned DEFAULT 0 COMMENT '최장 상담시간',
   `avg_ready_minute` int(10) unsigned DEFAULT 0 COMMENT '평균 고객 대기시간',
   `avg_speak_minute` int(10) unsigned DEFAULT 0 COMMENT '평균 상담시간',
+  `avg_review_score` decimal(1, 1) not null default 0 COMMENT '고객만족도 평균 평점',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='일별 회원 통계';
 
@@ -485,9 +486,12 @@ CREATE TABLE IF NOT EXISTS `talk_review` (
   `gasapp_member_number` varchar(255) NOT NULL COMMENT '가스앱 회원번호',
   `review_score` smallint(5) unsigned NOT NULL DEFAULT 1 COMMENT '리뷰 점수(1,2,3,4,5)',
   `member_id` bigint(5) unsigned DEFAULT NULL COMMENT '회원 id(member table)',
+  `chatid` int(10) unsigned DEFAULT 0 COMMENT '상담ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='고객 리뷰';
 
+-- talk_review.chatid index
+CREATE INDEX talk_review_chatid_IDX USING BTREE ON talk_review (chatid);
 
 /*
 
