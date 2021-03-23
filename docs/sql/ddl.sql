@@ -492,6 +492,8 @@ CREATE TABLE IF NOT EXISTS `talk_review` (
 
 -- talk_review.chatid index
 CREATE INDEX talk_review_chatid_IDX USING BTREE ON talk_review (chatid);
+CREATE INDEX talk_review_createdate_IDX USING BTREE ON talk_review (create_date, review_score);
+CREATE INDEX talk_review_reviewscore_IDX USING BTREE ON talk_review (review_score);
 
 /*
 
