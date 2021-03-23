@@ -1,5 +1,6 @@
 package com.scglab.connect.services.review;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -22,5 +23,13 @@ public class ReviewDao extends CommonDao {
 
 	public int regist(Map<String, Object> params) {
 		return this.sqlSession.insert(namespace + "regist", params);
+	}
+	
+	public List<Review> findAll(Map<String, Object> params){
+		return this.sqlSession.selectList(namespace + "findAll", params);
+	}
+	
+	public int findCount(Map<String, Object> params){
+		return this.sqlSession.selectOne(namespace + "findCount", params);
 	}
 }

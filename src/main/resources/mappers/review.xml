@@ -3,12 +3,82 @@
 
 <mapper namespace="review">
 
+	<resultMap type="com.scglab.connect.services.review.Review" id="review"></resultMap>
+
+	<!-- 고객만족도 등록 -->
 	<insert id="regist" parameterType="map">
 		insert into talk_review (company_id, gasapp_member_number, review_score, member_id, chatid)
 		values(#{companyId}, #{gasappMemberNumber}, #{reviewScore}, #{memberId}, #{chatid})
 	</insert>
 	
+	<!-- 고객만족도 목록 조회 -->
+	<select id="findAll" parameterType="map" resultMap="review">
+		select a.id
+				,a.create_date
+				,a.gasapp_member_number
+				,a.member_id
+				,a.review_score
+				,ifnull(b.name, '') as member_name
+				,c.id as customer_id
+				,ifnull(c.name, '') as customer_name
+		from talk_review a
+			 left outer join member b on (b.id = a.member_id)
+			 left outer join customer2 c on (c.gasapp_member_number = a.gasapp_member_number)
+		where 1=1
+		and a.company_id = #{companyId}
+		<if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
+			and a.create_date between DATE_FORMAT(#{startDate}, '%Y-%m-%d') and adddate(DATE_FORMAT(#{endDate}, '%Y-%m-%d'), 1)	-- 기간 조건.
+		</if>
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "all"'>
+					and b.name like concat ('%', #{searchValue}, '%') or c.name like concat ('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "customerName"'>
+					and c.name like concat ('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "memberName"'>
+					and b.name like concat ('%', #{searchValue}, '%')
+				</when>
+			</choose>
+		</if>
+		<if test='score != null and score != ""'>
+			 and a.review_score = #{score}
+		</if>
+		order by a.review_score ${sort}, a.create_date DESC
+		<if test='startNum != null and pageSize != null'>
+			Limit #{startNum}, #{pageSize}
+		</if>
+	</select>
 	
+	<!-- 고객만족도 목록 카운트 조회 -->
+	<select id="findCount" parameterType="map" resultType="int">
+		select count(*) as cnt
+		from talk_review a
+			 left outer join member b on (b.id = a.member_id)
+			 left outer join customer2 c on (c.gasapp_member_number = a.gasapp_member_number)
+		where 1=1
+		and a.company_id = #{companyId}
+		<if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
+			and a.create_date between DATE_FORMAT(#{startDate}, '%Y-%m-%d') and adddate(DATE_FORMAT(#{endDate}, '%Y-%m-%d'), 1)	-- 기간 조건.
+		</if>
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "all"'>
+					and b.name like concat ('%', #{searchValue}, '%') or c.name like concat ('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "customerName"'>
+					and c.name like concat ('%', #{searchValue}, '%')
+				</when>
+				<when test='searchType == "memberName"'>
+					and b.name like concat ('%', #{searchValue}, '%')
+				</when>
+			</choose>
+		</if>
+		<if test='score != null and score != ""'>
+			 and a.review_score = #{score}
+		</if>
+	</select>	
 </mapper>
 
 
