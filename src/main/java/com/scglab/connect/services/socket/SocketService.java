@@ -964,9 +964,6 @@ public class SocketService {
 				
 				this.chatRoomRepository.removeUserJoinInfo(sessionId);
 			}
-			
-			// [Redis] 커네션한 유저 프로필삭제.
-			this.chatRoomRepository.dropProfileBySessionId(sessionId);
 		}
 	}
 
