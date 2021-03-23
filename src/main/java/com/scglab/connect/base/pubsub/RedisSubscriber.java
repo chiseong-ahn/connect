@@ -42,6 +42,9 @@ public class RedisSubscriber {
 //    }
 
 	public void sendMessage(String publishMessage) {
+		
+		String sessionId = "";
+		
 		try {
 			SocketData payload = this.objectMapper.readValue(publishMessage, SocketData.class);
 			String roomId = payload.getRoomId();
@@ -72,7 +75,7 @@ public class RedisSubscriber {
 				this.messagingTemplate.convertAndSend(destination, payload);
 				
 			}else {
-				String sessionId = "";
+				
 				
 				if(target == Target.CUSTOMER) {
 					// 고객의 sessionId 조회.
@@ -98,7 +101,8 @@ public class RedisSubscriber {
 			
 
 		} catch (Exception e) {
-			this.logger.error(e.getMessage());
+			this.logger.warn("sessionId : " + sessionId);
+			e.printStackTrace();
 		}
 	}
 	

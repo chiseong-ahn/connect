@@ -933,40 +933,41 @@ public class SocketService {
 
 		this.logger.debug("roomId : " + roomId);
 		this.logger.debug("sessionId : " + sessionId);
+		this.logger.debug("profile : " + profile);
 
 		if (profile != null) {
-			if (profile.getIsCustomer() == 0) {
-				if (roomId != null) {
+			//if (profile.getIsCustomer() == 0) {
+			if (roomId != null) {
 
-					if (this.chatRoomRepository.getUserCount(roomId) > 0) {
-						// [Redis] 채팅방의 인원수 -1.
-						this.chatRoomRepository.minusUserCount(roomId);
-					}
-
-					// [Redis] 채팅에 참여중인 인원 확인.
-					this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(roomId));
-					if (this.chatRoomRepository.getUserCount(roomId) <= 0) {
-
-						// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
-						this.chatRoomRepository.deleteChatRoom(roomId);
-						this.chatRoomRepository.deleteUserCount(roomId);
-					}
-
-					if (profile.getIsCustomer() == 1) {
-						// 고객 조인.
-						this.chatRoomRepository.removeCustomerJoin(roomId);
-
-					} else {
-						// 멤버 조인.
-						this.chatRoomRepository.removeMemberJoin(roomId);
-					}
-
-					// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
-					this.chatRoomRepository.removeUserJoinInfo(sessionId);
+				if (this.chatRoomRepository.getUserCount(roomId) > 0) {
+					// [Redis] 채팅방의 인원수 -1.
+					this.chatRoomRepository.minusUserCount(roomId);
 				}
-			}
-		}
 
+				// [Redis] 채팅에 참여중인 인원 확인.
+				this.logger.info("usercount : " + this.chatRoomRepository.getUserCount(roomId));
+				if (this.chatRoomRepository.getUserCount(roomId) <= 0) {
+
+					// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
+					this.chatRoomRepository.deleteChatRoom(roomId);
+					this.chatRoomRepository.deleteUserCount(roomId);
+				}
+
+				if (profile.getIsCustomer() == 1) {
+					// 고객 조인.
+					this.chatRoomRepository.removeCustomerJoin(roomId);
+
+				} else {
+					// 멤버 조인.
+					this.chatRoomRepository.removeMemberJoin(roomId);
+				}
+				
+				this.chatRoomRepository.removeUserJoinInfo(sessionId);
+			}
+			
+			// [Redis] 커네션한 유저 프로필삭제.
+			this.chatRoomRepository.dropProfileBySessionId(sessionId);
+		}
 	}
 
 	// 연결해제.
@@ -975,56 +976,58 @@ public class SocketService {
 		MessageHeaders headers = headerAccessor.getMessageHeaders();
 		String sessionId = (String) headers.get("simpSessionId");
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
-
+		
 		this.logger.debug("Disconnected : " + sessionId);
-		if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
-			String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId).replaceAll(Constant.SOCKET_ROOM_PREFIX,
-					"");
-
-			if (profile.getIsCustomer() == 1) {
-				// [DB] 채팅방을 오프라인상태로 변경.
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("id", roomId);
-				params.put("isOnline", 0);
-				this.roomDao.updateOnline(params);
-
-				// [Socket] 상담목록 갱신요청 메세지 전송.
-				Map<String, Object> sendData = new HashMap<String, Object>();
-				sendData.put("profile", profile);
-				this.socketMessageHandler.sendMessageToLobby(EventName.OFFLINE, profile, sendData);
+		this.logger.debug("profile : " + profile);
+		
+		if(profile != null) {
+			
+			
+			if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
+				String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId).replaceAll(Constant.SOCKET_ROOM_PREFIX,
+						"");
+	
+				if (profile.getIsCustomer() == 1) {
+					// [DB] 채팅방을 오프라인상태로 변경.
+					Map<String, Object> params = new HashMap<String, Object>();
+					params.put("id", roomId);
+					params.put("isOnline", 0);
+					this.roomDao.updateOnline(params);
+	
+					// [Socket] 상담목록 갱신요청 메세지 전송.
+					Map<String, Object> sendData = new HashMap<String, Object>();
+					sendData.put("profile", profile);
+					this.socketMessageHandler.sendMessageToLobby(EventName.OFFLINE, profile, sendData);
+				}
+	
+				if (this.chatRoomRepository.getUserCount(roomId) > 0) {
+	
+					// [Redis] 채팅방의 인원수 -1.
+					this.chatRoomRepository.minusUserCount(roomId);
+				}
+	
+				// [Redis] 채팅에 참여중인 인원 확인.
+				if (this.chatRoomRepository.getUserCount(roomId) <= 0) {
+	
+					// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
+					this.chatRoomRepository.deleteChatRoom(roomId);
+					this.chatRoomRepository.deleteUserCount(roomId);
+				}
+	
+				if (profile.getIsCustomer() == 1) {
+					// 고객 조인.
+					this.chatRoomRepository.removeCustomerJoin(roomId);
+	
+				} else {
+					// 멤버 조인.
+					this.chatRoomRepository.removeMemberJoin(roomId);
+				}
+	
+				// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
+				this.chatRoomRepository.removeUserJoinInfo(sessionId);
 			}
-
-			if (this.chatRoomRepository.getUserCount(roomId) > 0) {
-
-				// [Redis] 채팅방의 인원수 -1.
-				this.chatRoomRepository.minusUserCount(roomId);
-			}
-
-			// [Redis] 채팅에 참여중인 인원 확인.
-			if (this.chatRoomRepository.getUserCount(roomId) <= 0) {
-
-				// [Redis] 채팅방에 조인된 사람이 없다면 데이터 삭제 - Redis에 데이터 누적 방지.
-				this.chatRoomRepository.deleteChatRoom(roomId);
-				this.chatRoomRepository.deleteUserCount(roomId);
-			}
-
-			if (profile.getIsCustomer() == 1) {
-				// 고객 조인.
-				this.chatRoomRepository.removeCustomerJoin(roomId);
-
-			} else {
-				// 멤버 조인.
-				this.chatRoomRepository.removeMemberJoin(roomId);
-			}
-
-			// [Redis] 퇴장한 클라이언트의 roomId 매핑정보 삭제.
-			this.chatRoomRepository.removeUserJoinInfo(sessionId);
-
-			// [Redis] 커네션한 유저 프로필삭제.
-			this.chatRoomRepository.dropProfileBySessionId(sessionId);
-		}
-
-		if (profile != null) {
+		
+			
 			if (profile.getIsCustomer() == 0) {
 				String lobbyRoom = getLobbyRoom(profile.getCompanyId());
 				this.logger.debug("disconnect lobby room : " + lobbyRoom);
@@ -1044,6 +1047,9 @@ public class SocketService {
 					this.chatRoomRepository.deleteUserCount(lobbyRoom);
 				}
 			}
+			
+			// [Redis] 커네션한 유저 프로필삭제.
+			this.chatRoomRepository.dropProfileBySessionId(sessionId);
 		}
 	}
 
