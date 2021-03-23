@@ -974,7 +974,6 @@ public class SocketService {
 		String sessionId = (String) headers.get("simpSessionId");
 		Profile profile = this.chatRoomRepository.getProfileBySessionId(sessionId);
 		
-		this.logger.debug("Disconnected : " + sessionId);
 		this.logger.debug("profile : " + profile);
 		
 		if(profile != null) {
@@ -1047,6 +1046,7 @@ public class SocketService {
 			
 			// [Redis] 커네션한 유저 프로필삭제.
 			this.chatRoomRepository.dropProfileBySessionId(sessionId);
+			this.logger.debug("Disconnect target : " + sessionId);
 		}
 	}
 
