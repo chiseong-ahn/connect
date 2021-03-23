@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scglab.connect.base.exception.UnauthorizedException;
+import com.scglab.connect.constant.Constant;
+import com.scglab.connect.services.common.service.JwtService;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
@@ -29,6 +32,9 @@ public class ReviewService {
 	private ReviewDao reviewDao;
 	@Autowired
 	private LoginService loginService;
+	@Autowired
+	private JwtService jwtService;
+	
 
 	public ResponseEntity<Map<String, Object>> findAll(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Member member = this.loginService.getMember(request);
@@ -73,7 +79,37 @@ public class ReviewService {
 	
 	public void findAllWithDown(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		params.put("companyId", "1");
+		String accessToken = DataUtils.getString(params, "accessToken", "");
+		
+		if(accessToken.equals("")) {
+			// 인증되지 않은경우.
+			throw new UnauthorizedException("auth.valid.fail.reason1");
+			
+		}else {
+			if(!this.jwtService.validateToken(accessToken)) {
+				throw new UnauthorizedException("auth.valid.fail.reason2");
+				
+			}else {
+				// 토큰이 유효한 경우.
+				
+				Map<String, Object> claims = this.jwtService.getJwtData(accessToken);
+				if(claims == null) {
+					throw new RuntimeException("claims is null");
+				}
+				this.logger.debug("claims : " + claims.toString());
+				request.setAttribute("accessToken", accessToken);
+				
+				Member profile = new Member();
+				profile = (Member) DataUtils.convertMapToObject(claims, profile);
+				
+				// token에서 추출한 Profile 정보를 request객체에 저장.
+				request.setAttribute(Constant.AUTH_MEMBER, profile);
+			}
+		}
+		
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
 		
 		// 정렬 기준
 		String sort = DataUtils.getString(params, "sort", "ASC");
