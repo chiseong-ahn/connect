@@ -101,8 +101,7 @@ public class RedisSubscriber {
 			
 
 		} catch (Exception e) {
-			this.logger.warn("sessionId : " + sessionId);
-			e.printStackTrace();
+			this.logger.warn("sessionId : " + sessionId + " : " + e.getMessage());
 		}
 	}
 	
