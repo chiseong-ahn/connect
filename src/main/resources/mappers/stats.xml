@@ -259,6 +259,44 @@
 	<!-- 통계 : 상담사별 분석 -->
 	<select id="customerAnalysis" parameterType="map" resultType="map">
 		select a.company_id as companyId
+				,a.member_id as memberId
+				,b.name as memberName
+				,(
+					select count(*) 
+					from room as a1
+					where 1=1
+					and a1.company_id = a.company_id
+					and a1.member_id = a.member_id
+					and a1.state <![CDATA[<]]> 2
+				) as ingCount
+				,a.close_count as closeCount
+				,a.avg_review_score as avgReviewScore
+		from(
+			select a.company_id, a.member_id, sum(a.close_count) as close_count, round(avg(case when a.avg_review_score = 0 then 5 else a.avg_review_score end), 1) as avg_review_score
+			from stats_member a 
+			where 1=1
+			and a.company_id = #{companyId}
+			and a.save_date between DATE_FORMAT(#{startDate}, '%Y-%m-%d') and DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			group by a.company_id, a.member_id
+		)a
+			inner join member as b on (b.id = a.member_id)
+		where 1=1
+		<choose>
+			<when test='sortType == "closeCount"'>
+				order by a.close_count ${sortValue}		
+			</when>
+			<when test='sortType == "reviewScore"'>
+				order by a.avg_review_score ${sortValue}
+			</when>
+			<otherwise>
+				order by a.close_count DESC
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<select id="customerAnalysisOld" parameterType="map" resultType="map">
+		select a.company_id as companyId
 				,a.id
 				,a.name
 				,a.state
