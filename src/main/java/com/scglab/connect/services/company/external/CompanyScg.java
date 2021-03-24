@@ -265,8 +265,11 @@ public class CompanyScg implements ICompany {
 			url = "https://" + this.relayDomain + "/api/cstalk/profile?member=" + member;
 		}
 
-		//Map<String, Object> profile = HttpUtils.getForMap(url);
-		Map<String, Object> profile = this.apiService.getForMap(url);
+		Map<String, Object> profile = null;
+		if(member != null) {
+			//Map<String, Object> profile = HttpUtils.getForMap(url);
+			profile = this.apiService.getForMap(url);
+		}
 
 		return profile;
 	}
