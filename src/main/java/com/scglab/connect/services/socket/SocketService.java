@@ -183,15 +183,16 @@ public class SocketService {
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("profile", profile);
 
-			if (profile.getIsCustomer() == 1) {
-				if (profile.isAuthenticated()) {
-					this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
-				} else {
-					profile.setRoomId(null);
-					this.socketMessageHandler.sendMessageToSelf(EventName.UNAUTHORIZED, profile, data);
+			if(profile != null) {
+				if (profile.getIsCustomer() == 1) {
+					if (profile.isAuthenticated()) {
+						this.socketMessageHandler.sendMessageToSelf(EventName.LOGINED, profile, data);
+					} else {
+						profile.setRoomId(null);
+						this.socketMessageHandler.sendMessageToSelf(EventName.UNAUTHORIZED, profile, data);
+					}
 				}
 			}
-
 			return;
 		}
 
