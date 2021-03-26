@@ -21,8 +21,8 @@
 				,ifnull(b.name, '') as member_name
 				,c.id as customer_id
 				,ifnull(c.name, '') as customer_name
-				,d.create_date as start_date
-				,d.end_date as end_date
+				,ifnull(d.create_date, '') as start_date
+				,ifnull(d.end_date, '') as end_date
 		from talk_review a
 			 left outer join member b on (b.id = a.member_id)
 			 left outer join customer2 c on (c.gasapp_member_number = a.gasapp_member_number)
