@@ -35,7 +35,7 @@ public class ReviewController {
 		return this.reviewService.findAll(params, request, response);
 	}
 	
-	@RequestMapping(name="고객만족도 조회", method = RequestMethod.GET, value = "/excel")
+	@RequestMapping(name="고객만족도 엑셀 다운로드", method = RequestMethod.GET, value = "/excel")
 	public void exel(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		this.reviewService.findAllWithDown(params, request, response);
 	}

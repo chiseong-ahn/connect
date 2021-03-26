@@ -17,5 +17,7 @@ public class Review {
 	private String memberName;
 	private int customerId;
 	private String customerName;
+	private String startDate;
+	private String endDate;
 	
 }
