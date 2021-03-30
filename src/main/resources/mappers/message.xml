@@ -257,5 +257,19 @@
 		CALL read_message(#{roomId}, #{speakerId}, #{startId}, #{endId})
 	</update>
 	
+	<!-- 고객의 읽지않은 메시지 카운트 조회 -->
+	<select id="noReadMessageForCustomer" parameterType="map" resultType="int">
+		select count(*) as cnt
+		from customer2 a
+		 	 inner join room_speaker b on (b.speaker_id = a.speaker_id)
+		 	 inner join chat_message c on (c.room_id = b.room_id)
+		 	 inner join message_read d on (c.id = d.message_id and d.room_id = b.room_id)
+		where 1=1
+		and a.gasapp_member_number = #{gasappMemberNumber}
+		and c.is_employee = 1
+		and d.read_date is null
+		order by c.id desc
+	</select>
+	
 	
 </mapper>

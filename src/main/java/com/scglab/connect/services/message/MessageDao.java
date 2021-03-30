@@ -202,4 +202,18 @@ public class MessageDao extends CommonDao {
 		this.sqlSession.update(this.namespace + "readMessage", params);
 	}
 
+	
+	/**
+	 * 
+	 * @Method Name : noReadMessageForCustomer
+	 * @작성일 : 2021. 3. 30.
+	 * @작성자 : anchiseong
+	 * @변경이력 : 
+	 * @Method 설명 : 고객의 읽지않은 메시지 수 조회.
+	 * @param params
+	 * @return
+	 */
+	public int noReadMessageForCustomer(Map<String, Object> params) {
+		return this.sqlSession.selectOne(this.namespace + "noReadMessageForCustomer", params);
+	}
 }

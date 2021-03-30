@@ -11,11 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
+import com.scglab.connect.services.member.Member;
+import com.scglab.connect.services.review.Review;
 import com.scglab.connect.services.room.Room;
 import com.scglab.connect.services.room.RoomDao;
 import com.scglab.connect.utils.DataUtils;
@@ -134,5 +138,27 @@ public class MessageService {
 
 		data.put("success", result > 0 ? true : false);
 		return data;
+	}
+	
+	
+	public ResponseEntity<Map<String, Object>> noreadCountForCustomer(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		String errorParams = "";
+		if (!this.commonService.valid(params, "gasappMemberNumber"))
+			errorParams = this.commonService.appendText(errorParams, "고객번호-gasappMemberNumber");
+
+		// 파라미터 유효성 검증.
+		if (!errorParams.equals("")) {
+			// 필수파라미터 누락에 따른 오류 유발처리.
+			this.errorService.throwParameterErrorWithNames(errorParams);
+		}
+		
+		int count = this.messageDao.noReadMessageForCustomer(params);
+		this.logger.debug("noread count : " + count);
+		
+		data.put("count", count);
+		
+		return new ResponseEntity<>(data, null, HttpStatus.OK);
 	}
 }

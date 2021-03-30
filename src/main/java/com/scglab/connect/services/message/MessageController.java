@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +41,11 @@ public class MessageController {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		params.put("id", id);
 		return this.messageService.delete(params, request, response);
+	}
+	
+	@RequestMapping(name="고객의 읽지않은 메시지 카운트 조회", method = RequestMethod.GET, value = "/noreadForCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> noreadCountForCustomer(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return this.messageService.noreadCountForCustomer(params, request, response);
 	}
 
 }
