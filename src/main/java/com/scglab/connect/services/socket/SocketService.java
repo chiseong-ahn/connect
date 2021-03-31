@@ -939,6 +939,19 @@ public class SocketService {
 		if (profile != null) {
 			//if (profile.getIsCustomer() == 0) {
 			if (roomId != null) {
+				
+				if (profile.getIsCustomer() == 1) {
+					// [DB] 채팅방을 오프라인상태로 변경.
+					Map<String, Object> params = new HashMap<String, Object>();
+					params.put("id", roomId);
+					params.put("isOnline", 0);
+					this.roomDao.updateOnline(params);
+	
+					// [Socket] 상담목록 갱신요청 메세지 전송.
+					Map<String, Object> sendData = new HashMap<String, Object>();
+					sendData.put("profile", profile);
+					this.socketMessageHandler.sendMessageToLobby(EventName.OFFLINE, profile, sendData);
+				}
 
 				if (this.chatRoomRepository.getUserCount(roomId) > 0) {
 					// [Redis] 채팅방의 인원수 -1.
@@ -983,19 +996,6 @@ public class SocketService {
 			if (this.chatRoomRepository.getUserJoinRoomId(sessionId) != null) {
 				String roomId = this.chatRoomRepository.getUserJoinRoomId(sessionId).replaceAll(Constant.SOCKET_ROOM_PREFIX,
 						"");
-	
-				if (profile.getIsCustomer() == 1) {
-					// [DB] 채팅방을 오프라인상태로 변경.
-					Map<String, Object> params = new HashMap<String, Object>();
-					params.put("id", roomId);
-					params.put("isOnline", 0);
-					this.roomDao.updateOnline(params);
-	
-					// [Socket] 상담목록 갱신요청 메세지 전송.
-					Map<String, Object> sendData = new HashMap<String, Object>();
-					sendData.put("profile", profile);
-					this.socketMessageHandler.sendMessageToLobby(EventName.OFFLINE, profile, sendData);
-				}
 	
 				if (this.chatRoomRepository.getUserCount(roomId) > 0) {
 	
