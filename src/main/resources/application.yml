@@ -60,7 +60,6 @@ domain:
   cstalk: cstalk-dev.gasapp.co.kr
   cstalk-dev: cstalk-dev.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
-  relay-inc: relay-inc-dev.gasapp.co.kr
 
 path:
   upload: /Volumes/Data/_upload
@@ -195,7 +194,6 @@ spring:
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
   relay-scg: relay-scg-stage.gasapp.co.kr
-  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
@@ -237,7 +235,6 @@ spring:
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
   relay-scg: relay-scg-stage.gasapp.co.kr
-  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
@@ -278,7 +275,6 @@ spring:
 domain:
   cstalk: cstalk.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
-  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
@@ -319,7 +315,6 @@ spring:
 domain:
   cstalk: cstalk.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
-  relay-inc: relay-inc.gasapp.co.kr
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach

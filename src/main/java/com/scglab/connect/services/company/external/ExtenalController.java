@@ -33,11 +33,9 @@ public class ExtenalController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CompanyScg companyScg;
-	@Autowired
-	private CompanyInc companyInc;
-
-	private ICompany getCompany(String companyId) {
-		ICompany company = companyId.equals("1") ? this.companyScg : this.companyInc;
+	
+	private CompanyAbstract getCompany(String companyId) {
+		CompanyAbstract company = companyId.equals("1") ? this.companyScg : null;
 		return company;
 	}
 

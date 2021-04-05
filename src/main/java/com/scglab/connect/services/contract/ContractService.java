@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
-import com.scglab.connect.services.company.external.CompanyInc;
-import com.scglab.connect.services.company.external.CompanyScg;
-import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
@@ -28,18 +25,9 @@ public class ContractService {
 	@Autowired
 	private LoginService loginService;
 	@Autowired
-	private CompanyScg companyScg;
-	@Autowired
-	private CompanyInc companyInc;
-	@Autowired
 	private CommonService commonService;
 	@Autowired
 	private ErrorService errorService;
-
-	private ICompany getCompany(String companyId) {
-		ICompany company = companyId.equals("1") ? this.companyScg : this.companyInc;
-		return company;
-	}
 
 	/**
 	 * 
@@ -72,11 +60,11 @@ public class ContractService {
 		}
 
 		String gasappMemberNumber = DataUtils.getString(params, "gasappMemberNumber", "");
-		Map<String, Object> profile = getCompany(companyId).getProfile(gasappMemberNumber);
+		Map<String, Object> profile = this.commonService.getCompany(companyId).getProfile(gasappMemberNumber);
 		int cash = DataUtils.getInt(profile, "cash", 0);
 		data.put("cash", cash);
 
-		List<Map<String, Object>> list = getCompany(companyId).contracts(gasappMemberNumber);
+		List<Map<String, Object>> list = this.commonService.getCompany(companyId).contracts(gasappMemberNumber);
 		data.put("contracts", list);
 
 		return data;
@@ -109,7 +97,7 @@ public class ContractService {
 		}
 
 		// 사용계약 상세정보 조회.
-		Map<String, Object> contractInfo = getCompany(companyId).contractInfo(useContractNum);
+		Map<String, Object> contractInfo = this.commonService.getCompany(companyId).contractInfo(useContractNum);
 
 		// 결재 히스토리 존재여부.
 		if (contractInfo != null) {
@@ -124,7 +112,7 @@ public class ContractService {
 						String deadlineFlag = DataUtils.getString(history, "deadlineFlag", "");
 
 						if (!requestYm.equals("") && !deadlineFlag.equals("")) {
-							Map<String, Object> bill = getCompany(companyId).contractBill(useContractNum, requestYm,
+							Map<String, Object> bill = this.commonService.getCompany(companyId).contractBill(useContractNum, requestYm,
 									deadlineFlag);
 							contractInfo.put("bill", bill);
 						}
@@ -177,7 +165,7 @@ public class ContractService {
 			this.errorService.throwParameterError();
 		}
 
-		Map<String, Object> contractBill = getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
+		Map<String, Object> contractBill = this.commonService.getCompany(companyId).contractBill(useContractNum, requestYm, deadlineFlag);
 
 		return contractBill;
 	}
