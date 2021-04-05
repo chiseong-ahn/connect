@@ -25,7 +25,7 @@ public class CompanyVirtual extends CompanyAbstract implements ICompany {
 	public boolean login(String id, String password) {
 		
 		// 운영서버는 csmaster1에 대해서만 마스터비밀번호 적용.
-		if((id.equals("vmaster1") || id.equals("vmanager1")) && password.equals("1212")) {
+		if((id.equals("vmanager1") || id.equals("vmember1")) && password.equals("1212")) {
 			return true;
 			
 		}
