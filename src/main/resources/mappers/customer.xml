@@ -47,6 +47,7 @@
 		<if test='isBlock != null'>
 			AND a.is_block = #{isBlock}
 		</if>
+		AND a.company_id = #{companyId}
 
 	</select>
 
@@ -110,6 +111,7 @@
 		<if test='isBlock != null'>
 			AND a.is_block = #{isBlock}
 		</if>
+		AND a.company_id = #{companyId}
 		ORDER BY id DESC
 		Limit #{startNum}, #{pageSize}
 	</select>

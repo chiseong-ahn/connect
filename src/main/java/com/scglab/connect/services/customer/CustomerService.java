@@ -47,7 +47,11 @@ public class CustomerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> findAll(Map<String, Object> params) throws Exception {
+	public Map<String, Object> findAll(Map<String, Object> params, HttpServletRequest request) throws Exception {
+		Member member = this.loginService.getMember(request);
+		params.put("companyId", member.getCompanyId());
+		params.put("loginId", member.getId());
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 
 		// 페이지 번호.

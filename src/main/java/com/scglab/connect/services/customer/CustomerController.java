@@ -34,7 +34,7 @@ public class CustomerController {
 	@RequestMapping(name = "고급 검색", method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> findAll(@RequestParam Map<String, Object> params, HttpServletRequest request)
 			throws Exception {
-		return this.customerService.findAll(params);
+		return this.customerService.findAll(params, request);
 	}
 
 	@Auth
