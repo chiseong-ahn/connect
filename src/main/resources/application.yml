@@ -60,6 +60,7 @@ domain:
   cstalk: cstalk-dev.gasapp.co.kr
   cstalk-dev: cstalk-dev.gasapp.co.kr
   relay-scg: relay-scg-dev.gasapp.co.kr
+  relay-vir: relay-vir-dev.gasapp.co.kr
 
 path:
   upload: /Volumes/Data/_upload

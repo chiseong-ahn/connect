@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.company.external.CompanyScg;
+import com.scglab.connect.services.company.external.CompanyVirtual;
 import com.scglab.connect.services.company.external.ICompany;
 import com.scglab.connect.utils.DataUtils;
 
@@ -22,9 +24,30 @@ public class CommonService {
 
 	@Autowired
 	private CompanyScg companyScg;
+	
+	@Autowired
+	private CompanyVirtual companyVirtual;
 
 	public ICompany getCompany(String companyId) {
-		return companyId.equals("1") ? this.companyScg : null;
+		
+		ICompany company;
+		switch(Integer.parseInt(companyId)) {
+		case Constant.COMPANY_CODE_SEOUL : 
+			company = this.companyScg;
+			break;
+			
+		case 2 : 
+			company = this.companyVirtual;
+			break;
+			
+		default :
+			company = null;
+			break;
+				
+		}
+		
+		return company;
+		
 	}
 
 	public String appendText(String str, String text) {

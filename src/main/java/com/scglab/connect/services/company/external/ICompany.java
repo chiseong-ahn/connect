@@ -132,7 +132,7 @@ public interface ICompany {
 	 * @Method 설명 : 회사id 조회.
 	 * @return
 	 */
-	public String getCompanyId();
+	public int getCompanyId();
 
 	/**
 	 * 

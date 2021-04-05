@@ -228,7 +228,7 @@ public abstract class CompanyAbstract {
 
 	
 	// 회사코드 조회
-	public abstract String getCompanyId();
+	public abstract int getCompanyId();
 
 	// 회사명 조회
 	public abstract String getCompanyName();

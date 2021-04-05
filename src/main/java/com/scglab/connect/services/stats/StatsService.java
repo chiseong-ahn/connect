@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.scglab.connect.constant.Constant;
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
 import com.scglab.connect.services.common.service.MessageHandler;
@@ -296,18 +297,26 @@ public class StatsService {
 	// 시간별 상담집계
 	public void createStatsEveryHour() {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("companyId", "1");
 		params.put("targetDate", DateUtils.getToday());
 		
+		params.put("companyId", Constant.COMPANY_CODE_SEOUL + "");
+		this.statsDao.createStatsHashtagDaily(params);
+		
+		params.put("companyId", Constant.COMPANY_CODE_VIRTUAL + "");
 		this.statsDao.createStatsHashtagDaily(params);
 	}
 	
 	// 일일 상담집계
 	public void createStatsDaily() {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("companyId", "1");
 		params.put("targetDate", DateUtils.getYesterday());
 		
+		params.put("companyId", Constant.COMPANY_CODE_SEOUL + "");
+		this.statsDao.createStatsCompanyDaily(params);
+		this.statsDao.createStatsMemberDaily(params);
+		this.statsDao.createStatsHashtagDaily(params);
+		
+		params.put("companyId", Constant.COMPANY_CODE_VIRTUAL + "");
 		this.statsDao.createStatsCompanyDaily(params);
 		this.statsDao.createStatsMemberDaily(params);
 		this.statsDao.createStatsHashtagDaily(params);

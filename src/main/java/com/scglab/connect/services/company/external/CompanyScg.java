@@ -61,12 +61,10 @@ public class CompanyScg extends CompanyAbstract implements ICompany {
 		return false;
 	}
 
-	@Override
-	public String getCompanyId() {
+	public int getCompanyId() {
 		return Constant.COMPANY_CODE_SEOUL;
 	}
 
-	@Override
 	public String getCompanyName() {
 		return Constant.COMPANY_NAME_SEOUL;
 	}
