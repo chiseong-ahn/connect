@@ -16,6 +16,13 @@ public class CompanyScg extends CompanyAbstract implements ICompany {
 	@Value("${domain.relay-scg}")
 	private String relayScgDomain;
 	
+	@Value("${relay.use-example}")
+	private boolean relayUseExample;
+	
+	public boolean getRelayUseExample() {
+		return this.relayUseExample;
+	}
+	
 	public String getRelayDomain() {
 		return this.relayScgDomain;
 	}

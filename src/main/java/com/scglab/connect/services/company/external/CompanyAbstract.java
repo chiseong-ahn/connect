@@ -22,9 +22,6 @@ public abstract class CompanyAbstract {
 	@Value("${spring.profiles}")
 	protected String profile;
 
-	@Value("${relay.use-example}")
-	protected boolean relayUseExample;
-
 	@Value("${domain.cstalk}")
 	protected String cstalkDomain;
 
@@ -33,6 +30,7 @@ public abstract class CompanyAbstract {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	public abstract boolean getRelayUseExample();
 	public abstract String getRelayDomain();
 	
 	// 1. 로그인
@@ -41,7 +39,7 @@ public abstract class CompanyAbstract {
 	// 2. 직원 목록 가져오기
 	public List<Map<String, Object>> employees() {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/employees.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/employees?comIds=18";
@@ -55,7 +53,7 @@ public abstract class CompanyAbstract {
 	// 3. 직원정보 가져오기.
 	public Map<String, Object> employee(String id) {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/employee.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/employee?id=" + id;
@@ -70,7 +68,7 @@ public abstract class CompanyAbstract {
 	public String minwons(Map<String, String> params) {
 		String url = "";
 		Map<String, Object> obj = null;
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/minwons.json";
 			obj = HttpUtils.getForMap(url);
 		} else {
@@ -84,7 +82,7 @@ public abstract class CompanyAbstract {
 	// 5. 사용계약번호 상세 정보
 	public Map<String, Object> contractInfo(String useContractNum) {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/contractInfo.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
@@ -98,7 +96,7 @@ public abstract class CompanyAbstract {
 	// 6. 사용계약번호 결제 상세 정보
 	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag) {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/contractBill.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm="
@@ -145,7 +143,7 @@ public abstract class CompanyAbstract {
 		today += day < 10 ? "0" + day : "" + day;
 
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/holiday.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/workcalendar?date=" + today;
@@ -184,7 +182,7 @@ public abstract class CompanyAbstract {
 	// 8. 고객의 계약정보 목록
 	public List<Map<String, Object>> contracts(String member) {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/contracts.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/contracts?member=" + member;
@@ -198,7 +196,7 @@ public abstract class CompanyAbstract {
 	// 9. 고객 profile 정보.
 	public Map<String, Object> getProfile(String member) {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/profile.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/profile?member=" + member;
@@ -215,7 +213,7 @@ public abstract class CompanyAbstract {
 	// 10. 민원 코드목록 조회.
 	public List<Map<String, Object>> getMinwonsCodes() {
 		String url = "";
-		if (this.relayUseExample) {
+		if (this.getRelayUseExample()) {
 			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/minwonCodes.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/minwons/ClassCodes";

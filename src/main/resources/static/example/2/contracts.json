@@ -1,0 +1,28 @@
+[
+	{
+		"useContractNum": "6000117996",
+		"main": "N",
+		"alias": "우리집",
+		"address": {
+			"address2": "79, G-101호 (여의도동,한양APT)",
+			"address1": "서울특별시 영등포구 국제금융로"
+		},
+		"maskingAddress": {
+			"address2": "***, G-101호 (**********)",
+			"address1": "서울특별시 영등포구 *****"
+		}
+	},
+	{
+		"useContractNum": "6000177177",
+		"main": "N",
+		"alias": "군부대",
+		"address": {
+			"address2": "851, 제7789부대 방패기계실 (남현동)",
+			"address1": "서울특별시 관악구 과천대로"
+		},
+		"maskingAddress": {
+			"address2": "****, 제7789부대 방패기계실 (***)",
+			"address1": "서울특별시 관악구 ****"
+		}
+	}
+]

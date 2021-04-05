@@ -10,6 +10,13 @@ public class CompanyVirtual extends CompanyAbstract implements ICompany {
 	@Value("${domain.relay-vir}")
 	private String relayVirtualDomain;
 	
+	@Value("${relay.use-example}")
+	private boolean relayUseExample;
+	
+	public boolean getRelayUseExample() {
+		return true;
+	}
+	
 	public String getRelayDomain() {
 		return this.relayVirtualDomain;
 	}

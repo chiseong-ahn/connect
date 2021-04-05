@@ -1,0 +1,19 @@
+[ {
+   "id":"vmaster1",
+   "companyName":"가상도시가스",
+   "name":"매니저",
+   "deptCode":"200552",
+   "deptName":"가상1직영",
+   "posName":"사원",
+   "userStatus":"Y",
+   "telephone":{
+      "num1":null,
+      "num2":null,
+      "num3":null
+   },
+   "cellphone":{
+      "num1":"010",
+      "num2": "1111",
+      "num3":"4062"
+   }
+}]

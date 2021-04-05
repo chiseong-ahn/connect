@@ -1,0 +1,32 @@
+{
+	"contractInfo": {
+		"useContractNum": "6000000486",
+		"customerName": "김태수",
+		"centerCode": "32",
+		"centerName": "강북2고객센터",
+		"centerPhone": "02-701-0337",
+		"meterNum": "300000486",
+		"gmtrBaseDay": "26",
+		"billSendMethod": "모바일",
+		"paymentType": "은행이체",
+		"contractStatus": "정상",
+		"productName": "업무난방용",
+		"telNumber": {
+			"num1": "02",
+			"num2": "701",
+			"num3": "6654"
+		}
+	},
+	"history": [
+		{
+			"requestYm": "201912",
+			"deadlineFlag": "20"
+		},
+		{
+			"requestYm": "201911",
+			"deadlineFlag": "20"
+		}
+	],
+	"bill": {
+	}
+}
