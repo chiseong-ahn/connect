@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `address` varchar(255) DEFAULT NULL COMMENT '회사 주소',
   `homepage` varchar(255) DEFAULT NULL COMMENT '회사 homepage',
   `use_config_json` varchar(1023) DEFAULT NULL COMMENT '회사별 설정 정보(json)',
+  `logo_url` varchar(3000) DEFAULT NULL COMMENT '회사로고 URL'
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='회사';
 
