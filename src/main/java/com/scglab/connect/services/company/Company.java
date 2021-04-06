@@ -22,5 +22,6 @@ public class Company {
 	private String address;
 	private String homepage;
 	private Object useConfigJson;
+	private String logoUrl;
 	
 }
