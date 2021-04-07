@@ -83,8 +83,8 @@ public abstract class CompanyAbstract {
 			obj = new HashMap<String, Object>();
 			
 			obj.put("id", "vmaster1");
-			obj.put("companyName", "가상도시가스");
-			obj.put("name", "매니저");
+			obj.put("companyName", "A도시가스");
+			obj.put("name", "");
 			obj.put("deptCode", "200552");
 			obj.put("deptName", "가상1직영");
 			obj.put("posName", "사원");
