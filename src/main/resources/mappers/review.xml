@@ -38,7 +38,11 @@
 		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 			<choose>
 				<when test='searchType == "all"'>
-					and b.name like concat ('%', #{searchValue}, '%') or c.name like concat ('%', #{searchValue}, '%')
+					and (
+						b.name like concat ('%', #{searchValue}, '%') 
+						or 
+						c.name like concat ('%', #{searchValue}, '%')
+					)
 				</when>
 				<when test='searchType == "customerName"'>
 					and c.name like concat ('%', #{searchValue}, '%')
@@ -72,7 +76,11 @@
 		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 			<choose>
 				<when test='searchType == "all"'>
-					and b.name like concat ('%', #{searchValue}, '%') or c.name like concat ('%', #{searchValue}, '%')
+					and (
+						b.name like concat ('%', #{searchValue}, '%') 
+						or 
+						c.name like concat ('%', #{searchValue}, '%')
+					)
 				</when>
 				<when test='searchType == "customerName"'>
 					and c.name like concat ('%', #{searchValue}, '%')
