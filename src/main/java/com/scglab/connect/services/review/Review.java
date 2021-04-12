@@ -19,5 +19,7 @@ public class Review {
 	private String customerName;
 	private String startDate;
 	private String endDate;
-	
+	private long roomId;
+	private long startMessageId;
+	private long endMessageId;
 }
