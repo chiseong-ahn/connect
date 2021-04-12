@@ -8,7 +8,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Review {
-
 	private int id;
 	private String createDate;
 	private int gasappMemberNumber;
@@ -19,5 +18,7 @@ public class Review {
 	private String customerName;
 	private String startDate;
 	private String endDate;
-	
+	private long roomId;
+	private long startMessageId;
+	private long endMessageId;
 }
