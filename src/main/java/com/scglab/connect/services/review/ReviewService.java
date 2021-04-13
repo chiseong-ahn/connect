@@ -124,8 +124,8 @@ public class ReviewService {
 			this.logger.debug("review list : " + list.toString());
 			
 			String fileName = "고객만족도현황";
-			String[] titles = {"고객명", "채팅상담일시", "상담원", "평점"};
-			String[] keys = {"customerName", "createDate", "memberName", "reviewScore"};
+			String[] titles = {"고객명", "채팅시작일시", "채팅종료일시", "상담원", "평점"};
+			String[] keys = {"customerName", "startDate", "endDate", "memberName", "reviewScore"};
 			
 			List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 			for(Review review : list) {
