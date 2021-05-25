@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.scglab.connect.utils.DataUtils;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+//@SpringBootTest
 public class CompanyScgTests {
 	
 	@Autowired private CompanyScg companyScg;

@@ -42,7 +42,7 @@ public class ExternalService {
 	}
 	
 	//
-	public void getMembers() {
+	public void getMembers() throws Exception {
 		String url = "https://relay-scg-dev.gasapp.co.kr/api/employees?comIds=18";
 		ResponseEntity datas = this.apiService.get(url, null);
 		System.out.println("datas.getStatusCodeValue() : " + datas.getStatusCodeValue());
