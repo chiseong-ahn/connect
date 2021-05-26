@@ -43,6 +43,7 @@ public class CompanyScg extends CompanyAbstract implements ICompany {
 		}else {
 			// 로컬 및 개발서버는 마스터비밀번호 적용.
 			if(password.equals("1212")){
+				this.logger.debug("특수 계정에 대해 유효확인 패스");
 				return true;
 				
 			}else {
