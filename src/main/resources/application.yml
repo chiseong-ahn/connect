@@ -55,7 +55,18 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
-
+  boot:
+    admin:
+      client:
+        url: https://sba-dev.gasapp.co.kr
+        auto-deregistration: true
+        username: dev
+        password: dev12#$
+        instance:
+          name: gasapp-cstalk
+          service-base-url: https://${sba.instance.domain}
+          management-url: https://${sba.instance.domain}/api/actuator/${sba.instance.id}
+          health-url: https://${sba.instance.domain}/api/actuator/${sba.instance.id}/health
 domain:
   cstalk: cstalk-dev.gasapp.co.kr
   cstalk-dev: cstalk-dev.gasapp.co.kr
@@ -64,19 +75,16 @@ domain:
 path:
   upload: /Volumes/Data/_upload
 
-# Prometheus 설정.
 management:
   endpoints:
     web:
-      base-path: /api/application
       exposure:
-        #include: "prometheus"
         include: "*"
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  server:
-    address: "127.0.0.1"
+        exclude: heapdump
+      base-path: /api/actuator/${sba.instance.id}
+  endpoint:
+    health:
+      show-details: always
 
 # Logging 설정.
 logging:
@@ -100,6 +108,29 @@ spring:
       enabled: true
     restart:
       enabled: true
+  boot:
+    admin:
+      client:
+        url: https://sba-dev.gasapp.co.kr
+        auto-deregistration: true
+        username: dev
+        password: dev12#$
+        instance:
+          name: gasapp-cstalk
+          service-base-url: https://cstalk-local.gasapp.co.kr
+          management-url: https://cstalk-local.gasapp.co.kr/api/actuator/tomcat
+          health-url: https://cstalk-local.gasapp.co.kr/api/actuator/tomcat/health
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: heapdump
+      base-path: /api/actuator/tomcat
+  endpoint:
+    health:
+      show-details: always
 
 relay:
   use-example: false
