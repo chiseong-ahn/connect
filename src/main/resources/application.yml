@@ -59,7 +59,7 @@ spring:
     admin:
       client:
         url: https://sba-dev.gasapp.co.kr
-        auto-deregistration: true
+        auto-registraction: true
         username: dev
         password: dev12#$
         instance:
@@ -75,6 +75,7 @@ domain:
 path:
   upload: /Volumes/Data/_upload
 
+# Prometheus 설정.
 management:
   endpoints:
     web:
@@ -108,29 +109,6 @@ spring:
       enabled: true
     restart:
       enabled: true
-  boot:
-    admin:
-      client:
-        url: https://sba-dev.gasapp.co.kr
-        auto-deregistration: true
-        username: dev
-        password: dev12#$
-        instance:
-          name: gasapp-cstalk
-          service-base-url: https://cstalk-local.gasapp.co.kr
-          management-url: https://cstalk-local.gasapp.co.kr/api/actuator/tomcat
-          health-url: https://cstalk-local.gasapp.co.kr/api/actuator/tomcat/health
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-        exclude: heapdump
-      base-path: /api/actuator/tomcat
-  endpoint:
-    health:
-      show-details: always
 
 relay:
   use-example: false
