@@ -120,7 +120,6 @@ spring:
           service-base-url: https://cstalk-local.gasapp.co.kr
           management-url: https://cstalk-local.gasapp.co.kr/api/actuator/tomcat
           health-url: https://cstalk-local.gasapp.co.kr/api/actuator/tomcat/health
-
 management:
   endpoints:
     web:
