@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
 		ErrorResponse res = new ErrorResponse(httpStatus.value(), httpStatus.name(), reason, e.getStackTrace()[0]);
 		
 		// 오류발생 알림처리.
-		if(this.profile.indexOf("local") > -1 || this.profile.indexOf("live") > -1) {
+		if(this.profile.indexOf("live") > -1 && httpStatus != HttpStatus.UNAUTHORIZED) {
 			sendExceptionNotification(httpStatus, reason, e);
 		}
 		

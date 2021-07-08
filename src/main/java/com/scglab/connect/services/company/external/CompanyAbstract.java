@@ -42,7 +42,7 @@ public abstract class CompanyAbstract {
 	public List<Map<String, Object>> employees() {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/employees.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/employees.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/employees?comIds=18";
 		}
@@ -56,7 +56,7 @@ public abstract class CompanyAbstract {
 	public Map<String, Object> employee(String id) {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/employee.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/employee.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/employee?id=" + id;
 		}
@@ -71,7 +71,7 @@ public abstract class CompanyAbstract {
 		String url = "";
 		Map<String, Object> obj = null;
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/minwons.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/minwons.json";
 			obj = HttpUtils.getForMap(url);
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/minwons";
@@ -85,7 +85,7 @@ public abstract class CompanyAbstract {
 	public Map<String, Object> contractInfo(String useContractNum) {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/contractInfo.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/contractInfo.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/contractInfo?useContractNum=" + useContractNum;
 		}
@@ -99,7 +99,7 @@ public abstract class CompanyAbstract {
 	public Map<String, Object> contractBill(String useContractNum, String requestYm, String deadlineFlag) {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/contractBill.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/contractBill.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/bill?useContractNum=" + useContractNum + "&requestYm="
 					+ requestYm + "&deadlineFlag=" + deadlineFlag;
@@ -146,7 +146,7 @@ public abstract class CompanyAbstract {
 
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/holiday.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/holiday.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/workcalendar?date=" + today;
 		}
@@ -185,7 +185,7 @@ public abstract class CompanyAbstract {
 	public List<Map<String, Object>> contracts(String member) {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/contracts.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/contracts.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/contracts?member=" + member;
 		}
@@ -199,7 +199,7 @@ public abstract class CompanyAbstract {
 	public Map<String, Object> getProfile(String member) {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/profile.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/profile.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/profile?member=" + member;
 		}
@@ -216,7 +216,7 @@ public abstract class CompanyAbstract {
 	public List<Map<String, Object>> getMinwonsCodes() {
 		String url = "";
 		if (this.relayUseExample) {
-			url = "https://" + this.cstalkDomain + "/example/1/minwonCodes.json";
+			url = "https://" + this.cstalkDomain + "/example/" + this.getCompanyId() + "/minwonCodes.json";
 		} else {
 			url = "https://" + this.getRelayDomain() + "/api/cstalk/minwons/ClassCodes";
 		}

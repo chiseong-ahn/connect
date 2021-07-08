@@ -33,23 +33,23 @@ public class ApiService<T> {
     }
  
     
-	public ResponseEntity<T> get(String url, HttpHeaders httpHeaders) {
+	public ResponseEntity<T> get(String url, HttpHeaders httpHeaders) throws Exception{
         return callApiEndpoint(url, HttpMethod.GET, httpHeaders, null, (Class<T>)Object.class);
     }
  
-    public ResponseEntity<T> get(String url, HttpHeaders httpHeaders, Class<T> clazz) {
+    public ResponseEntity<T> get(String url, HttpHeaders httpHeaders, Class<T> clazz) throws Exception{
         return callApiEndpoint(url, HttpMethod.GET, httpHeaders, null, clazz);
     }
  
-    public ResponseEntity<T> post(String url, HttpHeaders httpHeaders, Object body) {
+    public ResponseEntity<T> post(String url, HttpHeaders httpHeaders, Object body) throws Exception{
         return callApiEndpoint(url, HttpMethod.POST, httpHeaders, body,(Class<T>)Object.class);
     }
  
-    public ResponseEntity<T> post(String url, HttpHeaders httpHeaders, Object body, Class<T> clazz) {
+    public ResponseEntity<T> post(String url, HttpHeaders httpHeaders, Object body, Class<T> clazz)throws Exception {
         return callApiEndpoint(url, HttpMethod.POST, httpHeaders, body, clazz);
     }
  
-    private ResponseEntity<T> callApiEndpoint(String url, HttpMethod httpMethod, HttpHeaders httpHeaders, Object body, Class<T> clazz) {
+    private ResponseEntity<T> callApiEndpoint(String url, HttpMethod httpMethod, HttpHeaders httpHeaders, Object body, Class<T> clazz) throws Exception {
         return restTemplate.exchange(url, httpMethod, new HttpEntity<>(body, httpHeaders), clazz);
     }
     
@@ -69,7 +69,12 @@ public class ApiService<T> {
 			url += strParam;
 		}
     	
- 		ResponseEntity response = get(url, null);
+    	ResponseEntity response = null;
+    	try {
+    		response = get(url, null);
+    	}catch(Exception e) {
+			this.logger.error(e.getMessage());
+		}
 		return response.getStatusCodeValue();
     }
     
@@ -94,9 +99,13 @@ public class ApiService<T> {
 			url += strParam;
 		}
     	
- 		ResponseEntity response = get(url, null);
-		if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
-			data = (Map<String, Object>) response.getBody();
+    	try {
+	 		ResponseEntity response = get(url, null);
+			if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
+				data = (Map<String, Object>) response.getBody();
+			}
+    	}catch(Exception e) {
+			this.logger.error(e.getMessage());
 		}
 		
 		LocalTime endTime = LocalTime.now();
@@ -131,9 +140,13 @@ public class ApiService<T> {
 			url += strParam;
 		}
     	
- 		ResponseEntity response = get(url, null);
-		if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
-			data = (List<Map<String, Object>>) response.getBody();
+    	try {
+	 		ResponseEntity response = get(url, null);
+			if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
+				data = (List<Map<String, Object>>) response.getBody();
+			}
+    	}catch(Exception e) {
+			this.logger.error(e.getMessage());
 		}
 		
 		LocalTime endTime = LocalTime.now();
@@ -159,7 +172,15 @@ public class ApiService<T> {
     	HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
     	
- 		ResponseEntity response = post(url, headers, params);
+		int returnCode = 0;
+		ResponseEntity response = null;
+		try {
+			response = post(url, headers, params);
+			returnCode = response.getStatusCodeValue();
+		}catch(Exception e) {
+			this.logger.error(e.getMessage());
+			
+		}
  		
  		LocalTime endTime = LocalTime.now();
 		logger.debug("외부통신 종료 : " + endTime);
@@ -169,7 +190,7 @@ public class ApiService<T> {
 		long diffMillis = duration.toMillis();
 		logger.info("외부통신 처리시간 : " + diffMillis + "ms");
 		
-		return response.getStatusCodeValue();
+		return returnCode;
     }
     
     public Map<String, Object> postForMap(String url){
@@ -186,9 +207,13 @@ public class ApiService<T> {
     	HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
     	
- 		ResponseEntity response = post(url, headers, params);
-		if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
-			data = (Map<String, Object>) response.getBody();
+		try {
+	 		ResponseEntity response = post(url, headers, params);
+			if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
+				data = (Map<String, Object>) response.getBody();
+			}
+		}catch(Exception e) {
+			this.logger.error(e.getMessage());
 		}
 		
 		LocalTime endTime = LocalTime.now();
@@ -206,7 +231,7 @@ public class ApiService<T> {
     	return postForList(url, null);
     }
     
-    public List<Map<String, Object>> postForList(String url, Map<String, String> params){
+    public List<Map<String, Object>> postForList(String url, Map<String, String> params) {
     	LocalTime startTime = LocalTime.now();
 		logger.debug("외부통신 시작. : " + startTime);
 		logger.debug("url : " + url);
@@ -216,9 +241,13 @@ public class ApiService<T> {
     	HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
     	
- 		ResponseEntity response = post(url, headers, params);
-		if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
-			data = (List<Map<String, Object>>) response.getBody();
+		try {
+	 		ResponseEntity response = post(url, headers, params);
+			if(response.getStatusCodeValue() == HttpURLConnection.HTTP_OK) {
+				data = (List<Map<String, Object>>) response.getBody();
+			}
+		}catch(Exception e) {
+			this.logger.error(e.getMessage());
 		}
  
 		LocalTime endTime = LocalTime.now();

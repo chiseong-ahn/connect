@@ -274,6 +274,7 @@
 		from(
 			select a.company_id, a.member_id, sum(a.close_count) as close_count, round(avg(case when a.avg_review_score = 0 then 5 else a.avg_review_score end), 1) as avg_review_score
 			from stats_member a 
+				 inner join member b on (b.id = a.member_id and b.auth_level != 9)
 			where 1=1
 			and a.company_id = #{companyId}
 			and a.save_date between DATE_FORMAT(#{startDate}, '%Y-%m-%d') and DATE_FORMAT(#{endDate}, '%Y-%m-%d')

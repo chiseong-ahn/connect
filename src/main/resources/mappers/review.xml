@@ -23,6 +23,9 @@
 				,ifnull(c.name, '') as customer_name
 				,ifnull(d.create_date, '') as start_date
 				,ifnull(d.end_date, '') as end_date
+				,d.room_id
+				,d.start_message_id
+				,d.end_message_id
 		from talk_review a
 			 left outer join member b on (b.id = a.member_id)
 			 left outer join customer2 c on (c.gasapp_member_number = a.gasapp_member_number)
@@ -35,7 +38,11 @@
 		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 			<choose>
 				<when test='searchType == "all"'>
-					and b.name like concat ('%', #{searchValue}, '%') or c.name like concat ('%', #{searchValue}, '%')
+					and (
+						b.name like concat ('%', #{searchValue}, '%') 
+						or 
+						c.name like concat ('%', #{searchValue}, '%')
+					)
 				</when>
 				<when test='searchType == "customerName"'>
 					and c.name like concat ('%', #{searchValue}, '%')
@@ -69,7 +76,11 @@
 		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
 			<choose>
 				<when test='searchType == "all"'>
-					and b.name like concat ('%', #{searchValue}, '%') or c.name like concat ('%', #{searchValue}, '%')
+					and (
+						b.name like concat ('%', #{searchValue}, '%') 
+						or 
+						c.name like concat ('%', #{searchValue}, '%')
+					)
 				</when>
 				<when test='searchType == "customerName"'>
 					and c.name like concat ('%', #{searchValue}, '%')
