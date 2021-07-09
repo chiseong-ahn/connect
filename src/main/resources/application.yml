@@ -222,7 +222,7 @@ spring:
   boot:
     admin:
       client:
-        url: https://sba.gasapp.co.kr
+        url: https://sba-stage.gasapp.co.kr
         username: sbaadmin
         password: sbaadmin12#$
 domain:
@@ -263,7 +263,7 @@ spring:
   boot:
     admin:
       client:
-        url: https://sba.gasapp.co.kr
+        url: https://sba-stage.gasapp.co.kr
         username: sbaadmin
         password: sbaadmin12#$
 
