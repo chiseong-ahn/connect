@@ -58,7 +58,7 @@ spring:
   boot:
     admin:
       client:
-        url: https://sba-dev.gasapp.co.kr
+        url: https://sba.gasapp.co.kr
         auto-deregistration: true
         username: dev
         password: dev12#$
@@ -112,10 +112,6 @@ spring:
   boot:
     admin:
       client:
-        url: https://sba-dev.gasapp.co.kr
-        auto-deregistration: true
-        username: dev
-        password: dev12#$
         instance:
           name: gasapp-cstalk
           service-base-url: https://cstalk-local.gasapp.co.kr
@@ -153,7 +149,7 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
-
+        
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
@@ -221,7 +217,12 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
-
+  boot:
+    admin:
+      client:
+        url: https://sba.gasapp.co.kr
+        username: sbaclient
+        password: sbaclient12#$
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
   relay-scg: relay-scg-stage.gasapp.co.kr
@@ -262,6 +263,12 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
+  boot:
+    admin:
+      client:
+        url: https://sba.gasapp.co.kr
+        username: sbaclient
+        password: sbaclient12#$
 
 domain:
   cstalk: cstalk-stage.gasapp.co.kr
@@ -302,6 +309,12 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
+  boot:
+    admin:
+      client:
+        url: https://sba.gasapp.co.kr
+        username: sbaclient
+        password: sbaclient12#$
 
 domain:
   cstalk: cstalk.gasapp.co.kr
@@ -343,6 +356,12 @@ spring:
       maximumPoolSize: 10
       minimum-idle: 5
       max-lifetime: 60000
+  boot:
+    admin:
+      client:
+        url: https://sba.gasapp.co.kr
+        username: sbaclient
+        password: sbaclient12#$
 domain:
   cstalk: cstalk.gasapp.co.kr
   relay-scg: relay-scg.gasapp.co.kr
