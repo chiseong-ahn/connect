@@ -159,11 +159,6 @@ spring:
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
-# Prometheus 설정.
-management:
-  server:
-    address: "221.147.44.2"
-
 logging:
   config: "classpath:config/logback-dev.xml"
 
@@ -196,11 +191,6 @@ spring:
         password: dev12#$
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
-
-# Prometheus 설정.
-management:
-  server:
-    address: "221.147.44.2"
 
 logging:
   config: "classpath:config/logback-dev.xml"
@@ -241,11 +231,6 @@ domain:
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
-
-# Prometheus 설정.
-management:
-  server:
-    address: "221.147.44.2"
 
 # Logging 설정.
 logging:
@@ -289,11 +274,6 @@ domain:
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
-# Prometheus 설정.
-management:
-  server:
-    address: "221.147.44.2"
-
 # Logging 설정.
 logging:
   config: "classpath:config/logback-stage.xml"
@@ -335,11 +315,6 @@ domain:
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
 
-# Prometheus 설정.
-management:
-  server:
-    address: "221.147.44.2"
-
 # Logging 설정.
 logging:
   config: "classpath:config/logback-live1.xml"
@@ -380,11 +355,6 @@ domain:
 
 path:
   upload: /data/project/gasapp-cstalk/apache/data/attach
-
-# Prometheus 설정.
-management:
-  server:
-    address: "221.147.44.2"
 
 # Logging 설정.
 logging:
