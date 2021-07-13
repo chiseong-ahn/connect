@@ -1,4 +1,5 @@
 package com.scglab.connect.services.stats;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -284,8 +285,9 @@ public class StatsService {
 	@ManagedOperationParameters({@ManagedOperationParameter(name = "companyId", description = "도시가스 id(1-서울, 2-인천, ..."), @ManagedOperationParameter(name = "targetDate", description = "집계일자(YYYY-MM-DD)")})
 	public void statsCompany(final int companyId, final Date targetDate) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		params.put("companyId", companyId);
-		params.put("targetDate", targetDate);
+		params.put("targetDate", dateFormat.format(targetDate));
 
 		this.statsDao.createStatsCompanyDaily(params);
 	}
@@ -294,8 +296,9 @@ public class StatsService {
 	@ManagedOperationParameters({@ManagedOperationParameter(name = "companyId", description = "도시가스 id(1-서울, 2-인천, ..."), @ManagedOperationParameter(name = "targetDate", description = "집계일자(YYYY-MM-DD)")})
 	public void statsMember(final int companyId, final Date targetDate) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		params.put("companyId", companyId);
-		params.put("targetDate", targetDate);
+		params.put("targetDate", dateFormat.format(targetDate));
 
 		this.statsDao.createStatsMemberDaily(params);
 		
@@ -305,8 +308,9 @@ public class StatsService {
 	@ManagedOperationParameters({@ManagedOperationParameter(name = "companyId", description = "도시가스 id(1-서울, 2-인천, ..."), @ManagedOperationParameter(name = "targetDate", description = "집계일자(YYYY-MM-DD)")})
 	public void statsHashtag(final int companyId, final Date targetDate) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		params.put("companyId", companyId);
-		params.put("targetDate", targetDate);
+		params.put("targetDate", dateFormat.format(targetDate));
 
 		this.statsDao.createStatsHashtagDaily(params);
 	}
