@@ -11,25 +11,41 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.scglab.connect.services.common.CommonService;
 import com.scglab.connect.services.common.service.ErrorService;
-import com.scglab.connect.services.common.service.MessageHandler;
 import com.scglab.connect.services.login.LoginService;
 import com.scglab.connect.services.member.Member;
 import com.scglab.connect.utils.DataUtils;
 import com.scglab.connect.utils.DateUtils;
 
+@Validated
 @Service
 public class StatsService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired private MessageHandler messageService;
 	@Autowired private LoginService loginService;
 	@Autowired private StatsDao statsDao;
 	@Autowired private CommonService commonService;
 	@Autowired private ErrorService errorService;
+	
+	@ManagedOperation(description = "어제의 회원통계 집계")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(name = "statYesterday", description = "어제의 회원통계 집계")})
+	public Map<String, Object> member(final int companyId) throws Exception {
+		this.logger.debug("companyId : " + companyId);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("companyId", companyId);
+		
+		Map<String, Object> data = this.statsDao.member(params);
+		
+		return data;
+	}
 	
 	/**
 	 * 
