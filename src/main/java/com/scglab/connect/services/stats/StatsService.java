@@ -1,6 +1,6 @@
 package com.scglab.connect.services.stats;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,18 +39,6 @@ public class StatsService {
 	private CommonService commonService;
 	@Autowired
 	private ErrorService errorService;
-
-	@ManagedOperation(description = "어제의 회원통계 집계")
-	@ManagedOperationParameters({ @ManagedOperationParameter(name = "statYesterday", description = "어제의 회원통계 집계") })
-	public Map<String, Object> member(final int companyId) throws Exception {
-		this.logger.debug("companyId : " + companyId);
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("companyId", companyId);
-
-		Map<String, Object> data = this.statsDao.member(params);
-
-		return data;
-	}
 
 	/**
 	 * 
@@ -292,16 +280,38 @@ public class StatsService {
 		return review;
 	}
 
-	// 해시태그 수동집계 처리
-	@ManagedOperation(description = "해시태그 수동집계 처리")
-	@ManagedOperationParameters({ @ManagedOperationParameter(name = "companyId", description = "도시가스 Id") })
-	public void statsTodayHashtag(final int companyId) {
+	@ManagedOperation(description = "도스가스별 상담내역 수동집계 처리")
+	@ManagedOperationParameters({@ManagedOperationParameter(name = "companyId", description = "도시가스 id(1-서울, 2-인천, ..."), @ManagedOperationParameter(name = "targetDate", description = "집계일자(YYYY-MM-DD)")})
+	public void statsCompany(final int companyId, final Date targetDate) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("companyId", companyId);
-		params.put("targetDate", DateUtils.getToday());
+		params.put("targetDate", targetDate);
+
+		this.statsDao.createStatsCompanyDaily(params);
+	}
+	
+	@ManagedOperation(description = "도스가스별 회원 수동집계 처리")
+	@ManagedOperationParameters({@ManagedOperationParameter(name = "companyId", description = "도시가스 id(1-서울, 2-인천, ..."), @ManagedOperationParameter(name = "targetDate", description = "집계일자(YYYY-MM-DD)")})
+	public void statsMember(final int companyId, final Date targetDate) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("companyId", companyId);
+		params.put("targetDate", targetDate);
+
+		this.statsDao.createStatsMemberDaily(params);
+		
+	}
+	
+	@ManagedOperation(description = "도스가스별 해시태그 수동집계 처리")
+	@ManagedOperationParameters({@ManagedOperationParameter(name = "companyId", description = "도시가스 id(1-서울, 2-인천, ..."), @ManagedOperationParameter(name = "targetDate", description = "집계일자(YYYY-MM-DD)")})
+	public void statsHashtag(final int companyId, final Date targetDate) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("companyId", companyId);
+		params.put("targetDate", targetDate);
 
 		this.statsDao.createStatsHashtagDaily(params);
 	}
+	
+	
 
 	// 시간별 상담집계
 	public void createStatsEveryHour() {
