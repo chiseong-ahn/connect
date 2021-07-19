@@ -32,11 +32,6 @@ public class ScheduleTask {
 	@Value("${batch.active}")
 	private boolean batchActive;
 	
-	@Scheduled(fixedRate = 5000)
-	public void testBatch() {
-		this.logger.debug("배치 상태 - [" + this.batchActive + "]");
-	}
-	
 	/**
 	 * 
 	 * @Method Name : everyHourStatistics
@@ -47,7 +42,7 @@ public class ScheduleTask {
 	 */
 	@Scheduled(cron = "0 00 * * * *")
 	public void everyHourStatistics() {
-		if(batchActive) {
+		if(this.batchActive) {
 			LocalTime startTime = LocalTime.now();
 			this.logger.info("시간별 집계처리 시작. : " + startTime);
 			
@@ -74,7 +69,7 @@ public class ScheduleTask {
 	 */
 	@Scheduled(cron = "0 10 00 * * *")
 	public void dailyStatistics() {
-		if(batchActive) {
+		if(this.batchActive) {
 			LocalTime startTime = LocalTime.now();
 			this.logger.info("일일집계처리 시작. : " + startTime);
 			
@@ -101,7 +96,7 @@ public class ScheduleTask {
 	 */
 	@Scheduled(cron = "0 00 02 * * *")
 	public void syncMinwonCodes() {
-		if(batchActive) {
+		if(this.batchActive) {
 			LocalTime startTime = LocalTime.now();
 			this.logger.info("기간계 민원코드 동기화 시작. : " + LocalDateTime.now());
 			// todo:
