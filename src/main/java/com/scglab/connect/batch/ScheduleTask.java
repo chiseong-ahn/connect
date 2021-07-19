@@ -4,17 +4,16 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import com.scglab.connect.services.minwon.MinwonService;
 import com.scglab.connect.services.stats.StatsService;
 
-@Profile("dev1 | live1")
 @Component
 public class ScheduleTask {
 	
@@ -30,6 +29,14 @@ public class ScheduleTask {
 	@Autowired private StatsService statsService;
 	@Autowired private MinwonService minwonService;
 	
+	@Value("${batch.active}")
+	private boolean batchActive;
+	
+	@Scheduled(fixedRate = 5000)
+	public void testBatch() {
+		this.logger.debug("배치 상태 - [" + this.batchActive + "]");
+	}
+	
 	/**
 	 * 
 	 * @Method Name : everyHourStatistics
@@ -40,19 +47,21 @@ public class ScheduleTask {
 	 */
 	@Scheduled(cron = "0 00 * * * *")
 	public void everyHourStatistics() {
-		LocalTime startTime = LocalTime.now();
-		this.logger.info("시간별 집계처리 시작. : " + startTime);
-		
-		// TODO : 상담 집계.
-		this.statsService.createStatsEveryHour();
-		
-		LocalTime endTime = LocalTime.now();
-		this.logger.info("시간별 집계처리 종료. : " + endTime);
-		
-		Duration duration = Duration.between(startTime, endTime);
-		
-		long diffSeconds = duration.getSeconds();
-		this.logger.info("시간별 집계처리 소요시간(초) : " + diffSeconds);
+		if(batchActive) {
+			LocalTime startTime = LocalTime.now();
+			this.logger.info("시간별 집계처리 시작. : " + startTime);
+			
+			// TODO : 상담 집계.
+			this.statsService.createStatsEveryHour();
+			
+			LocalTime endTime = LocalTime.now();
+			this.logger.info("시간별 집계처리 종료. : " + endTime);
+			
+			Duration duration = Duration.between(startTime, endTime);
+			
+			long diffSeconds = duration.getSeconds();
+			this.logger.info("시간별 집계처리 소요시간(초) : " + diffSeconds);
+		}
 	}
 
 	/**
@@ -65,19 +74,21 @@ public class ScheduleTask {
 	 */
 	@Scheduled(cron = "0 10 00 * * *")
 	public void dailyStatistics() {
-		LocalTime startTime = LocalTime.now();
-		this.logger.info("일일집계처리 시작. : " + startTime);
-		
-		// TODO : 상담 일일집계.
-		this.statsService.createStatsDaily();
-		
-		LocalTime endTime = LocalTime.now();
-		this.logger.info("일일집계처리 종료. : " + endTime);
-		
-		Duration duration = Duration.between(startTime, endTime);
-		
-		long diffSeconds = duration.getSeconds();
-		this.logger.info("일일집계처리 소요시간(초) : " + diffSeconds);
+		if(batchActive) {
+			LocalTime startTime = LocalTime.now();
+			this.logger.info("일일집계처리 시작. : " + startTime);
+			
+			// TODO : 상담 일일집계.
+			this.statsService.createStatsDaily();
+			
+			LocalTime endTime = LocalTime.now();
+			this.logger.info("일일집계처리 종료. : " + endTime);
+			
+			Duration duration = Duration.between(startTime, endTime);
+			
+			long diffSeconds = duration.getSeconds();
+			this.logger.info("일일집계처리 소요시간(초) : " + diffSeconds);
+		}
 	}
 	
 	/**
@@ -90,16 +101,18 @@ public class ScheduleTask {
 	 */
 	@Scheduled(cron = "0 00 02 * * *")
 	public void syncMinwonCodes() {
-		LocalTime startTime = LocalTime.now();
-		this.logger.info("기간계 민원코드 동기화 시작. : " + LocalDateTime.now());
-		// todo:
-		this.minwonService.syncMinwonCodes();
-		
-		this.logger.info("기간계 민원코드 동기화 종료. : " + LocalDateTime.now());
-		LocalTime endTime = LocalTime.now();
-		
-		Duration duration = Duration.between(startTime, endTime);
-		long diffSeconds = duration.getSeconds();
-		this.logger.info("기간계 민원코드 동기화 소요시간(초) : " + diffSeconds);
+		if(batchActive) {
+			LocalTime startTime = LocalTime.now();
+			this.logger.info("기간계 민원코드 동기화 시작. : " + LocalDateTime.now());
+			// todo:
+			this.minwonService.syncMinwonCodes();
+			
+			this.logger.info("기간계 민원코드 동기화 종료. : " + LocalDateTime.now());
+			LocalTime endTime = LocalTime.now();
+			
+			Duration duration = Duration.between(startTime, endTime);
+			long diffSeconds = duration.getSeconds();
+			this.logger.info("기간계 민원코드 동기화 소요시간(초) : " + diffSeconds);
+		}
 	}
 }

@@ -91,6 +91,9 @@ logging:
 relay:
   use-example: false
 
+# 배치실행여부
+batch:
+  active: false
 
 ---
 # 배포환경
